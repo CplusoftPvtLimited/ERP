@@ -24,18 +24,15 @@
       <div class="container">
         <div class="form-outer text-center d-flex align-items-center">
           <div class="form-inner">
-            @if(Session::has('message'))
-            <p class="bg-success text-white p-2 rounded">{{Session::get('message')}}</p>
-            @endif
             <div class="logo"><span>{{$general_setting->site_title}}</span></div>
             <form method="POST" action="{{ route('register') }}">
                 @csrf
               <div class="form-group-material">
-                <input id="register-username" type="text" name="shop_name" required class="input-material">
-                <label for="register-username" class="label-material">{{trans('file.ShopName')}} *</label>
-                @if ($errors->has('shop_name'))
+                <input id="register-username" type="text" name="name" required class="input-material">
+                <label for="register-username" class="label-material">{{trans('file.UserName')}} *</label>
+                @if ($errors->has('name'))
                     <p>
-                        <strong>{{ $errors->first('shop_name') }}</strong>
+                        <strong>{{ $errors->first('name') }}</strong>
                     </p>
                 @endif
               </div>
@@ -48,7 +45,76 @@
                     </p>
                 @endif
               </div>
-              
+              <div class="form-group-material">
+                <input id="register-phone" type="text" name="phone_number" required class="input-material">
+                <label for="register-phone" class="label-material">{{trans('file.Phone Number')}} *</label>
+              </div>
+              <div class="form-group-material">
+                <input id="register-company" type="text" name="company_name" class="input-material">
+                <label for="register-company" class="label-material">{{trans('file.Company Name')}}</label>
+              </div>
+              <div class="form-group-material">
+                <select required name="role_id" id="role-id" class="form-control">
+                  <option value="">Select Role*</option>
+                  @foreach($lims_role_list as $role)
+                      <option value="{{$role->id}}">{{$role->name}}</option>
+                  @endforeach
+                </select>
+              </div>
+              <div id="customer-section">
+                  <div class="form-group-material">
+                    <input id="customer-name" type="text" name="customer_name" class="input-material customer-field">
+                    <label for="customer-name" class="label-material">{{trans('file.name')}} *</label>
+                  </div>
+                  <div class="form-group-material">
+                    <select name="customer_group_id" class="form-control customer-field">
+                      <option value="">Select customer group*</option>
+                      @foreach($lims_customer_group_list as $customer_group)
+                          <option value="{{$customer_group->id}}">{{$customer_group->name}}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                  <div class="form-group-material">
+                    <input id="customer-tax-number" type="text" name="tax_no" class="input-material">
+                    <label for="customer-tax-number" class="label-material">{{trans('file.Tax Number')}}</label>
+                  </div>
+                  <div class="form-group-material">
+                    <input id="customer-address" type="text" name="address" class="input-material customer-field">
+                    <label for="customer-address" class="label-material">{{trans('file.Address')}} *</label>
+                  </div>
+                  <div class="form-group-material">
+                    <input id="customer-city" type="text" name="city" class="input-material customer-field">
+                    <label for="customer-city" class="label-material">{{trans('file.City')}} *</label>
+                  </div>
+                  <div class="form-group-material">
+                    <input id="customer-state" type="text" name="state" class="input-material">
+                    <label for="customer-state" class="label-material">{{trans('file.State')}}</label>
+                  </div>
+                  <div class="form-group-material">
+                    <input id="customer-postal" type="text" name="postal_code" class="input-material">
+                    <label for="customer-postal" class="label-material">{{trans('file.Postal Code')}}</label>
+                  </div>
+                  <div class="form-group-material">
+                    <input id="customer-country" type="text" name="country" class="input-material">
+                    <label for="customer-country" class="label-material">{{trans('file.Country')}}</label>
+                  </div>
+              </div>
+              <div class="form-group-material" id="biller-id">
+                <select name="biller_id" class="form-control">
+                  <option value="">Select Biller*</option>
+                  @foreach($lims_biller_list as $biller)
+                      <option value="{{$biller->id}}">{{$biller->name}} ({{$biller->phone_number}})</option>
+                  @endforeach
+                </select>
+              </div>
+              <div class="form-group-material" id="warehouse-id">
+                <select name="warehouse_id" class="form-control">
+                  <option value="">Select Warehouse*</option>
+                  @foreach($lims_warehouse_list as $warehouse)
+                      <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
+                  @endforeach
+                </select>
+              </div>
               <div class="form-group-material">
                 <input id="password" type="password" class="input-material" name="password" required>
                 <label for="passowrd" class="label-material">{{trans('file.Password')}} *</label>

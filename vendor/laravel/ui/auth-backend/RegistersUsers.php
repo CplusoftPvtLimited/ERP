@@ -10,6 +10,7 @@ use App\Roles;
 use App\CustomerGroup;
 use App\Biller;
 use App\Warehouse;
+use Session;
 
 
 trait RegistersUsers
@@ -42,15 +43,17 @@ trait RegistersUsers
 
         event(new Registered($user = $this->create($request->all())));
 
-        $this->guard()->login($user);
+        // $this->guard()->login($user);
 
-        if ($response = $this->registered($request, $user)) {
-            return $response;
-        }
+        // if ($response = $this->registered($request, $user)) {
+        //     return $response;
+        // }
 
-        return $request->wantsJson()
-                    ? new JsonResponse([], 201)
-                    : redirect($this->redirectPath());
+        // return $request->wantsJson()
+        //             ? new JsonResponse([], 201)
+        //             : redirect($this->redirectPath());
+        return redirect()->back()->with('message','A Verification mail has been sent your email address');
+
     }
 
     /**

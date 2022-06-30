@@ -846,6 +846,8 @@
                   ?>
                   @if($role->id <= 2)
                   <li id="role-menu"><a href="{{route('role.index')}}">{{trans('file.Role Permission')}}</a></li>
+                  <li id="role-menu"><a href="{{route('role.index')}}">{{trans('file.Forms')}}</a></li>
+
                   @endif
                   @if($send_notification_permission_active)
                   <li id="notification-menu">

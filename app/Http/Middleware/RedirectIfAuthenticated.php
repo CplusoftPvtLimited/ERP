@@ -19,7 +19,13 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
+            dd("hddjhdjhdjhdjhdjhdjhdh");
+            if(auth::user()->is_active == 1)
             return redirect(RouteServiceProvider::HOME);
+            else
+            return redirect('logout');
+
+
         }
 
         return $next($request);

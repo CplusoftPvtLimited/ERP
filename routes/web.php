@@ -18,6 +18,8 @@ Route::group(['middleware' => 'auth'], function() {
 });
 
 Route::group(['middleware' => ['auth', 'active']], function() {
+	
+	Route::resource('form', 'FormController');
 
 	Route::get('/', 'HomeController@index');
 	Route::get('switch-theme/{theme}', 'HomeController@switchTheme')->name('switchTheme');
@@ -300,4 +302,8 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('/home', 'HomeController@index')->name('home');
 	Route::get('my-transactions/{year}/{month}', 'HomeController@myTransaction');
 });
+Route::get('/logout', 'HomeController@logOut');
+Route::get('/verify/mail', 'MailController@index');
+Route::get('/sent/mail_view', 'UserController@mailView');
+
 

@@ -818,6 +818,8 @@
                     ?>
                     @if($role->id <= 2)
                     <li id="role-menu"><a href="{{route('role.index')}}">{{trans('file.Role Permission')}}</a></li>
+                    <li id="role-menu"><a href="{{route('form.index')}}">{{trans('file.Forms')}}</a></li>
+
                     @endif
                     @if($discount_plan_permission_active)
                     <li id="discount-plan-list-menu"><a href="{{route('discount-plans.index')}}">{{trans('file.Discount Plan')}}</a></li>

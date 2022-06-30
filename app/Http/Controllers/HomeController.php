@@ -22,6 +22,7 @@ use Auth;
 use Printing;
 use Rawilk\Printing\Contracts\Printer;
 use Spatie\Permission\Models\Role;
+use Session;
 /*use vendor\autoload;
 use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
 use Mike42\Escpos\Printer;*/
@@ -31,6 +32,11 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+    }
+    public function logOut()
+    {
+        session::flush();
+        return redirect('/login')->with('message','You are not Allowed to access the system');
     }
 
     public function dashboard()

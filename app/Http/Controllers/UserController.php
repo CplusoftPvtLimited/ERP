@@ -221,4 +221,10 @@ class UserController extends Controller
         else
             return redirect('user')->with('message3', 'Data deleted successfullly');
     }
-}
+    public function mailView(){
+        return view('emails.sentmail');
+        
+    }
+        
+    }
+

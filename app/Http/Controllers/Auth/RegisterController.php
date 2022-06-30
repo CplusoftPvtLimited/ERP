@@ -8,6 +8,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Validation\Rule;
+use Mail;
+use App\Mail\AccountCreation;
+use Illuminate\Support\Facades\DB;
 
 class RegisterController extends Controller
 {
@@ -50,7 +53,8 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|string|max:255|unique:users',
+            // 'name' => 'required|string|max:255|unique:users',
+            'shop_name' => 'required|string|max:255',
             'email' => [
                 'email',
                 'max:255',
@@ -70,26 +74,39 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+       DB::beginTransaction();
+        try {
+            // dd($data);
         $data['is_active'] = false;
+        // $mailData = [];
         $user = User::create([
-            'name' => $data['name'],
+            // 'name' => $data['name'],
+            'shop_name' => $data['shop_name'],
             'email' => $data['email'],
-            'phone' => $data['phone_number'],
-            'company_name' => $data['company_name'],
-            'role_id' => $data['role_id'],
-            'biller_id' => $data['biller_id'],
-            'warehouse_id' => $data['warehouse_id'],
+            // 'phone' => $data['phone_number'],
+            // 'company_name' => $data['company_name'],
+            // 'role_id' => $data['role_id'],
+            // 'biller_id' => $data['biller_id'],
+            // 'warehouse_id' => $data['warehouse_id'],
             'is_active' => $data['is_active'],
             'is_deleted' => false,
             'password' => bcrypt($data['password']),
         ]);
 
-        if($data['role_id'] == 5) {
-            $data['name'] = $data['customer_name'];
-            $data['user_id'] = $user->id;
-            Customer::create($data);
+        $mailData = [
+            'title' => 'Mail from SalePro.com',
+            'body' => 'Please Verfiy Your Account.',
+            // 'action_url' => url('verify/account')
+        ];
+         
+        Mail::to($data['email'])->send(new AccountCreation($mailData));
+        // dd("mail sent");
+        DB::commit();
+        } 
+        catch (\Throwable $th) {
+            DB::rollback();
+            dd($th);
         }
 
-        return $user;
     }
 }

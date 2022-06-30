@@ -11,6 +11,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
   
 
@@ -70,7 +72,11 @@ class LoginController extends Controller
 
         if(auth()->attempt(array($fieldType => $input['name'], 'password' => $input['password'])))
         {
+            // dd("hello");
+            // if(auth::user()->is_active == 1)
             return redirect('/');
+            // else
+            // return redirect('logout');
         }
         else {
             return redirect()->route('login')->with('error','Username And Password Are Wrong.');
