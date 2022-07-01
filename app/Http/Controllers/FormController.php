@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 use App\Form;
 use App\FormField;
+use App\FormFieldsData;
+use App\FormUser;
+use App\Roles;
+use App\User;
 use Illuminate\Support\Facades\DB;
 use Session;
 
@@ -69,12 +73,24 @@ catch(\Exception $e){
     }
     
 
-    public function show($id)
+    public function show($id,$user_id)
     {
+        // dd($user_id);
         $form = Form::find($id);
-        $form_fields = FormField::where('form_id',$id)->get();
+        $user= User::find($user_id);
+        // if(!$form){
+        //     return back();
+        // }
+        // if(!$user){
+        //     return back();
+        // }
+        $fields_data =[];
 
-        return view('forms.show',compact('form','form_fields'));
+        $form_fields = FormField::where('form_id',$id)->get();
+        
+
+
+        return view('forms.show',compact('form','form_fields','fields_data','user_id'));
     }
 
     public function edit($id)
@@ -135,13 +151,91 @@ catch(\Exception $e){
         }
     }
 
+    public function pendingForms()
+    {
+        $data = [];
+
+        $userforms = FormUser::where('status', 0)->get();
+        // dd(count($userforms));
+        foreach($userforms as $u){
+            $form = Form::find($u->form_id);
+            $role = Roles::find($u->role_id);
+            $user = User::find($u->user_id);
+            $dat = [
+                'form' => $form,
+                'role' => $role,
+                'user' => $user
+            ];
+
+            array_push($data,$dat);
+        }
+        return view('forms.pendingforms', compact('userforms','data'));
+    }
+
+    public function approvedForms()
+    {
+        $data = [];
+
+        $userforms = FormUser::where('status', 1)->get();
+
+        // dd(count($userforms));
+        foreach($userforms as $u){
+            $form = Form::find($u->form_id);
+            $role = Roles::find($u->role_id);
+            $user = User::find($u->user_id);
+            $dat = [
+                'form' => $form,
+                'role' => $role,
+                'user' => $user
+            ];
+            array_push($data,$dat);
+        }
+        return view('forms.approvedforms', compact('userforms','data'));
+    }
+
+    public function rejectedForms()
+    {
+        $data = [];
+
+        $userforms = FormUser::where('status', 2)->get();
+
+        // dd(count($userforms));
+        foreach($userforms as $u){
+            $form = Form::find($u->form_id);
+            $role = Roles::find($u->role_id);
+            $user = User::find($u->user_id);
+            $dat = [
+                'form' => $form,
+                'role' => $role,
+                'user' => $user
+            ];
+            array_push($data,$dat);
+        }
+        return view('forms.rejectedforms', compact('userforms','data'));
+    }
+
+    public function userFormApprove($id)
+    {
+        // dd('jhjhj');
+        $userform = FormUser::find($id);
+        $userform->status = 1 ;
+        $userform->update();
+        return redirect('approved/form');
+    }
+
+    public function userFormReject($id)
+    {
+        // dd('jhjhj');
+        $userform = FormUser::find($id);
+        $userform->status = 2 ;
+        $userform->update();
+        return redirect('rejected/form');
+    }
 
     public function destroy($id)
     {
         $form = Form::find($id);
-
         $form->delete();
-
         return back();
     }
 }

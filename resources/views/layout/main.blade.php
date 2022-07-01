@@ -708,6 +708,15 @@
             </ul>
             </li>
             @endif
+            <li><a href="#form" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-card"></i><span>{{trans('file.Forms')}}</span></a>
+            <ul id="form" class="collapse list-unstyled ">
+                <li id="form-list-menu"><a href="{{route('form.index')}}">{{trans('file.Form List')}}</a></li>
+                <li id="form-pending-menu"><a href="{{route('pendingforms')}}">{{trans('file.Pending Forms')}}</a></li>
+                <li id="form-approved-menu"><a href="{{route('approvedforms')}}">{{trans('file.Approved Forms')}}</a></li>
+                <li id="form-rejected-menu"><a href="{{route('rejectedforms')}}">{{trans('file.Rejected Forms')}}</a></li>
+
+            </ul>
+            </li>
 
             <li><a href="#setting" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-gear"></i><span>{{trans('file.settings')}}</span></a>
                 <ul id="setting" class="collapse list-unstyled ">
@@ -818,7 +827,7 @@
                     ?>
                     @if($role->id <= 2)
                     <li id="role-menu"><a href="{{route('role.index')}}">{{trans('file.Role Permission')}}</a></li>
-                    <li id="role-menu"><a href="{{route('form.index')}}">{{trans('file.Forms')}}</a></li>
+                    <!-- <li id="role-menu"><a href="{{route('form.index')}}">{{trans('file.Forms')}}</a></li> -->
 
                     @endif
                     @if($discount_plan_permission_active)

@@ -1,5 +1,9 @@
 <?php 
 return [
+	'Form List' => 'Form List',
+	'Pending Forms' => 'Pending Forms',
+	'Approved Forms' => 'Approved Forms',
+	'Rejected Forms' => 'Rejected Forms',
 	'Forms' => 'Forms',
 	'ShopName' => 'ShopName',
 	'dashboard' => 'Dashboard',

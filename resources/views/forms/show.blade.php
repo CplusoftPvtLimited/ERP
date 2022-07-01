@@ -28,40 +28,43 @@
 <div class="row card mt-5 p-2">
     
     @foreach($form_fields as $f)
+    @php $form_fields_data = App\FormFieldsData::where('field_id',$f->id)->where('user_id',$user_id)->first();  @endphp
+
     <div class="col-xs-12 col-sm-12 col-md-12">
         @if($f->field_type == 1)
         <div class="form-group col-md-12">
             <label for="">{{$f->field_label}}</label>
-            <input type="text" name="{{ $f->field_name }}" class="form-control">
+            <input type="text" name="{{ $f->field_name }}" class="form-control" value="{{ isset($form_fields_data) ? $form_fields_data->field_value : ''}}">
         </div>
         @elseif($f->field_type == 2)
         <div class="form-group col-md-12">
             <label for="">{{$f->field_label}}</label>
-            <textarea name="{{ $f->field_name }}" id="" cols="30" rows="10"class="form-control"></textarea>
+            <textarea name="{{ $f->field_name }}" id="" cols="30" rows="10"class="form-control">{{ isset($form_fields_data) ? $form_fields_data->field_value : ''}}</textarea>
         </div>
         @elseif($f->field_type == 3)
         <div class="form-group col-md-12">
             <label for="">{{$f->field_label}}</label>
-            <input type="file" name="{{ $f->field_name }}">
+            <input type="file" name="{{ $f->field_name }}" value="{{ isset($form_fields_data) ? $form_fields_data->field_value : ''}}">
         </div>
         @elseif($f->field_type == 4)
         <div class="form-group col-md-12">
             <label for="">{{$f->field_label}}</label>
-            <input type="radio" name="{{ $f->field_name }}" >
+            <input type="radio" name="{{ $f->field_name }}" value="{{ isset($form_fields_data) ? $form_fields_data->field_value : ''}}">
         </div>
         @elseif($f->field_type == 6)
         <div class="form-group col-md-12">
             <label for="">{{$f->field_label}}</label>
-            <input type="email" name="{{ $f->field_name }}" class="form-control">
+            <input type="email" name="{{ $f->field_name }}" class="form-control" value="{{ isset($form_fields_data) ? $form_fields_data->field_value : ''}}">
         </div>
         @elseif($f->field_type == 5)
         <div class="form-group col-md-12">
             <label for="">{{$f->field_label}}</label>
-            <input type="password" name="{{ $f->field_name }}" class="form-control">
+            <input type="password" name="{{ $f->field_name }}" class="form-control" value="{{ isset($form_fields_data) ? $form_fields_data->field_value : ''}}" readonly>
         </div>
         @endif
     </div>
     @endforeach
+
     <div class="ml-4">
     <button class="btn btn-primary" type="submit" >Save</button>
     </div>

@@ -20,6 +20,16 @@ Route::group(['middleware' => 'auth'], function() {
 Route::group(['middleware' => ['auth', 'active']], function() {
 	
 	Route::resource('form', 'FormController');
+	Route::get('/pending/form', 'FormController@pendingForms')->name('pendingforms');
+	Route::get('/approved/form', 'FormController@approvedForms')->name('approvedforms');
+	Route::get('/rejected/form', 'FormController@rejectedForms')->name('rejectedforms');
+	Route::get('/show_form/{id}/{userid}', 'FormController@show')->name('show_form');
+	Route::get('/approve_form/{id}', 'FormController@userFormApprove')->name('approve_form');
+	Route::get('/reject_form/{id}', 'FormController@userFormReject')->name('reject_form');
+
+
+
+
 
 	Route::get('/', 'HomeController@index');
 	Route::get('switch-theme/{theme}', 'HomeController@switchTheme')->name('switchTheme');
