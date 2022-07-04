@@ -58,7 +58,10 @@ class MemoryDataCollector extends DataCollector implements LateDataCollectorInte
         return $this->data['memory'];
     }
 
-    public function getMemoryLimit(): int
+    /**
+     * @return int|float
+     */
+    public function getMemoryLimit()
     {
         return $this->data['memory_limit'];
     }
@@ -97,11 +100,8 @@ class MemoryDataCollector extends DataCollector implements LateDataCollectorInte
 
         switch (substr($memoryLimit, -1)) {
             case 't': $max *= 1024;
-            // no break
             case 'g': $max *= 1024;
-            // no break
             case 'm': $max *= 1024;
-            // no break
             case 'k': $max *= 1024;
         }
 

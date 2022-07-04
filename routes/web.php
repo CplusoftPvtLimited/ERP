@@ -12,6 +12,15 @@
 */
 
 Auth::routes();
+Route::get('test', function () {
+    event(new App\Events\NotificationSend('Someone'));
+    return view('welcome');
+});
+
+Route::get('welcome', function () {
+    
+    return view('welcome');
+});
 
 Route::group(['middleware' => 'auth'], function() {
 	Route::get('/dashboard', 'HomeController@dashboard');
@@ -24,8 +33,12 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('/approved/form', 'FormController@approvedForms')->name('approvedforms');
 	Route::get('/rejected/form', 'FormController@rejectedForms')->name('rejectedforms');
 	Route::get('/show_form/{id}/{userid}', 'FormController@show')->name('show_form');
-	Route::get('/approve_form/{id}', 'FormController@userFormApprove')->name('approve_form');
-	Route::get('/reject_form/{id}', 'FormController@userFormReject')->name('reject_form');
+	Route::post('/approve_form', 'FormController@userFormApprove')->name('approve_form');
+	Route::post('/reject_form', 'FormController@userFormReject')->name('reject_form');
+	Route::post('/resubmit_form', 'FormController@userFormResubmit')->name('resubmit_form');
+
+	Route::get('/download_file/{name}/{extension}', 'FormController@downloadFile');
+
 
 
 
@@ -241,12 +254,16 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('backup', 'SettingController@backup')->name('setting.backup');
 	Route::get('setting/general_setting/change-theme/{theme}', 'SettingController@changeTheme');
 	Route::get('setting/mail_setting', 'SettingController@mailSetting')->name('setting.mail');
+	Route::get('setting/general_mail_setting', 'SettingController@generalMailSetting')->name('setting.generalmail');
+
 	Route::get('setting/sms_setting', 'SettingController@smsSetting')->name('setting.sms');
 	Route::get('setting/createsms', 'SettingController@createSms')->name('setting.createSms');
 	Route::post('setting/sendsms', 'SettingController@sendSms')->name('setting.sendSms');
 	Route::get('setting/hrm_setting', 'SettingController@hrmSetting')->name('setting.hrm');
 	Route::post('setting/hrm_setting_store', 'SettingController@hrmSettingStore')->name('setting.hrmStore');
 	Route::post('setting/mail_setting_store', 'SettingController@mailSettingStore')->name('setting.mailStore');
+	Route::post('setting/general_mail_setting_store', 'SettingController@generalMailSettingStore')->name('setting.generalMailStore');
+
 	Route::post('setting/sms_setting_store', 'SettingController@smsSettingStore')->name('setting.smsStore');
 	Route::get('setting/pos_setting', 'SettingController@posSetting')->name('setting.pos');
 	Route::post('setting/pos_setting_store', 'SettingController@posSettingStore')->name('setting.posStore');

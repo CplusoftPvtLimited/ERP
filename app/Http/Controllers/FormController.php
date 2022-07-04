@@ -9,7 +9,14 @@ use App\Roles;
 use App\User;
 use Illuminate\Support\Facades\DB;
 use Session;
+use Mail;
+use App\Mail\AccountCreation;
+use App\Mail\MailApprove;
+use App\Mail\MailReject;
+use App\Activity;
+use Illuminate\Support\Facades\Auth;
 
+use App\GeneralMailSetting;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -18,8 +25,8 @@ class FormController extends Controller
 {
     public function index()
     {
-            $form_all = Form::all();
-            return view('forms.index', compact('form_all'));
+        $form_all = Form::all();
+        return view('forms.index', compact('form_all'));
     }
 
     public function create()
@@ -78,19 +85,20 @@ catch(\Exception $e){
         // dd($user_id);
         $form = Form::find($id);
         $user= User::find($user_id);
-        // if(!$form){
-        //     return back();
-        // }
+        $userform= FormUser::where('form_id',$id)->where('user_id',$user_id)->first();
+        // dd($userform);
+        if(!$userform){
+            return redirect('pending/form');
+        }
         // if(!$user){
         //     return back();
         // }
-        $fields_data =[];
 
         $form_fields = FormField::where('form_id',$id)->get();
         
 
 
-        return view('forms.show',compact('form','form_fields','fields_data','user_id'));
+        return view('forms.show',compact('form','form_fields','user_id'));
     }
 
     public function edit($id)
@@ -164,7 +172,8 @@ catch(\Exception $e){
             $dat = [
                 'form' => $form,
                 'role' => $role,
-                'user' => $user
+                'user' => $user,
+                'id' => $u->id
             ];
 
             array_push($data,$dat);
@@ -193,45 +202,133 @@ catch(\Exception $e){
         return view('forms.approvedforms', compact('userforms','data'));
     }
 
-    public function rejectedForms()
-    {
-        $data = [];
+    // public function rejectedForms()
+    // {
+    //     $data = [];
 
-        $userforms = FormUser::where('status', 2)->get();
+    //     $userforms = FormUser::where('status', 2)->get();
 
-        // dd(count($userforms));
-        foreach($userforms as $u){
-            $form = Form::find($u->form_id);
-            $role = Roles::find($u->role_id);
-            $user = User::find($u->user_id);
-            $dat = [
-                'form' => $form,
-                'role' => $role,
-                'user' => $user
-            ];
-            array_push($data,$dat);
-        }
-        return view('forms.rejectedforms', compact('userforms','data'));
-    }
+    //     // dd(count($userforms));
+    //     foreach($userforms as $u){
+    //         $form = Form::find($u->form_id);
+    //         $role = Roles::find($u->role_id);
+    //         $user = User::find($u->user_id);
+    //         $dat = [
+    //             'form' => $form,
+    //             'role' => $role,
+    //             'user' => $user
+    //         ];
+    //         array_push($data,$dat);
+    //     }
+    //     return view('forms.rejectedforms', compact('userforms','data'));
+    // }
 
-    public function userFormApprove($id)
+    public function userFormApprove(Request $req)
     {
         // dd('jhjhj');
-        $userform = FormUser::find($id);
+        $userform = FormUser::find($req->form_id);
+        $user = User::find($userform->user_id);
+        // dd($user->email);
         $userform->status = 1 ;
         $userform->update();
+        $mail_data = GeneralMailSetting::first();
+        $mailData = [
+            'header' => isset($mail_data) ? $mail_data->header : 'Header',
+            'title' => 'Mail from SalePro.com',
+            'body' => 'Congratulations...Your Form has been approved.',
+            'footer' => isset($mail_data) ? $mail_data->footer : 'Footer',
+
+            // 'action_url' => url('verify/account')
+        ];
+
+        Mail::to($user->email)->send(new FormApprove($mailData));
+        
+         event(new App\Events\NotificationSend('Someone'));
+        $log = new Activity();
+                    $log->log_name = Auth::user()->name;
+                    $log->subject_type = "Form Approve";
+                    $log->causer_type = "Project Manager";
+                    $log->causer_id = 'Project Manager-'.Auth::user()->id;
+                    $log->comments = $req->comment;
+                    $log->save();
         return redirect('approved/form');
     }
 
-    public function userFormReject($id)
+    public function userFormReject(Request $req)
     {
         // dd('jhjhj');
-        $userform = FormUser::find($id);
-        $userform->status = 2 ;
-        $userform->update();
-        return redirect('rejected/form');
+        $userform = FormUser::find($req->form_id);
+        $user = User::find($userform->user_id);
+        $form = Form::find($userform->form_id);
+        $userform->delete();
+        $formfieldsdata = FormFieldsData::where('form_id',$form->id)->where('user_id',$user->id)->get();
+        foreach($formfieldsdata as $ffd)
+        {
+            $ffd->delete();
+        }
+        $mail_data = GeneralMailSetting::first();
+        $mailData = [
+            'header' => isset($mail_data) ? $mail_data->header : 'gfg',
+            'title' => 'Mail from SalePro.com',
+            'body' => 'Oopps...Your Form has been Rejected.',
+            'footer' => isset($mail_data) ? $mail_data->footer : 'gfg',
+
+            // 'action_url' => url('verify/account')
+        ];
+
+        Mail::to($user->email)->send(new FormReject($mailData));
+        $log = new Activity();
+                    $log->log_name = Auth::user()->name;
+                    $log->subject_type = "Form Reject";
+                    $log->causer_type = "Project Manager";
+                    $log->causer_id = 'Project Manager-'.Auth::user()->id;
+                    $log->comments = $req->comment;
+                    $log->save();
+        return redirect()->back();
     }
 
+    public function userFormResubmit(Request $req)
+    {
+        // dd('jhjhj');
+        $userform = FormUser::find($req->form_id);
+        $user = User::find($userform->user_id);
+        // dd($user->email);
+        $userform->status = 2 ;
+        $userform->update();
+        $mail_data = GeneralMailSetting::first();
+        $mailData = [
+            'header' => isset($mail_data) ? $mail_data->header : 'Header',
+            'title' => 'Mail from SalePro.com',
+            'body' => 'Whoops...You have been asked to Resubmit the form.',
+            'footer' => isset($mail_data) ? $mail_data->footer : 'Footer',
+
+            // 'action_url' => url('verify/account')
+        ];
+
+        Mail::to($user->email)->send(new FormResumit($mailData));
+        $log = new Activity();
+                    $log->log_name = Auth::user()->name;
+                    $log->subject_type = "Form Resubmission";
+                    $log->causer_type = "Project Manager";
+                    $log->causer_id = 'Project Manager-'.Auth::user()->id;
+                    $log->comments = $req->comment;
+                    $log->save();
+        return redirect('approved/form');
+    }
+
+    public function downloadFile($name, $extension)
+    {
+        $path = public_path('/images/'.$name);
+        // dd($path);
+        $headers = ['Content-Type: application/'.$extension];
+        // $fileName = $name;
+        // dd(file_exists(public_path('/images/'.$name)));
+        if(file_exists(public_path('/images/'.$name))){
+            return response()->download($path, $name, $headers);
+        }else{
+            return back();
+        }
+    }
     public function destroy($id)
     {
         $form = Form::find($id);

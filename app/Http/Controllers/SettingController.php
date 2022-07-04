@@ -18,6 +18,7 @@ use ZipArchive;
 use Twilio\Rest\Client;
 use Clickatell\Rest;
 use Clickatell\ClickatellException;
+use App\GeneralMailSetting;
 
 class SettingController extends Controller
 {
@@ -217,12 +218,28 @@ class SettingController extends Controller
     {  
         return view('setting.mail_setting');
     }
+    public function generalMailSetting()
+    {  
+        $mail_data = GeneralMailSetting::first();
+        // dd($mail_data);
+        return view('setting.general_email_setting',compact('mail_data'));
+    }
 
+    public function generalMailSettingStore(Request $request)
+    {
+        $mail_data = GeneralMailSetting::first();
+        if(!$mail_data)
+        {
+            $mail_data = new GeneralMailSetting();
+        }
+        $mail_data->header = $request->header;
+        $mail_data->footer = $request->footer;
+        $mail_data->save();
+        return redirect()->back()->with('message', 'Data updated successfully');
+
+    }
     public function mailSettingStore(Request $request)
     {
-        if(!env('USER_VERIFIED'))
-            return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
-
         $data = $request->all();
         //writting mail info in .env file
         $path = '.env';

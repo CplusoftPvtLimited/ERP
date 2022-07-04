@@ -37,8 +37,9 @@
     33 => 'Srmklive\\PayPal\\Providers\\PayPalServiceProvider',
     34 => 'App\\Providers\\AppServiceProvider',
     35 => 'App\\Providers\\AuthServiceProvider',
-    36 => 'App\\Providers\\EventServiceProvider',
-    37 => 'App\\Providers\\RouteServiceProvider',
+    36 => 'App\\Providers\\BroadcastServiceProvider',
+    37 => 'App\\Providers\\EventServiceProvider',
+    38 => 'App\\Providers\\RouteServiceProvider',
   ),
   'eager' => 
   array (
@@ -64,8 +65,9 @@
     19 => 'Srmklive\\PayPal\\Providers\\PayPalServiceProvider',
     20 => 'App\\Providers\\AppServiceProvider',
     21 => 'App\\Providers\\AuthServiceProvider',
-    22 => 'App\\Providers\\EventServiceProvider',
-    23 => 'App\\Providers\\RouteServiceProvider',
+    22 => 'App\\Providers\\BroadcastServiceProvider',
+    23 => 'App\\Providers\\EventServiceProvider',
+    24 => 'App\\Providers\\RouteServiceProvider',
   ),
   'deferred' => 
   array (
@@ -119,6 +121,7 @@
     'Illuminate\\Console\\Scheduling\\ScheduleFinishCommand' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'Illuminate\\Console\\Scheduling\\ScheduleListCommand' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'Illuminate\\Console\\Scheduling\\ScheduleRunCommand' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'Illuminate\\Console\\Scheduling\\ScheduleClearCacheCommand' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'Illuminate\\Console\\Scheduling\\ScheduleTestCommand' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'Illuminate\\Console\\Scheduling\\ScheduleWorkCommand' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.storage.link' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',

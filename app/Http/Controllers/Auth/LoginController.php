@@ -72,6 +72,7 @@ class LoginController extends Controller
 
         $fieldType = filter_var($request->name, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
         // dd(Auth::user()->id);
+        // dd($fieldType);
         $user = User::where('name',$request->name)->first();
         if($user)
         {

@@ -12,6 +12,7 @@
     <link rel="manifest" href="{{url('manifest.json')}}">
     <!-- Bootstrap CSS-->
     <link rel="stylesheet" href="<?php echo asset('vendor/bootstrap/css/bootstrap.min.css') ?>" type="text/css">
+    
 
 
     <link rel="preload" href="<?php echo asset('vendor/bootstrap-toggle/css/bootstrap-toggle.min.css') ?>" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -872,6 +873,7 @@
                     @if($mail_setting_permission_active)
                     <li id="mail-setting-menu"><a href="{{route('setting.mail')}}">{{trans('file.Mail Setting')}}</a></li>
                     @endif
+                    <li id="general-mail-setting-menu"><a href="{{route('setting.generalmail')}}">{{trans('file.General Mail Setting')}}</a></li>
                     @if($reward_point_setting_permission_active)
                     <li id="reward-point-setting-menu"><a href="{{route('setting.rewardPoint')}}">{{trans('file.Reward Point Setting')}}</a></li>
                     @endif

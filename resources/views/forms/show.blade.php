@@ -34,40 +34,52 @@
         @if($f->field_type == 1)
         <div class="form-group col-md-12">
             <label for="">{{$f->field_label}}</label>
-            <input type="text" name="{{ $f->field_name }}" class="form-control" value="{{ isset($form_fields_data) ? $form_fields_data->field_value : ''}}">
+            <input type="text" name="{{ $f->field_name }}" class="form-control" value="{{ isset($form_fields_data) ? $form_fields_data->field_value : 'Null'}}" disabled>
         </div>
         @elseif($f->field_type == 2)
         <div class="form-group col-md-12">
             <label for="">{{$f->field_label}}</label>
-            <textarea name="{{ $f->field_name }}" id="" cols="30" rows="10"class="form-control">{{ isset($form_fields_data) ? $form_fields_data->field_value : ''}}</textarea>
+            <textarea name="{{ $f->field_name }}" id="" cols="30" rows="10"class="form-control" disabled>{{ isset($form_fields_data) ? $form_fields_data->field_value : 'Null'}}</textarea>
         </div>
         @elseif($f->field_type == 3)
         <div class="form-group col-md-12">
-            <label for="">{{$f->field_label}}</label>
-            <input type="file" name="{{ $f->field_name }}" value="{{ isset($form_fields_data) ? $form_fields_data->field_value : ''}}">
+            <label>{{$f->field_label}}</label>
+            @php
+            $infoPath = pathinfo(public_path('/images/'.$form_fields_data->field_value));
+            $path = asset('/images/'.$form_fields_data->field_value);
+            $extension = $infoPath['extension'];
+            @endphp
+            @if($extension == 'jpg' || $extension == 'jpeg' || $extension == 'png' || $extension == 'webp')
+            <div align="center">
+            <img src="{{$path}}" height="150px" width="150px" alt="jhjhjhjhj">
+            </div>
+            @else
+            <div style="border:1px solid lightgrey" class="p-1 rounded">
+                {{$form_fields_data->field_value}}
+                <a class="btn btn-success" href="{{url('download_file',[$form_fields_data->field_value,$extension])}}"><i class="fa fa-download" aria-hidden="true"></i></a>
+            </div>
+            
+            @endif
+           
         </div>
         @elseif($f->field_type == 4)
         <div class="form-group col-md-12">
             <label for="">{{$f->field_label}}</label>
-            <input type="radio" name="{{ $f->field_name }}" value="{{ isset($form_fields_data) ? $form_fields_data->field_value : ''}}">
+            <input type="radio"  name="{{ $f->field_name }}" value="{{ isset($form_fields_data) ? $form_fields_data->field_value : 'Null'}}" disabled>
         </div>
         @elseif($f->field_type == 6)
         <div class="form-group col-md-12">
             <label for="">{{$f->field_label}}</label>
-            <input type="email" name="{{ $f->field_name }}" class="form-control" value="{{ isset($form_fields_data) ? $form_fields_data->field_value : ''}}">
+            <input type="email" name="{{ $f->field_name }}" class="form-control" value="{{ isset($form_fields_data) ? $form_fields_data->field_value : 'Null'}}" disabled>
         </div>
         @elseif($f->field_type == 5)
         <div class="form-group col-md-12">
             <label for="">{{$f->field_label}}</label>
-            <input type="password" name="{{ $f->field_name }}" class="form-control" value="{{ isset($form_fields_data) ? $form_fields_data->field_value : ''}}" readonly>
+            <input type="password" name="{{ $f->field_name }}" class="form-control" value="{{ isset($form_fields_data) ? $form_fields_data->field_value : 'Null'}}" disabled>
         </div>
         @endif
     </div>
     @endforeach
-
-    <div class="ml-4">
-    <button class="btn btn-primary" type="submit" >Save</button>
-    </div>
 </div>
         </div>
 

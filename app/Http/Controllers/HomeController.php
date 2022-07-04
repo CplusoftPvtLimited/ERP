@@ -41,6 +41,7 @@ class HomeController extends Controller
 
     public function dashboard()
     {
+        // dd('dashboad');
         return view('home');
     }
 
@@ -87,6 +88,7 @@ class HomeController extends Controller
 
     public function index()
     {
+        // dd('index');
         //return phpinfo();
         //return Printing::printers();
         /*$printerId = '69993185';
