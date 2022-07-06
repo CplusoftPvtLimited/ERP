@@ -70,11 +70,11 @@
       <div class="modal-content">
         {!! Form::open(['route' => 'approve_form', 'method' => 'post', 'files' => true]) !!}
         <div class="modal-header">
-          <h5 id="exampleModalLabel" class="modal-title">Comment</h5>
+          <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Comment')}}</h5>
           <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
         </div>
         <div class="modal-body">
-          <input type="text" name="form_id" value="{{ $datas['id'] }}">
+          <input type="hidden" name="form_id" value="{{ $datas['id'] }}">
           <div class="form-group">
             <label>{{trans('file.Comment')}} *</label>
               <textarea name="comment" class="form-control" id="" cols="30" rows="10"></textarea>
@@ -93,11 +93,11 @@
       <div class="modal-content">
         {!! Form::open(['route' => 'reject_form', 'method' => 'post', 'files' => true]) !!}
         <div class="modal-header">
-          <h5 id="exampleModalLabel" class="modal-title">Comment</h5>
+          <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Comment')}}</h5>
           <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
         </div>
         <div class="modal-body">
-          <input type="text" name="form_id" value="{{ $datas['id'] }}">
+          <input type="hidden" name="form_id" value="{{ $datas['id'] }}">
           <div class="form-group">
             <label>{{trans('file.Comment')}} *</label>
               <textarea name="comment" class="form-control" id="" cols="30" rows="10"></textarea>
@@ -116,11 +116,11 @@
       <div class="modal-content">
         {!! Form::open(['route' => 'resubmit_form', 'method' => 'post', 'files' => true]) !!}
         <div class="modal-header">
-          <h5 id="exampleModalLabel" class="modal-title">Comment</h5>
+          <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Comment')}}</h5>
           <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
         </div>
         <div class="modal-body">
-          <input type="text" name="form_id" value="{{ $datas['id'] }}">
+          <input type="hidden" name="form_id" value="{{ $datas['id'] }}">
           <div class="form-group">
             <label>{{trans('file.Comment')}} *</label>
               <textarea name="comment" class="form-control" id="" cols="30" rows="10"></textarea>

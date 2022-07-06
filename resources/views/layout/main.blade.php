@@ -64,9 +64,13 @@
       <link rel="stylesheet" href="<?php echo asset('vendor/bootstrap/css/bootstrap-rtl.min.css') ?>" type="text/css">
       <link rel="stylesheet" href="<?php echo asset('css/custom-rtl.css') ?>" type="text/css" id="custom-style">
     @endif
+
+    
+    <script src="//js.pusher.com/3.1/pusher.min.js"></script>
   </head>
 
   <body onload="myFunction()">
+  @php $userr_id = auth()->user()->id; @endphp
     <div id="loader"></div>
       <!-- Side Navbar -->
       <nav class="side-navbar">
@@ -923,36 +927,23 @@
             @if(\Auth::user()->role_id <= 2)
                 <li class="nav-item"><a href="{{route('cashRegister.index')}}" data-toggle="tooltip" title="{{trans('file.Cash Register List')}}"><i class="dripicons-archive"></i></a></li>
             @endif
-            @if($product_qty_alert_active)
-                @if(($alert_product + count(\Auth::user()->unreadNotifications)) > 0)
-                <li class="nav-item" id="notification-icon">
-                    <a rel="nofollow" data-toggle="tooltip" title="{{__('Notifications')}}" class="nav-link dropdown-item"><i class="dripicons-bell"></i><span class="badge badge-danger notification-number">{{$alert_product + count(\Auth::user()->unreadNotifications)}}</span>
-                    </a>
-                    <ul class="right-sidebar">
-                        <li class="notifications">
-                            <a href="{{route('report.qtyAlert')}}" class="btn btn-link"> {{$alert_product}} product exceeds alert quantity</a>
-                        </li>
-                        @foreach(\Auth::user()->unreadNotifications as $key => $notification)
-                            <li class="notifications">
-                                <a href="#" class="btn btn-link">{{ $notification->data['message'] }}</a>
-                            </li>
-                        @endforeach
-                    </ul>
-                </li>
-                @elseif(count(\Auth::user()->unreadNotifications) > 0)
-                <li class="nav-item" id="notification-icon">
-                    <a rel="nofollow" data-toggle="tooltip" title="{{__('Notifications')}}" class="nav-link dropdown-item"><i class="dripicons-bell"></i><span class="badge badge-danger notification-number">{{count(\Auth::user()->unreadNotifications)}}</span>
-                    </a>
-                    <ul class="right-sidebar">
-                        @foreach(\Auth::user()->unreadNotifications as $key => $notification)
-                            <li class="notifications">
-                                <a href="#" class="btn btn-link">{{ $notification->data['message'] }}</a>
-                            </li>
-                        @endforeach
-                    </ul>
-                </li>
-                @endif
-            @endif
+            
+               
+            <li class="nav-item">
+                <a rel="nofollow" data-toggle="tooltip" title="{{__('Notifications')}}" class="nav-link dropdown-item"><i class="dripicons-bell"></i><span class="badge badge-danger notification-number">{{ count(\Auth::user()->unreadNotifications) > 0 ?  count(\Auth::user()->unreadNotifications) : '' }}</span>
+                </a>
+                @php $user_notifications = auth()->user()->notifications()->get(); @endphp
+                <ul class="right-sidebar" id="notify">
+                    @foreach($user_notifications as $noti)
+                        @if($noti->read_at == NULL)
+                        <li style="background-color: lightgrey"><a href="{{route('read_notification',$noti->id)}}">{{ $noti->data }}</a></li>
+                        @else
+                        <li style="background-color: white"><a href="{{route('read_notification',$noti->id)}}">{{ $noti->data }}</a></li>
+                        @endif
+                    @endforeach
+                </ul>
+            </li>
+           
             <li class="nav-item">
                     <a rel="nofollow" title="{{trans('file.language')}}" data-toggle="tooltip" class="nav-link dropdown-item"><i class="dripicons-web"></i></a>
                     <ul class="right-sidebar">
@@ -1048,6 +1039,7 @@
             </li>
             </ul>
         </nav>
+        
       </header>
       <!-- notification modal -->
       <div id="notification-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
@@ -1392,7 +1384,7 @@
         </div>
       </div>
       <!-- end supplier modal -->
-
+    @php $count = count(\Auth::user()->unreadNotifications); @endphp
       <div style="display:none" id="content" class="animate-bottom">
           @yield('content')
       </div>
@@ -1519,11 +1511,7 @@
           return false;
       }
 
-      $("li#notification-icon").on("click", function (argument) {
-          $.get('notifications/mark-as-read', function(data) {
-              $("span.notification-number").text(alert_product);
-          });
-      });
+   
 
       $("a#add-expense").click(function(e){
         e.preventDefault();
@@ -1615,6 +1603,60 @@
       $('.selectpicker').selectpicker({
           style: 'btn-link',
       });
+    </script>
+
+
+    <script type="text/javascript">
+      var notification_count   = $('span.notification-number').text();
+      var notifications = $('#notify');
+ 
+
+      
+     
+
+      var pusher = new Pusher('8f84bff0e7643b0e9609', {
+        encrypted: true
+      });
+
+      // Subscribe to the channel we specified in our Laravel Event
+      var channel = pusher.subscribe('status-liked');
+
+      channel.bind('App\\Events\\FormApprove', function(data) {
+        console.log(data)
+        notificationsCount = notification_count;
+        var user_id = '<?php echo $userr_id; ?>';
+        var count = '<?php echo $count; ?>';
+
+        var existingNotifications = notifications.html();
+        var avatar = Math.floor(Math.random() * (71 - 20 + 1)) + 20;
+        var newNotificationHtml = "";
+        
+      
+        if(user_id == data.data.receiver){
+             newNotificationHtml = `
+                    
+                        <li class="notifications" style="background-color: lightgrey">
+                                
+                                <a href="/read_notification/`+ data.data.id +`" class="btn btn-link">`+data.data.message+`</a>
+                            </li>
+                   
+          
+            `;
+            notifications.html(newNotificationHtml + existingNotifications);
+            notificationsCount =  parseInt(count) + parseInt(1);
+            $('span.notification-number').html(notificationsCount);
+        }
+       
+        
+        
+        // console.log(newNotificationHtml)
+        
+
+        
+
+      });
+
+
     </script>
   </body>
 </html>

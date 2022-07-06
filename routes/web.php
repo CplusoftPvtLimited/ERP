@@ -36,6 +36,8 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::post('/approve_form', 'FormController@userFormApprove')->name('approve_form');
 	Route::post('/reject_form', 'FormController@userFormReject')->name('reject_form');
 	Route::post('/resubmit_form', 'FormController@userFormResubmit')->name('resubmit_form');
+	Route::get('/read_notification/{id?}', 'FormController@readNotification')->name('read_notification');
+
 
 	Route::get('/download_file/{name}/{extension}', 'FormController@downloadFile');
 

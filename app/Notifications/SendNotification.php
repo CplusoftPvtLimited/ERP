@@ -11,15 +11,17 @@ use Illuminate\Http\Request;
 class SendNotification extends Notification
 {
     use Queueable;
-    private $request;
+    public $data = [];
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Request $request)
+    public function __construct($data)
     {
-        $this->request = $request;
+        // dd($data);
+        $this->data = $data;
+        // dd($this->data);
     }
 
     /**
@@ -55,8 +57,6 @@ class SendNotification extends Notification
      */
     public function toArray($notifiable)
     {
-        return [
-            'message' => $this->request->message
-        ];
+        return $this->data['message'];
     }
 }

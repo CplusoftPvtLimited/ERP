@@ -11,8 +11,10 @@ class NotificationController extends Controller
 {
     public function store(Request $request)
     {
+        // dd($request->all());
     	$user = User::find($request->user_id);
     	$user->notify(new SendNotification($request));
+
     	return redirect()->back()->with('message', 'Notification send successfully');
     }
 

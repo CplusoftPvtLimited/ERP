@@ -11,10 +11,16 @@ use Illuminate\Support\Facades\DB;
 use Session;
 use Mail;
 use App\Mail\AccountCreation;
-use App\Mail\MailApprove;
-use App\Mail\MailReject;
+use App\Mail\FormApprove as MailApprove;
+use App\Mail\FormReject;
+use App\Mail\FormResubmit;
+
 use App\Activity;
 use Illuminate\Support\Facades\Auth;
+
+use App\Notifications\SendNotification;
+use App\Events\FormApprove;
+
 
 use App\GeneralMailSetting;
 
@@ -25,6 +31,7 @@ class FormController extends Controller
 {
     public function index()
     {
+        // dd();
         $form_all = Form::all();
         return view('forms.index', compact('form_all'));
     }
@@ -226,37 +233,67 @@ catch(\Exception $e){
     public function userFormApprove(Request $req)
     {
         // dd('jhjhj');
-        $userform = FormUser::find($req->form_id);
-        $user = User::find($userform->user_id);
-        // dd($user->email);
-        $userform->status = 1 ;
-        $userform->update();
-        $mail_data = GeneralMailSetting::first();
-        $mailData = [
-            'header' => isset($mail_data) ? $mail_data->header : 'Header',
-            'title' => 'Mail from SalePro.com',
-            'body' => 'Congratulations...Your Form has been approved.',
-            'footer' => isset($mail_data) ? $mail_data->footer : 'Footer',
+        // dd($req->all());
 
-            // 'action_url' => url('verify/account')
-        ];
+        DB::beginTransaction();
+        try{
+            $userform = FormUser::find($req->form_id);
+            $user = User::find($userform->user_id);
+            // dd($user->email);
+            $userform->status = 1 ;
+            $userform->update();
+            $mail_data = GeneralMailSetting::first();
+            $mailData = [
+                'header' => isset($mail_data) ? $mail_data->header : 'Header',
+                'title' => 'Mail from SalePro.com',
+                'body' => 'Congratulations...Your Form has been approved.',
+                'footer' => isset($mail_data) ? $mail_data->footer : 'Footer',
 
-        Mail::to($user->email)->send(new FormApprove($mailData));
+                // 'action_url' => url('verify/account')
+            ];
+
+            Mail::to($user->email)->send(new MailApprove($mailData));
+            
+            $log = new Activity();
+                        $log->log_name = Auth::user()->name;
+                        $log->subject_type = "Form Approve";
+                        $log->causer_type = "Project Manager";
+                        $log->causer_id = 'Project Manager-'.Auth::user()->id;
+                        $log->comments = $req->comment;
+                        $log->save();
+                        
+            // $user = User::find($request->user_id);
+            // dd('sdfsd');
+            $data = [
+                'sender' => auth()->user()->id,
+                'sender_name' => auth()->user()->name,
+                'receiver' => $user->id,
+                'message' => $req->comment,
+
+            ];
+            // dd('sdfsdf');
+            $user->notify(new SendNotification($data));
+            $noti = $user->notifications()->latest()->first();
+            // dd($noti);
+            $data['id'] = $noti->id;
+            // event(new FormApprove('Someone'));
+            broadcast(new FormApprove($data));
+            DB::commit();
+            return redirect('approved/form');
+        }catch(\Exception $e){
+            DB::rollback();
+            dd($e->getMessage());
+            return back();
+        }
         
-         event(new App\Events\NotificationSend('Someone'));
-        $log = new Activity();
-                    $log->log_name = Auth::user()->name;
-                    $log->subject_type = "Form Approve";
-                    $log->causer_type = "Project Manager";
-                    $log->causer_id = 'Project Manager-'.Auth::user()->id;
-                    $log->comments = $req->comment;
-                    $log->save();
-        return redirect('approved/form');
     }
 
     public function userFormReject(Request $req)
     {
         // dd('jhjhj');
+        DB::beginTransaction();
+        try {
+            
         $userform = FormUser::find($req->form_id);
         $user = User::find($userform->user_id);
         $form = Form::find($userform->form_id);
@@ -284,12 +321,35 @@ catch(\Exception $e){
                     $log->causer_id = 'Project Manager-'.Auth::user()->id;
                     $log->comments = $req->comment;
                     $log->save();
+
+                    $data = [
+                'sender' => auth()->user()->id,
+                'sender_name' => auth()->user()->name,
+                'receiver' => $user->id,
+                'message' => $req->comment,
+
+            ];
+            // dd('sdfsdf');
+            $user->notify(new SendNotification($data));
+            $noti = $user->notifications()->latest()->first();
+            // dd($noti);
+            $data['id'] = $noti->id;
+            // event(new FormApprove('Someone'));
+            broadcast(new FormApprove($data));
+            DB::commit();
         return redirect()->back();
+        } catch (\Exception $e) {
+            DB::rollback();
+            dd($e->getMessage());
+            return back();
+        }
     }
 
     public function userFormResubmit(Request $req)
     {
         // dd('jhjhj');
+        DB::beginTransaction();
+        try {
         $userform = FormUser::find($req->form_id);
         $user = User::find($userform->user_id);
         // dd($user->email);
@@ -305,7 +365,7 @@ catch(\Exception $e){
             // 'action_url' => url('verify/account')
         ];
 
-        Mail::to($user->email)->send(new FormResumit($mailData));
+        Mail::to($user->email)->send(new FormResubmit($mailData));
         $log = new Activity();
                     $log->log_name = Auth::user()->name;
                     $log->subject_type = "Form Resubmission";
@@ -313,7 +373,28 @@ catch(\Exception $e){
                     $log->causer_id = 'Project Manager-'.Auth::user()->id;
                     $log->comments = $req->comment;
                     $log->save();
-        return redirect('approved/form');
+
+                    $data = [
+                'sender' => auth()->user()->id,
+                'sender_name' => auth()->user()->name,
+                'receiver' => $user->id,
+                'message' => $req->comment,
+
+            ];
+            // dd('sdfsdf');
+            $user->notify(new SendNotification($data));
+            $noti = $user->notifications()->latest()->first();
+            // dd($noti);
+            $data['id'] = $noti->id;
+            // event(new FormApprove('Someone'));
+            broadcast(new FormApprove($data));
+            DB::commit();
+        return redirect('pending/form');
+        }catch(\Exception $e){
+            DB::rollback();
+            dd($e->getMessage());
+            return back();
+        }
     }
 
     public function downloadFile($name, $extension)
@@ -334,5 +415,16 @@ catch(\Exception $e){
         $form = Form::find($id);
         $form->delete();
         return back();
+    }
+
+    public function readNotification($id=null){
+        $notis = auth()->user()->unreadNotifications;
+        foreach($notis as $n){
+            if($n->id == $id){
+                $n->markAsRead();
+            }
+        }
+        return back();
+        
     }
 }
