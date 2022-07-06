@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="all,follow">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="manifest" href="{{url('manifest.json')}}">
+    <link rel="manifest" crossorigin="use-credentials" href="/manifest.json">
     <!-- Bootstrap CSS-->
     <link rel="stylesheet" href="<?php echo asset('vendor/bootstrap/css/bootstrap.min.css') ?>" type="text/css">
 
@@ -63,10 +63,20 @@
       <link rel="stylesheet" href="<?php echo asset('vendor/bootstrap/css/bootstrap-rtl.min.css') ?>" type="text/css">
       <link rel="stylesheet" href="<?php echo asset('css/custom-rtl.css') ?>" type="text/css" id="custom-style">
     @endif
+
+    
   </head>
 
   <body onload="myFunction()">
     <div id="loader"></div>
+    <?php
+    
+    $FormUser = DB::table('form_user')->where('status',1)->where('user_id',auth::user()->id)->first();
+    // dd($FormUser);
+    ?>
+      @if($FormUser != Null)
+
+      
       <!-- Side Navbar -->
       <nav class="side-navbar">
         <span class="brand-big">
@@ -110,7 +120,7 @@
                 ])->first();
             ?>
             @if($category_permission_active || $index_permission_active || $print_barcode_active || $stock_count_active || $adjustment_active)
-            <li><a href="#product" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-list"></i><span>{{__('file.product')}}</span><span></a>
+            <!-- <li><a href="#product" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-list"></i><span>{{__('file.product')}}</span><span></a>
             <ul id="product" class="collapse list-unstyled ">
                 @if($category_permission_active)
                 <li id="category-menu"><a href="{{route('category.index')}}">{{__('file.category')}}</a></li>
@@ -139,7 +149,7 @@
                 <li id="stock-count-menu"><a href="{{route('stock-count.index')}}">{{trans('file.Stock Count')}}</a></li>
                 @endif
             </ul>
-            </li>
+            </li> -->
             @endif
             <?php
             $index_permission = DB::table('permissions')->where('name', 'purchases-index')->first();
@@ -817,8 +827,8 @@
                                             ])->first();
                     ?>
                     @if($role->id <= 2)
-                    <li id="role-menu"><a href="{{route('role.index')}}">{{trans('file.Role Permission')}}</a></li>
-                    <li id="role-menu"><a href="{{route('form.index')}}">{{trans('file.Forms')}}</a></li>
+                    <!-- <li id="role-menu"><a href="{{route('role.index')}}">{{trans('file.Role Permission')}}</a></li> -->
+                    <!-- <li id="role-menu"><a href="{{route('form.index')}}">{{trans('file.Forms')}}</a></li> -->
 
                     @endif
                     @if($discount_plan_permission_active)
@@ -880,10 +890,14 @@
             @if(Auth::user()->role_id != 5)
             <li><a target="_blank" href="{{url('public/read_me')}}"> <i class="dripicons-information"></i><span>{{trans('file.Documentation')}}</span></a></li>
             @endif
+            @if(Auth::user()->role_id != 5)
+            <li><a target="_blank" href="{{url('showSubmitForm')}}"> <i class="dripicons-information"></i><span>{{trans('file.Forms')}}</span></a></li>
+            @endif
         </ul>
       </nav>
-
+     
     <div class="page">
+    
         <!-- navbar-->
       <header class="container-fluid">
         <nav class="navbar">
@@ -1078,7 +1092,6 @@
         </div>
       </div>
       <!-- end notification modal -->
-
       <!-- expense modal -->
       <div id="expense-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
         <div role="document" class="modal-dialog">
@@ -1390,12 +1403,13 @@
         <div class="container-fluid">
           <div class="row">
             <div class="col-sm-12">
-              <p>&copy; {{$general_setting->site_title}} | {{trans('file.Developed')}} {{trans('file.By')}} <span class="external">{{$general_setting->developed_by}}</span></p>
+             
             </div>
           </div>
         </div>
       </footer>
     </div>
+    @endif
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/jquery.min.js') ?>"></script>
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/jquery-ui.min.js') ?>"></script>
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/bootstrap-datepicker.min.js') ?>"></script>
@@ -1605,5 +1619,58 @@
           style: 'btn-link',
       });
     </script>
+	<script src="//js.pusher.com/3.1/pusher.min.js"></script>
+	
+	<script type="text/javascript">
+	  var notificationsWrapper   = $('.dropdown-notifications');
+	  var notificationsToggle    = notificationsWrapper.find('a[data-toggle]');
+	  var notificationsCountElem = notificationsToggle.find('i[data-count]');
+	  var notificationsCount     = parseInt(notificationsCountElem.data('count'));
+	  var notifications          = notificationsWrapper.find('ul.dropdown-menu');
+
+	  if (notificationsCount <= 0) {
+		notificationsWrapper.hide();
+	  }
+
+	//   Enable pusher logging - don't include this in production
+	//   Pusher.logToConsole = true;
+
+	  var pusher = new Pusher('f5b64c6b189e9bad2df6', {
+		encrypted: true
+	  });
+
+	  // Subscribe to the channel we specified in our Laravel Event
+	  var channel = pusher.subscribe('status-liked');
+
+	  // Bind a function to a Event (the full Laravel class)
+	  channel.bind('App\\Events\\StatusLiked', function(data) {
+		var existingNotifications = notifications.html();
+		var avatar = Math.floor(Math.random() * (71 - 20 + 1)) + 20;
+		var newNotificationHtml = `
+		  <li class="notification active">
+			  <div class="media">
+				<div class="media-left">
+				  <div class="media-object">
+					<img src="https://api.adorable.io/avatars/71/`+avatar+`.png" class="img-circle" alt="50x50" style="width: 50px; height: 50px;">
+				  </div>
+				</div>
+				<div class="media-body">
+				  <strong class="notification-title">`+data.message+`</strong>
+				  <!--p class="notification-desc">Extra description can go here</p-->
+				  <div class="notification-meta">
+					<small class="timestamp">about a minute ago</small>
+				  </div>
+				</div>
+			  </div>
+		  </li>
+		`;
+		notifications.html(newNotificationHtml + existingNotifications);
+
+		notificationsCount += 1;
+		notificationsCountElem.attr('data-count', notificationsCount);
+		notificationsWrapper.find('.notif-count').text(notificationsCount);
+		notificationsWrapper.show();
+	  });
+	</script>
   </body>
 </html>

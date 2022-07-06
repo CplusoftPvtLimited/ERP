@@ -43,14 +43,15 @@ trait Identity
     {
         $this->apiEndPoint = 'v1/identity/applications';
 
-        $this->options['json'] = [
+        $this->options['json'] = array_filter([
             'application_type'  => $application_type,
             'redirect_uris'     => $redirect_uris,
             'client_name'       => $client_name,
             'contacts'          => $contacts,
             'payer_id'          => $payer_id,
             'migrated_app'      => $migrated_app,
-        ];
+            'logo_uri'          => $logo_url,
+        ]);
 
         $this->verb = 'post';
 
@@ -101,6 +102,24 @@ trait Identity
         $this->options['json'] = [
             'account_property'  => $account_property,
         ];
+
+        $this->verb = 'post';
+
+        return $this->doPayPalRequest();
+    }
+
+    /**
+     * Get a client token.
+     *
+     * @throws \Throwable
+     *
+     * @return array|\Psr\Http\Message\StreamInterface|string
+     *
+     * @see https://developer.paypal.com/docs/multiparty/checkout/advanced/integrate/#link-sampleclienttokenrequest
+     */
+    public function getClientToken()
+    {
+        $this->apiEndPoint = 'v1/identity/generate-token';
 
         $this->verb = 'post';
 

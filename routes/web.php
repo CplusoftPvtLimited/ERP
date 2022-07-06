@@ -1,5 +1,8 @@
 <?php
-
+use Illuminate\Http\Request;
+use App\Http\Controllers\Auth\RetailerRegisterController;
+use App\Http\Controllers\Auth\RetailerLoginController;
+use App\Http\Controllers\FormController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,15 +14,33 @@
 |
 */
 
-Auth::routes();
+
 
 Route::group(['middleware' => 'auth'], function() {
 	Route::get('/dashboard', 'HomeController@dashboard');
 });
+Route::post('do-register',[RetailerRegisterController::class,'create'])->name('do-register');
+Route::post('do-login',[RetailerLoginController::class,'login'])->name('do-login');
+
+Route::get('getform/{id}',[FormController::class,'getForm'])->name('getform');
+Route::post('formSave',[FormController::class,'formSave'])->name('formSave');
+Route::get('formMessage',[FormController::class,'formMessage'])->name('formMessage');
+
+
+
 
 Route::group(['middleware' => ['auth', 'active']], function() {
 	
 	Route::resource('form', 'FormController');
+	Route::get('fillform/{id}',[FormController::class,'showform'])->name('Filform');
+	Route::get('showSubmitForm',[FormController::class,'showSubmitForm'])->name('showSubmitForm');
+	Route::post('formData',[FormController::class,'formData'])->name('formData');
+
+	Route::get('test', function () {
+		event(new App\Events\StatusLiked('Ali'));
+		return "Event has been sent!";
+	});
+	
 
 	Route::get('/', 'HomeController@index');
 	Route::get('switch-theme/{theme}', 'HomeController@switchTheme')->name('switchTheme');
@@ -307,3 +328,4 @@ Route::get('/verify/mail', 'MailController@index');
 Route::get('/sent/mail_view', 'UserController@mailView');
 
 
+Auth::routes();

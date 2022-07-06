@@ -36,12 +36,18 @@ class HomeController extends Controller
     public function logOut()
     {
         session::flush();
-        return redirect('/login')->with('message','You are not Allowed to access the system');
+        return redirect('/login');//->with('message','You are not Allowed to access the system');
     }
 
     public function dashboard()
     {
+        // dd('dashboard');
+        $user = auth()->user();
+        if($user->is_active != 1){
+            return redirect('logout')->with('message','You are not Allowed to access the system');
+        }
         return view('home');
+        
     }
 
     public function sendsms()
@@ -87,6 +93,7 @@ class HomeController extends Controller
 
     public function index()
     {
+        // dd('index');
         //return phpinfo();
         //return Printing::printers();
         /*$printerId = '69993185';

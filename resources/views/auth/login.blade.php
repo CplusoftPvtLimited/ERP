@@ -25,7 +25,7 @@
           <div class="form-inner">
             <div class="logo">
                 @if($general_setting->site_logo)
-                <img src="{{url('public/logo', $general_setting->site_logo)}}" width="110">
+                <img src="{{url('logo', $general_setting->site_logo)}}" width="110">
                 @else
                 <span>{{$general_setting->site_title}}</span>
                 @endif
@@ -33,10 +33,15 @@
             @if(session()->has('delete_message'))
             <div class="alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('delete_message') }}</div>
             @endif
+            @if ($message = Session::get('error1'))
+                                        <div class="alert alert-danger">
+                                            <p>{{ $message }}</p>
+                                        </div>
+                                    @endif
             @if(Session::has('message'))
             <p class="bg-danger text-white p-2 rounded">{{Session::get('message')}}</p>
             @endif
-            <form method="POST" action="{{ route('login') }}" id="login-form">
+            <form method="POST" action="{{ route('do-login') }}" id="login-form">
               @csrf
               <div class="form-group-material">
                 <input id="login-username" type="text" name="name" required class="input-material" value="">

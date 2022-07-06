@@ -37,8 +37,8 @@ class AdapterFeatureTest extends TestCase
         $this->client = new PayPalClient($this->getMockCredentials());
         $response = $this->client->getAccessToken();
 
-        $this->assertArrayHasKey('type', $response);
-        $this->assertEquals('error', $response['type']);
+        $this->assertIsArray($response['error']);
+        $this->assertArrayHasKey('error', $response);
     }
 
     /** @test */
@@ -1023,6 +1023,25 @@ class AdapterFeatureTest extends TestCase
         $response = $this->client->disableAccountProperties();
 
         $this->assertEmpty($response);
+    }
+
+    /** @test */
+    public function it_can_get_client_token()
+    {
+        $this->client->setAccessToken([
+            'access_token'  => self::$access_token,
+            'token_type'    => 'Bearer',
+        ]);
+
+        $this->client->setClient(
+            $this->mock_http_client(
+                $this->mockGetClientTokenResponse()
+            )
+        );
+
+        $response = $this->client->getClientToken();
+
+        $this->assertArrayHasKey('client_token', $response);
     }
 
     /** @test  */

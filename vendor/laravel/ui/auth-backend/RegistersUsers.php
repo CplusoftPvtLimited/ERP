@@ -6,12 +6,6 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Roles;
-use App\CustomerGroup;
-use App\Biller;
-use App\Warehouse;
-use Session;
-
 
 trait RegistersUsers
 {
@@ -24,11 +18,7 @@ trait RegistersUsers
      */
     public function showRegistrationForm()
     {
-        $lims_role_list = Roles::where('is_active', true)->get();
-        $lims_customer_group_list = CustomerGroup::where('is_active', true)->get();
-        $lims_biller_list = Biller::where('is_active', true)->get();
-        $lims_warehouse_list = Warehouse::where('is_active', true)->get();
-        return view('auth.register', compact('lims_role_list', 'lims_customer_group_list', 'lims_biller_list', 'lims_warehouse_list'));
+        return view('auth.register');
     }
 
     /**
@@ -43,17 +33,15 @@ trait RegistersUsers
 
         event(new Registered($user = $this->create($request->all())));
 
-        // $this->guard()->login($user);
+        $this->guard()->login($user);
 
-        // if ($response = $this->registered($request, $user)) {
-        //     return $response;
-        // }
+        if ($response = $this->registered($request, $user)) {
+            return $response;
+        }
 
-        // return $request->wantsJson()
-        //             ? new JsonResponse([], 201)
-        //             : redirect($this->redirectPath());
-        return redirect()->back()->with('message','A Verification mail has been sent your email address');
-
+        return $request->wantsJson()
+                    ? new JsonResponse([], 201)
+                    : redirect($this->redirectPath());
     }
 
     /**

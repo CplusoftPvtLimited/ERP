@@ -28,8 +28,17 @@
             <p class="bg-success text-white p-2 rounded">{{Session::get('message')}}</p>
             @endif
             <div class="logo"><span>{{$general_setting->site_title}}</span></div>
-            <form method="POST" action="{{ route('register') }}">
+            <form method="POST" action="{{ route('do-register') }}">
                 @csrf
+              <div class="form-group-material">
+                <input id="register-username" type="text" name="name" required class="input-material">
+                <label for="register-username" class="label-material">{{trans('file.UserName')}} *</label>
+                @if ($errors->has('name'))
+                    <p>
+                        <strong>{{ $errors->first('name') }}</strong>
+                    </p>
+                @endif
+              </div>
               <div class="form-group-material">
                 <input id="register-username" type="text" name="shop_name" required class="input-material">
                 <label for="register-username" class="label-material">{{trans('file.ShopName')}} *</label>
@@ -50,6 +59,18 @@
               </div>
               
               <div class="form-group-material">
+              <!-- <label for="register-username" class="label-material">{{trans('file.Role')}} *</label> -->
+              <div class="input-group">
+                                            <select required class="form-control selectpicker" name="role">
+                                                <option value="">Select Role</option>
+                                                @foreach($roles as $role)
+                                                <option value="{{$role->id}}">{{$role->name}}</option>
+                                                @endforeach
+                                                
+                                            </select>
+                                        </div>
+              </div>
+              <!-- <div class="form-group-material">
                 <input id="password" type="password" class="input-material" name="password" required>
                 <label for="passowrd" class="label-material">{{trans('file.Password')}} *</label>
                 @if ($errors->has('password'))
@@ -57,11 +78,11 @@
                         <strong>{{ $errors->first('password') }}</strong>
                     </p>
                 @endif
-              </div>
-              <div class="form-group-material">
+              </div> -->
+              <!-- <div class="form-group-material">
                 <input id="password-confirm" type="password" name="password_confirmation" required class="input-material">
                 <label for="password-confirm" class="label-material">{{trans('file.Confirm Password')}} *</label>
-              </div>
+              </div> -->
               <input id="register" type="submit" value="Register" class="btn btn-primary">
             </form><p>{{trans('file.Already have an account')}}? </p><a href="{{url('login')}}" class="signup">{{trans('file.LogIn')}}</a>
           </div>

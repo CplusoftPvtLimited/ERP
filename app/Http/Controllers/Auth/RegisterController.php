@@ -52,9 +52,16 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
+        // dd($data);
         return Validator::make($data, [
             // 'name' => 'required|string|max:255|unique:users',
-            'shop_name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'max:10',
+                Rule::unique('users')->where(function ($query) {
+                    return $query->where('is_deleted', false);
+                }),
+            ],
             'email' => [
                 'email',
                 'max:255',
@@ -62,7 +69,7 @@ class RegisterController extends Controller
                     return $query->where('is_deleted', false);
                 }),
             ],
-            'password' => 'required|string|confirmed',
+            
         ]);
     }
 
@@ -77,11 +84,13 @@ class RegisterController extends Controller
        DB::beginTransaction();
         try {
             // dd($data);
-        $data['is_active'] = false;
-        // $mailData = [];
-        $user = User::create([
+           
+                // dd("sdf");
+                $data['is_active'] = false;
+                // $mailData = [];
+                $user = User::create([
             // 'name' => $data['name'],
-            'shop_name' => $data['shop_name'],
+            'name' => $data['name'],
             'email' => $data['email'],
             // 'phone' => $data['phone_number'],
             // 'company_name' => $data['company_name'],
@@ -90,18 +99,23 @@ class RegisterController extends Controller
             // 'warehouse_id' => $data['warehouse_id'],
             'is_active' => $data['is_active'],
             'is_deleted' => false,
-            'password' => bcrypt($data['password']),
+            'role_id' => $data['role'],
+            'password' => bcrypt("123456789"),
         ]);
-
+        
+           
         $mailData = [
             'title' => 'Mail from SalePro.com',
             'body' => 'Please Verfiy Your Account.',
-            // 'action_url' => url('verify/account')
+            'name' => $data['name'],
         ];
          
         Mail::to($data['email'])->send(new AccountCreation($mailData));
         // dd("mail sent");
         DB::commit();
+        return redirect()->back()->with('message','A Credentials mail has been sent your email address');
+
+
         } 
         catch (\Throwable $th) {
             DB::rollback();

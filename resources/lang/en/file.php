@@ -1,6 +1,7 @@
 <?php 
 return [
 	'Forms' => 'Forms',
+	'Forms' => 'Forms',
 	'ShopName' => 'ShopName',
 	'dashboard' => 'Dashboard',
 	'language' => 'Language',
