@@ -8,6 +8,11 @@ use App\FormUser;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Session;
+use App\User;
+use App\Events\FormApprove;
+use Mail;
+use App\Notifications\SendNotification;
+use App\Mail\FormSubmit;
 
 
 use App\Http\Controllers\Controller;
@@ -161,29 +166,36 @@ catch(\Exception $e){
 
     public function formSave(Request $request){
         // dd($request->all());
+        DB::beginTransaction();
+        try
+        {
         $form = Form::find($request->form);
+        // $userform = FormUser::where('user_id',auth()->user()->id)->where('status',0)->first();
+        // if($userform)
             if(!empty($form)){
                 $form_fields = FormField::where('form_id',$form->id)->get();
-
-                $formuser = new FormUser();
-                $formuser->form_id = $form->id;
-                $formuser->user_id = auth()->user()->id;
-                $formuser->role_id = auth()->user()->role_id;
-                $formuser->status = 0;
-                $formuser->save();
-                foreach($form_fields as $f){
-                    if($request->hasFile($f->field_name)){
-                        $file = $request[$f->field_name];
-                        $imageName = time() . rand(1, 10000) . '.' . $file->getClientOriginalExtension();
-                        $file->move(public_path('images/form'), $imageName);
+                $formuser = FormUser::where('user_id',auth()->user()->id)->first();
+                if(!$formuser)
+                {
+                    $formuser = new FormUser();
+                    $formuser->form_id = $form->id;
+                    $formuser->user_id = auth()->user()->id;
+                    $formuser->role_id = auth()->user()->role_id;
+                    $formuser->status = 0;
+                    $formuser->save();
+                    foreach($form_fields as $f){
+                        if($request->hasFile($f->field_name)){
+                            $file = $request[$f->field_name];
+                            $imageName = time() . rand(1, 10000) . '.' . $file->getClientOriginalExtension();
+                            $file->move(public_path('images/form'), $imageName);
                         
-                        $f_data = new FormFieldData();
-                        $f_data->form_id = $form->id;
-                        $f_data->field_id = $f->id;
-                        $f_data->user_id = auth()->user()->id;
-                        $f_data->field_value = $imageName;
-                        $f_data->save();
-                    }
+                            $f_data = new FormFieldData();
+                            $f_data->form_id = $form->id;
+                            $f_data->field_id = $f->id;
+                            $f_data->user_id = auth()->user()->id;
+                            $f_data->field_value = $imageName;
+                            $f_data->save();
+                        }
                     else if($request->has($f->field_name)){
                         // dump($request[$f->field_name]);
                         $f_data = new FormFieldData();
@@ -194,13 +206,88 @@ catch(\Exception $e){
                         $f_data->save();
                     }
                 }
+                }
+                else{
+                        $formuser->form_id = $form->id;
+                        $formuser->user_id = auth()->user()->id;
+                        $formuser->role_id = auth()->user()->role_id;
+                        $formuser->status = 0;
+                        $formuser->update();
+                        $form_fields_data = FormFieldData::where('user_id',auth()->user()->id)->where('form_id',$form->id)->get();
+                        foreach($form_fields_data as $ffd)
+                        {
+                            $ffd->delete();
+                        }
+                    foreach($form_fields as $f){
+                        if($request->hasFile($f->field_name)){
+                            $file = $request[$f->field_name];
+                            $imageName = time() . rand(1, 10000) . '.' . $file->getClientOriginalExtension();
+                            $file->move(public_path('images/form'), $imageName);
+                        
+                            $f_data = new FormFieldData();
+                            $f_data->form_id = $form->id;
+                            $f_data->field_id = $f->id;
+                            $f_data->user_id = auth()->user()->id;
+                            $f_data->field_value = $imageName;
+                            $f_data->save();
+                        }
+                    else if($request->has($f->field_name)){
+                        // dump($request[$f->field_name]);
+                        $f_data = new FormFieldData();
+                        $f_data->form_id = $form->id;
+                        $f_data->field_id = $f->id;
+                        $f_data->user_id = auth()->user()->id;
+                        $f_data->field_value = $request[$f->field_name];
+                        $f_data->save();
+                    }
+                }
+
+                }
+                $admin = User::where('role_id', 1)->first();
+                $mailData = [
+                    'header' => isset($mail_data) ? $mail_data->header : 'Header',
+                    'title' => 'Mail from SalePro.com',
+                    'body' => auth()->user()->name .' has Submitted a form.',
+                    'footer' => isset($mail_data) ? $mail_data->footer : 'Footer',
+
+            // 'action_url' => url('verify/account')
+        ];
+
+        Mail::to($admin->email)->send(new FormSubmit($mailData));
+        
+        $data = [
+
+                'receiver' => $admin->id,
+                'sender' => auth()->user()->id,
+                'sender_name' => auth()->user()->name,
+                'message' => auth()->user()->name.' has submitted a Form',
+                'url' => 'submitted_form_show',
+
+            ];
+            // dd($data);
+            // dd('sdfsdf');
+            // dd($newuser);
+            // $user = $newuser;
+            $admin->notify(new SendNotification($data));
+
+            $noti = $admin->notifications()->latest()->first();
+            // dd($noti);
+
+            $noti->noti_type = "formsubmission";
+            // $noti->sender_id = $newuser->id;
+            $noti->update();
+            $data['id'] = $noti->id;
+            // event(new FormApprove('Someone'));
+            broadcast(new FormApprove($data));
             }
+            DB::commit();
  
            return redirect()->route('formMessage');
             // return back();
-        // }catch(\Exception $e){
-        //     dd($e->getMessage());
-        // }
+        }catch(\Exception $e){
+            DB::rollback();
+            dd($e->getMessage());
+        }
         
 
     }
@@ -209,11 +296,32 @@ catch(\Exception $e){
        return view('forms.show_form_save_message');
     }
 
-    public function showSubmitForm()
+    public function showSubmitForm($noti_id=null)
     {
         $form = Form::where('role_id', Auth::user()->role_id)->first();
         $form_fields = FormField::where('form_id',$form->id)->get();
+        if($noti_id != null)
+        {
+            $notis = auth()->user()->unreadNotifications;
+            foreach($notis as $n){
+            if($n->id == $noti_id){
+                $n->markAsRead();
+            }
+        }
+        }
         return view('forms.Form_index',compact('form','form_fields'));
     }
+
+    public function readNotification($id=null){
+        $notis = auth()->user()->unreadNotifications;
+        foreach($notis as $n){
+            if($n->id == $id){
+                $n->markAsRead();
+            }
+        }
+        return back();
+        
+    }
+
  
 }

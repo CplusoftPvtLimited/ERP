@@ -55,17 +55,115 @@
     <link rel="stylesheet" href="<?php echo asset('css/dropzone.css') ?>">
     <!-- Custom stylesheet - for your changes-->
     <link rel="stylesheet" href="<?php echo asset('css/custom-'.$general_setting->theme) ?>" type="text/css" id="custom-style">
-
+@if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl)
       <!-- RTL css -->
       <link rel="stylesheet" href="<?php echo asset('vendor/bootstrap/css/bootstrap-rtl.min.css') ?>" type="text/css">
       <link rel="stylesheet" href="<?php echo asset('css/custom-rtl.css') ?>" type="text/css" id="custom-style">
+    @endif
   </head>
 <body>
-
+  @php $userr_id = auth()->user()->id; @endphp
+  <div class="page">
 <header class="container-fluid">
         <nav class="navbar">
-        
-        <a href="{{ route('logout') }}"
+            <a id="toggle-btn" href="#" class="menu-btn"><i class="fa fa-bars"> </i></a>
+
+
+            <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
+
+            <li class="nav-item"><a id="switch-theme" data-toggle="tooltip" title="{{trans('file.Switch Theme')}}"><i class="dripicons-brightness-max"></i></a></li>
+            <li class="nav-item"><a id="btnFullscreen" data-toggle="tooltip" title="{{trans('file.Full Screen')}}"><i class="dripicons-expand"></i></a></li>
+
+                <li class="nav-item">
+                <a rel="nofollow" data-toggle="tooltip" title="{{__('Notifications')}}" class="nav-link dropdown-item"><i class="dripicons-bell"></i><span class="badge badge-danger notification-number">{{ count(\Auth::user()->unreadNotifications) > 0 ?  count(\Auth::user()->unreadNotifications) : '' }}</span>
+                </a>
+                @php $user_notifications = auth()->user()->notifications()->get(); @endphp
+                <ul class="right-sidebar" id="notify">
+                    @foreach($user_notifications as $noti)
+                    @if($noti->noti_type == "formapprove" && $noti->read_at == NULL)
+                        <li style="background-color: lightgrey"><a href="{{url('approved_dashboard',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
+                    
+                        @elseif($noti->noti_type == "formreject" && $noti->read_at == NULL)
+                        <li style="background-color: lightgrey"><a href="{{url('showSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
+                        
+                        @elseif($noti->noti_type == "formresubmit" && $noti->read_at == NULL)
+                        <li style="background-color: lightgrey"><a href="{{url('showSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
+                        
+                        @elseif($noti->noti_type == "formapprove" && $noti->read_at != NULL )
+                        <li style="background-color: white"><a href="{{url('approved_dashboard',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
+                        
+                        @elseif($noti->noti_type == "formreject" && $noti->read_at != NULL)
+                        <li style="background-color: white"><a href="{{url('showSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
+                        
+                        @elseif($noti->noti_type == "formresubmit" && $noti->read_at != NULL)
+                        <li style="background-color: white"><a href="{{url('showSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
+                        @endif
+                    @endforeach
+                </ul>
+            </li>
+
+            <li class="nav-item">
+                    <a rel="nofollow" title="{{trans('file.language')}}" data-toggle="tooltip" class="nav-link dropdown-item"><i class="dripicons-web"></i></a>
+                    <ul class="right-sidebar">
+                        <li>
+                        <a href="{{ url('language_switch/en') }}" class="btn btn-link"> English</a>
+                        </li>
+                        <li>
+                        <a href="{{ url('language_switch/es') }}" class="btn btn-link"> Español</a>
+                        </li>
+                        <li>
+                        <a href="{{ url('language_switch/ar') }}" class="btn btn-link"> عربى</a>
+                        </li>
+                        <li>
+                        <a href="{{ url('language_switch/s_chinese') }}" class="btn btn-link">中国人</a>
+                        </li>
+                        <li>
+                        <a href="{{ url('language_switch/t_chinese') }}" class="btn btn-link">中國人</a>
+                        </li>
+                        <li>
+                        <a href="{{ url('language_switch/pt_BR') }}" class="btn btn-link"> Portuguese</a>
+                        </li>
+                        <li>
+                        <a href="{{ url('language_switch/fr') }}" class="btn btn-link"> Français</a>
+                        </li>
+                        <li>
+                        <a href="{{ url('language_switch/de') }}" class="btn btn-link"> Deutsche</a>
+                        </li>
+                        <li>
+                        <a href="{{ url('language_switch/id') }}" class="btn btn-link"> Malay</a>
+                        </li>
+                        <li>
+                        <a href="{{ url('language_switch/hi') }}" class="btn btn-link"> हिंदी</a>
+                        </li>
+                        <li>
+                        <a href="{{ url('language_switch/vi') }}" class="btn btn-link"> Tiếng Việt</a>
+                        </li>
+                        <li>
+                        <a href="{{ url('language_switch/ru') }}" class="btn btn-link"> русский</a>
+                        </li>
+                        <li>
+                        <a href="{{ url('language_switch/bg') }}" class="btn btn-link"> български</a>
+                        </li>
+                        <li>
+                        <a href="{{ url('language_switch/tr') }}" class="btn btn-link"> Türk</a>
+                        </li>
+                        <li>
+                        <a href="{{ url('language_switch/it') }}" class="btn btn-link"> Italiano</a>
+                        </li>
+                        <li>
+                        <a href="{{ url('language_switch/nl') }}" class="btn btn-link"> Nederlands</a>
+                        </li>
+                        <li>
+                        <a href="{{ url('language_switch/lao') }}" class="btn btn-link"> Lao</a>
+                        </li>
+                    </ul>
+            </li>
+            <li class="nav-item">
+                <a rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-item"><i class="dripicons-user"></i> <span>{{ucfirst(Auth::user()->name)}}</span> <i class="fa fa-angle-down"></i>
+                </a>
+                <ul class="right-sidebar">
+                    <li>
+                    <a href="{{ route('logout') }}"
                         onclick="event.preventDefault();
                                         document.getElementById('logout-form').submit();"><i class="dripicons-power"></i>
                         {{trans('file.logout')}}
@@ -73,11 +171,12 @@
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                         @csrf
                     </form>
-
-                    <h2 class="text-left">{{auth::user()->name}}</h2>
-           
+                    </li>
+                </ul>
+            </li>
+            </ul>
         </nav>
-</header>
+      </header>
 
 @if(session()->has('message'))
   <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('message') }}</div>
@@ -99,6 +198,9 @@
 </div>
 </div>
 </section>
+@php $count = count(\Auth::user()->unreadNotifications); @endphp
+      </div>
+
 <script type="text/javascript" src="<?php echo asset('vendor/jquery/jquery.min.js') ?>"></script>
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/jquery-ui.min.js') ?>"></script>
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/bootstrap-datepicker.min.js') ?>"></script>
@@ -141,6 +243,199 @@
     <script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.1.6/js/dataTables.fixedHeader.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.min.js"></script>
+    <script type="text/javascript">
+        var theme = <?php echo json_encode($theme); ?>;
+        if(theme == 'dark') {
+            $('body').addClass('dark-mode light-mode');
+            $('#switch-theme i').addClass('dripicons-brightness-low');
+        }
+        else {
+            $('body').removeClass('dark-mode light-mode');
+            $('#switch-theme i').addClass('dripicons-brightness-max');
+        }
+        $('#switch-theme').click(function() {
+            if(theme == 'light') {
+                theme = 'dark';
+                var url = <?php echo json_encode(route('switchTheme', 'dark')); ?>;
+                $('body').addClass('dark-mode light-mode');
+                $('#switch-theme i').addClass('dripicons-brightness-low');
+            }
+            else {
+                theme = 'light';
+                var url = <?php echo json_encode(route('switchTheme', 'light')); ?>;
+                $('body').removeClass('dark-mode light-mode');
+                $('#switch-theme i').addClass('dripicons-brightness-max');
+            }
+
+            $.get(url, function(data) {
+                console.log('theme changed to '+theme);
+            });
+        });
+
+        var alert_product = <?php echo json_encode($alert_product) ?>;
+
+      if ($(window).outerWidth() > 1199) {
+          $('nav.side-navbar').removeClass('shrink');
+      }
+      function myFunction() {
+          setTimeout(showPage, 150);
+      }
+      function showPage() {
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("content").style.display = "block";
+      }
+
+      $("div.alert").delay(3000).slideUp(750);
+
+      function confirmDelete() {
+          if (confirm("Are you sure want to delete?")) {
+              return true;
+          }
+          return false;
+      }
+
+      $("li#notification-icon").on("click", function (argument) {
+          $.get('notifications/mark-as-read', function(data) {
+              $("span.notification-number").text(alert_product);
+          });
+      });
+
+      $("a#add-expense").click(function(e){
+        e.preventDefault();
+        $('#expense-modal').modal();
+      });
+
+      $("a#send-notification").click(function(e){
+        e.preventDefault();
+        $('#notification-modal').modal();
+      });
+
+      $("a#add-account").click(function(e){
+        e.preventDefault();
+        $('#account-modal').modal();
+      });
+
+      $("a#account-statement").click(function(e){
+        e.preventDefault();
+        $('#account-statement-modal').modal();
+      });
+
+      $("a#profitLoss-link").click(function(e){
+        e.preventDefault();
+        $("#profitLoss-report-form").submit();
+      });
+
+      $("a#report-link").click(function(e){
+        e.preventDefault();
+        $("#product-report-form").submit();
+      });
+
+      $("a#purchase-report-link").click(function(e){
+        e.preventDefault();
+        $("#purchase-report-form").submit();
+      });
+
+      $("a#sale-report-link").click(function(e){
+        e.preventDefault();
+        $("#sale-report-form").submit();
+      });
+
+      $("a#payment-report-link").click(function(e){
+        e.preventDefault();
+        $("#payment-report-form").submit();
+      });
+
+      $("a#warehouse-report-link").click(function(e){
+        e.preventDefault();
+        $('#warehouse-modal').modal();
+      });
+
+      $("a#user-report-link").click(function(e){
+        e.preventDefault();
+        $('#user-modal').modal();
+      });
+
+      $("a#customer-report-link").click(function(e){
+        e.preventDefault();
+        $('#customer-modal').modal();
+      });
+
+      $("a#supplier-report-link").click(function(e){
+        e.preventDefault();
+        $('#supplier-modal').modal();
+      });
+
+      $("a#due-report-link").click(function(e){
+        e.preventDefault();
+        $("#due-report-form").submit();
+      });
+
+      $(".daterangepicker-field").daterangepicker({
+          callback: function(startDate, endDate, period){
+            var start_date = startDate.format('YYYY-MM-DD');
+            var end_date = endDate.format('YYYY-MM-DD');
+            var title = start_date + ' To ' + end_date;
+            $(this).val(title);
+            $('#account-statement-modal input[name="start_date"]').val(start_date);
+            $('#account-statement-modal input[name="end_date"]').val(end_date);
+          }
+      });
+
+      $('.date').datepicker({
+         format: "dd-mm-yyyy",
+         autoclose: true,
+         todayHighlight: true
+       });
+
+      $('.selectpicker').selectpicker({
+          style: 'btn-link',
+      });
+    </script>
+    <script src="//js.pusher.com/3.1/pusher.min.js"></script>
+	
+	<script type="text/javascript">
+      var notification_count   = $('span.notification-number').text();
+      var notifications = $('#notify');
+ 
+    var pusher = new Pusher('8f84bff0e7643b0e9609', {
+        encrypted: true
+      });
+
+      // Subscribe to the channel we specified in our Laravel Event
+      var channel = pusher.subscribe('status-liked');
+
+      channel.bind('App\\Events\\FormApprove', function(data) {
+        console.log(data)
+        notificationsCount = notification_count;
+        var user_id = '<?php echo $userr_id; ?>';
+        var count = '<?php echo(isset($count) ? $count : 0); ?>';
+
+        var existingNotifications = notifications.html();
+        var avatar = Math.floor(Math.random() * (71 - 20 + 1)) + 20;
+        var newNotificationHtml = "";
+        
+      
+        if(user_id == data.data.receiver){
+             newNotificationHtml = `
+                <li class="notifications" style="background-color: lightgrey">
+                    <a href="/read_notification/`+ data.data.id +`" class="btn btn-link">`+data.data.message+`</a>
+            `;
+            notifications.html(newNotificationHtml + existingNotifications);
+            notificationsCount =  parseInt(count) + parseInt(1);
+            $('span.notification-number').html(notificationsCount);
+        }
+       
+        
+        
+        // console.log(newNotificationHtml)
+        
+
+        
+
+      });
+
+
+    </script>
 </body>
 </html>
 

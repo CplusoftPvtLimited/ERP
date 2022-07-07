@@ -1,5 +1,6 @@
 <?php 
 return [
+	'Recent Transaction' => 'Recent Transaction',
 	'Forms' => 'Forms',
 	'Forms' => 'Forms',
 	'ShopName' => 'ShopName',
