@@ -332,7 +332,7 @@ catch(\Exception $e){
                 'sender_name' => auth()->user()->name,
                 'receiver' => $user->id,
                 'message' => $req->comment,
-				 'url' => 'showSubmitForm',
+				 'url' => 'reShowSubmitForm',
 
 
             ];
@@ -389,7 +389,7 @@ catch(\Exception $e){
                 'sender_name' => auth()->user()->name,
                 'receiver' => $user->id,
                 'message' => $req->comment,
-				 'url' => 'showSubmitForm',
+				 'url' => 'reShowSubmitForm',
 
 
             ];
