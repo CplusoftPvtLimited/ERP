@@ -37,7 +37,9 @@ Route::get('formMessage',[FormController::class,'formMessage'])->name('formMessa
 	
 	Route::resource('form', 'FormController');
 	Route::get('fillform/{id}',[FormController::class,'showform'])->name('Filform');
-	Route::get('showSubmitForm/{noti_id?}',[FormController::class,'showSubmitForm'])->name('showSubmitForm');
+	Route::get('showSubmitForm',[FormController::class,'showSubmitForm'])->name('showSubmitForm');
+	Route::get('/reShowSubmitForm/{noti_id}','FormController@reShowSubmitForm');
+
 	Route::post('formData',[FormController::class,'formData'])->name('formData');
 
 	Route::get('test', function () {

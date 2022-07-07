@@ -296,20 +296,13 @@ catch(\Exception $e){
        return view('forms.show_form_save_message');
     }
 
-    public function showSubmitForm($noti_id=null)
+    public function showSubmitForm()
     {
         $form = Form::where('role_id', Auth::user()->role_id)->first();
+        // dd($form->id);
         $form_fields = FormField::where('form_id',$form->id)->get();
-        if($noti_id != null)
-        {
-            $notis = auth()->user()->unreadNotifications;
-            foreach($notis as $n){
-            if($n->id == $noti_id){
-                $n->markAsRead();
-            }
-        }
-        }
         return view('forms.Form_index',compact('form','form_fields'));
+        
     }
 
     public function readNotification($id=null){
@@ -322,6 +315,23 @@ catch(\Exception $e){
         return back();
         
     }
+public function reShowSubmitForm($noti_id)
+{
+    // dd('ddhjdhj');
+    $form = Form::where('role_id', Auth::user()->role_id)->first();
+        // dd($form->id);
+        $form_fields = FormField::where('form_id',$form->id)->get();
+        $notis = auth()->user()->unreadNotifications;
+        foreach($notis as $n){
+            if($n->id == $noti_id){
+                $n->markAsRead();
+            }
+        }
+
+        return view('forms.show_form_fields',compact('form','form_fields'));
+
+
+}
 
  
 }

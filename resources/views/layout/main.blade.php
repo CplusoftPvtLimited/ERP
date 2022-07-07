@@ -1650,7 +1650,7 @@
         if(user_id == data.data.receiver){
              newNotificationHtml = `
                 <li class="notifications" style="background-color: lightgrey">
-                <a href="/`+ data.data.url +`/`+ data.data.id +`/`+ data.data.sender +`" class="btn btn-link">`+data.data.message+`</a>
+                <a href="/`+ data.data.url +`/`+ data.data.id +`" class="btn btn-link">`+data.data.message+`</a>
                 </li>
 
             `;

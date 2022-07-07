@@ -84,19 +84,19 @@
                         <li style="background-color: lightgrey"><a href="{{url('approved_dashboard',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
                     
                         @elseif($noti->noti_type == "formreject" && $noti->read_at == NULL)
-                        <li style="background-color: lightgrey"><a href="{{url('showSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
+                        <li style="background-color: lightgrey"><a href="{{url('reShowSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
                         
                         @elseif($noti->noti_type == "formresubmit" && $noti->read_at == NULL)
-                        <li style="background-color: lightgrey"><a href="{{url('showSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
+                        <li style="background-color: lightgrey"><a href="{{url('reShowSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
                         
                         @elseif($noti->noti_type == "formapprove" && $noti->read_at != NULL )
                         <li style="background-color: white"><a href="{{url('approved_dashboard',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
                         
                         @elseif($noti->noti_type == "formreject" && $noti->read_at != NULL)
-                        <li style="background-color: white"><a href="{{url('showSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
+                        <li style="background-color: white"><a href="{{url('reShowSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
                         
                         @elseif($noti->noti_type == "formresubmit" && $noti->read_at != NULL)
-                        <li style="background-color: white"><a href="{{url('showSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
+                        <li style="background-color: white"><a href="{{url('reShowSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
                         @endif
                     @endforeach
                 </ul>
@@ -418,7 +418,8 @@
         if(user_id == data.data.receiver){
              newNotificationHtml = `
                 <li class="notifications" style="background-color: lightgrey">
-                    <a href="/read_notification/`+ data.data.id +`" class="btn btn-link">`+data.data.message+`</a>
+                <a href="/`+ data.data.url +`/`+ data.data.id +`" class="btn btn-link">`+data.data.message+`</a>
+                </li>
             `;
             notifications.html(newNotificationHtml + existingNotifications);
             notificationsCount =  parseInt(count) + parseInt(1);
