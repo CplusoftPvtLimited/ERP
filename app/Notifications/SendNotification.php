@@ -57,6 +57,8 @@ class SendNotification extends Notification
      */
     public function toArray($notifiable)
     {
-        return $this->data['message'];
+        return ['message'=>$this->data['message'],
+                'sender_id'=> $this->data['sender'],
+            ];
     }
 }

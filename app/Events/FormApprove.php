@@ -26,6 +26,7 @@ class FormApprove implements ShouldBroadcast
             'sender' => $data['sender'],
             'sender_name' => $data['sender_name'],
             'receiver' => $data['receiver'],
+            'url' => $data['url'],
         ];
         
     }

@@ -28,6 +28,13 @@ Route::group(['middleware' => 'auth'], function() {
 
 Route::group(['middleware' => ['auth', 'active']], function() {
 	
+	Route::get('/user_show/{user_id}/{noti_id}','UserController@show');
+	Route::get('/submitted_form_show/{user_id}/{noti_id}','FormController@showSubmittedForm');
+	Route::get('showSubmitForm',[FormController::class,'showSubmitForm'])->name('showSubmitForm');
+
+
+
+	
 	Route::resource('form', 'FormController');
 	Route::get('/pending/form', 'FormController@pendingForms')->name('pendingforms');
 	Route::get('/approved/form', 'FormController@approvedForms')->name('approvedforms');

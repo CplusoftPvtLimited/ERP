@@ -269,6 +269,8 @@ catch(\Exception $e){
                 'sender_name' => auth()->user()->name,
                 'receiver' => $user->id,
                 'message' => $req->comment,
+				'url' => 'approved_dashboard',
+
 
             ];
             // dd('sdfsdf');
@@ -276,6 +278,9 @@ catch(\Exception $e){
             $noti = $user->notifications()->latest()->first();
             // dd($noti);
             $data['id'] = $noti->id;
+
+            $noti->noti_type = "formapprove";
+            $noti->update();
             // event(new FormApprove('Someone'));
             broadcast(new FormApprove($data));
             DB::commit();
@@ -327,6 +332,8 @@ catch(\Exception $e){
                 'sender_name' => auth()->user()->name,
                 'receiver' => $user->id,
                 'message' => $req->comment,
+				 'url' => 'showSubmitForm',
+
 
             ];
             // dd('sdfsdf');
@@ -334,6 +341,9 @@ catch(\Exception $e){
             $noti = $user->notifications()->latest()->first();
             // dd($noti);
             $data['id'] = $noti->id;
+
+            $noti->noti_type = "formreject";
+            $noti->update();
             // event(new FormApprove('Someone'));
             broadcast(new FormApprove($data));
             DB::commit();
@@ -374,11 +384,13 @@ catch(\Exception $e){
                     $log->comments = $req->comment;
                     $log->save();
 
-                    $data = [
+                $data = [
                 'sender' => auth()->user()->id,
                 'sender_name' => auth()->user()->name,
                 'receiver' => $user->id,
                 'message' => $req->comment,
+				 'url' => 'showSubmitForm',
+
 
             ];
             // dd('sdfsdf');
@@ -386,6 +398,9 @@ catch(\Exception $e){
             $noti = $user->notifications()->latest()->first();
             // dd($noti);
             $data['id'] = $noti->id;
+
+            $noti->noti_type = "formresubmit";
+            $noti->update();
             // event(new FormApprove('Someone'));
             broadcast(new FormApprove($data));
             DB::commit();
@@ -416,6 +431,30 @@ catch(\Exception $e){
         $form->delete();
         return back();
     }
+public function showSubmittedForm($noti_id,$user_id)
+{
+        $user= User::find($user_id);
+
+        $userform= FormUser::where('user_id',$user_id)->first();
+        // dd($userform);
+        if(!$userform){
+            return redirect('pending/form');
+        }
+        // if(!$user){
+        //     return back();
+        // }
+        $form = Form::find($userform->form_id);
+        $form_fields = FormField::where('form_id',$form->id)->get();
+        
+        $notis = auth()->user()->unreadNotifications;
+        foreach($notis as $n){
+            if($n->id == $noti_id){
+                $n->markAsRead();
+            }
+        }
+
+        return view('forms.show',compact('form','form_fields','user_id'));
+}
 
     public function readNotification($id=null){
         $notis = auth()->user()->unreadNotifications;
@@ -426,5 +465,11 @@ catch(\Exception $e){
         }
         return back();
         
+    }
+    public function showSubmitForm()
+    {
+        $form = Form::where('role_id', Auth::user()->role_id)->first();
+        $form_fields = FormField::where('form_id',$form->id)->get();
+        return view('forms.Form_index',compact('form','form_fields'));
     }
 }

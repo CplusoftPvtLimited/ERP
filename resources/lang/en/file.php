@@ -1,5 +1,6 @@
 <?php 
 return [
+	'Shop Name' => 'Shop Name',
 	'Comment' => 'Comment',
 	'General Mail Setting' => 'General Mail Setting',
 	'Form List' => 'Form List',

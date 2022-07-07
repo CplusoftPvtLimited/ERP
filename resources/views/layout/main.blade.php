@@ -935,10 +935,17 @@
                 @php $user_notifications = auth()->user()->notifications()->get(); @endphp
                 <ul class="right-sidebar" id="notify">
                     @foreach($user_notifications as $noti)
-                        @if($noti->read_at == NULL)
-                        <li style="background-color: lightgrey"><a href="{{route('read_notification',$noti->id)}}">{{ $noti->data }}</a></li>
-                        @else
-                        <li style="background-color: white"><a href="{{route('read_notification',$noti->id)}}">{{ $noti->data }}</a></li>
+                        @if($noti->noti_type == "registration" && $noti->read_at == NULL)
+                        <li style="background-color: lightgrey"><a href="{{url('user_show',[$noti->id,$noti->data['sender_id']])}}">{{ $noti->data['message'] }}</a></li>
+                    
+                        @elseif($noti->noti_type == "formsubmission" && $noti->read_at == NULL)
+                        <li style="background-color: lightgrey"><a href="{{url('submitted_form_show',[$noti->id,$noti->data['sender_id']])}}">{{ $noti->data['message'] }}</a></li>
+
+                        @elseif($noti->noti_type == "registration" && $noti->read_at != NULL )
+                        <li style="background-color: white"><a href="{{url('user_show',[$noti->id,$noti->data['sender_id']])}}">{{ $noti->data['message'] }}</a></li>
+                        
+                        @elseif($noti->noti_type == "formsubmission" && $noti->read_at != NULL)
+                        <li style="background-color: white"><a href="{{url('submitted_form_show',[$noti->id,$noti->data['sender_id']])}}">{{ $noti->data['message'] }}</a></li>
                         @endif
                     @endforeach
                 </ul>
@@ -1635,10 +1642,9 @@
         if(user_id == data.data.receiver){
              newNotificationHtml = `
                     
-                        <li class="notifications" style="background-color: lightgrey">
-                                
-                                <a href="/read_notification/`+ data.data.id +`" class="btn btn-link">`+data.data.message+`</a>
-                            </li>
+                <li class="notifications" style="background-color: lightgrey">
+                <a href="/`+ data.data.url +`/`+ data.data.id +`/`+ data.data.sender +`" class="btn btn-link">`+data.data.message+`</a>
+                </li>
                    
           
             `;

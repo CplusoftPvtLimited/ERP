@@ -109,6 +109,19 @@ class UserController extends Controller
         }
         return redirect('user')->with('message1', $message); 
     }
+    public function show($noti_id,$user_id)
+    {
+        $lims_user_data = User::find($user_id);
+        $role = Roles::find($lims_user_data->role_id);
+        $notis = auth()->user()->unreadNotifications;
+        
+        foreach($notis as $n){
+            if($n->id == $noti_id){
+                $n->markAsRead();
+            }
+        }
+        return view('user.show', compact('lims_user_data','role'));
+    }
 
     public function edit($id)
     {
