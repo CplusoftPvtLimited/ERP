@@ -217,8 +217,7 @@ catch(\Exception $e){
                     else
                     {
                         $f_data->field_value = $request[$implode];
-                    }
-                       
+                    }  
                         // $f_data = new FormFieldData();
                         $f_data->form_id = $form->id;
                         $f_data->field_id = $f->id;
