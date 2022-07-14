@@ -27,7 +27,7 @@
             @if(Session::has('message'))
             <p class="bg-success text-white p-2 rounded">{{Session::get('message')}}</p>
             @endif
-            <div class="logo"><span>{{$general_setting->site_title}}</span></div>
+            <div class="logo"><img src="images/logo.png" alt="" width="120"></div>
             <form method="POST" action="{{ route('do-register') }}">
                 @csrf
               <div class="form-group-material">

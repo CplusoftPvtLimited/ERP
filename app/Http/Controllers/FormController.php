@@ -156,6 +156,10 @@ catch(\Exception $e){
     public function getForm($id)
     {
         $form = Form::find($id);
+        if(!$form)
+        {
+            return back();
+        }
         $form_fields = FormField::where('form_id',$id)->get();
         // dd($form_fields_data);
         
@@ -196,7 +200,7 @@ catch(\Exception $e){
                             $f_data->field_value = $imageName;
                             $f_data->save();
                         }
-                    else if($request->has($f->field_name)){
+                    if($request->has($f->field_name)){
                         // dump($request[$f->field_name]);
                         $f_data = new FormFieldData();
                         $f_data->form_id = $form->id;
@@ -318,6 +322,12 @@ catch(\Exception $e){
 public function reShowSubmitForm($noti_id)
 {
     // dd('ddhjdhj');
+    $user_form_status = FormUser::where('user_id', auth()->user()->id)->first();
+        // dd($user_form_status);
+        if($user_form_status->status == 1)
+        {
+            return back()->with('message', 'Form Has Already Been Submitted and Approved');
+        }
     $form = Form::where('role_id', Auth::user()->role_id)->first();
         // dd($form->id);
         $form_fields = FormField::where('form_id',$form->id)->get();

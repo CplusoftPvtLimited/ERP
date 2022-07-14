@@ -53,8 +53,9 @@ class RetailerLoginController extends Controller
                     return redirect('/');
                 }
                 if($FormUser == NULL || $FormUser->status == 2 ){
-                   
+                //    dd('jjkjkjk');
                     $form = Form::where('role_id',$role_id)->first();
+                    // dd($form);
                     if($form == NULL){
                         return redirect('logout');
                     }

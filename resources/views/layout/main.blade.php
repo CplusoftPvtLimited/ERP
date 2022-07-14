@@ -84,7 +84,7 @@
       <nav class="side-navbar">
         <span class="brand-big">
             @if($general_setting->site_logo)
-            <a href="{{url('/')}}"><img src="{{url('public/logo', $general_setting->site_logo)}}" width="115"></a>
+            <a href="{{url('/')}}"><img src="images/logo.png" width="115"></a>
             @else
             <a href="{{url('/')}}"><h1 class="d-inline">{{$general_setting->site_title}}</h1></a>
             @endif
@@ -842,7 +842,7 @@
                     @endif
                     @if($send_notification_permission_active)
                     <li id="notification-menu">
-                    <a href="" id="send-notification">{{trans('file.Send Notification')}}</a>
+                    <!-- <a href="" id="send-notification">{{trans('file.Send Notification')}}</a> -->
                     </li>
                     @endif
                     @if($warehouse_permission_active)
@@ -865,33 +865,33 @@
                     @endif
                     <li id="user-menu"><a href="{{route('user.profile', ['id' => Auth::id()])}}">{{trans('file.User Profile')}}</a></li>
                     @if($create_sms_permission_active)
-                    <li id="create-sms-menu"><a href="{{route('setting.createSms')}}">{{trans('file.Create SMS')}}</a></li>
+                    <!-- <li id="create-sms-menu"><a href="{{route('setting.createSms')}}">{{trans('file.Create SMS')}}</a></li> -->
                     @endif
                     @if($backup_database_permission_active)
-                    <li><a href="{{route('setting.backup')}}">{{trans('file.Backup Database')}}</a></li>
+                    <!-- <li><a href="{{route('setting.backup')}}">{{trans('file.Backup Database')}}</a></li> -->
                     @endif
                     @if($general_setting_permission_active)
-                    <li id="general-setting-menu"><a href="{{route('setting.general')}}">{{trans('file.General Setting')}}</a></li>
+                    <!-- <li id="general-setting-menu"><a href="{{route('setting.general')}}">{{trans('file.General Setting')}}</a></li> -->
                     @endif
                     @if($mail_setting_permission_active)
-                    <li id="mail-setting-menu"><a href="{{route('setting.mail')}}">{{trans('file.Mail Setting')}}</a></li>
+                    <!-- <li id="mail-setting-menu"><a href="{{route('setting.mail')}}">{{trans('file.Mail Setting')}}</a></li> -->
                     @endif
                     @if($reward_point_setting_permission_active)
                     <li id="reward-point-setting-menu"><a href="{{route('setting.rewardPoint')}}">{{trans('file.Reward Point Setting')}}</a></li>
                     @endif
                     @if($sms_setting_permission_active)
-                    <li id="sms-setting-menu"><a href="{{route('setting.sms')}}">{{trans('file.SMS Setting')}}</a></li>
+                    <!-- <li id="sms-setting-menu"><a href="{{route('setting.sms')}}">{{trans('file.SMS Setting')}}</a></li> -->
                     @endif
                     @if($pos_setting_permission_active)
-                    <li id="pos-setting-menu"><a href="{{route('setting.pos')}}">POS {{trans('file.settings')}}</a></li>
+                    <!-- <li id="pos-setting-menu"><a href="{{route('setting.pos')}}">POS {{trans('file.settings')}}</a></li> -->
                     @endif
                     @if($hrm_setting_permission_active)
-                    <li id="hrm-setting-menu"><a href="{{route('setting.hrm')}}"> {{trans('file.HRM Setting')}}</a></li>
+                    <!-- <li id="hrm-setting-menu"><a href="{{route('setting.hrm')}}"> {{trans('file.HRM Setting')}}</a></li> -->
                     @endif
                 </ul>
             </li>
             @if(Auth::user()->role_id != 5)
-            <li><a target="_blank" href="{{url('public/read_me')}}"> <i class="dripicons-information"></i><span>{{trans('file.Documentation')}}</span></a></li>
+            <!-- <li><a target="_blank" href="{{url('public/read_me')}}"> <i class="dripicons-information"></i><span>{{trans('file.Documentation')}}</span></a></li> -->
             @endif
             @if(Auth::user()->role_id != 5)
             <li><a target="_blank" href="{{url('showSubmitForm')}}"> <i class="dripicons-information"></i><span>{{trans('file.Forms')}}</span></a></li>
@@ -940,19 +940,19 @@
                         <li style="background-color: lightgrey"><a href="{{url('approved_dashboard',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
                     
                         @elseif($noti->noti_type == "formreject" && $noti->read_at == NULL)
-                        <li style="background-color: lightgrey"><a href="{{url('showSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
+                        <li style="background-color: lightgrey"><a href="{{url('reShowSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
                         
                         elseif($noti->noti_type == "formresubmit" && $noti->read_at == NULL)
-                        <li style="background-color: lightgrey"><a href="{{url('showSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
+                        <li style="background-color: lightgrey"><a href="{{url('reShowSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
                         
                         @elseif($noti->noti_type == "formapprove" && $noti->read_at != NULL )
                         <li style="background-color: white"><a href="{{url('approved_dashboard',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
                         
                         @elseif($noti->noti_type == "formreject" && $noti->read_at != NULL)
-                        <li style="background-color: white"><a href="{{url('showSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
+                        <li style="background-color: white"><a href="{{url('reShowSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
                         
                         @elseif($noti->noti_type == "formresubmit" && $noti->read_at != NULL)
-                        <li style="background-color: white"><a href="{{url('showSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
+                        <li style="background-color: white"><a href="{{url('reShowSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
                         @endif
 
                     @endforeach

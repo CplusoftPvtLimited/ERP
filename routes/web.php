@@ -21,6 +21,9 @@ Route::group(['middleware' => 'auth'], function() {
 });
 Route::post('do-register',[RetailerRegisterController::class,'create'])->name('do-register');
 Route::post('do-login',[RetailerLoginController::class,'login'])->name('do-login');
+Route::get('getform/{id}',[FormController::class,'getForm'])->name('getform');
+Route::post('formSave',[FormController::class,'formSave'])->name('formSave');
+Route::get('formMessage',[FormController::class,'formMessage'])->name('formMessage');
 
 
 
@@ -28,9 +31,6 @@ Route::post('do-login',[RetailerLoginController::class,'login'])->name('do-login
 
 Route::group(['middleware' => ['auth', 'active']], function() {
 	
-Route::get('getform/{id}',[FormController::class,'getForm'])->name('getform');
-Route::post('formSave',[FormController::class,'formSave'])->name('formSave');
-Route::get('formMessage',[FormController::class,'formMessage'])->name('formMessage');
 
 	Route::get('/read_notification/{id?}', 'FormController@readNotification')->name('read_notification');
 

@@ -85,7 +85,7 @@ class RetailerRegisterController extends Controller
             // 'role_id' => $data['role_id'],
             // 'biller_id' => $data['biller_id'],
             // 'warehouse_id' => $data['warehouse_id'],
-            'is_active' => 1,
+            'is_active' => 0,
             'is_deleted' => false,
             'role_id' => $data['role'],
             'password' => bcrypt("123456789"),

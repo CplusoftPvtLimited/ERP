@@ -23,6 +23,7 @@ use Printing;
 use Rawilk\Printing\Contracts\Printer;
 use Spatie\Permission\Models\Role;
 use Session;
+use App\FormUser;
 /*use vendor\autoload;
 use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
 use Mike42\Escpos\Printer;*/
@@ -361,6 +362,12 @@ class HomeController extends Controller
             $start = strtotime("+1 month", $start);
         }
         //return $month;
+        $user_form_status = FormUser::where('user_id', auth()->user()->id)->first();
+        // dd($user_form_status);
+        if($user_form_status->status != 1)
+        {
+            return back();
+        }
         return view('index', compact('revenue', 'purchase', 'expense', 'return', 'purchase_return', 'profit', 'payment_recieved', 'payment_sent', 'month', 'yearly_sale_amount', 'yearly_purchase_amount', 'recent_sale', 'recent_purchase', 'recent_quotation', 'recent_payment', 'best_selling_qty', 'yearly_best_selling_qty', 'yearly_best_selling_price', 'all_permission'));
     }
 
