@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Roles;
 use Illuminate\Support\Facades\Auth;
 
+
 trait RegistersUsers
 {
     use RedirectsUsers;

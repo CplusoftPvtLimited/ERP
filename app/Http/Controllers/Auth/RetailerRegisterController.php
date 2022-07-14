@@ -13,6 +13,9 @@ use App\Activity;
 use Mail;
 use App\Mail\AccountCreation;
 use Illuminate\Support\Facades\DB;
+use App\Events\FormApprove;
+use App\Notifications\SendNotification;
+
 
 class RetailerRegisterController extends Controller
 {
@@ -25,7 +28,7 @@ class RetailerRegisterController extends Controller
             'shop_name' => 'required|string|max:255|unique:users',
             'name' => [
                 'required',
-                'max:10',
+                'max:20',
                 Rule::unique('users')->where(function ($query) {
                     return $query->where('is_deleted', false);
                 }),
@@ -49,7 +52,7 @@ class RetailerRegisterController extends Controller
         'shop_name' => 'required|string|max:255|unique:users',
         'name' => [
             'required',
-            'max:10',
+            'max:20',
             Rule::unique('users')->where(function ($query) {
                 return $query->where('is_deleted', false);
             }),
@@ -72,7 +75,7 @@ class RetailerRegisterController extends Controller
                 // dd("sdf");
                 $data['is_active'] = false;
                 // $mailData = [];
-                $user = User::create([
+                $newuser = User::create([
             // 'name' => $data['name'],
             'name' => $data['name'],
             'shop_name' => $data['shop_name'],
@@ -99,15 +102,40 @@ class RetailerRegisterController extends Controller
         $log->log_name = $data['name'];
         $log->subject_type = "Account Created";
         $log->causer_type = "Customer";
-        $log->causer_id = 'ERP-'.$user->id;
+        $log->causer_id = 'ERP-'.$newuser->id;
         $log->save();
          
         Mail::to($data['email'])->send(new AccountCreation($mailData));
+        $admin = User::where('role_id', 1)->first();
+        
+        $data = [
+
+                'receiver' => $admin->id,
+                'sender' => $newuser->id,
+                'sender_name' => $newuser->name,
+                'message' => 'A new User has been Registered',
+                'url' => 'user_show',
+
+            ];
+            // dd($data);
+            // dd('sdfsdf');
+            // dd($newuser);
+            // $user = $newuser;
+            $admin->notify(new SendNotification($data));
+
+            $noti = $admin->notifications()->latest()->first();
+            // dd($noti);
+
+            $noti->noti_type = "registration";
+            // $noti->sender_id = $newuser->id;
+            $noti->update();
+            $data['id'] = $noti->id;
+            // event(new FormApprove('Someone'));
+            broadcast(new FormApprove($data));
+
         // dd("mail sent");
         DB::commit();
         return redirect()->back()->with('message','Account Credentials has been sent your email address');
-
-
         } 
         catch (\Throwable $th) {
             DB::rollback();

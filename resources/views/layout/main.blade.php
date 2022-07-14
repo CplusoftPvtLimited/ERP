@@ -68,6 +68,8 @@
   </head>
 
   <body onload="myFunction()">
+  @php $userr_id = auth()->user()->id; @endphp
+
     <div id="loader"></div>
     <?php
     
@@ -78,6 +80,7 @@
 
       
       <!-- Side Navbar -->
+      
       <nav class="side-navbar">
         <span class="brand-big">
             @if($general_setting->site_logo)
@@ -926,36 +929,36 @@
             @if(\Auth::user()->role_id <= 2)
                 <li class="nav-item"><a href="{{route('cashRegister.index')}}" data-toggle="tooltip" title="{{trans('file.Cash Register List')}}"><i class="dripicons-archive"></i></a></li>
             @endif
-            @if($product_qty_alert_active)
-                @if(($alert_product + count(\Auth::user()->unreadNotifications)) > 0)
-                <li class="nav-item" id="notification-icon">
-                    <a rel="nofollow" data-toggle="tooltip" title="{{__('Notifications')}}" class="nav-link dropdown-item"><i class="dripicons-bell"></i><span class="badge badge-danger notification-number">{{$alert_product + count(\Auth::user()->unreadNotifications)}}</span>
-                    </a>
-                    <ul class="right-sidebar">
-                        <li class="notifications">
-                            <a href="{{route('report.qtyAlert')}}" class="btn btn-link"> {{$alert_product}} product exceeds alert quantity</a>
-                        </li>
-                        @foreach(\Auth::user()->unreadNotifications as $key => $notification)
-                            <li class="notifications">
-                                <a href="#" class="btn btn-link">{{ $notification->data['message'] }}</a>
-                            </li>
-                        @endforeach
-                    </ul>
-                </li>
-                @elseif(count(\Auth::user()->unreadNotifications) > 0)
-                <li class="nav-item" id="notification-icon">
-                    <a rel="nofollow" data-toggle="tooltip" title="{{__('Notifications')}}" class="nav-link dropdown-item"><i class="dripicons-bell"></i><span class="badge badge-danger notification-number">{{count(\Auth::user()->unreadNotifications)}}</span>
-                    </a>
-                    <ul class="right-sidebar">
-                        @foreach(\Auth::user()->unreadNotifications as $key => $notification)
-                            <li class="notifications">
-                                <a href="#" class="btn btn-link">{{ $notification->data['message'] }}</a>
-                            </li>
-                        @endforeach
-                    </ul>
-                </li>
-                @endif
-            @endif
+
+                <li class="nav-item">
+                <a rel="nofollow" data-toggle="tooltip" title="{{__('Notifications')}}" class="nav-link dropdown-item"><i class="dripicons-bell"></i><span class="badge badge-danger notification-number">{{ count(\Auth::user()->unreadNotifications) > 0 ?  count(\Auth::user()->unreadNotifications) : '' }}</span>
+                </a>
+                @php $user_notifications = auth()->user()->notifications()->get(); @endphp
+                <ul class="right-sidebar" id="notify">
+                    @foreach($user_notifications as $noti)
+                    @if($noti->noti_type == "formapprove" && $noti->read_at == NULL)
+                        <li style="background-color: lightgrey"><a href="{{url('approved_dashboard',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
+                    
+                        @elseif($noti->noti_type == "formreject" && $noti->read_at == NULL)
+                        <li style="background-color: lightgrey"><a href="{{url('showSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
+                        
+                        elseif($noti->noti_type == "formresubmit" && $noti->read_at == NULL)
+                        <li style="background-color: lightgrey"><a href="{{url('showSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
+                        
+                        @elseif($noti->noti_type == "formapprove" && $noti->read_at != NULL )
+                        <li style="background-color: white"><a href="{{url('approved_dashboard',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
+                        
+                        @elseif($noti->noti_type == "formreject" && $noti->read_at != NULL)
+                        <li style="background-color: white"><a href="{{url('showSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
+                        
+                        @elseif($noti->noti_type == "formresubmit" && $noti->read_at != NULL)
+                        <li style="background-color: white"><a href="{{url('showSubmitForm',$noti->id)}}">{{ $noti->data['message'] }}</a></li>
+                        @endif
+
+                    @endforeach
+                </ul>
+            </li>
+
             <li class="nav-item">
                     <a rel="nofollow" title="{{trans('file.language')}}" data-toggle="tooltip" class="nav-link dropdown-item"><i class="dripicons-web"></i></a>
                     <ul class="right-sidebar">
@@ -1394,6 +1397,7 @@
         </div>
       </div>
       <!-- end supplier modal -->
+    @php $count = count(\Auth::user()->unreadNotifications); @endphp
 
       <div style="display:none" id="content" class="animate-bottom">
           @yield('content')
@@ -1622,55 +1626,49 @@
 	<script src="//js.pusher.com/3.1/pusher.min.js"></script>
 	
 	<script type="text/javascript">
-	  var notificationsWrapper   = $('.dropdown-notifications');
-	  var notificationsToggle    = notificationsWrapper.find('a[data-toggle]');
-	  var notificationsCountElem = notificationsToggle.find('i[data-count]');
-	  var notificationsCount     = parseInt(notificationsCountElem.data('count'));
-	  var notifications          = notificationsWrapper.find('ul.dropdown-menu');
+      var notification_count   = $('span.notification-number').text();
+      var notifications = $('#notify');
+ 
+    var pusher = new Pusher('8f84bff0e7643b0e9609', {
+        encrypted: true
+      });
 
-	  if (notificationsCount <= 0) {
-		notificationsWrapper.hide();
-	  }
+      // Subscribe to the channel we specified in our Laravel Event
+      var channel = pusher.subscribe('status-liked');
 
-	//   Enable pusher logging - don't include this in production
-	//   Pusher.logToConsole = true;
+      channel.bind('App\\Events\\FormApprove', function(data) {
+        console.log(data)
+        notificationsCount = notification_count;
+        var user_id = '<?php echo $userr_id; ?>';
+        var count = '<?php echo(isset($count) ? $count : 0); ?>';
 
-	  var pusher = new Pusher('f5b64c6b189e9bad2df6', {
-		encrypted: true
-	  });
+        var existingNotifications = notifications.html();
+        var avatar = Math.floor(Math.random() * (71 - 20 + 1)) + 20;
+        var newNotificationHtml = "";
+        
+      
+        if(user_id == data.data.receiver){
+             newNotificationHtml = `
+                <li class="notifications" style="background-color: lightgrey">
+                <a href="/`+ data.data.url +`/`+ data.data.id +`" class="btn btn-link">`+data.data.message+`</a>
+                </li>
 
-	  // Subscribe to the channel we specified in our Laravel Event
-	  var channel = pusher.subscribe('status-liked');
+            `;
+            notifications.html(newNotificationHtml + existingNotifications);
+            notificationsCount =  parseInt(count) + parseInt(1);
+            $('span.notification-number').html(notificationsCount);
+        }
+       
+        
+        
+        // console.log(newNotificationHtml)
+        
 
-	  // Bind a function to a Event (the full Laravel class)
-	  channel.bind('App\\Events\\StatusLiked', function(data) {
-		var existingNotifications = notifications.html();
-		var avatar = Math.floor(Math.random() * (71 - 20 + 1)) + 20;
-		var newNotificationHtml = `
-		  <li class="notification active">
-			  <div class="media">
-				<div class="media-left">
-				  <div class="media-object">
-					<img src="https://api.adorable.io/avatars/71/`+avatar+`.png" class="img-circle" alt="50x50" style="width: 50px; height: 50px;">
-				  </div>
-				</div>
-				<div class="media-body">
-				  <strong class="notification-title">`+data.message+`</strong>
-				  <!--p class="notification-desc">Extra description can go here</p-->
-				  <div class="notification-meta">
-					<small class="timestamp">about a minute ago</small>
-				  </div>
-				</div>
-			  </div>
-		  </li>
-		`;
-		notifications.html(newNotificationHtml + existingNotifications);
+        
 
-		notificationsCount += 1;
-		notificationsCountElem.attr('data-count', notificationsCount);
-		notificationsWrapper.find('.notif-count').text(notificationsCount);
-		notificationsWrapper.show();
-	  });
-	</script>
+      });
+
+
+    </script>
   </body>
 </html>

@@ -8,6 +8,11 @@ use App\FormUser;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Session;
+use App\User;
+use App\Events\FormApprove;
+use Mail;
+use App\Notifications\SendNotification;
+use App\Mail\FormSubmit;
 
 
 use App\Http\Controllers\Controller;
@@ -166,6 +171,9 @@ catch(\Exception $e){
 
     public function formSave(Request $request){
         // dd($request->all());
+        DB::beginTransaction();
+        try
+        {
         $form = Form::find($request->form);
         $user_form = FormUser::where('user_id',auth()->user()->id)->where('status','0')->first();
         // dd($user_form);
@@ -227,12 +235,14 @@ catch(\Exception $e){
                 
                 // dd("stop");
             }
+            DB::commit();
  
            return redirect()->route('formMessage');
             // return back();
-        // }catch(\Exception $e){
-        //     dd($e->getMessage());
-        // }
+        }catch(\Exception $e){
+            DB::rollback();
+            dd($e->getMessage());
+        }
         
 
     }
@@ -244,8 +254,39 @@ catch(\Exception $e){
     public function showSubmitForm()
     {
         $form = Form::where('role_id', Auth::user()->role_id)->first();
+        // dd($form->id);
         $form_fields = FormField::where('form_id',$form->id)->get();
         return view('forms.Form_index',compact('form','form_fields'));
+        
     }
+
+    public function readNotification($id=null){
+        $notis = auth()->user()->unreadNotifications;
+        foreach($notis as $n){
+            if($n->id == $id){
+                $n->markAsRead();
+            }
+        }
+        return back();
+        
+    }
+public function reShowSubmitForm($noti_id)
+{
+    // dd('ddhjdhj');
+    $form = Form::where('role_id', Auth::user()->role_id)->first();
+        // dd($form->id);
+        $form_fields = FormField::where('form_id',$form->id)->get();
+        $notis = auth()->user()->unreadNotifications;
+        foreach($notis as $n){
+            if($n->id == $noti_id){
+                $n->markAsRead();
+            }
+        }
+
+        return view('forms.show_form_fields',compact('form','form_fields'));
+
+
+}
+
  
 }

@@ -22,27 +22,35 @@ Route::group(['middleware' => 'auth'], function() {
 Route::post('do-register',[RetailerRegisterController::class,'create'])->name('do-register');
 Route::post('do-login',[RetailerLoginController::class,'login'])->name('do-login');
 
-Route::get('getform/{id}',[FormController::class,'getForm'])->name('getform');
-Route::post('formSave',[FormController::class,'formSave'])->name('formSave');
-Route::get('formMessage',[FormController::class,'formMessage'])->name('formMessage');
 
 
 
 
 Route::group(['middleware' => ['auth', 'active']], function() {
 	
+Route::get('getform/{id}',[FormController::class,'getForm'])->name('getform');
+Route::post('formSave',[FormController::class,'formSave'])->name('formSave');
+Route::get('formMessage',[FormController::class,'formMessage'])->name('formMessage');
+
+	Route::get('/read_notification/{id?}', 'FormController@readNotification')->name('read_notification');
+
+	
 	Route::resource('form', 'FormController');
 	Route::get('fillform/{id}',[FormController::class,'showform'])->name('Filform');
 	Route::get('showSubmitForm',[FormController::class,'showSubmitForm'])->name('showSubmitForm');
+	Route::get('/reShowSubmitForm/{noti_id}','FormController@reShowSubmitForm');
+
 	Route::post('formData',[FormController::class,'formData'])->name('formData');
 
 	Route::get('test', function () {
 		event(new App\Events\StatusLiked('Ali'));
 		return "Event has been sent!";
 	});
+	Route::get('/user_show/{user_id}/{noti_id}',[UserController::class,'show']);
 	
 
 	Route::get('/', 'HomeController@index');
+	Route::get('/approved_dashboard/{id?}', 'HomeController@approvedDashboard');
 	Route::get('switch-theme/{theme}', 'HomeController@switchTheme')->name('switchTheme');
 	Route::get('/dashboard-filter/{start_date}/{end_date}', 'HomeController@dashboardFilter');
 	Route::get('check-batch-availability/{product_id}/{batch_no}/{warehouse_id}', 'ProductController@checkBatchAvailability');
