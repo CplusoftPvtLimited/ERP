@@ -5,6 +5,7 @@ namespace Illuminate\Foundation\Auth;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Roles;
 use Illuminate\Support\Facades\Auth;
 
 trait RegistersUsers
@@ -18,7 +19,9 @@ trait RegistersUsers
      */
     public function showRegistrationForm()
     {
-        return view('auth.register');
+        $roles = Roles::where('name','Dealer')->orWhere('name','Refactor')->get();
+        // dd($roles);
+        return view('auth.register',compact('roles'));
     }
 
     /**

@@ -152,6 +152,11 @@ catch(\Exception $e){
     {
         $form = Form::find($id);
         $form_fields = FormField::where('form_id',$id)->get();
+        // $user_form = FormUser::where('user_id',auth()->user()->id)->where('status','0')->where('status','1')->first();
+        // // dd($user_form);
+        // if(!empty($user_form)){
+        //     return redirect()->back();
+        // }
         // dd($form_fields_data);
         
 
@@ -162,8 +167,15 @@ catch(\Exception $e){
     public function formSave(Request $request){
         // dd($request->all());
         $form = Form::find($request->form);
+        $user_form = FormUser::where('user_id',auth()->user()->id)->where('status','0')->first();
+        // dd($user_form);
+        if(!empty($user_form)){
+            return redirect('formMessage')->with('error','Your Form Already Submitted');
+        }
+       
             if(!empty($form)){
                 $form_fields = FormField::where('form_id',$form->id)->get();
+
 
                 $formuser = new FormUser();
                 $formuser->form_id = $form->id;
@@ -172,28 +184,48 @@ catch(\Exception $e){
                 $formuser->status = 0;
                 $formuser->save();
                 foreach($form_fields as $f){
-                    if($request->hasFile($f->field_name)){
-                        $file = $request[$f->field_name];
+                    $fields = explode(" ",$f->field_name);
+                    $implode = implode("_",$fields);
+
+                    // dump($fields);
+                    // dump($implode);
+                    // dump($request[$f->field_name]);
+                    $f_data = new FormFieldData();
+                        // dump($request[$implode]);
+
+                    if ($request->hasFile($implode)) {
+                        // dump($request[$implode]);
+                        $file = $request[$implode];
                         $imageName = time() . rand(1, 10000) . '.' . $file->getClientOriginalExtension();
+                        $f_data->field_value = $imageName;
+                        dump($imageName);
                         $file->move(public_path('images/form'), $imageName);
                         
-                        $f_data = new FormFieldData();
+                    }
+                    else
+                    {
+                        $f_data->field_value = $request[$implode];
+                    }
+                       
+                        // $f_data = new FormFieldData();
                         $f_data->form_id = $form->id;
                         $f_data->field_id = $f->id;
                         $f_data->user_id = auth()->user()->id;
-                        $f_data->field_value = $imageName;
+                        $f_data->form_user_id = $formuser->id;
+                        
                         $f_data->save();
                     }
-                    else if($request->has($f->field_name)){
-                        // dump($request[$f->field_name]);
-                        $f_data = new FormFieldData();
-                        $f_data->form_id = $form->id;
-                        $f_data->field_id = $f->id;
-                        $f_data->user_id = auth()->user()->id;
-                        $f_data->field_value = $request[$f->field_name];
-                        $f_data->save();
-                    }
-                }
+                    // else if($request[$f->field_name]){
+                    //     // dump($request[$f->field_name]);
+                    //     $f_data = new FormFieldData();
+                    //     $f_data->form_id = $form->id;
+                    //     $f_data->field_id = $f->id;
+                    //     $f_data->user_id = auth()->user()->id;
+                    //     $f_data->field_value = $request[$f->field_name];
+                    //     $f_data->save();
+                    // }
+                
+                // dd("stop");
             }
  
            return redirect()->route('formMessage');

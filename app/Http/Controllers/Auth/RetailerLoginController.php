@@ -33,7 +33,7 @@ class RetailerLoginController extends Controller
             if (auth()->attempt(array($fieldType => $input['name'], 'password' => $input['password']))) {
                 $id = Auth::user()->id;
                 $role_id = Auth::user()->role_id;
-                $FormUser = DB::table('form_user')->where('user_id',$id)->where('role_id',$role_id)->first();
+                $FormUser = DB::table('form_user')->where('user_id',$id)->where('role_id',$role_id)->latest()->first();
                 if(isset($FormUser) && $FormUser->status == 0){
                     $log = new Activity();
                     $log->log_name = Auth::user()->name;
@@ -52,7 +52,7 @@ class RetailerLoginController extends Controller
                     $log->save();
                     return redirect('/');
                 }
-                if($FormUser == NULL || $FormUser->status == 2 ){
+                if($FormUser == NULL || $FormUser->status == 2 || $FormUser->status == 3){
                    
                     $form = Form::where('role_id',$role_id)->first();
                     if($form == NULL){

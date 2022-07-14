@@ -57,8 +57,11 @@
     <link rel="stylesheet" href="<?php echo asset('css/custom-'.$general_setting->theme) ?>" type="text/css" id="custom-style">
 
       <!-- RTL css -->
+     @if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl)
+      <!-- RTL css -->
       <link rel="stylesheet" href="<?php echo asset('vendor/bootstrap/css/bootstrap-rtl.min.css') ?>" type="text/css">
       <link rel="stylesheet" href="<?php echo asset('css/custom-rtl.css') ?>" type="text/css" id="custom-style">
+    @endif
   </head>
 <body>
 
@@ -82,29 +85,73 @@
 @if(session()->has('message'))
   <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('message') }}</div>
 @endif
-
-                                  
   
 
 <section>
+<form action="{{route('formSave')}}" method="post" enctype="multipart/form-data">
+    @csrf
+
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
-              <div class="row card">
+              <div class="row card p-2">
                         <div class="pull-left">
-                        @if ($message = Session::get('error'))
-                                        <div class="alert alert-danger">
-                                            <p>{{ $message }}</p>
-                                        </div>
-                                    @endif
-                          <h2 class="text-center">Your Form Save Successfully</h2>
-                          <p class="text-center">Project Manager Will Contact You Soon...</p>
+                          <h2 class="text-center">{{$form->form_name}}</h2>
                        </div>
                     </div>
                </div>
         </div>
+<input type="hidden" name="form" value="{{ $form->id }}">
+<div class="row card p-2">
+   
+    @foreach($form_fields as $f)
+        @php $field_value = App\FormFieldData::where('user_id', auth()->user()->id)->where('form_id', $form->id)
+        ->where('field_id', $f->id)->first(); @endphp
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        @if($f->field_type == 1)
+          <div class="form-group col-md-12">
+               <label for="">{{$f->field_label}}</label>
+               <input type="text" name="{{ $f->field_name }}" value="{{ isset($field_value) ? (isset($field_value->field_value) ? $field_value->field_value : '') : ''}}" class="form-control">
+        </div>
+        @elseif($f->field_type == 2)
+        <div class="form-group col-md-12">
+            <label for="">{{$f->field_label}}</label>
+            <textarea name="{{ $f->field_name }}" id="" cols="30" rows="10"class="form-control">{{ isset($field_value) ? (isset($field_value->field_value) ? $field_value->field_value : '') : ''}}</textarea>
+        </div>
+        @elseif($f->field_type == 3)
+        <div class="form-group col-md-12">
+            <label for="">{{$f->field_label}}</label>
+            <input type="file" name="{{ $f->field_name }}" value="{{ isset($field_value) ? (isset($field_value->field_value) ? $field_value->field_value : '') : ''}}">
+        </div>
+        @elseif($f->field_type == 4)
+        <div class="form-group col-md-12">
+            <label for="">{{$f->field_label}}</label>
+            <input type="radio" name="{{ $f->field_name }}" {{ isset($field_value) ? (isset($field_value->field_value) ? 'checked' : '') : ''}}>
+        </div>
+        @elseif($f->field_type == 6)
+        <div class="form-group col-md-12">
+            <label for="">{{$f->field_label}}</label>
+            <input type="email" name="{{ $f->field_name }}" class="form-control" value="{{ isset($field_value) ? (isset($field_value->field_value) ? $field_value->field_value : '') : ''}}">
+        </div>
+        @elseif($f->field_type == 5)
+        <div class="form-group col-md-12">
+            <label for="">{{$f->field_label}}</label>
+            <input type="password" name="{{ $f->field_name }}" class="form-control" value="{{ isset($data) ? $data : ''}}">
+        </div>
+        @endif
+    </div>
+    @endforeach
+    
+    <div class="ml-4">
+    <button class="btn btn-primary" type="submit" >Save</button>
+    </div>
 </div>
+        </div>
+
+    </div>
 </div>
+
+</form>
 </section>
 <script type="text/javascript" src="<?php echo asset('vendor/jquery/jquery.min.js') ?>"></script>
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/jquery-ui.min.js') ?>"></script>
