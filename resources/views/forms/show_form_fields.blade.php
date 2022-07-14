@@ -55,7 +55,7 @@
     <link rel="stylesheet" href="<?php echo asset('css/dropzone.css') ?>">
     <!-- Custom stylesheet - for your changes-->
     <link rel="stylesheet" href="<?php echo asset('css/custom-'.$general_setting->theme) ?>" type="text/css" id="custom-style">
-    @if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl)
+     @if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl)
       <!-- RTL css -->
       <link rel="stylesheet" href="<?php echo asset('vendor/bootstrap/css/bootstrap-rtl.min.css') ?>" type="text/css">
       <link rel="stylesheet" href="<?php echo asset('css/custom-rtl.css') ?>" type="text/css" id="custom-style">
@@ -208,32 +208,32 @@
         @if($f->field_type == 1)
           <div class="form-group col-md-12">
                <label for="">{{$f->field_label}}</label>
-               <input type="text" name="{{ $f->field_name }}" value="{{ isset($field_value) ? (isset($field_value->field_value) ? $field_value->field_value : '') : ''}}" class="form-control">
+               <input type="text" name="{{ $f->field_name }}" value="" class="form-control">
         </div>
         @elseif($f->field_type == 2)
         <div class="form-group col-md-12">
             <label for="">{{$f->field_label}}</label>
-            <textarea name="{{ $f->field_name }}" id="" cols="30" rows="10"class="form-control">{{ isset($field_value) ? (isset($field_value->field_value) ? $field_value->field_value : '') : ''}}</textarea>
+            <textarea name="{{ $f->field_name }}" id="" cols="30" rows="10"class="form-control"></textarea>
         </div>
         @elseif($f->field_type == 3)
         <div class="form-group col-md-12">
             <label for="">{{$f->field_label}}</label>
-            <input type="file" name="{{ $f->field_name }}" value="{{ isset($field_value) ? (isset($field_value->field_value) ? $field_value->field_value : '') : ''}}">
+            <input type="file" name="{{ $f->field_name }}" value="">
         </div>
         @elseif($f->field_type == 4)
         <div class="form-group col-md-12">
             <label for="">{{$f->field_label}}</label>
-            <input type="radio" name="{{ $f->field_name }}" {{ isset($field_value) ? (isset($field_value->field_value) ? 'checked' : '') : ''}}>
+            <input type="radio" name="{{ $f->field_name }}" >
         </div>
         @elseif($f->field_type == 6)
         <div class="form-group col-md-12">
             <label for="">{{$f->field_label}}</label>
-            <input type="email" name="{{ $f->field_name }}" class="form-control" value="{{ isset($field_value) ? (isset($field_value->field_value) ? $field_value->field_value : '') : ''}}">
+            <input type="email" name="{{ $f->field_name }}" class="form-control" value="">
         </div>
         @elseif($f->field_type == 5)
         <div class="form-group col-md-12">
             <label for="">{{$f->field_label}}</label>
-            <input type="password" name="{{ $f->field_name }}" class="form-control" value="{{ isset($data) ? $data : ''}}">
+            <input type="password" name="{{ $f->field_name }}" class="form-control" value="">
         </div>
         @endif
     </div>

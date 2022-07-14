@@ -181,6 +181,8 @@
 @if(session()->has('message'))
   <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('message') }}</div>
 @endif
+
+                                  
   
 
 <section>
@@ -189,6 +191,11 @@
         <div class="col-lg-12">
               <div class="row card">
                         <div class="pull-left">
+                        @if ($message = Session::get('error'))
+                                        <div class="alert alert-danger">
+                                            <p>{{ $message }}</p>
+                                        </div>
+                                    @endif
                           <h2 class="text-center">Your Form Save Successfully</h2>
                           <p class="text-center">Project Manager Will Contact You Soon...</p>
                        </div>
