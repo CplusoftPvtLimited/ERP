@@ -8,7 +8,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header d-flex align-items-center">
-                        <h4>{{trans('file.Update Quotation')}}</h4>
+                        <h4>{{trans('file.Update Estimate')}}</h4>
                     </div>
                     <div class="card-body">
                         <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
@@ -16,24 +16,13 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label>{{trans('file.reference')}}</label>
                                             <p><strong>{{ $lims_quotation_data->reference_no }}</strong></p>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>{{trans('file.Biller')}} *</label>
-                                            <input type="hidden" name="biller_id_hidden" value="{{$lims_quotation_data->biller_id}}" />
-                                            <select required name="biller_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select Biller...">
-                                                @foreach($lims_biller_list as $biller)
-                                                <option value="{{$biller->id}}">{{$biller->name . ' (' . $biller->company_name . ')'}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label>{{trans('file.Supplier')}}</label>
                                             <input type="hidden" name="supplier_id_hidden" value="{{ $lims_quotation_data->supplier_id }}" />
@@ -46,7 +35,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                	<div class="col-md-4">
+                                	<div class="col-md-6">
                                         <div class="form-group">
                                             <label>{{trans('file.customer')}} *</label>
                                             <input type="hidden" name="customer_id_hidden" value="{{ $lims_quotation_data->customer_id }}" />
@@ -57,7 +46,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label>{{trans('file.Warehouse')}} *</label>
                                             <input type="hidden" name="warehouse_id_hidden" value="{{$lims_quotation_data->warehouse_id}}" />
@@ -296,11 +285,12 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>{{trans('file.Status')}} *</label>
-                                            <input type="hidden" name="quotation_status_hidden" value="{{$lims_quotation_data->quotation_status}}">
-                                            <select name="quotation_status" class="form-control">
-                                                <option value="1">{{trans('file.Pending')}}</option>
-                                                <option value="2">{{trans('file.Sent')}}</option>
+                                            <label>{{trans('file.Payment Status')}} *</label>
+                                            <select name="payment_status" class="form-control">
+                                                <option value="1" <?php echo ($lims_quotation_data->payment_status == 1) ? 'selected' : ''; ?>>{{trans('file.Pending')}}</option>
+                                                <option value="2" <?php echo ($lims_quotation_data->payment_status == 2) ? 'selected' : ''; ?>>{{trans('file.Due')}}</option>
+                                                <option value="3" <?php echo ($lims_quotation_data->payment_status == 3) ? 'selected' : ''; ?>>{{trans('file.Partial')}}</option>
+                                                <option value="4" <?php echo ($lims_quotation_data->payment_status == 4) ? 'selected' : ''; ?>>{{trans('file.Paid')}}</option>
                                             </select>
                                         </div>
                                     </div>
@@ -488,8 +478,9 @@ $.get('../getcustomergroup/' + id, function(data) {
     customer_group_rate = (data / 100);
 });
 
-var id = $('select[name="warehouse_id"]').val();
+var id = $('#warehouse_id').val();
 $.get('../getproduct/' + id, function(data) {
+    // alert('hheheheheh');
     lims_product_array = [];
     product_code = data[0];
     product_name = data[1];
@@ -512,8 +503,9 @@ $('select[name="customer_id"]').on('change', function() {
     });
 });
 
-$('select[name="warehouse_id"]').on('change', function() {
+$('#warehouse_id').on('change', function() {
     var id = $(this).val();
+    // alert('hahahahahah');
     $.get('../getproduct/' + id, function(data) {
         lims_product_array = [];
         product_code = data[0];
@@ -533,7 +525,11 @@ $('select[name="warehouse_id"]').on('change', function() {
 
 $('#lims_productcodeSearch').on('input', function(){
     var customer_id = $('#customer_id').val();
-    var warehouse_id = $('select[name="warehouse_id"]').val();
+    // var warehouse_id = $('select[name="warehouse_id"]').val();
+    var warehouse_id = $('#warehouse_id').val();
+
+
+    // alert(warehouse_id);
     temp_data = $('#lims_productcodeSearch').val();
     if(!customer_id){
         $('#lims_productcodeSearch').val(temp_data.substring(0, temp_data.length - 1));
@@ -581,6 +577,7 @@ $("#myTable").on('input', '.qty', function() {
 $("#myTable").on("change", ".batch-no", function () {
     rowindex = $(this).closest('tr').index();
     var product_id = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.product-id').val();
+    alert(product_id);
     var warehouse_id = $('#warehouse_id').val();
     $.get('../../check-batch-availability/' + product_id + '/' + $(this).val() + '/' + warehouse_id, function(data) {
         if(data['message'] != 'ok') {
@@ -619,6 +616,7 @@ $("table.order-list").on("click", ".edit-product", function() {
 });
   //update product
 $('button[name="update_btn"]').on("click", function() {
+    // alert('123');
     var edit_discount = $('input[name="edit_discount"]').val();
     var edit_qty = $('input[name="edit_qty"]').val();
     var edit_unit_price = $('input[name="edit_unit_price"]').val();

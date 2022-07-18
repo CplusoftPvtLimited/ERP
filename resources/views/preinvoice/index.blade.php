@@ -8,8 +8,11 @@
 
 <section>
     <div class="container-fluid">
+    <div class="card-header mt-2">
+                <h3 class="text-center">{{trans('file.Pre Invoice List')}}</h3>
+            </div>
         @if(in_array("quotes-add", $all_permission))
-            <a href="{{route('quotations.create')}}" class="btn btn-info"><i class="dripicons-plus"></i> {{trans('file.Add Estimate')}}</a>
+            <!-- <a href="{{route('quotations.create')}}" class="btn btn-info"><i class="dripicons-plus"></i> {{trans('file.Add Estimate')}}</a> -->
         @endif
     </div>
     <div class="table-responsive">
@@ -71,7 +74,7 @@
                                 </li>
                                 @if(in_array("quotes-edit", $all_permission))
                                 <li>
-                                    <a class="btn btn-link" href="{{ route('quotations.edit', $quotation->id) }}"><i class="dripicons-document-edit"></i> {{trans('file.edit')}}</a></button>
+                                    <a class="btn btn-link" href="{{ route('preinvoices.edit', $quotation->id) }}"><i class="dripicons-document-edit"></i> {{trans('file.edit')}}</a></button>
                                 </li>
                                 @endif
                                 <!-- <li>
@@ -82,7 +85,7 @@
                                 </li> -->
                                 <li class="divider"></li>
                                 @if(in_array("quotes-delete", $all_permission))
-                                {{ Form::open(['route' => ['quotations.destroy', $quotation->id], 'method' => 'DELETE'] ) }}
+                                {{ Form::open(['route' => ['preinvoices.destroy', $quotation->id], 'method' => 'DELETE'] ) }}
                                 <li>
                                     <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="dripicons-trash"></i> {{trans('file.delete')}}</button>
                                 </li>
@@ -129,7 +132,7 @@
                     <h3 id="exampleModalLabel" class="modal-title text-center container-fluid">{{$general_setting->site_title}}</h3>
                 </div>
                 <div class="col-md-12 text-center">
-                    <i style="font-size: 15px;">{{trans('file.Estimate Details')}}</i>
+                    <i style="font-size: 15px;">{{trans('file.Pre Invoice Details')}}</i>
                 </div>
             </div>
         </div>
@@ -309,6 +312,8 @@
                         else if(!quotation_id.length)
                             alert('Nothing is selected!');
                     }
+                    else
+                        alert('This feature is disable for demo!');
                 }
             },
             {

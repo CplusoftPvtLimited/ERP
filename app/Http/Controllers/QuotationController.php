@@ -41,9 +41,9 @@ class QuotationController extends Controller
                 $all_permission[] = 'dummy text';
             
             if(Auth::user()->role_id > 2 && config('staff_access') == 'own')
-                $lims_quotation_all = Quotation::with('biller', 'customer', 'supplier', 'user')->orderBy('id', 'desc')->where('user_id', Auth::id())->get();
+                $lims_quotation_all = Quotation::with('customer', 'supplier', 'user')->orderBy('id', 'desc')->where('user_id', Auth::id())->get();
             else
-                $lims_quotation_all = Quotation::with('biller', 'customer', 'supplier', 'user')->orderBy('id', 'desc')->get();
+                $lims_quotation_all = Quotation::with('customer', 'supplier', 'user')->orderBy('id', 'desc')->get();
             return view('quotation.index', compact('lims_quotation_all', 'all_permission'));
         }
         else
@@ -445,6 +445,7 @@ class QuotationController extends Controller
             $lims_tax_list = Tax::where('is_active', true)->get();
             $lims_quotation_data = Quotation::find($id);
             $lims_product_quotation_data = ProductQuotation::where('quotation_id', $id)->get();
+            // dd($lims_quotation_data);
             return view('quotation.edit',compact('lims_customer_list', 'lims_warehouse_list', 'lims_biller_list', 'lims_tax_list', 'lims_quotation_data','lims_product_quotation_data', 'lims_supplier_list'));
         }
         else

@@ -28,6 +28,22 @@ Route::group(['middleware' => 'auth'], function() {
 
 Route::group(['middleware' => ['auth', 'active']], function() {
 
+	Route::resource('preinvoices', 'PreInvoiceController');
+	Route::resource('invoices', 'InvoiceController');
+	Route::get('invoices/getproduct/{id}', 'InvoiceController@getProduct')->name('invoice.getproduct');
+	Route::get('preinvoices/getproduct/{id}', 'PreInvoiceController@getProduct')->name('preinvoice.getproduct');
+	Route::get('invoices/product_quotation/{id}','InvoiceController@productQuotationData');
+	Route::get('preinvoices/product_quotation/{id}','PreInvoiceController@productQuotationData');
+	Route::get('preinvoices/lims_product_search', 'PreInvoiceController@limsProductSearch')->name('product_preinvoice.search');
+	Route::get('invoices/lims_product_search', 'InvoiceController@limsProductSearch')->name('product_invoice.search');
+
+
+
+
+
+
+
+
 	
 	Route::get('getform',[FormController::class,'getForm'])->name('getform');
 	Route::post('formSave',[FormController::class,'formSave'])->name('formSave');

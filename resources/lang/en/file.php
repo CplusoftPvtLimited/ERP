@@ -1,5 +1,14 @@
 <?php 
 return [
+	'Update Estimate' => 'Update Estimate',
+	'Update Invoice' => 'Update Invoice',
+	'Update Pre Invoice' => 'Update Pre Invoice',
+	'Estimate Details' => 'Estimate Details',
+	'Pre Invoice Details' => 'Pre Invoice Details',
+	'Estimate List' => 'Estimate List',
+	'Pre Invoice List'=> 'Pre Invoice List',
+	'Invoice List' => 'Invoice List',
+	'Add Estimate' => 'Add Estimate',
 	'Recent Transaction' => 'Recent Transaction',
 	'Forms' => 'Forms',
 	'Forms' => 'Forms',
