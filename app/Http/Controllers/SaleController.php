@@ -36,6 +36,11 @@ use App\ProductPurchase;
 use App\ProductBatch;
 use App\Purchase;
 use App\RewardPointSetting;
+use App\SalesInvoice;
+use App\InvoiceProduct;
+
+use PDF;
+
 use DB;
 use App\GeneralSetting;
 use Stripe\Stripe;
@@ -52,9 +57,16 @@ use Illuminate\Support\Facades\Validator;
 
 class SaleController extends Controller
 {
+    public function show()
+    {
+
+    }
+
     public function index(Request $request)
     {      
         // dd($request->all());
+        $sales = Sale::where('user_id',auth()->user()->id)->orderBy('id','desc')->get();
+        // dd($sales);
         $role = Role::find(Auth::user()->role_id);
         if($role->hasPermissionTo('sales-index')) {
             $permissions = Role::findByName($role->name)->permissions;
@@ -83,7 +95,7 @@ class SaleController extends Controller
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
             $lims_account_list = Account::where('is_active', true)->get();
 
-            return view('sale.index',compact('starting_date', 'ending_date', 'warehouse_id', 'lims_gift_card_list', 'lims_pos_setting_data', 'lims_reward_point_setting_data', 'lims_account_list', 'lims_warehouse_list', 'all_permission'));
+            return view('sale.index',compact('starting_date', 'ending_date', 'warehouse_id', 'lims_gift_card_list', 'lims_pos_setting_data', 'lims_reward_point_setting_data', 'lims_account_list', 'lims_warehouse_list', 'all_permission','sales'));
         }
         else
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
@@ -327,7 +339,8 @@ class SaleController extends Controller
         $role = Role::find(Auth::user()->role_id);
         if($role->hasPermissionTo('sales-add')) {
             $lims_customer_list = Customer::where('is_active', true)->get();
-            if(Auth::user()->role_id > 2) {
+            if(Auth::user()->role_id > 2 && Auth::user()->role_id != 10 && Auth::user()->role_id != 11) {
+                // dd('ithy');
                 $lims_warehouse_list = Warehouse::where([
                     ['is_active', true],
                     ['id', Auth::user()->warehouse_id]
@@ -338,6 +351,8 @@ class SaleController extends Controller
                 ])->get();
             }
             else {
+                // dd('uthy ni ithy');
+
                 $lims_warehouse_list = Warehouse::where('is_active', true)->get();
                 $lims_biller_list = Biller::where('is_active', true)->get();
             }
@@ -345,7 +360,8 @@ class SaleController extends Controller
             $lims_tax_list = Tax::where('is_active', true)->get();
             $lims_pos_setting_data = PosSetting::latest()->first();
             $lims_reward_point_setting_data = RewardPointSetting::latest()->first();
-
+            // dump($lims_biller_list);
+            // dd($lims_warehouse_list);
             return view('sale.create',compact('lims_customer_list', 'lims_warehouse_list', 'lims_biller_list', 'lims_pos_setting_data', 'lims_tax_list', 'lims_reward_point_setting_data'));
         }
         else
@@ -354,6 +370,7 @@ class SaleController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request['created_at']);
         $data = $request->all();
         if(isset($request->reference_no)) {
             $this->validate($request, [
@@ -364,14 +381,14 @@ class SaleController extends Controller
         }
 
         $data['user_id'] = Auth::id();
-        $cash_register_data = CashRegister::where([
-            ['user_id', $data['user_id']],
-            ['warehouse_id', $data['warehouse_id']],
-            ['status', true]
-        ])->first();
+        // $cash_register_data = CashRegister::where([
+        //     ['user_id', $data['user_id']],
+        //     ['warehouse_id', $data['warehouse_id']],
+        //     ['status', true]
+        // ])->first();
 
-        if($cash_register_data)
-            $data['cash_register_id'] = $cash_register_data->id;
+        // if($cash_register_data)
+        //     $data['cash_register_id'] = $cash_register_data->id;
 
         if(isset($data['created_at']))
             $data['created_at'] = date("Y-m-d H:i:s", strtotime($data['created_at']));
@@ -426,6 +443,8 @@ class SaleController extends Controller
         }
 
         $lims_sale_data = Sale::create($data);
+        $lims_sale_data->date = $request['created_at'];
+        $lims_sale_data->update();
         $lims_customer_data = Customer::find($data['customer_id']);
         $lims_reward_point_setting_data = RewardPointSetting::latest()->first();
         //checking if customer gets some points or not
@@ -755,7 +774,7 @@ class SaleController extends Controller
         elseif($data['pos'])
             return redirect('pos')->with('message', $message);
         else
-            return redirect('sales')->with('message', $message);
+            return view('sale.estimate_preview',compact('lims_customer_data','request','lims_sale_data'))->with('message', $message);
     }
 
     public function sendMail(Request $request)
@@ -909,44 +928,35 @@ class SaleController extends Controller
         return redirect('sales')->with('message', 'Payment created successfully');
     }
 
-    public function getProduct($id)
+    public function getProduct()
     {
-        $lims_product_warehouse_data = Product::join('product_warehouse', 'products.id', '=', 'product_warehouse.product_id')
-        ->where([
-            ['products.is_active', true],
-            ['product_warehouse.warehouse_id', $id],
-            ['product_warehouse.qty', '>', 0]
-        ])
-        ->whereNull('product_warehouse.variant_id')
-        ->whereNull('product_warehouse.product_batch_id')
-        ->select('product_warehouse.*')
-        ->get();
-
+        $lims_product_warehouse_data = Product::all();
+        // dd($lims_product_warehouse_data);
         config()->set('database.connections.mysql.strict', false);
         \DB::reconnect(); //important as the existing connection if any would be in strict mode
 
-        $lims_product_with_batch_warehouse_data = Product::join('product_warehouse', 'products.id', '=', 'product_warehouse.product_id')
-        ->where([
-            ['products.is_active', true],
-            ['product_warehouse.warehouse_id', $id],
-            ['product_warehouse.qty', '>', 0]
-        ])
-        ->whereNull('product_warehouse.variant_id')
-        ->whereNotNull('product_warehouse.product_batch_id')
-        ->select('product_warehouse.*')
-        ->groupBy('product_warehouse.product_id')
-        ->get();
+        // $lims_product_with_batch_warehouse_data = Product::join('product_warehouse', 'products.id', '=', 'product_warehouse.product_id')
+        // ->where([
+        //     ['products.is_active', true],
+        //     ['product_warehouse.warehouse_id', $id],
+        //     ['product_warehouse.qty', '>', 0]
+        // ])
+        // ->whereNull('product_warehouse.variant_id')
+        // ->whereNotNull('product_warehouse.product_batch_id')
+        // ->select('product_warehouse.*')
+        // ->groupBy('product_warehouse.product_id')
+        // ->get();
 
         //now changing back the strict ON
-        config()->set('database.connections.mysql.strict', true);
-        \DB::reconnect();
+        // config()->set('database.connections.mysql.strict', true);
+        // \DB::reconnect();
 
-        $lims_product_with_variant_warehouse_data = Product::join('product_warehouse', 'products.id', '=', 'product_warehouse.product_id')
-        ->where([
-            ['products.is_active', true],
-            ['product_warehouse.warehouse_id', $id],
-            ['product_warehouse.qty', '>', 0]
-        ])->whereNotNull('product_warehouse.variant_id')->select('product_warehouse.*')->get();
+        // $lims_product_with_variant_warehouse_data = Product::join('product_warehouse', 'products.id', '=', 'product_warehouse.product_id')
+        // ->where([
+        //     ['products.is_active', true],
+        //     ['product_warehouse.warehouse_id', $id],
+        //     ['product_warehouse.qty', '>', 0]
+        // ])->whereNotNull('product_warehouse.variant_id')->select('product_warehouse.*')->get();
         
         $product_code = [];
         $product_name = [];
@@ -958,50 +968,50 @@ class SaleController extends Controller
         {
             $product_qty[] = $product_warehouse->qty;
             $product_price[] = $product_warehouse->price;
-            $lims_product_data = Product::find($product_warehouse->product_id);
-            $product_code[] =  $lims_product_data->code;
-            $product_name[] = htmlspecialchars($lims_product_data->name);
-            $product_type[] = $lims_product_data->type;
-            $product_id[] = $lims_product_data->id;
-            $product_list[] = $lims_product_data->product_list;
-            $qty_list[] = $lims_product_data->qty_list;
+            // $lims_product_data = Product::find($product_warehouse->product_id);
+            $product_code[] =  $product_warehouse->code;
+            $product_name[] = htmlspecialchars($product_warehouse->name);
+            $product_type[] = $product_warehouse->type;
+            $product_id[] = $product_warehouse->id;
+            $product_list[] = $product_warehouse->product_list;
+            $qty_list[] = $product_warehouse->qty_list;
             $batch_no[] = null;
             $product_batch_id[] = null;
             $expired_date[] = null;
         }
         //product with batches
-        foreach ($lims_product_with_batch_warehouse_data as $product_warehouse) 
-        {
-            $product_qty[] = $product_warehouse->qty;
-            $product_price[] = $product_warehouse->price;
-            $lims_product_data = Product::find($product_warehouse->product_id);
-            $product_code[] =  $lims_product_data->code;
-            $product_name[] = htmlspecialchars($lims_product_data->name);
-            $product_type[] = $lims_product_data->type;
-            $product_id[] = $lims_product_data->id;
-            $product_list[] = $lims_product_data->product_list;
-            $qty_list[] = $lims_product_data->qty_list;
-            $product_batch_data = ProductBatch::select('id', 'batch_no', 'expired_date')->find($product_warehouse->product_batch_id);
-            $batch_no[] = $product_batch_data->batch_no;
-            $product_batch_id[] = $product_batch_data->id;
-            $expired_date[] = date(config('date_format'), strtotime($product_batch_data->expired_date));
-        }
-        //product with variant
-        foreach ($lims_product_with_variant_warehouse_data as $product_warehouse) 
-        {
-            $product_qty[] = $product_warehouse->qty;
-            $lims_product_data = Product::find($product_warehouse->product_id);
-            $lims_product_variant_data = ProductVariant::select('item_code')->FindExactProduct($product_warehouse->product_id, $product_warehouse->variant_id)->first();
-            $product_code[] =  $lims_product_variant_data->item_code;
-            $product_name[] = htmlspecialchars($lims_product_data->name);
-            $product_type[] = $lims_product_data->type;
-            $product_id[] = $lims_product_data->id;
-            $product_list[] = $lims_product_data->product_list;
-            $qty_list[] = $lims_product_data->qty_list;
-            $batch_no[] = null;
-            $product_batch_id[] = null;
-            $expired_date[] = null;
-        }
+        // foreach ($lims_product_with_batch_warehouse_data as $product_warehouse) 
+        // {
+        //     $product_qty[] = $product_warehouse->qty;
+        //     $product_price[] = $product_warehouse->price;
+        //     $lims_product_data = Product::find($product_warehouse->product_id);
+        //     $product_code[] =  $lims_product_data->code;
+        //     $product_name[] = htmlspecialchars($lims_product_data->name);
+        //     $product_type[] = $lims_product_data->type;
+        //     $product_id[] = $lims_product_data->id;
+        //     $product_list[] = $lims_product_data->product_list;
+        //     $qty_list[] = $lims_product_data->qty_list;
+        //     $product_batch_data = ProductBatch::select('id', 'batch_no', 'expired_date')->find($product_warehouse->product_batch_id);
+        //     $batch_no[] = $product_batch_data->batch_no;
+        //     $product_batch_id[] = $product_batch_data->id;
+        //     $expired_date[] = date(config('date_format'), strtotime($product_batch_data->expired_date));
+        // }
+        // //product with variant
+        // foreach ($lims_product_with_variant_warehouse_data as $product_warehouse) 
+        // {
+        //     $product_qty[] = $product_warehouse->qty;
+        //     $lims_product_data = Product::find($product_warehouse->product_id);
+        //     $lims_product_variant_data = ProductVariant::select('item_code')->FindExactProduct($product_warehouse->product_id, $product_warehouse->variant_id)->first();
+        //     $product_code[] =  $lims_product_variant_data->item_code;
+        //     $product_name[] = htmlspecialchars($lims_product_data->name);
+        //     $product_type[] = $lims_product_data->type;
+        //     $product_id[] = $lims_product_data->id;
+        //     $product_list[] = $lims_product_data->product_list;
+        //     $qty_list[] = $lims_product_data->qty_list;
+        //     $batch_no[] = null;
+        //     $product_batch_id[] = null;
+        //     $expired_date[] = null;
+        // }
         //retrieve product with type of digital, combo and service
         $lims_product_data = Product::whereNotIn('type', ['standard'])->where('is_active', true)->get();
         foreach ($lims_product_data as $product) 
@@ -1018,6 +1028,7 @@ class SaleController extends Controller
             $expired_date[] = null;
         }
         $product_data = [$product_code, $product_name, $product_qty, $product_type, $product_id, $product_list, $qty_list, $product_price, $batch_no, $product_batch_id, $expired_date];
+        // dd($product_data);
         return $product_data;
     }
 
@@ -1188,9 +1199,11 @@ class SaleController extends Controller
 
     public function limsProductSearch(Request $request)
     {
+        
         $todayDate = date('Y-m-d');
         $product_code = explode("(", $request['data']);
         $product_info = explode("?", $request['data']);
+        
         $product_code[0] = rtrim($product_code[0], " ");
         $customer_id = $product_info[1];
         $qty = $product_info[2];
@@ -1297,6 +1310,7 @@ class SaleController extends Controller
         $product[] = $lims_product_data->promotion;
         $product[] = $lims_product_data->is_batch;
         $product[] = $lims_product_data->is_imei;
+        // dd($product);
         return $product;
 
     }
@@ -1593,6 +1607,8 @@ class SaleController extends Controller
 
     public function edit($id)
     {
+        // dd($id);
+        // dd($request->all());
         $role = Role::find(Auth::user()->role_id);
         if($role->hasPermissionTo('sales-edit')){
             $lims_customer_list = Customer::where('is_active', true)->get();
@@ -1609,6 +1625,8 @@ class SaleController extends Controller
 
     public function update(Request $request, $id)
     {
+        // dump($id);
+        // dd($request->all());
         $data = $request->except('document');
         //return dd($data);
         $document = $request->document;
@@ -1889,6 +1907,7 @@ class SaleController extends Controller
             else
                 Product_Sale::create($product_sale);
         }
+        $lims_sale_data->estimate_type = 0;
         $lims_sale_data->update($data);
         $lims_customer_data = Customer::find($data['customer_id']);
         $message = 'Sale updated successfully';
@@ -1919,7 +1938,337 @@ class SaleController extends Controller
             }
         }
 
-        return redirect('sales')->with('message', $message);
+        return view('sale.estimate_preview',compact('lims_customer_data','request','lims_sale_data'))->with('message', $message);
+    }
+    public function editInvoice($id)
+    {
+        $role = Role::find(Auth::user()->role_id);
+        if($role->hasPermissionTo('sales-edit')){
+            $lims_customer_list = Customer::where('is_active', true)->get();
+            $lims_warehouse_list = Warehouse::where('is_active', true)->get();
+            $lims_biller_list = Biller::where('is_active', true)->get();
+            $lims_tax_list = Tax::where('is_active', true)->get();
+            $lims_sale_data = SalesInvoice::find($id);
+            $lims_product_sale_data = InvoiceProduct::where('invoice_id', $id)->get();
+            return view('sale.invoice_edit',compact('lims_customer_list', 'lims_warehouse_list', 'lims_biller_list', 'lims_tax_list', 'lims_sale_data','lims_product_sale_data'));
+        }
+    }
+    public function updateInvoice(Request $request, $id)
+    {
+        // dump($id);
+        // dd($request->all());
+        $data = $request->except('document');
+        //return dd($data);
+        $document = $request->document;
+        if ($document) {
+            $v = Validator::make(
+                [
+                    'extension' => strtolower($request->document->getClientOriginalExtension()),
+                ],
+                [
+                    'extension' => 'in:jpg,jpeg,png,gif,pdf,csv,docx,xlsx,txt',
+                ]
+            );
+            if ($v->fails())
+                return redirect()->back()->withErrors($v->errors());
+
+            $documentName = $document->getClientOriginalName();
+            $document->move('public/sale/documents', $documentName);
+            $data['document'] = $documentName;
+        }
+        $balance = $data['grand_total'] - $data['paid_amount'];
+        if($balance < 0 || $balance > 0)
+            $data['payment_status'] = 2;
+        else
+            $data['payment_status'] = 4;
+        $lims_sale_data = SalesInvoice::find($id);
+        $lims_product_sale_data = InvoiceProduct::where('invoice_id', $id)->get();
+        $data['created_at'] = date("Y-m-d", strtotime(str_replace("/", "-", $data['created_at'])));
+        $product_id = $data['product_id'];
+        $imei_number = $data['imei_number'];
+        $product_batch_id = $data['product_batch_id'];
+        $product_code = $data['product_code'];
+        $product_variant_id = $data['product_variant_id'];
+        $qty = $data['qty'];
+        $sale_unit = $data['sale_unit'];
+        $net_unit_price = $data['net_unit_price'];
+        $discount = $data['discount'];
+        $tax_rate = $data['tax_rate'];
+        $tax = $data['tax'];
+        $total = $data['subtotal'];
+        $old_product_id = [];
+        $product_sale = [];
+        foreach ($lims_product_sale_data as  $key => $product_sale_data) {
+            $old_product_id[] = $product_sale_data->product_id;
+            $old_product_variant_id[] = null;
+            $lims_product_data = Product::find($product_sale_data->product_id);
+
+            if( ($lims_sale_data->sale_status == 1) && ($lims_product_data->type == 'combo') ) {
+                $product_list = explode(",", $lims_product_data->product_list);
+                $variant_list = explode(",", $lims_product_data->variant_list);
+                if($lims_product_data->variant_list)
+                    $variant_list = explode(",", $lims_product_data->variant_list);
+                else
+                    $variant_list = [];
+                $qty_list = explode(",", $lims_product_data->qty_list);
+
+                foreach ($product_list as $index=>$child_id) {
+                    $child_data = Product::find($child_id);
+                    if(count($variant_list) && $variant_list[$index]) {
+                        $child_product_variant_data = ProductVariant::where([
+                            ['product_id', $child_id],
+                            ['variant_id', $variant_list[$index]]
+                        ])->first();
+
+                        $child_warehouse_data = Product_Warehouse::where([
+                            ['product_id', $child_id],
+                            ['variant_id', $variant_list[$index]],
+                            ['warehouse_id', $lims_sale_data->warehouse_id ],
+                        ])->first();
+
+                        $child_product_variant_data->qty += $product_sale_data->qty * $qty_list[$index];
+                        $child_product_variant_data->save();
+                    }
+                    else {
+                        $child_warehouse_data = Product_Warehouse::where([
+                            ['product_id', $child_id],
+                            ['warehouse_id', $lims_sale_data->warehouse_id ],
+                        ])->first();
+                    }
+
+                    $child_data->qty += $product_sale_data->qty * $qty_list[$index];
+                    $child_warehouse_data->qty += $product_sale_data->qty * $qty_list[$index];
+
+                    $child_data->save();
+                    $child_warehouse_data->save();
+                }
+            }
+            elseif( ($lims_sale_data->sale_status == 1) && ($product_sale_data->sale_unit_id != 0)) {
+                $old_product_qty = $product_sale_data->qty;
+                $lims_sale_unit_data = Unit::find($product_sale_data->sale_unit_id);
+                if ($lims_sale_unit_data->operator == '*')
+                    $old_product_qty = $old_product_qty * $lims_sale_unit_data->operation_value;
+                else
+                    $old_product_qty = $old_product_qty / $lims_sale_unit_data->operation_value;
+                if($product_sale_data->variant_id) {
+                    $lims_product_variant_data = ProductVariant::select('id', 'qty')->FindExactProduct($product_sale_data->product_id, $product_sale_data->variant_id)->first();
+                    $lims_product_warehouse_data = Product_Warehouse::FindProductWithVariant($product_sale_data->product_id, $product_sale_data->variant_id, $lims_sale_data->warehouse_id)
+                    ->first();
+                    $old_product_variant_id[$key] = $lims_product_variant_data->id;
+                    $lims_product_variant_data->qty += $old_product_qty;
+                    $lims_product_variant_data->save();
+                }
+                elseif($product_sale_data->product_batch_id) {
+                    $lims_product_warehouse_data = Product_Warehouse::where([
+                        ['product_id', $product_sale_data->product_id],
+                        ['product_batch_id', $product_sale_data->product_batch_id],
+                        ['warehouse_id', $lims_sale_data->warehouse_id]
+                    ])->first();
+
+                    $product_batch_data = ProductBatch::find($product_sale_data->product_batch_id);
+                    $product_batch_data->qty += $old_product_qty;
+                    $product_batch_data->save();
+                }
+                else
+                    $lims_product_warehouse_data = Product_Warehouse::FindProductWithoutVariant($product_sale_data->product_id, $lims_sale_data->warehouse_id)
+                    ->first();
+                $lims_product_data->qty += $old_product_qty;
+                $lims_product_warehouse_data->qty += $old_product_qty;
+                $lims_product_data->save();
+                $lims_product_warehouse_data->save();
+            }
+
+            if($product_sale_data->imei_number) {
+                if($lims_product_warehouse_data->imei_number)
+                    $lims_product_warehouse_data->imei_number .= ',' . $product_sale_data->imei_number;
+                else
+                    $lims_product_warehouse_data->imei_number = $product_sale_data->imei_number;
+                $lims_product_warehouse_data->save();
+            }
+
+            if($product_sale_data->variant_id && !(in_array($old_product_variant_id[$key], $product_variant_id)) ){
+                $product_sale_data->delete();
+            }
+            elseif( !(in_array($old_product_id[$key], $product_id)) )
+                $product_sale_data->delete();
+        }
+        foreach ($product_id as $key => $pro_id) {
+            $lims_product_data = Product::find($pro_id);
+            $product_sale['variant_id'] = null;
+            if($lims_product_data->type == 'combo' && $data['sale_status'] == 1) {
+                $product_list = explode(",", $lims_product_data->product_list);
+                $variant_list = explode(",", $lims_product_data->variant_list);
+                if($lims_product_data->variant_list)
+                    $variant_list = explode(",", $lims_product_data->variant_list);
+                else
+                    $variant_list = [];
+                $qty_list = explode(",", $lims_product_data->qty_list);
+
+                foreach ($product_list as $index => $child_id) {
+                    $child_data = Product::find($child_id);
+                    if(count($variant_list) && $variant_list[$index]) {
+                        $child_product_variant_data = ProductVariant::where([
+                            ['product_id', $child_id],
+                            ['variant_id', $variant_list[$index] ],
+                        ])->first();
+
+                        $child_warehouse_data = Product_Warehouse::where([
+                            ['product_id', $child_id],
+                            ['variant_id', $variant_list[$index] ],
+                            ['warehouse_id', $data['warehouse_id'] ],
+                        ])->first();
+
+                        $child_product_variant_data->qty -= $qty[$key] * $qty_list[$index];
+                        $child_product_variant_data->save();
+                    }
+                    else {
+                        $child_warehouse_data = Product_Warehouse::where([
+                            ['product_id', $child_id],
+                            ['warehouse_id', $data['warehouse_id'] ],
+                        ])->first();
+                    }
+                        
+
+                    $child_data->qty -= $qty[$key] * $qty_list[$index];
+                    $child_warehouse_data->qty -= $qty[$key] * $qty_list[$index];
+
+                    $child_data->save();
+                    $child_warehouse_data->save();
+                }
+            }
+            if($sale_unit[$key] != 'n/a') {
+                $lims_sale_unit_data = Unit::where('unit_name', $sale_unit[$key])->first();
+                $sale_unit_id = $lims_sale_unit_data->id;
+                if($data['sale_status'] == 1) {
+                    $new_product_qty = $qty[$key];
+                    if ($lims_sale_unit_data->operator == '*') {
+                        $new_product_qty = $new_product_qty * $lims_sale_unit_data->operation_value;
+                    } else {
+                        $new_product_qty = $new_product_qty / $lims_sale_unit_data->operation_value;
+                    }
+                    if($lims_product_data->is_variant) {
+                        $lims_product_variant_data = ProductVariant::select('id', 'variant_id', 'qty')->FindExactProductWithCode($pro_id, $product_code[$key])->first();
+                        $lims_product_warehouse_data = Product_Warehouse::FindProductWithVariant($pro_id, $lims_product_variant_data->variant_id, $data['warehouse_id'])
+                        ->first();
+                        
+                        $product_sale['variant_id'] = $lims_product_variant_data->variant_id;
+                        $lims_product_variant_data->qty -= $new_product_qty;
+                        $lims_product_variant_data->save();
+                    }
+                    elseif($product_batch_id[$key]) {
+                        $lims_product_warehouse_data = Product_Warehouse::where([
+                            ['product_id', $pro_id],
+                            ['product_batch_id', $product_batch_id[$key] ],
+                            ['warehouse_id', $data['warehouse_id'] ]
+                        ])->first();
+
+                        $product_batch_data = ProductBatch::find($product_batch_id[$key]);
+                        $product_batch_data->qty -= $new_product_qty;
+                        $product_batch_data->save();
+                    }
+                    else {
+                        $lims_product_warehouse_data = Product_Warehouse::FindProductWithoutVariant($pro_id, $data['warehouse_id'])
+                        ->first();
+                    }
+                    $lims_product_data->qty -= $new_product_qty;
+                    $lims_product_warehouse_data->qty -= $new_product_qty;
+                    $lims_product_data->save();
+                    $lims_product_warehouse_data->save();
+                }
+            }
+            else
+                $sale_unit_id = 0;
+
+            //deduct imei number if available
+            if($imei_number[$key]) {
+                $imei_numbers = explode(",", $imei_number[$key]);
+                $all_imei_numbers = explode(",", $lims_product_warehouse_data->imei_number);
+                foreach ($imei_numbers as $number) {
+                    if (($j = array_search($number, $all_imei_numbers)) !== false) {
+                        unset($all_imei_numbers[$j]);
+                    }
+                }
+                $lims_product_warehouse_data->imei_number = implode(",", $all_imei_numbers);
+                $lims_product_warehouse_data->save();   
+            }
+            
+            //collecting mail data
+            if($product_sale['variant_id']) {
+                $variant_data = Variant::select('name')->find($product_sale['variant_id']);
+                $mail_data['products'][$key] = $lims_product_data->name . ' [' . $variant_data->name . ']';
+            }
+            else
+                $mail_data['products'][$key] = $lims_product_data->name;
+
+            if($lims_product_data->type == 'digital')
+                $mail_data['file'][$key] = url('/public/product/files').'/'.$lims_product_data->file;
+            else
+                $mail_data['file'][$key] = '';
+            if($sale_unit_id)
+                $mail_data['unit'][$key] = $lims_sale_unit_data->unit_code;
+            else
+                $mail_data['unit'][$key] = '';
+
+            $product_sale['invoice_id'] = $id ;
+            $product_sale['product_id'] = $pro_id;
+            $product_sale['imei_number'] = $imei_number[$key];
+            $product_sale['product_batch_id'] = $product_batch_id[$key];
+            $product_sale['qty'] = $mail_data['qty'][$key] = $qty[$key];
+            $product_sale['sale_unit_id'] = $sale_unit_id;
+            $product_sale['net_unit_price'] = $net_unit_price[$key];
+            $product_sale['discount'] = $discount[$key];
+            $product_sale['tax_rate'] = $tax_rate[$key];
+            $product_sale['tax'] = $tax[$key];
+            $product_sale['total'] = $mail_data['total'][$key] = $total[$key];
+            
+            if($product_sale['variant_id'] && in_array($product_variant_id[$key], $old_product_variant_id)) {
+                InvoiceProduct::where([
+                    ['product_id', $pro_id],
+                    ['variant_id', $product_sale['variant_id']],
+                    ['invoice_id', $id]
+                ])->update($product_sale);
+            }
+            elseif( $product_sale['variant_id'] === null && (in_array($pro_id, $old_product_id)) ) {
+                InvoiceProduct::where([
+                    ['invoice_id', $id],
+                    ['product_id', $pro_id]
+                ])->update($product_sale);
+            }
+            else
+            InvoiceProduct::create($product_sale);
+        }
+        $lims_sale_data->estimate_type = 0;
+        $lims_sale_data->update($data);
+        $lims_customer_data = Customer::find($data['customer_id']);
+        $message = 'Sale updated successfully';
+        //collecting mail data
+        if($lims_customer_data->email){
+            $mail_data['email'] = $lims_customer_data->email;
+            $mail_data['reference_no'] = $lims_sale_data->reference_no;
+            $mail_data['sale_status'] = $lims_sale_data->sale_status;
+            $mail_data['payment_status'] = $lims_sale_data->payment_status;
+            $mail_data['total_qty'] = $lims_sale_data->total_qty;
+            $mail_data['total_price'] = $lims_sale_data->total_price;
+            $mail_data['order_tax'] = $lims_sale_data->order_tax;
+            $mail_data['order_tax_rate'] = $lims_sale_data->order_tax_rate;
+            $mail_data['order_discount'] = $lims_sale_data->order_discount;
+            $mail_data['shipping_cost'] = $lims_sale_data->shipping_cost;
+            $mail_data['grand_total'] = $lims_sale_data->grand_total;
+            $mail_data['paid_amount'] = $lims_sale_data->paid_amount;
+            if($mail_data['email']){
+                try{
+                    Mail::send( 'mail.sale_details', $mail_data, function( $message ) use ($mail_data)
+                    {
+                        $message->to( $mail_data['email'] )->subject( 'Sale Details' );
+                    });
+                }
+                catch(\Exception $e){
+                    $message = 'Sale updated successfully. Please setup your <a href="setting/mail_setting">mail setting</a> to send mail.';
+                }
+            }
+        }
+        // $invoices = SalesInvoice::all();
+        return redirect('sales/invoices')->with('message', $message);
     }
 
     public function printLastReciept()
@@ -2761,5 +3110,143 @@ class SaleController extends Controller
         }
         $lims_sale_data->delete();
         return Redirect::to($url)->with('not_permitted', $message);
+    }
+    public function approveEstimate($id)
+    {
+        $sale = Sale::Find($id);
+        // dump($sale);
+        $customer = Customer::find($sale->customer_id);
+        // dd($customer);
+        $products = Product_Sale::where('sale_id', $id)->get();
+        // dd($products);
+        // $sale->estimate_type = 1;
+        // $sale->update();
+        // dd($sale);
+        return view('sale.approved_estimate', compact('sale','customer','products'));
+    }
+    public function acceptEstimate($id)
+    {
+        $sale = Sale::Find($id);
+        $sale->estimate_type = 3;
+        $sale->update();
+        return redirect()->route('sales.index');
+
+    }
+    public function cancelEstimate($id)
+    {
+        $sale = Sale::Find($id);
+        $sale->estimate_type = 2;
+        $sale->update();
+        return redirect()->route('sales.index');
+        
+    }
+    public function negotiateEstimate($id)
+    {
+        $sale = Sale::Find($id);
+        $sale->estimate_type = 1;
+        $sale->update();
+        return redirect()->route('sales.index');
+        
+    }
+    public function reactivateEstimate($id)
+    {
+        $sale = Sale::Find($id);
+        $sale->estimate_type = 0;
+        $sale->update();
+        return redirect()->route('sales.index');
+        
+    }
+    public function salesInvoices()
+    {
+        $invoices = SalesInvoice::orderBy('id','desc')->get();
+        return view('sale.invoices_index', compact('invoices'));
+    }
+    public function createSaleInvoice($id)
+    {
+        $invoice = SalesInvoice::latest()->first();
+        $sale_invoice = new SalesInvoice;
+        $sale = Sale::Find($id);
+        $sale_invoice->user_id = $sale->user_id;
+        $sale_invoice->customer_id = $sale->customer_id;
+        $sale_invoice->item = $sale->item;
+        $sale_invoice->total_qty = $sale->total_qty;
+        $sale_invoice->total_discount = $sale->total_discount;
+        $sale_invoice->total_tax = $sale->total_tax;
+        $sale_invoice->total_price = $sale->total_price;
+        $sale_invoice->grand_total = $sale->grand_total;
+        $sale_invoice->order_tax_rate = $sale->order_tax_rate;
+        $sale_invoice->order_tax = $sale->order_tax;
+        $sale_invoice->order_discount_type = $sale->order_discount_type;
+        $sale_invoice->order_discount_value = $sale->order_discount_value;
+        $sale_invoice->order_discount = $sale->order_discount;
+        $sale_invoice->coupon_id = $sale->coupon_id;
+        $sale_invoice->coupon_discount = $sale->coupon_discount;
+        $sale_invoice->shipping_cost = $sale->shipping_cost;
+        $sale_invoice->sale_status = $sale->sale_status;
+        $sale_invoice->payment_status = $sale->payment_status;
+        $sale_invoice->estimate_type = $sale->estimate_type;
+        $sale_invoice->payment_method = $sale->payment_method;
+        $sale_invoice->document = $sale->document;
+        $sale_invoice->paid_amount = $sale->paid_amount;
+        $sale_invoice->sale_note = $sale->sale_note;
+        $sale_invoice->staff_note = $sale->staff_note;
+        // dd($sale);
+        $sale_invoice->status = 1;
+        if(! $invoice)
+        $sale_invoice->invoice_number = 1;
+        else
+        $sale_invoice->invoice_number = $invoice->invoice_number + 1;
+        $sale_invoice->save();
+        $product_sales = Product_Sale::where('sale_id', $id)->get();
+        foreach($product_sales as $product_sale)
+        {
+            $invoice_product = new InvoiceProduct;
+            $invoice_product->invoice_id = $sale_invoice->id;
+            $invoice_product->product_id = $product_sale->product_id;
+            $invoice_product->product_batch_id = $product_sale->product_batch_id;
+            $invoice_product->variant_id = $product_sale->variant_id;
+            $invoice_product->imei_number = $product_sale->imei_number;
+            $invoice_product->qty = $product_sale->qty;
+            $invoice_product->sale_unit_id = $product_sale->sale_unit_id;
+            $invoice_product->net_unit_price = $product_sale->net_unit_price;
+            $invoice_product->discount = $product_sale->discount;
+            $invoice_product->tax_rate = $product_sale->tax_rate;
+            $invoice_product->tax = $product_sale->tax;
+            $invoice_product->total = $product_sale->total;
+            $invoice_product->save();
+        }
+
+
+
+
+        // dd($product_sale);
+        return redirect('sales/invoices');
+
+    }
+
+    public function changeInvoiceStatus($id,$val)
+    {
+        $invoice = SalesInvoice::find($id);
+        $invoice->status = $val;
+        $invoice->update();
+        return redirect('sales/invoices');
+    }
+    public function generatePreInvoicePDF($id)
+    {
+        
+        $sale = Sale::Find($id);
+        // dump($sale);
+        $customer = Customer::find($sale->customer_id);
+        // dd($customer);
+        $products = Product_Sale::where('sale_id', $id)->get();
+        $data = [
+            'sale' => $sale,
+            'customer' => $customer,
+            'products' => $products
+        ];
+
+        $pdf = PDF::loadView('sale.preinvoice_view', $data);
+    
+        return $pdf->download('preinvoice.pdf');
     }
 }

@@ -8,7 +8,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header d-flex align-items-center">
-                        <h4>{{trans('file.Add Sale')}}</h4>
+                        <h4>{{trans('file.Sale Estimate')}}</h4>
                     </div>
                     <div class="card-body">
                         <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
@@ -54,7 +54,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <!-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label>{{trans('file.Warehouse')}} *</label>
                                             <select required name="warehouse_id" id="warehouse_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select warehouse...">
@@ -63,8 +63,8 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
+                                    </div> -->
+                                    <!-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label>{{trans('file.Biller')}} *</label>
                                             <select required name="biller_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select Biller...">
@@ -73,7 +73,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <div class="row mt-3">
                                     <div class="col-md-12">
@@ -203,7 +203,12 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <input type="hidden" name="payment_status" class="form-control" value="1">
+                                    <input type="hidden" name="sale_status" class="form-control" value="2">
+                                    <input type="hidden" name="estimate_type" class="form-control" value="0">
+
+
+                                    <!-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label>{{trans('file.Sale Status')}} *</label>
                                             <select name="sale_status" class="form-control">
@@ -211,8 +216,8 @@
                                                 <option value="2">{{trans('file.Pending')}}</option>
                                             </select>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
+                                    </div> -->
+                                    <!-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label>{{trans('file.Payment Status')}} *</label>
                                             <select name="payment_status" class="form-control">
@@ -222,9 +227,18 @@
                                                 <option value="4">{{trans('file.Paid')}}</option>
                                             </select>
                                         </div>
+                                    </div> -->
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>{{trans('file.Payment Method')}} *</label>
+                                            <select name="payment_method" class="form-control">
+                                                <option value="1">{{trans('file.White Cash Payment')}}</option>
+                                                <option value="2">{{trans('file.Black Cash Payment')}}</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-                                <div id="payment">
+                                <!-- <div id="payment">
                                     <div class="row">
                                         <div class="col-md-3">
                                             <div class="form-group">
@@ -292,7 +306,7 @@
                                             <textarea rows="3" class="form-control" name="payment_note"></textarea>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="row mt-2">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -308,7 +322,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <input type="submit" value="{{trans('file.submit')}}" class="btn btn-primary" id="submit-button">
+                                    <input type="submit" value="{{trans('file.Approve and Preview')}}" class="btn btn-primary" id="submit-button">
                                 </div>
                             </div>
                         </div>
@@ -317,28 +331,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="container-fluid">
-        <table class="table table-bordered table-condensed totals">
-            <td><strong>{{trans('file.Items')}}</strong>
-                <span class="pull-right" id="item">0.00</span>
-            </td>
-            <td><strong>{{trans('file.Total')}}</strong>
-                <span class="pull-right" id="subtotal">0.00</span>
-            </td>
-            <td><strong>{{trans('file.Order Tax')}}</strong>
-                <span class="pull-right" id="order_tax">0.00</span>
-            </td>
-            <td><strong>{{trans('file.Order Discount')}}</strong>
-                <span class="pull-right" id="order_discount">0.00</span>
-            </td>
-            <td><strong>{{trans('file.Shipping Cost')}}</strong>
-                <span class="pull-right" id="shipping_cost">0.00</span>
-            </td>
-            <td><strong>{{trans('file.grand total')}}</strong>
-                <span class="pull-right" id="grand_total">0.00</span>
-            </td>
-        </table>
     </div>
 
     <div id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
@@ -393,7 +385,7 @@
     </div>
 
     <!-- add cash register modal -->
-    <div id="cash-register-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
+    <div id="" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
         <div role="document" class="modal-dialog">
           <div class="modal-content">
             {!! Form::open(['route' => 'cashRegister.store', 'method' => 'post']) !!}
@@ -493,9 +485,27 @@ $('select[name="customer_id"]').on('change', function() {
     $.get('getcustomergroup/' + id, function(data) {
         customer_group_rate = (data / 100);
     });
+    $.get('getproduct', function(data) {
+        lims_product_array = [];
+        product_code = data[0];
+        product_name = data[1];
+        product_qty = data[2];
+        product_type = data[3];
+        product_id = data[4];
+        product_list = data[5];
+        qty_list = data[6];
+        product_warehouse_price = data[7];
+        batch_no = data[8];
+        product_batch_id = data[9];
+        expired_date = data[10];
+        $.each(product_code, function(index) {
+            lims_product_array.push(product_code[index] + ' (' + product_name[index] + ')');
+        });
+    });
+    
 });
 
-$('select[name="warehouse_id"]').on('change', function() {
+$('select[name="customer_id"]').on('change', function() {
     var id = $(this).val();
     $.get('getproduct/' + id, function(data) {
         lims_product_array = [];
@@ -525,10 +535,6 @@ $('#lims_productcodeSearch').on('input', function(){
     if(!customer_id){
         $('#lims_productcodeSearch').val(temp_data.substring(0, temp_data.length - 1));
         alert('Please select Customer!');
-    }
-    else if(!warehouse_id){
-        $('#lims_productcodeSearch').val(temp_data.substring(0, temp_data.length - 1));
-        alert('Please select Warehouse!');
     }
 
 });

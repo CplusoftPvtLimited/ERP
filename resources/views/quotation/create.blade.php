@@ -16,7 +16,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <!-- <div class="col-md-6">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label>{{trans('file.Biller')}} *</label>
                                             <select required name="biller_id" class="selectpicker form-control" data-live-search="true" id="biller-id" data-live-search-style="begins" title="Select Biller...">
@@ -25,7 +25,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div> -->
+                                    </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>{{trans('file.Supplier')}}</label>
@@ -36,16 +36,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>{{trans('file.customer')}} *</label>
-                                            <select id="customer_id" name="customer_id" required class="selectpicker form-control" data-live-search="true" id="customer-id" data-live-search-style="begins" title="Select customer...">
-                                                @foreach($lims_customer_list as $customer)
-                                                <option value="{{$customer->id}}">{{$customer->name . ' (' . $customer->phone_number . ')'}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -54,6 +45,16 @@
                                             <select id="warehouse_id" name="warehouse_id" required class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" >
                                                 @foreach($lims_warehouse_list as $warehouse)
                                                 <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>{{trans('file.customer')}} *</label>
+                                            <select id="customer_id" name="customer_id" required class="selectpicker form-control" data-live-search="true" id="customer-id" data-live-search-style="begins" title="Select customer...">
+                                                @foreach($lims_customer_list as $customer)
+                                                <option value="{{$customer->id}}">{{$customer->name . ' (' . $customer->phone_number . ')'}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -182,6 +183,16 @@
                                             @endif
                                 		</div>
                                 	</div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>{{trans('file.Payment Method')}} *</label>
+                                            <select name="payment_method" class="form-control">
+                                                <option value="1">{{trans('file.White Cash Payment')}}</option>
+                                                <option value="2">{{trans('file.Black Cash Payment')}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                                 <div class="row">
                                 	<div class="col-md-12">

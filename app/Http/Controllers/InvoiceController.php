@@ -205,6 +205,7 @@ class InvoiceController extends Controller
 
     public function getProduct($id)
     {
+        // dd($id);
         $product_code = [];
         $product_name = [];
         $product_qty = [];
@@ -309,11 +310,13 @@ class InvoiceController extends Controller
 
     public function limsProductSearch(Request $request)
     {
+        // dd($request->all());
         $todayDate = date('Y-m-d');
         $product_code = explode("(", $request['data']);
         $product_code[0] = rtrim($product_code[0], " ");
         $product_variant_id = null;
         $lims_product_data = Product::where('code', $product_code[0])->first();
+        // dd($lims_product_data);
         if(!$lims_product_data) {
             $lims_product_data = Product::join('product_variants', 'products.id', 'product_variants.product_id')
                 ->select('products.*', 'product_variants.id as product_variant_id', 'product_variants.item_code', 'product_variants.additional_price')
@@ -375,6 +378,7 @@ class InvoiceController extends Controller
         $product[] = $lims_product_data->promotion;
         $product[] = $lims_product_data->is_batch;
         $product[] = $lims_product_data->is_imei;
+        // dd($product);
         return $product;
     }
 
@@ -448,5 +452,9 @@ class InvoiceController extends Controller
         }
         $lims_quotation_data->delete();
         return redirect('invoices')->with('not_permitted', 'Invoice deleted successfully');
+    }
+
+    public function show($id){
+
     }
 }

@@ -430,7 +430,7 @@ var currency = <?php echo json_encode($currency) ?>;
 var rownumber = $('table.order-list tbody tr:last').index();
 
 for(rowindex  =0; rowindex <= rownumber; rowindex++){
-
+    
     product_price.push(parseFloat($('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.product-price').val()));
     exist_code.push($('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('td:nth-child(2)').text());
     var total_discount = parseFloat($('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.discount').text());
@@ -445,6 +445,7 @@ for(rowindex  =0; rowindex <= rownumber; rowindex++){
     unit_operator.push($('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.sale-unit-operator').val());
     unit_operation_value.push($('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.sale-unit-operation-value').val());
     $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.sale-unit').val(temp_unit_name[0]);
+    
 }
 
 $('.selectpicker').selectpicker({
@@ -572,7 +573,7 @@ $("#myTable").on('input', '.qty', function() {
       $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ') .qty').val(1);
       alert("Quantity can't be less than 1");
     }
-    checkQuantity($(this).val(), true);
+    checkInvoiceQuantity($(this).val(), true);
 });
 
 $("#myTable").on("change", ".batch-no", function () {
@@ -616,6 +617,7 @@ $("table.order-list").on("click", ".edit-product", function() {
 });
   //update product
 $('button[name="update_btn"]').on("click", function() {
+    alert('update');
     var edit_discount = $('input[name="edit_discount"]').val();
     var edit_qty = $('input[name="edit_qty"]').val();
     var edit_unit_price = $('input[name="edit_unit_price"]').val();
@@ -640,8 +642,11 @@ $('button[name="update_btn"]').on("click", function() {
 
 
         if (row_unit_operator == '*') {
+            alert('update if');
             product_price[rowindex] = $('input[name="edit_unit_price"]').val() / row_unit_operation_value;
         } else {
+            alert('update else');
+
             product_price[rowindex] = $('input[name="edit_unit_price"]').val() * row_unit_operation_value;
         }
 
@@ -666,7 +671,7 @@ $('button[name="update_btn"]').on("click", function() {
         product_price[rowindex] = $('input[name="edit_unit_price"]').val();
     }
     product_discount[rowindex] = $('input[name="edit_discount"]').val();
-    checkQuantity(edit_qty, false);
+    checkInvoiceQuantity(edit_qty, false);
 });
 
 $(window).keydown(function(e){
@@ -697,20 +702,22 @@ $('#quotation-form').on('submit',function(e){
 });
 
 function productSearch(data) {
+    // alert('djdhjd123');
     $.ajax({
         type: 'GET',
-        url: '../lims_product_search',
+        url: '/lims_product_search_invoice',
         data: {
             data: data
         },
         success: function(data) {
+            console.log('jjkjk');
             var flag = 1;
             $(".product-code").each(function(i) {
                 if ($(this).val() == data[1]) {
                     rowindex = i;
                     var qty = parseFloat($('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ') .qty').val()) + 1;
                     $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ') .qty').val(qty);
-                    checkQuantity(String(qty), true);
+                    checkInvoiceQuantity(String(qty), true);
                     flag = 0;
                 }
             });
@@ -759,13 +766,14 @@ function productSearch(data) {
                 unit_name.splice(rowindex, 0, data[6]);
                 unit_operator.splice(rowindex, 0, data[7]);
                 unit_operation_value.splice(rowindex, 0, data[8]);
-                checkQuantity(1, true);
+                checkInvoiceQuantity(1, true);
             }
         }
     });
 }
 
 function edit(){
+    alert('edit');
     var row_product_name = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('td:nth-child(1)').text();
     var row_product_code = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('td:nth-child(2)').text();
     $('#modal_header').text(row_product_name + '(' + row_product_code + ')');
@@ -781,7 +789,7 @@ function edit(){
 
     pos = product_code.indexOf(row_product_code);
     if(product_type[pos] == 'standard'){
-        unitConversion();
+        unitInvoiceConversion();
         temp_unit_name = (unit_name[rowindex]).split(',');
         temp_unit_name.pop();
         temp_unit_operator = (unit_operator[rowindex]).split(',');
@@ -798,14 +806,16 @@ function edit(){
         row_product_price = product_price[rowindex];
         $("#edit_unit").hide();
     }
+    alert('hjhjhjjhhj');
     $('input[name="edit_unit_price"]').val(row_product_price.toFixed(2));
     $('.selectpicker').selectpicker('refresh');
 }
 
-function checkQuantity(sale_qty, flag) {
+function checkInvoiceQuantity(sale_qty, flag) {
     var row_product_code = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('td:nth-child(2)').text();
     pos = product_code.indexOf(row_product_code);
-
+    // console.log("pos   ",product_type[pos]);
+    // exit();
     if(product_type[pos] == 'standard'){
         var operator = unit_operator[rowindex].split(',');
         var operation_value = unit_operation_value[rowindex].split(',');
@@ -824,6 +834,8 @@ function checkQuantity(sale_qty, flag) {
                 return;
             }
         }
+    
+
     }
     else if(product_type[pos] == 'combo'){
         child_id = product_list[pos].split(',');
@@ -848,21 +860,27 @@ function checkQuantity(sale_qty, flag) {
     if(!flag){
         $('#editModal').modal('hide');
         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.qty').val(sale_qty);
+        
     }
-    calculateRowProductData(sale_qty);
+    
+    calculateInvoiceRowProductData(sale_qty);
 }
 
-function calculateRowProductData(quantity) {
-    if(product_type[pos] == 'standard')
-        unitConversion();
-    else
+function calculateInvoiceRowProductData(quantity) {
+    if(product_type[pos] == 'standard'){
+        // alert('unitc');
+        unitInvoiceConversion();
+    }
+    else{
+        // alert('unitnc');
         row_product_price = product_price[rowindex];
-
+    }
     $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.discount').text((product_discount[rowindex] * quantity).toFixed(2));
     $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.discount-value').val((product_discount[rowindex] * quantity).toFixed(2));
     $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.tax-rate').val(tax_rate[rowindex].toFixed(2));
 
     if (tax_method[rowindex] == 1) {
+        // alert('if');
         var net_unit_price = row_product_price - product_discount[rowindex];
         var tax = net_unit_price * quantity * (tax_rate[rowindex] / 100);
         var sub_total = (net_unit_price * quantity) + tax;
@@ -874,6 +892,7 @@ function calculateRowProductData(quantity) {
         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.sub-total').text(sub_total.toFixed(2));
         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.subtotal-value').val(sub_total.toFixed(2));
     } else {
+
         var sub_total_unit = row_product_price - product_discount[rowindex];
         var net_unit_price = (100 / (100 + tax_rate[rowindex])) * sub_total_unit;
         var tax = (sub_total_unit - net_unit_price) * quantity;
@@ -886,18 +905,27 @@ function calculateRowProductData(quantity) {
         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.sub-total').text(sub_total.toFixed(2));
         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.subtotal-value').val(sub_total.toFixed(2));
     }
+    console.log("yahan ata h ph jata h  "+row_product_price);
+
     calculateTotal();
 }
 
-function unitConversion() {
+function unitInvoiceConversion() {
     var row_unit_operator = unit_operator[rowindex].slice(0, unit_operator[rowindex].indexOf(","));
     var row_unit_operation_value = unit_operation_value[rowindex].slice(0, unit_operation_value[rowindex].indexOf(","));
+    // console.log(row_unit_operator)
+    // console.log(row_unit_operation_value)
 
     if (row_unit_operator == '*') {
+        console.log('*  '+product_price);
+        // exit();
         row_product_price = product_price[rowindex] * row_unit_operation_value;
+
     } else {
+        console.log('//');
         row_product_price = product_price[rowindex] / row_unit_operation_value;
     }
+    console.log("yahan ata h  "+row_product_price);
 }
 
 function calculateTotal() {

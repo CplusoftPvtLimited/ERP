@@ -1,4 +1,7 @@
 @extends('layout.main') @section('content')
+@if(session()->has('message'))
+  <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{!! session()->get('message') !!}</div>
+@endif
 @if(session()->has('not_permitted'))
   <div class="alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('not_permitted') }}</div>
 @endif
@@ -8,7 +11,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header d-flex align-items-center">
-                        <h4>{{trans('file.Update Estimate')}}</h4>
+                        <h4>{{trans('file.Update Data')}}</h4>
                     </div>
                     <div class="card-body">
                         <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
@@ -887,18 +890,23 @@ function calculateRowProductData(quantity) {
         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.sub-total').text(sub_total.toFixed(2));
         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.subtotal-value').val(sub_total.toFixed(2));
     }
+    console.log("yahan ata h ph jata h  "+row_product_price);
     calculateTotal();
 }
 
 function unitConversion() {
     var row_unit_operator = unit_operator[rowindex].slice(0, unit_operator[rowindex].indexOf(","));
     var row_unit_operation_value = unit_operation_value[rowindex].slice(0, unit_operation_value[rowindex].indexOf(","));
+    console.log(row_unit_operator)
+    console.log(row_unit_operation_value)
+    console.log(product_price[rowindex])
 
     if (row_unit_operator == '*') {
         row_product_price = product_price[rowindex] * row_unit_operation_value;
     } else {
         row_product_price = product_price[rowindex] / row_unit_operation_value;
     }
+    console.log("yahan ata h  "+row_product_price);
 }
 
 function calculateTotal() {

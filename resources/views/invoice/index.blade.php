@@ -12,7 +12,7 @@
                 <h3 class="text-center">{{trans('file.Invoice List')}}</h3>
             </div>
         @if(in_array("quotes-add", $all_permission))
-            <!-- <a href="{{route('quotations.create')}}" class="btn btn-info"><i class="dripicons-plus"></i> {{trans('file.Add Estimate')}}</a> -->
+            
         @endif
     </div>
     <div class="table-responsive">
@@ -74,7 +74,7 @@
                                 </li>
                                 @if(in_array("quotes-edit", $all_permission))
                                 <li>
-                                    <a class="btn btn-link" href="{{ route('invoices.edit', $quotation->id) }}"><i class="dripicons-document-edit"></i> {{trans('file.edit')}}</a></button>
+                                    <a class="btn btn-link" href="{{ route('quotations.edit', $quotation->id) }}"><i class="dripicons-document-edit"></i> {{trans('file.edit')}}</a></button>
                                 </li>
                                 @endif
                                 <!-- <li>

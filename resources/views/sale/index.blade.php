@@ -9,24 +9,12 @@
 <section>
     <div class="container-fluid">
         <div class="card">
-            <div class="card-header mt-2">
-                <h3 class="text-center">{{trans('file.Sale List')}}</h3>
+            <div class="card-header">
+                <h3 class="">{{trans('file.Sales Estimate List')}}</h3>
             </div>
             {!! Form::open(['route' => 'sales.index', 'method' => 'get']) !!}
-            <div class="row mb-3">
-                <div class="col-md-4 offset-md-2 mt-3">
-                    <div class="d-flex">
-                        <label class="">{{trans('file.Date')}} &nbsp;</label>
-                        <div class="">
-                            <div class="input-group">
-                                <input type="text" class="daterangepicker-field form-control" value="{{$starting_date}} To {{$ending_date}}" required />
-                                <input type="hidden" name="starting_date" value="{{$starting_date}}" />
-                                <input type="hidden" name="ending_date" value="{{$ending_date}}" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mt-3 @if(\Auth::user()->role_id > 2){{'d-none'}}@endif">
+            
+                <!-- <div class="col-md-4 mt-3 @if(\Auth::user()->role_id > 2){{'d-none'}}@endif">
                     <div class="d-flex">
                         <label class="">{{trans('file.Warehouse')}} &nbsp;</label>
                         <div class="">
@@ -42,51 +30,136 @@
                             </select>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-2 mt-3">
-                    <div class="form-group">
-                        <button class="btn btn-primary" id="filter-btn" type="submit">{{trans('file.submit')}}</button>
-                    </div>
-                </div>
+                </div> -->
+                
             </div>
             {!! Form::close() !!}
         </div>
         @if(in_array("sales-add", $all_permission))
-            <a href="{{route('sales.create')}}" class="btn btn-info"><i class="dripicons-plus"></i> {{trans('file.Add Sale')}}</a>&nbsp;
-            <a href="{{url('sales/sale_by_csv')}}" class="btn btn-primary"><i class="dripicons-copy"></i> {{trans('file.Import Sale')}}</a>
+            <a href="{{route('sales.create')}}" class="btn btn-info ml-4"><i class="dripicons-plus"></i> {{trans('file.Add')}}</a>&nbsp;
+            <!-- <a href="{{url('sales/sale_by_csv')}}" class="btn btn-primary"><i class="dripicons-copy"></i> {{trans('file.Import Sale')}}</a> -->
         @endif
     </div>
     <div class="table-responsive">
         <table id="sale-table" class="table sale-list" style="width: 100%">
             <thead>
                 <tr>
-                    <th class="not-exported"></th>
                     <th>{{trans('file.Date')}}</th>
-                    <th>{{trans('file.reference')}}</th>
-                    <th>{{trans('file.Biller')}}</th>
-                    <th>{{trans('file.customer')}}</th>
-                    <th>{{trans('file.Sale Status')}}</th>
-                    <th>{{trans('file.Payment Status')}}</th>
-                    <th>{{trans('file.grand total')}}</th>
-                    <th>{{trans('file.Paid')}}</th>
-                    <th>{{trans('file.Due')}}</th>
-                    <th class="not-exported">{{trans('file.action')}}</th>
+                    <th>{{trans('file.Reference')}}</th>
+                    <!-- <th>{{trans('file.Biller')}}</th> -->
+                    <th>{{trans('file.Customer')}}</th>
+                    <!-- <th>{{trans('file.Sale Status')}}</th> -->
+                    <!-- <th>{{trans('file.Payment Status')}}</th> -->
+                    <th>{{trans('file.Grand Total')}}</th>
+                    <th>{{trans('file.Payment Method')}}</th>
+
+                    <!-- <th>{{trans('file.Paid')}}</th> -->
+                    <th>{{trans('file.Status')}}</th>
+                    <th>{{trans('file.action')}}</th>
                 </tr>
             </thead>
+            <tbody>
+                @foreach($sales as $sale)
+                @php $customer=App\Customer::find($sale->customer_id); @endphp
+                <tr>
+                    <td>{{$sale->date}}</td>
+                    <td>{{$sale->reference_no}}</td>
+                    <td>{{$customer->name}}</td>
+                    <td>{{$sale->grand_total}}</td>
+                    @if($sale->payment_method == 1)
+                    <td>{{trans('file.white Cash')}}</td>
+                    @elseif($sale->payment_method == 2)
+                    <td>{{trans('file.Black Cash')}}</td>
+                    @else
+                    <td></td>
+                    @endif
+                    @if($sale->estimate_type == 0)
+                    <td><div class="btn-group">
+                            <button type="button" class="btn btn-sm dropdown-toggle btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{trans('file.Created')}}
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
+                                <li>
+                                <a class="btn btn-link" href="{{ route('sales.cancelEstimate',$sale->id) }}">{{trans('file.Cancel')}}</a>
+                                </li>
+                                <li>
+                                    <a class="btn btn-link" href="{{ route('sales.acceptEstimate',$sale->id) }}"> {{trans('file.Accept')}}</a>
+                                </li>
+                                <li>
+                                    <a class="btn btn-link" href="{{ route('sales.negotiateEstimate',$sale->id) }}"> {{trans('file.Negotiate')}}</a>
+                                </li>
+                                
+                            </ul>
+                        </div></td>
+                    @elseif($sale->estimate_type == 1)
+                    <td><div class="btn-group">
+                            <button type="button" class="btn btn-sm dropdown-toggle btn-secondary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{trans('file.Negotiation')}}
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
+                                <li>
+                                <a class="btn btn-link" href="{{ route('sales.cancelEstimate',$sale->id) }}">{{trans('file.Cancel')}}</a>
+                                </li>
+                                <li>
+                                    <a class="btn btn-link" href="{{ route('sales.acceptEstimate',$sale->id) }}"> {{trans('file.Accept')}}</a>
+                                </li>
+                            </ul>
+                        </div></td>
+                    @elseif($sale->estimate_type == 2)
+                    <td><div class="btn-group">
+                            <button type="button" class="btn btn-sm dropdown-toggle btn-danger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{trans('file.Cancelled')}}
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
+                                <li>
+                                <a class="btn btn-link" href="{{ route('sales.reactivateEstimate',$sale->id) }}">{{trans('file.Reactivate')}}</a>
+                                </li>
+                            </ul>
+                        </div></td>
+                    @else
+                    <td><div class="btn-group">
+                            <button type="button" class="btn btn-sm dropdown-toggle btn-success" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{trans('file.Accepted')}}
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
+                                <li>
+                                <a class="btn btn-link" href="{{ route('sales.cancelEstimate',$sale->id) }}">{{trans('file.Cancel')}}</a>
+                                </li>
+                            </ul>
+                        </div></td>
+                    @endif
+                    <td>
+                        <a class="btn" href="{{route('sales.edit',$sale->id)}}"><i class="dripicons-document-edit"></i></a>
+                        <a class="btn" href="{{route('sales.generatePreInvoicePDF', $sale->id)}}"><i class="fa fa-file-pdf-o"></i></a>
+                        <a class="btn" href="{{route('sales.approveEstimate',$sale->id)}}"><i class="fa fa-eye"></i></a>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-refresh"></i>
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
+                                <!-- <li>
+                                <a class="btn btn-link" href="{{ route('sales.reactivateEstimate',$sale->id) }}">{{trans('file.order')}}</a>
+                                </li> -->
+                                <li>
+                                <a class="btn btn-link" href="{{ route('sales.reactivateEstimate',$sale->id) }}">{{trans('file.Delivery Slip')}}</a>
+                                </li>
+                                <li>
+                                <a class="btn btn-link" href="{{ route('sales.createSaleInvoice',$sale->id) }}">{{trans('file.Invoice')}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
 
-            <tfoot class="tfoot active">
-                <th></th>
-                <th>{{trans('file.Total')}}</th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-            </tfoot>
+
+
+                </tr>
+                @endforeach
+            </tbody>
         </table>
     </div>
 </section>
@@ -754,8 +827,8 @@
     var warehouse_id = $("#warehouse_id").val();
 
     $('#sale-table').DataTable( {
-        "processing": true,
         "serverSide": true,
+        "searching" : false,
         "ajax":{
             url:"sales/sale-data",
             data:{

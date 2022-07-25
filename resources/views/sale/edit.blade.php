@@ -8,7 +8,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header d-flex align-items-center">
-                        <h4>{{trans('file.Update Sale')}}</h4>
+                        <h4>{{trans('file.Update Sale Estimate')}}</h4>
                     </div>
                     <div class="card-body">
                         <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
@@ -16,19 +16,19 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>{{trans('file.Date')}}</label>
                                             <input type="text" name="created_at" class="form-control date" value="{{date($general_setting->date_format, strtotime($lims_sale_data->created_at->toDateString()))}}" />
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>{{trans('file.reference')}}</label>
-                                            <p><strong>{{ $lims_sale_data->reference_no }}</strong></p>
+                                            <input type="text" name="reference_no" class="form-control" value="{{ $lims_sale_data->reference_no }}" disabled />
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>{{trans('file.customer')}} *</label>
                                             <input type="hidden" name="customer_id_hidden" value="{{ $lims_sale_data->customer_id }}" />
@@ -39,7 +39,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <!-- <div class="col-md-6">
                                         <div class="form-group">
                                             <label>{{trans('file.Warehouse')}} *</label>
                                             <input type="hidden" name="warehouse_id_hidden" value="{{$lims_sale_data->warehouse_id}}" />
@@ -49,8 +49,8 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>
-                                    <div class="col-md-6">
+                                    </div> -->
+                                    <!-- <div class="col-md-6">
                                         <div class="form-group">
                                             <label>{{trans('file.Biller')}} *</label>
                                             <input type="hidden" name="biller_id_hidden" value="{{$lims_sale_data->biller_id}}" />
@@ -60,7 +60,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <div class="row mt-3">
                                     <div class="col-md-12">
@@ -301,6 +301,8 @@
                                             <input type="number" name="shipping_cost" class="form-control" value="{{$lims_sale_data->shipping_cost}}" step="any" />
                                         </div>
                                     </div>
+                                    <input type="hidden" name="payment_status" class="form-control" value="1">
+                                    <input type="hidden" name="sale_status" class="form-control" value="2">
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>{{trans('file.Attach Document')}}</label> <i class="dripicons-question" data-toggle="tooltip" title="Only jpg, jpeg, png, gif, pdf, csv, docx, xlsx and txt file is supported"></i>
@@ -314,6 +316,15 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
+                                            <label>{{trans('file.Payment Method')}} *</label>
+                                            <select name="payment_method" class="form-control">
+                                                <option value="1" {{  $lims_sale_data->payment_method == 1 ? 'selected' : ''}}>{{trans('file.White Cash Payment')}}</option>
+                                                <option value="2" {{  $lims_sale_data->payment_method == 2 ? 'selected' : ''}}>{{trans('file.Black Cash Payment')}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="col-md-4">
+                                        <div class="form-group">
                                             <label>{{trans('file.Sale Status')}} *</label>
                                             <input type="hidden" name="sale_status_hidden" value="{{$lims_sale_data->sale_status}}" />
                                             <select name="sale_status" class="form-control">
@@ -321,7 +332,7 @@
                                                 <option value="2">{{trans('file.Pending')}}</option>
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> -->
                                     @if($lims_sale_data->coupon_id)
                                     <div class="col-md-4">
                                         <div class="form-group">

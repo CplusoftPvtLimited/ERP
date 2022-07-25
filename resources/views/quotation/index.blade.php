@@ -23,6 +23,7 @@
                     <th>{{trans('file.customer')}}</th>
                     <th>{{trans('file.Supplier')}}</th>
                     <th>{{trans('file.Payment Status')}}</th>
+                    <th>{{trans('file.Payment Method')}}</th>
                     <th>{{trans('file.grand total')}}</th>
                     <th class="not-exported">{{trans('file.action')}}</th>
                 </tr>
@@ -38,6 +39,11 @@
                         $status = trans('file.Partial');
                     else
                         $status = trans('file.Paid');
+
+                    if($quotation->payment_method == 1)
+                        $method = trans('file.White Cash');
+                    else
+                        $method = trans('file.Black Cash');
                 ?>
                 <tr class="quotation-link" data-quotation='["{{date($general_setting->date_format, strtotime($quotation->created_at->toDateString()))}}", "{{$quotation->reference_no}}", "{{$status}}", "{{$quotation->customer->name}}", "{{$quotation->customer->phone_number}}", "{{$quotation->customer->address}}", "{{$quotation->customer->city}}", "{{$quotation->id}}", "{{$quotation->total_tax}}", "{{$quotation->total_discount}}", "{{$quotation->total_price}}", "{{$quotation->order_tax}}", "{{$quotation->order_tax_rate}}", "{{$quotation->order_discount}}", "{{$quotation->shipping_cost}}", "{{$quotation->grand_total}}", "{{$quotation->note}}", "{{$quotation->user->name}}", "{{$quotation->user->email}}"]'>
                     <td>{{$key}}</td>
@@ -57,6 +63,11 @@
                         <td><div class="badge badge-secondary">{{$status}}</div></td>
                     @else
                         <td><div class="badge badge-success">{{$status}}</div></td>
+                    @endif
+                    @if($quotation->payment_method == 1)
+                        <td><div class="badge badge-success">{{$method}}</div></td>
+                    @else
+                        <td><div class="badge badge-secondary">{{$method}}</div></td>
                     @endif
                     <td>{{ $quotation->grand_total }}</td>
                     <td>

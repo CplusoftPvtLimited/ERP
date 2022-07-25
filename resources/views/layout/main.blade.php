@@ -165,17 +165,9 @@
             <li><a href="#purchase" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-card"></i><span>{{trans('file.Purchase')}}</span></a>
             <ul id="purchase" class="collapse list-unstyled ">
                 <li id="purchase-list-menu"><a href="{{route('purchases.index')}}">{{trans('file.Purchase List')}}</a></li>
-                <?php
-                $add_permission = DB::table('permissions')->where('name', 'purchases-add')->first();
-                $add_permission_active = DB::table('role_has_permissions')->where([
-                    ['permission_id', $add_permission->id],
-                    ['role_id', $role->id]
-                ])->first();
-                ?>
-                @if($add_permission_active)
-                <li id="purchase-create-menu"><a href="{{route('purchases.create')}}">{{trans('file.Add Purchase')}}</a></li>
-                <li id="purchase-import-menu"><a href="{{url('purchases/purchase_by_csv')}}">{{trans('file.Import Purchase By CSV')}}</a></li>
-                @endif
+                <!-- <li id=""><a href="{{route('purchases.index')}}">{{trans('file.Pre Invoice List')}}</a></li> -->
+                <!-- <li id=""><a href="{{route('purchases.index')}}">{{trans('file.Invoice List')}}</a></li> -->
+
             </ul>
             </li>
             @endif
@@ -214,16 +206,17 @@
             <li><a href="#sale" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-cart"></i><span>{{trans('file.Sale')}}</span></a>
             <ul id="sale" class="collapse list-unstyled ">
                 @if($sale_index_permission_active)
-                <li id="sale-list-menu"><a href="{{route('sales.index')}}">{{trans('file.Sale List')}}</a></li>
+                <!-- <li id="sale-list-menu"><a href="{{route('sales.index')}}">{{trans('file.Sale List')}}</a></li> -->
                 @if($sale_add_permission_active)
-                <li><a href="{{route('sale.pos')}}">POS</a></li>
+                <!-- <li><a href="{{route('sale.pos')}}">POS</a></li> -->
                 <!-- <li id="sale-create-menu"><a href="{{route('sales.create')}}">{{trans('file.Add Sale')}}</a></li> -->
                 <!-- <li id="sale-import-menu"><a href="{{url('sales/sale_by_csv')}}">{{trans('file.Import Sale By CSV')}}</a></li> -->
                 @endif
                 @endif
-                <li id="quotation-list-menu"><a href="{{route('quotations.index')}}">{{trans('file.Estimate List')}}</a></li>
-                <li id="pre-invoices-list-menu"><a href="{{route('preinvoices.index')}}">{{trans('file.Pre Invoice List')}}</a></li>
-                <li id="invoices-list-menu"><a href="{{route('invoices.index')}}">{{trans('file.Invoice List')}}</a></li>
+                <li id="sale-list-menu"><a href="{{route('sales.index')}}">{{trans('file.Estimate List')}}</a></li>
+                <li id="invoices-list-menu"><a href="{{route('sales.salesInvoices')}}">{{trans('file.Invoice List')}}</a></li>
+                <li id="pre-invoices-list-menu"><a href="">{{trans('file.Delivery Slips')}}</a></li>
+
 
                 <?php
                 $add_permission = DB::table('permissions')->where('name', 'quotes-add')->first();
@@ -254,7 +247,7 @@
                 ])->first();
             ?>
             @if($index_permission_active)
-            <li><a href="#expense" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-wallet"></i><span>{{trans('file.Expense')}}</span></a>
+            <!-- <li><a href="#expense" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-wallet"></i><span>{{trans('file.Expense')}}</span></a> -->
             <ul id="expense" class="collapse list-unstyled ">
                 <li id="exp-cat-menu"><a href="{{route('expense_categories.index')}}">{{trans('file.Expense Category')}}</a></li>
                 <li id="exp-list-menu"><a href="{{route('expenses.index')}}">{{trans('file.Expense List')}}</a></li>
@@ -280,19 +273,12 @@
             ?>
             @if($index_permission_active)
             <!-- <li><a href="#quotation" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-document"></i><span>{{trans('file.Quotation')}}</span><span></a> -->
-            <!-- <ul id="quotation" class="collapse list-unstyled ">
-                <li id="quotation-list-menu"><a href="{{route('quotations.index')}}">{{trans('file.Quotation List')}}</a></li>
-                <?php
-                $add_permission = DB::table('permissions')->where('name', 'quotes-add')->first();
-                $add_permission_active = DB::table('role_has_permissions')->where([
-                    ['permission_id', $add_permission->id],
-                    ['role_id', $role->id]
-                ])->first();
-                ?>
-                @if($add_permission_active)
-                <li id="quotation-create-menu"><a href="{{route('quotations.create')}}">{{trans('file.Add Quotation')}}</a></li>
-                @endif
-            </ul> -->
+            <ul id="quotation" class="collapse list-unstyled ">
+                <li id="quotation-list-menu"><a href="{{route('quotations.index')}}">{{trans('file.Estimate List')}}</a></li>
+                <li id=""><a href="{{route('preinvoices.index')}}">{{trans('file.Pre Invoice List')}}</a></li>
+                <li id=""><a href="{{route('invoices.index')}}">{{trans('file.Invoice List')}}</a></li>
+
+            </ul>
             </li>
             @endif
             <?php
@@ -303,7 +289,7 @@
                 ])->first();
             ?>
             @if($index_permission_active)
-            <li><a href="#transfer" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-export"></i><span>{{trans('file.Transfer')}}</span></a>
+            <!-- <li><a href="#transfer" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-export"></i><span>{{trans('file.Transfer')}}</span></a> -->
             <ul id="transfer" class="collapse list-unstyled ">
                 <li id="transfer-list-menu"><a href="{{route('transfers.index')}}">{{trans('file.Transfer List')}}</a></li>
                 <?php
@@ -337,7 +323,7 @@
                     ])->first();
             ?>
             @if($sale_return_index_permission_active || $purchase_return_index_permission_active)
-            <li><a href="#return" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-return"></i><span>{{trans('file.return')}}</span></a>
+            <!-- <li><a href="#return" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-return"></i><span>{{trans('file.return')}}</span></a> -->
             <ul id="return" class="collapse list-unstyled ">
                 @if($sale_return_index_permission_active)
                 <li id="sale-return-menu"><a href="{{route('return-sale.index')}}">{{trans('file.Sale')}}</a></li>
@@ -375,7 +361,7 @@
 
             ?>
             @if($index_permission_active || $balance_sheet_permission_active || $account_statement_permission_active || $money_transfer_permission_active)
-            <li class=""><a href="#account" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-briefcase"></i><span>{{trans('file.Accounting')}}</span></a>
+            <!-- <li class=""><a href="#account" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-briefcase"></i><span>{{trans('file.Accounting')}}</span></a> -->
             <ul id="account" class="collapse list-unstyled ">
                 @if($index_permission_active)
                 <li id="account-list-menu"><a href="{{route('accounts.index')}}">{{trans('file.Account List')}}</a></li>
@@ -417,7 +403,7 @@
             ?>
 
             @if(Auth::user()->role_id != 5)
-            <li class=""><a href="#hrm" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-user-group"></i><span>HRM</span></a>
+            <!-- <li class=""><a href="#hrm" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-user-group"></i><span>HRM</span></a> -->
             <ul id="hrm" class="collapse list-unstyled ">
                 @if($department_active)
                 <li id="dept-menu"><a href="{{route('departments.index')}}">{{trans('file.Department')}}</a></li>
@@ -465,7 +451,7 @@
                     ])->first();
             ?>
             @if($user_index_permission_active || $customer_index_permission_active || $biller_index_permission_active || $supplier_index_permission_active)
-            <li><a href="#people" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-user"></i><span>{{trans('file.People')}}</span></a>
+            <!-- <li><a href="#people" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-user"></i><span>{{trans('file.People')}}</span></a> -->
             <ul id="people" class="collapse list-unstyled ">
 
                 @if($user_index_permission_active)
@@ -615,7 +601,7 @@
                     ['role_id', $role->id] ])->first();
             ?>
             @if($profit_loss_active || $best_seller_active || $warehouse_report_active || $warehouse_stock_report_active || $product_report_active || $daily_sale_active || $monthly_sale_active || $daily_purchase_active || $monthly_purchase_active || $purchase_report_active || $sale_report_active || $payment_report_active || $product_qty_alert_active || $user_report_active || $customer_report_active || $supplier_report_active || $due_report_active)
-            <li><a href="#report" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-document-remove"></i><span>{{trans('file.Reports')}}</span></a>
+            <!-- <li><a href="#report" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-document-remove"></i><span>{{trans('file.Reports')}}</span></a> -->
             <ul id="report" class="collapse list-unstyled ">
                 @if($profit_loss_active)
                 <li id="profit-loss-report-menu">
@@ -733,7 +719,7 @@
             </li>
             @endif
 
-            <li><a href="#setting" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-gear"></i><span>{{trans('file.settings')}}</span></a>
+            <!-- <li><a href="#setting" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-gear"></i><span>{{trans('file.settings')}}</span></a> -->
                 <ul id="setting" class="collapse list-unstyled ">
                     <?php
                         $send_notification_permission = DB::table('permissions')->where('name', 'send_notification')->first();
@@ -905,7 +891,7 @@
             <!-- <li><a target="_blank" href="{{url('public/read_me')}}"> <i class="dripicons-information"></i><span>{{trans('file.Documentation')}}</span></a></li> -->
             @endif
             @if(Auth::user()->role_id != 5)
-            <li><a target="_blank" href="{{url('showSubmitForm')}}"> <i class="dripicons-information"></i><span>{{trans('file.Forms')}}</span></a></li>
+            <!-- <li><a target="_blank" href="{{url('showSubmitForm')}}"> <i class="dripicons-information"></i><span>{{trans('file.Forms')}}</span></a></li> -->
             @endif
         </ul>
       </nav>

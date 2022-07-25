@@ -8,12 +8,13 @@
 
 <section>
     <div class="container-fluid">
-    <div class="card-header mt-2">
+    
+        @if(in_array("quotes-add", $all_permission))
+            <a href="{{route('quotations.create')}}" class="btn btn-info"><i class="dripicons-plus"></i> {{trans('file.Add Pre Invoice')}}</a>
+        @endif
+        <div class="card-header mt-2">
                 <h3 class="text-center">{{trans('file.Pre Invoice List')}}</h3>
             </div>
-        @if(in_array("quotes-add", $all_permission))
-            <!-- <a href="{{route('quotations.create')}}" class="btn btn-info"><i class="dripicons-plus"></i> {{trans('file.Add Estimate')}}</a> -->
-        @endif
     </div>
     <div class="table-responsive">
         <table id="quotation-table" class="table quotation-list">
@@ -74,7 +75,7 @@
                                 </li>
                                 @if(in_array("quotes-edit", $all_permission))
                                 <li>
-                                    <a class="btn btn-link" href="{{ route('preinvoices.edit', $quotation->id) }}"><i class="dripicons-document-edit"></i> {{trans('file.edit')}}</a></button>
+                                    <a class="btn btn-link" href="{{ route('quotations.edit', $quotation->id) }}"><i class="dripicons-document-edit"></i> {{trans('file.edit')}}</a></button>
                                 </li>
                                 @endif
                                 <!-- <li>

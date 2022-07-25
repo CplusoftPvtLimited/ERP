@@ -332,6 +332,7 @@ class QuotationController extends Controller
 
     public function limsProductSearch(Request $request)
     {
+        // dd('ddddddddddddd');
         $todayDate = date('Y-m-d');
         $product_code = explode("(", $request['data']);
         $product_code[0] = rtrim($product_code[0], " ");
@@ -398,6 +399,7 @@ class QuotationController extends Controller
         $product[] = $lims_product_data->promotion;
         $product[] = $lims_product_data->is_batch;
         $product[] = $lims_product_data->is_imei;
+        // dd($product);
         return $product;
     }
 
@@ -571,7 +573,7 @@ class QuotationController extends Controller
             }
         }
 
-        $message = 'Quotation updated successfully';
+        $message = 'Data updated successfully';
 
         if($lims_quotation_data->quotation_status == 2 && $mail_data['email']){
             try{
@@ -581,10 +583,10 @@ class QuotationController extends Controller
                 });
             }
             catch(\Exception $e){
-                $message = 'Quotation updated successfully. Please setup your <a href="setting/mail_setting">mail setting</a> to send mail.';
+                $message = 'Data updated successfully.';
             } 
         }
-        return redirect('quotations')->with('message', $message);
+        return redirect()->back()->with('message', $message);
     }
 
     public function createSale($id)

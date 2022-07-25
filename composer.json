@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.3.0 || ^8.0",
+        "barryvdh/laravel-dompdf": "^2.0",
         "doctrine/dbal": "^2.11",
         "fideloper/proxy": "^4.4",
         "gladcodes/keygen": "^1.1",

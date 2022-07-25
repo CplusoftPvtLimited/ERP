@@ -35,7 +35,10 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('invoices/product_quotation/{id}','InvoiceController@productQuotationData');
 	Route::get('preinvoices/product_quotation/{id}','PreInvoiceController@productQuotationData');
 	Route::get('preinvoices/lims_product_search', 'PreInvoiceController@limsProductSearch')->name('product_preinvoice.search');
-	Route::get('invoices/lims_product_search', 'InvoiceController@limsProductSearch')->name('product_invoice.search');
+	Route::get('lims_product_search_invoice', 'InvoiceController@limsProductSearch')->name('product_invoice.search');
+
+	// Route::get('data/edit/{id}','QuotationController@edit');
+
 
 
 
@@ -157,7 +160,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('sales/lims_sale_search', 'SaleController@limsSaleSearch')->name('sale.search');
 	Route::get('sales/lims_product_search', 'SaleController@limsProductSearch')->name('product_sale.search');
 	Route::get('sales/getcustomergroup/{id}', 'SaleController@getCustomerGroup')->name('sale.getcustomergroup');
-	Route::get('sales/getproduct/{id}', 'SaleController@getProduct')->name('sale.getproduct');
+	Route::get('sales/getproduct', 'SaleController@getProduct')->name('sale.getproduct');
 	Route::get('sales/getproduct/{category_id}/{brand_id}', 'SaleController@getProductByFilter');
 	Route::get('sales/getfeatured', 'SaleController@getFeatured');
 	Route::get('sales/get_gift_card', 'SaleController@getGiftCard');
@@ -174,6 +177,33 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('sales/today-sale', 'SaleController@todaySale');
 	Route::get('sales/today-profit/{warehouse_id}', 'SaleController@todayProfit');
 	Route::get('sales/check-discount', 'SaleController@checkDiscount');
+	Route::get('sales/estimate/preview', 'SaleController@estimatePreview')->name('sales.estimatePreview');
+	Route::get('approve/sale/estimate/{id}', 'SaleController@approveEstimate')->name('sales.approveEstimate');
+	Route::get('accept/sale/estimate/{id}', 'SaleController@acceptEstimate')->name('sales.acceptEstimate');
+	Route::get('cancel/sale/estimate/{id}', 'SaleController@cancelEstimate')->name('sales.cancelEstimate');
+	Route::get('negotiate/sale/estimate/{id}', 'SaleController@negotiateEstimate')->name('sales.negotiateEstimate');
+	Route::get('reactivate/sale/estimate/{id}', 'SaleController@reactivateEstimate')->name('sales.reactivateEstimate');
+	Route::get('downloadpdf/sale/estimate/{id}', 'SaleController@downloadPdfEstimate')->name('sales.downloadPdfEstimate');
+	Route::get('create/sale/invoice/{id}', 'SaleController@createSaleInvoice')->name('sales.createSaleInvoice');
+	Route::get('sales/invoices', 'SaleController@salesInvoices')->name('sales.salesInvoices');
+	Route::get('generate-preinvoice-pdf/{id}', 'SaleController@generatePreInvoicePDF')->name('sales.generatePreInvoicePDF');
+	Route::get('invoice/edit/{id}', 'SaleController@editInvoice')->name('sales.editInvoice');
+	Route::put('invoice/update/{id}', 'SaleController@updateInvoice')->name('sales.updateInvoice');
+	Route::get('invoice/change/status/{id}/{val}', 'SaleController@changeInvoiceStatus')->name('sales.changeInvoiceStatus');
+
+
+
+
+
+	// Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
+
+
+
+
+
+
+	
+
 	Route::resource('sales', 'SaleController');
 
 	Route::get('delivery', 'DeliveryController@index')->name('delivery.index');
