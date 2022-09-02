@@ -334,7 +334,7 @@ class ProductController extends Controller
 
     public function updateProduct(Request $request)
     {
-        else {
+        // else {
             $this->validate($request, [
                 'name' => [
                     'max:255',
@@ -498,7 +498,7 @@ class ProductController extends Controller
             }
             $lims_product_data->update($data);
             \Session::flash('edit_message', 'Product updated successfully');
-        }
+        // }
     }
 
     public function generateCode()
