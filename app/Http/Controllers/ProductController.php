@@ -43,12 +43,13 @@ class ProductController extends Controller
 
     public function getProducts() 
     {         
-        $products = ArticleVehicleTree::with(['article' => function($query){
-            $query->select(['legacyArticleId','articleNumber','genericArticleDescription']);
-        }
-        , 'articleText', 'linkageTarget', 'assemblyGroupNodes'
+
+        $products = ArticleVehicleTree::with(['article' => function($query) {
+            $query->select(['legacyArticleId','articleNumber','genericArticleDescription', 'dataSupplierId']);
+            $query->with('brand');
+        } , 'articleText', 'linkageTarget', 'assemblyGroupNodes'
         ])->paginate(100);
-       
+        
     //    dd($products);
         return view('product.get', compact('products'));
     }
