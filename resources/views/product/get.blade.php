@@ -26,6 +26,7 @@
                     <th>Geeneric Article Description</th>
                     <th>Information Type Description</th>
                     <th>Text</th>
+                    <th>Brand</th>
                     <th>Assembly Group Name</th>
                     {{-- <th>legacyArticleId</th> --}}
                     <th>Immediate Display</th>
@@ -42,6 +43,7 @@
                         <td>{{ $item->article->genericArticleDescription }}</td>
                         <td>{{ $item->articleText->informationTypeDescription }}</td>
                         <td>{{ $item->articleText->text }}</td>
+                        <td>{{ isset($item->article->brand->brandName) ? $item->article->brand->brandName : "" }}</td>
                         <td>{{ $item->assemblyGroupNodes->assemblyGroupName }}</td>
                         {{-- <td>{{ $item->assemblyGroupNodes->legacyArticleId }}</td> --}}
                         <td>{{ $item->articleText->isImmediateDisplay }}</td>

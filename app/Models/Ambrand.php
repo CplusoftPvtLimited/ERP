@@ -14,4 +14,8 @@ class Ambrand extends Model
     public function ambrandsaddress(){
         return $this->hasOne(AmbrandAddress::class);
     }
+
+    public function article(){
+        return $this->hasOne(Article::class);
+    }
 }
