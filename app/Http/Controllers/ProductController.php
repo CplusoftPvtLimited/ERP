@@ -41,9 +41,14 @@ class ProductController extends Controller
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
     }
 
-    public function get() 
+    public function getProducts() 
     {         
-        $products = ArticleVehicleTree::with(['article', 'articleText', 'linkageTarget', 'assemblyGroupNodes'])->get();
+        $products = ArticleVehicleTree::with(['article' => function($query){
+            $query->select(['legacyArticleId','articleNumber','genericArticleDescription']);
+        }
+        , 'articleText', 'linkageTarget', 'assemblyGroupNodes'
+        ])->paginate(10);
+       
         // dd($products);
         return view('product.get', compact('products'));
     }

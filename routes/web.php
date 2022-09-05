@@ -381,7 +381,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('/home', 'HomeController@index')->name('home');
 	Route::get('my-transactions/{year}/{month}', 'HomeController@myTransaction');
 
-	Route::get('products', [ProductController::class, 'get'])->name('product.get');
+	Route::get('products', [ProductController::class, 'getProducts'])->name('product.get');
 });
 Route::get('/logout', 'HomeController@logOut');
 Route::get('/verify/mail', 'MailController@index');

@@ -883,6 +883,10 @@ section.pos-section{
 	 	display: block;
 	}
 
+	div#product-data-table_filter {
+		width: 100% !important;
+	}
+
 	.table-fixed tr {
 		clear: both;
 	}

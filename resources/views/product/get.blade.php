@@ -22,37 +22,43 @@
         <table id="product-data-table" class="table" style="width: 100%">
             <thead>
                 <tr>
-                    <th>infoId</th>
-                    <th>informationTypeKey</th>
-                    <th>informationTypeDescription</th>
-                    <th>text</th>
-                    <th>assemblyGroupName</th>
+                    <th>Article Number</th>
+                    <th>Geeneric Article Description</th>
+                    <th>Information Type Description</th>
+                    <th>Text</th>
+                    <th>Assembly Group Name</th>
                     {{-- <th>legacyArticleId</th> --}}
-                    <th>isImmediateDisplay</th>
-                    <th>mfrName</th>
-                    <th>mfrId</th>
+                    <th>Immediate Display</th>
+                    <th>Manufacturer</th>
+                    <th>Manufacturer Id</th>
                     {{-- <th class="not-exported">{{trans('file.action')}}</th> --}}
                 </tr>
             </thead>
             <tbody>
                 @foreach ($products as $item)
+                
                     <tr>
-                        <td>{{ $item->articleText->infoId }}</td>
-                        <td>{{ $item->articleText->informationTypeKey }}</td>
+                        <td>{{ $item->article->articleNumber }}</td>
+                        <td>{{ $item->article->genericArticleDescription }}</td>
                         <td>{{ $item->articleText->informationTypeDescription }}</td>
                         <td>{{ $item->articleText->text }}</td>
                         <td>{{ $item->assemblyGroupNodes->assemblyGroupName }}</td>
                         {{-- <td>{{ $item->assemblyGroupNodes->legacyArticleId }}</td> --}}
                         <td>{{ $item->articleText->isImmediateDisplay }}</td>
-                        <td>{{ $item->articleText->mfrName }}</td>
-                        <td>{{ $item->articleText->mfrName }}</td>
-                        <td>{{ $item->articleText->mfrName }}</td>
+                        
+                        <td>{{ $item->linkageTarget->mfrName }}</td>
+                        <td>{{ $item->linkageTarget->mfrId }}</td>
                     </tr>
                 @endforeach
             </tbody>
 
         </table>
+        
+        <div class="pull-right">
+            {{$products->links()}}
+        </div>
     </div>
+
 </section>
 @endsection
 @push('scripts')
@@ -66,7 +72,8 @@
                 footer: true
             },
             "processing": true,
-            "serverSide": true,
+            "paging" : false
+            // "serverSide": true,
         } );
 
     } );
