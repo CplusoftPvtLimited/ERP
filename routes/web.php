@@ -3,6 +3,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\RetailerRegisterController;
 use App\Http\Controllers\Auth\RetailerLoginController;
 use App\Http\Controllers\FormController;
+use App\Http\Controllers\ProductController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -378,6 +380,8 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 
 	Route::get('/home', 'HomeController@index')->name('home');
 	Route::get('my-transactions/{year}/{month}', 'HomeController@myTransaction');
+
+	Route::get('products', [ProductController::class, 'get'])->name('product.get');
 });
 Route::get('/logout', 'HomeController@logOut');
 Route::get('/verify/mail', 'MailController@index');
