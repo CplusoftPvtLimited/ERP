@@ -44,7 +44,7 @@ class Article extends Model
     }
 
     public function brand() {
-        return $this->belongsTo(Ambrand::class,'brandId', 'dataSupplierId');
+        return $this->belongsTo(Ambrand::class,'dataSupplierId', 'brandId');
     }
 
 }

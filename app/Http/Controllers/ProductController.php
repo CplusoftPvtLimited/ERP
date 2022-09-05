@@ -43,9 +43,9 @@ class ProductController extends Controller
 
     public function getProducts() 
     {         
-        $products = ArticleVehicleTree::with(['article' => function($query){
-            $query->select(['legacyArticleId','articleNumber','genericArticleDescription']);
-            $query->with(['brand']);
+        $products = ArticleVehicleTree::with(['article' => function($query) {
+            $query->select(['legacyArticleId','articleNumber','genericArticleDescription', 'dataSupplierId']);
+            $query->with('brand');
         } , 'articleText', 'linkageTarget', 'assemblyGroupNodes'
         ])->paginate(100);
         return view('product.get', compact('products'));
