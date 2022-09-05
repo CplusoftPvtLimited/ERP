@@ -37,7 +37,7 @@
             </thead>
             <tbody>
                 @foreach ($products as $item)
-                
+                   
                     <tr>
                         <td>{{ $item->article->articleNumber }}</td>
                         <td>{{ $item->article->genericArticleDescription }}</td>

@@ -212,7 +212,7 @@
             </ul>
             </li>
             @endif
-            <li id="sale-list-menu"><a href="{{route('product.get')}}">{{trans('file.Products')}}</a></li>
+            <li id="sale-list-menu"><a href="{{route('product.get')}}"><i class="dripicons-list"></i> {{trans('file.Products')}}</a></li>
 
             <?php
             $index_permission = DB::table('permissions')->where('name', 'expenses-index')->first();
