@@ -19,7 +19,7 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                <h3 class="">{{trans('file.Products')}}</h3>
+                <h3 class="">{{trans('file.Section Parts')}}</h3>
             </div>
         </div>
     </div>
@@ -27,43 +27,57 @@
         <table id="product-data-table" class="table" style="width: 100%">
             <thead>
                 <tr>
+                    <th>Article Id</th>
                     <th>Article Number</th>
-                    <th>Geeneric Article Description</th>
-                    <th>Information Type Description</th>
-                    <th>Text</th>
-                    <th>Brand</th>
-                    <th>Assembly Group Name</th>
-                    {{-- <th>legacyArticleId</th> --}}
-                    <th>Immediate Display</th>
-                    <th>Manufacturer</th>
-                    <th>Manufacturer Id</th>
-                    {{-- <th class="not-exported">{{trans('file.action')}}</th> --}}
+                    <th>Generic Article Description</th>
+                    <th>Article Country</th>
+                    <th>Brand Name</th>
+                    <th>Assembly Group Node ID</th>
+                    <th>Linkage Target ID</th>
+                    <th>Linkage Target Type</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($products as $item)
-                   
+                @if(count($getSectionParts) > 0)
+                @foreach ($getSectionParts as $key => $item)
+
                     <tr>
+                        <td>{{ $item->article->legacyArticleId }}</td>
                         <td>{{ $item->article->articleNumber }}</td>
                         <td>{{ $item->article->genericArticleDescription }}</td>
-                        <td>{{ $item->articleText->informationTypeDescription }}</td>
-                        <td>{{ $item->articleText->text }}</td>
-                        <td>{{ isset($item->article->brand->brandName) ? $item->article->brand->brandName : "" }}</td>
-                        <td>{{ $item->assemblyGroupNodes->assemblyGroupName }}</td>
-                        {{-- <td>{{ $item->assemblyGroupNodes->legacyArticleId }}</td> --}}
-                        <td>{{ $item->articleText->isImmediateDisplay }}</td>
-                        
-                        <td>{{ $item->linkageTarget->mfrName }}</td>
-                        <td>{{ $item->linkageTarget->mfrId }}</td>
+                        <td>{{ isset($item->article->brand) ?  $item->article->brand->brandName : "not given" }}</td>
+                        <td>{{ isset($item->article->brand) ?  $item->article->brand->articleCountry : "not given" }}</td>
+                        <td>{{ $item->assemblyGroupNodeId }}</td>
+                        <td>{{ $item->linkingTargetId }}</td>
+                        <td>{{ $item->linkingTargetType }}</td>
+                        @if (!empty($item->article->brand))
+                        <td>  
+                            <a href="{{ route('get_language',$item->article->brand->id) }}" class="btn btn-primary">Get Brand lang</a>
+                        </td>                            
+                        @else
+                        <td>  
+                            <button class="btn btn-warning">brand not Available</button>
+                        </td> 
+                        @endif
+                       
                     </tr>
                 @endforeach
+                @endif
             </tbody>
 
         </table>
         
         <div class="pull-right">
-            {{$products->links()}}
+            {{$getSectionParts->links()}}
         </div>
+    </div>
+
+    <div class="mt-5">
+        <div class="col-md-2">
+            <a href="{{ route('assembly_group_nodes.index') }}" class="btn btn-primary">Back</a>
+        </div>
+        
     </div>
 
 </section>

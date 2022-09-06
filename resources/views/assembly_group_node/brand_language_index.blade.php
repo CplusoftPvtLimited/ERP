@@ -19,7 +19,7 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                <h3 class="">{{trans('file.Products')}}</h3>
+                <h3 class="">{{trans('file.Brand Languages')}}</h3>
             </div>
         </div>
     </div>
@@ -27,34 +27,20 @@
         <table id="product-data-table" class="table" style="width: 100%">
             <thead>
                 <tr>
-                    <th>Article Number</th>
-                    <th>Geeneric Article Description</th>
-                    <th>Information Type Description</th>
-                    <th>Text</th>
-                    <th>Brand</th>
-                    <th>Assembly Group Name</th>
-                    {{-- <th>legacyArticleId</th> --}}
-                    <th>Immediate Display</th>
-                    <th>Manufacturer</th>
-                    <th>Manufacturer Id</th>
-                    {{-- <th class="not-exported">{{trans('file.action')}}</th> --}}
+                
+                    <th>#</th>
+                    <th>Language Code</th>
+                    <th>Language Name</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($products as $item)
-                   
+                
+                @foreach ($languages as $key => $item)
+
                     <tr>
-                        <td>{{ $item->article->articleNumber }}</td>
-                        <td>{{ $item->article->genericArticleDescription }}</td>
-                        <td>{{ $item->articleText->informationTypeDescription }}</td>
-                        <td>{{ $item->articleText->text }}</td>
-                        <td>{{ isset($item->article->brand->brandName) ? $item->article->brand->brandName : "" }}</td>
-                        <td>{{ $item->assemblyGroupNodes->assemblyGroupName }}</td>
-                        {{-- <td>{{ $item->assemblyGroupNodes->legacyArticleId }}</td> --}}
-                        <td>{{ $item->articleText->isImmediateDisplay }}</td>
-                        
-                        <td>{{ $item->linkageTarget->mfrName }}</td>
-                        <td>{{ $item->linkageTarget->mfrId }}</td>
+                        <td>{{ $key+1 }}</td>
+                        <td>{{ $item->languageCode }}</td>
+                        <td>{{ $item->languageName }}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -62,8 +48,15 @@
         </table>
         
         <div class="pull-right">
-            {{$products->links()}}
+            {{$languages->links()}}
         </div>
+    </div>
+
+    <div class="mt-5">
+        <div class="col-md-2">
+            <a href="{{ route('assembly_group_nodes.index') }}" class="btn btn-primary">Back</a>
+        </div>
+        
     </div>
 
 </section>

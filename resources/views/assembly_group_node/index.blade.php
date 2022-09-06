@@ -19,7 +19,7 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                <h3 class="">{{trans('file.Products')}}</h3>
+                <h3 class="">{{trans('file.Sections')}}</h3>
             </div>
         </div>
     </div>
@@ -27,34 +27,38 @@
         <table id="product-data-table" class="table" style="width: 100%">
             <thead>
                 <tr>
-                    <th>Article Number</th>
-                    <th>Geeneric Article Description</th>
-                    <th>Information Type Description</th>
-                    <th>Text</th>
-                    <th>Brand</th>
-                    <th>Assembly Group Name</th>
-                    {{-- <th>legacyArticleId</th> --}}
-                    <th>Immediate Display</th>
-                    <th>Manufacturer</th>
-                    <th>Manufacturer Id</th>
-                    {{-- <th class="not-exported">{{trans('file.action')}}</th> --}}
+                
+                    <th>#</th>
+                    <th>Assembly Group Node Name</th>
+                    <th>Assembly Group Node Id</th>
+                    <th>Request Linking Target Id</th>
+                    <th>Request Linking Target Type</th>
+                    <th>Action</th>
+
+                
                 </tr>
             </thead>
             <tbody>
-                @foreach ($products as $item)
-                   
+                
+                @foreach ($assemblyGroupNodes as $key => $item)
+
                     <tr>
-                        <td>{{ $item->article->articleNumber }}</td>
-                        <td>{{ $item->article->genericArticleDescription }}</td>
-                        <td>{{ $item->articleText->informationTypeDescription }}</td>
-                        <td>{{ $item->articleText->text }}</td>
-                        <td>{{ isset($item->article->brand->brandName) ? $item->article->brand->brandName : "" }}</td>
-                        <td>{{ $item->assemblyGroupNodes->assemblyGroupName }}</td>
-                        {{-- <td>{{ $item->assemblyGroupNodes->legacyArticleId }}</td> --}}
-                        <td>{{ $item->articleText->isImmediateDisplay }}</td>
-                        
-                        <td>{{ $item->linkageTarget->mfrName }}</td>
-                        <td>{{ $item->linkageTarget->mfrId }}</td>
+                        <td>{{ $key+1 }}</td>
+                        <td>{{ $item->assemblyGroupName }}</td>
+                        <td>{{ $item->assemblyGroupNodeId }}</td>
+                        <td>{{ $item->request__linkingTargetId }}</td>
+                        <td>{{ $item->request__linkingTargetType }}</td>
+                        <td>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  Action
+                                </button>
+                                <div class="dropdown-menu">
+                                  <a href="{{ route('assembly_group_nodes.show',$item->id) }}" class="dropdown-item">View</a>
+                                  <a href="{{ route('get_section.parts',$item->id) }}" class="dropdown-item">Get Parts</a>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
@@ -62,7 +66,7 @@
         </table>
         
         <div class="pull-right">
-            {{$products->links()}}
+            {{$assemblyGroupNodes->links()}}
         </div>
     </div>
 

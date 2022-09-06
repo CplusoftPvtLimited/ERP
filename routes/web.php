@@ -1,9 +1,13 @@
 <?php
+
+use App\Http\Controllers\AssemblyGroupNodeController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\RetailerRegisterController;
 use App\Http\Controllers\Auth\RetailerLoginController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\ProductController;
+use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +35,14 @@ Route::group(['middleware' => 'auth'], function() {
 Route::group(['middleware' => ['auth', 'active']], function() {
 
 	Route::resource('preinvoices', 'PreInvoiceController');
+
+    Route::resource('assembly_group_nodes', 'AssemblyGroupNodeController');  // for erp
+	Route::get('assembly_group_nodes/getSectionParts/{id}','AssemblyGroupNodeController@getSectionParts')->name('get_section.parts'); // for erp
+	Route::get('assembly_group_nodes/language/{id}','AssemblyGroupNodeController@getLanguage')->name('get_language'); // for erp
+    Route::resource('languages', 'LanguagesController'); // for erp
+
+
+
 	Route::resource('invoices', 'InvoiceController');
 	Route::get('invoices/getproduct/{id}', 'InvoiceController@getProduct')->name('invoice.getproduct');
 	Route::get('preinvoices/getproduct/{id}', 'PreInvoiceController@getProduct')->name('preinvoice.getproduct');

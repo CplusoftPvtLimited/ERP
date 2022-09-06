@@ -68,6 +68,9 @@
   </head>
 
   <body onload="myFunction()">
+    @php
+  $route =\Request::route()->getName();
+  @endphp
   @php $userr_id = auth()->user()->id; @endphp
 
     <div id="loader"></div>
@@ -212,7 +215,9 @@
             </ul>
             </li>
             @endif
-            <li id="sale-list-menu"><a href="{{route('product.get')}}"><i class="dripicons-list"></i> {{trans('file.Products')}}</a></li>
+            <li id="sale-list-menu" class="{{ $route == "product.get" ? 'active' : '' }}"><a href="{{route('product.get')}}"><i class="dripicons-list"></i> {{trans('file.Products')}}</a></li>
+            
+            <li id="sale-list-menu" class="{{ $route == "assembly_group_nodes.index" ? 'active' : '' }}"><a href="{{route('assembly_group_nodes.index')}}"><i class="dripicons-list"></i> {{trans('file.Sections')}}</a></li>
 
             <?php
             $index_permission = DB::table('permissions')->where('name', 'expenses-index')->first();
