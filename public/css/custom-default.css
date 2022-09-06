@@ -883,7 +883,7 @@ section.pos-section{
 	 	display: block;
 	}
 
-	div#product-data-table_filter {
+	div#product-data-table_filter,div#supplier-data-table_filter,div#make-data-table_filter {
 		width: 100% !important;
 	}
 

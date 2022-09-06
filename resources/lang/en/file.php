@@ -14,7 +14,8 @@ return [
 	'Sales Estimate List' => 'Sales Estimate List',
 	'Delivery Slips' => 'Delivery Slips',
 	'Un Paid'=> 'Un Paid',
-
+	'Suppliers' => 'Suppliers',
+	'All Makes' => 'All Makes',
 	'Reference' => 'Reference',
 	'Customer' => 'Customer',
 	'Grand Total' => 'Grand Total',
