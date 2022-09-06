@@ -68,6 +68,9 @@
   </head>
 
   <body onload="myFunction()">
+  @php
+  $route =\Request::route()->getName();
+  @endphp
   @php $userr_id = auth()->user()->id; @endphp
 
     <div id="loader"></div>
@@ -212,9 +215,24 @@
             </ul>
             </li>
             @endif
-            <li id="product-list-menu"><a href="{{route('product.get')}}"><i class="dripicons-list"></i> {{trans('file.Products')}}</a></li>
+            @if($route == 'product.get')
+            <li id="product-list-menu" class="active" ><a href="{{route('product.get')}}"><i class="dripicons-list"></i> {{trans('file.Products')}}</a></li>
+            @else
+            <li id="product-list-menu" ><a href="{{route('product.get')}}"><i class="dripicons-list"></i> {{trans('file.Products')}}</a></li>
+            @endif
+            @if($route == 'supplier.get')
+            <li id="supplier-list-menu" class="active"><a href="{{route('supplier.get')}}"><i class="dripicons-user-group"></i> {{trans('file.Suppliers')}}</a></li>
+            @else
             <li id="supplier-list-menu"><a href="{{route('supplier.get')}}"><i class="dripicons-user-group"></i> {{trans('file.Suppliers')}}</a></li>
+            @endif
+            @if($route == 'allmake.get')
+            <li id="makes-list-menu" class="active"><a href="{{route('allmake.get')}}"><i class="dripicons-wallet"></i> {{trans('file.All Makes')}}</a></li>
+            @else
             <li id="makes-list-menu"><a href="{{route('allmake.get')}}"><i class="dripicons-wallet"></i> {{trans('file.All Makes')}}</a></li>
+            @endif
+            
+            
+            
 
 
             <?php
