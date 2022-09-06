@@ -43,7 +43,7 @@ class Article extends Model
         return $this->hasMany(GenericArticle::class);
     }
 
-    public function brand() {
+    public function brand() {   // usefull
         return $this->belongsTo(Ambrand::class,'dataSupplierId', 'brandId');
     }
 

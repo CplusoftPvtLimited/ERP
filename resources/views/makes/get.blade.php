@@ -35,13 +35,10 @@
             </thead>
             <tbody>
                 @foreach ($makes as $key => $item)
-                   
                     <tr>
                         <td>{{ ++$key }}</td>
                         <td>{{ $item->mfrId }}</td>
                         <td>{{ $item->mfrName }}</td>
-
-                        
                     </tr>
                 @endforeach
             </tbody>
