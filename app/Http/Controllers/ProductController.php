@@ -46,11 +46,16 @@ class ProductController extends Controller
 
         $products = ArticleVehicleTree::with(['article' => function($query) {
             $query->select(['legacyArticleId','articleNumber','genericArticleDescription', 'dataSupplierId']);
-            $query->with('brand');
-        } , 'articleText', 'linkageTarget', 'assemblyGroupNodes'
-        ])->paginate(100);
+            $query->with(['brand' => function($query) {
+                $query->select(['brandId', 'brandName']);
+            }]);
+        } , 'linkageTarget' => function($query){
+            $query->select(['linkageTargetId','mfrId','mfrName']);
+        }, 'assemblyGroupNodes' => function ($query) {
+            $query->select(['assemblyGroupNodeId', 'assemblyGroupName']);
+        }
+        ])->paginate(10);
         
-    //    dd($products);
         return view('product.get', compact('products'));
     }
 
