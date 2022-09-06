@@ -10,6 +10,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Mail\UserNotification;
 use Illuminate\Support\Facades\Mail;
+use App\Models\Ambrand;
 
 class SupplierController extends Controller
 {
@@ -200,5 +201,12 @@ class SupplierController extends Controller
             }
         }
         return redirect('supplier')->with('message', $message); 
+    }
+    public function getSuppliers()
+    {
+
+        $suppliers = Ambrand::distinct()->select('brandId','brandLogoID','brandName')->paginate(100);
+        // dd($suppliers);
+        return view('supplier.get', compact('suppliers'));
     }
 }

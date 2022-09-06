@@ -4,6 +4,9 @@ use App\Http\Controllers\Auth\RetailerRegisterController;
 use App\Http\Controllers\Auth\RetailerLoginController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\MakeController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -382,6 +385,9 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('my-transactions/{year}/{month}', 'HomeController@myTransaction');
 
 	Route::get('products', [ProductController::class, 'getProducts'])->name('product.get');
+	Route::get('suppliers', [SupplierController::class, 'getSuppliers'])->name('supplier.get');
+	Route::get('allMakes', [MakeController::class, 'getAllMakes'])->name('allmake.get');
+
 });
 Route::get('/logout', 'HomeController@logOut');
 Route::get('/verify/mail', 'MailController@index');
