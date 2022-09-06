@@ -17,6 +17,12 @@
 
 <section>
     <div class="container-fluid">
+        <div class="row">
+            <div class="col" >
+                <h2>Makes</h2>
+                <p>List of all vehicle manufacturers.</p>
+            </div>
+        </div>
     </div>
     <div class="table-responsive">
         <table id="make-data-table" class="table" style="width: 100%">

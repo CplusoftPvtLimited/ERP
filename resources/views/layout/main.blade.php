@@ -212,9 +212,9 @@
             </ul>
             </li>
             @endif
-            <li id="sale-list-menu"><a href="{{route('product.get')}}"><i class="dripicons-list"></i> {{trans('file.Products')}}</a></li>
-            <li id="sale-list-menu"><a href="{{route('supplier.get')}}"><i class="dripicons-user-group"></i> {{trans('file.Suppliers')}}</a></li>
-            <li id="sale-list-menu"><a href="{{route('allmake.get')}}"><i class="dripicons-wallet"></i> {{trans('file.All Makes')}}</a></li>
+            <li id="product-list-menu"><a href="{{route('product.get')}}"><i class="dripicons-list"></i> {{trans('file.Products')}}</a></li>
+            <li id="supplier-list-menu"><a href="{{route('supplier.get')}}"><i class="dripicons-user-group"></i> {{trans('file.Suppliers')}}</a></li>
+            <li id="makes-list-menu"><a href="{{route('allmake.get')}}"><i class="dripicons-wallet"></i> {{trans('file.All Makes')}}</a></li>
 
 
             <?php

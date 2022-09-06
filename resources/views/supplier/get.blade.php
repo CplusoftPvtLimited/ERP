@@ -17,6 +17,13 @@
 
 <section>
     <div class="container-fluid">
+    <div class="row">
+            <div class="col" >
+                <h2>Suppliers</h2>
+                <p>List of manufacturers of spare parts in the catalog.</p>
+            </div>
+        </div>
+    </div>
     </div>
     <div class="table-responsive">
         <table id="supplier-data-table" class="table" style="width: 100%">
