@@ -26,11 +26,14 @@ use App\ProductBatch;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
+use PDF;
+
 
 class PurchaseController extends Controller
 {
     public function index(Request $request)
     {
+        $purchases = Purchase::where('user_id',auth()->user()->id)->orderBy('id','desc')->get();
         $role = Role::find(Auth::user()->role_id);
         if($role->hasPermissionTo('purchases-index')) {
             if($request->input('warehouse_id'))
@@ -54,7 +57,7 @@ class PurchaseController extends Controller
             $lims_pos_setting_data = PosSetting::latest()->first();
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
             $lims_account_list = Account::where('is_active', true)->get();
-            return view('purchase.index', compact( 'lims_account_list', 'lims_warehouse_list', 'all_permission', 'lims_pos_setting_data', 'warehouse_id', 'starting_date', 'ending_date'));
+            return view('purchase.index', compact( 'lims_account_list', 'lims_warehouse_list', 'all_permission', 'lims_pos_setting_data', 'warehouse_id', 'starting_date', 'ending_date','purchases'));
         }
         else
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
@@ -434,7 +437,6 @@ class PurchaseController extends Controller
                 $lims_product_warehouse_data = Product_Warehouse::where([
                     ['product_id', $id],
                     ['variant_id', $lims_product_variant_data->variant_id],
-                    ['warehouse_id', $data['warehouse_id']]
                 ])->first();
                 $product_purchase['variant_id'] = $lims_product_variant_data->variant_id;
                 //add quantity to product variant table
@@ -447,13 +449,11 @@ class PurchaseController extends Controller
                     $lims_product_warehouse_data = Product_Warehouse::where([
                         ['product_id', $id],
                         ['product_batch_id', $product_purchase['product_batch_id'] ],
-                        ['warehouse_id', $data['warehouse_id'] ],
                     ])->first();
                 }
                 else {
                     $lims_product_warehouse_data = Product_Warehouse::where([
                         ['product_id', $id],
-                        ['warehouse_id', $data['warehouse_id'] ],
                     ])->first();
                 }
             }
@@ -785,8 +785,8 @@ class PurchaseController extends Controller
                 }
             }
             $lims_product_data->qty -= $old_recieved_value;
-            $lims_product_warehouse_data->qty -= $old_recieved_value;
-            $lims_product_warehouse_data->save();
+            // $lims_product_warehouse_data->qty -= $old_recieved_value;
+            // $lims_product_warehouse_data->save();
             $lims_product_data->save();
             $product_purchase_data->delete();
         }
@@ -829,8 +829,7 @@ class PurchaseController extends Controller
                 $lims_product_variant_data = ProductVariant::select('id', 'variant_id', 'qty')->FindExactProductWithCode($pro_id, $product_code[$key])->first();
                 $lims_product_warehouse_data = Product_Warehouse::where([
                     ['product_id', $pro_id],
-                    ['variant_id', $lims_product_variant_data->variant_id],
-                    ['warehouse_id', $data['warehouse_id']]
+                    ['variant_id', $lims_product_variant_data->variant_id]
                 ])->first();
                 $product_purchase['variant_id'] = $lims_product_variant_data->variant_id;
                 //add quantity to product variant table
@@ -843,21 +842,17 @@ class PurchaseController extends Controller
                     $lims_product_warehouse_data = Product_Warehouse::where([
                         ['product_id', $pro_id],
                         ['product_batch_id', $product_purchase['product_batch_id'] ],
-                        ['warehouse_id', $data['warehouse_id'] ],
                     ])->first();
                 }
                 else {
                     $lims_product_warehouse_data = Product_Warehouse::where([
                         ['product_id', $pro_id],
-                        ['warehouse_id', $data['warehouse_id'] ],
                     ])->first();
                 }
             }
 
             $lims_product_data->qty += $new_recieved_value;
             if($lims_product_warehouse_data){
-                $lims_product_warehouse_data->qty += $new_recieved_value;
-                $lims_product_warehouse_data->save();
             }
             else {
                 $lims_product_warehouse_data = new Product_Warehouse();
@@ -865,7 +860,6 @@ class PurchaseController extends Controller
                 $lims_product_warehouse_data->product_batch_id = $product_purchase['product_batch_id'];
                 if($lims_product_data->is_variant)
                     $lims_product_warehouse_data->variant_id = $lims_product_variant_data->variant_id;
-                $lims_product_warehouse_data->warehouse_id = $data['warehouse_id'];
                 $lims_product_warehouse_data->qty = $new_recieved_value;
             }
             //dealing with imei numbers
@@ -1254,5 +1248,51 @@ class PurchaseController extends Controller
             return redirect('purchases')->with('not_permitted', 'Purchase deleted successfully');;
         }
         
+    }
+    public function purchasePreview($id)
+    {
+        $purchase = Purchase::Find($id);
+        // dump($purchase);
+        $supplier = Supplier::find($purchase->supplier_id);
+        // dump($supplier);
+        $products = ProductPurchase::where('purchase_id', $id)->get();
+        // dd($products);
+        // $sale->estimate_type = 1;
+        // $sale->update();
+        // dd($sale);
+        return view('purchase.purchase_preview', compact('purchase','supplier','products'));
+    }
+    public function generatePurchasePDF($id)
+    {
+        $purchase = Purchase::Find($id);
+        // dump($purchase);
+        $supplier = Supplier::find($purchase->supplier_id);
+        // dump($supplier);
+        $products = ProductPurchase::where('purchase_id', $id)->get();
+        $data = [
+            'purchase' => $purchase,
+            'supplier' => $supplier,
+            'products' => $products
+        ];
+        // dd($data);
+
+        $pdf = PDF::loadView('purchase.purchase_slip_view', $data);
+    
+        return $pdf->download('Purchase.pdf');
+    }
+    public function Purchasesssssss()
+    {
+        $id = 144;
+        $purchase = Purchase::Find($id);
+        // dump($purchase);
+        $supplier = Supplier::find($purchase->supplier_id);
+        // dump($supplier);
+        $products = ProductPurchase::where('purchase_id', $id)->get();
+        // dd($products);
+        // $sale->estimate_type = 1;
+        // $sale->update();
+        // dd($sale);
+        return view('purchase.purchase_slip_view', compact('purchase','supplier','products'));
+
     }
 }

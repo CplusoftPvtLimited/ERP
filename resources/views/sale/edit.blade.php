@@ -373,7 +373,7 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid">
+    <!-- <div class="container-fluid">
         <table class="table table-bordered table-condensed totals">
             <td><strong>{{trans('file.Items')}}</strong>
                 <span class="pull-right" id="item">0.00</span>
@@ -394,7 +394,7 @@
                 <span class="pull-right" id="grand_total">0.00</span>
             </td>
         </table>
-    </div>
+    </div> -->
     <div id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
         <div role="document" class="modal-dialog">
             <div class="modal-content">

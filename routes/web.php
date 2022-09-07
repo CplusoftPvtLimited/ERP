@@ -22,11 +22,14 @@ Route::group(['middleware' => 'auth'], function() {
 
 	Route::post('do-register',[RetailerRegisterController::class,'create'])->name('do-register');
 	Route::post('do-login',[RetailerLoginController::class,'login'])->name('do-login');
+	
 
 
 
 
 Route::group(['middleware' => ['auth', 'active']], function() {
+	
+	Route::get('preinvoice_preview', 'PurchaseController@Purchasesssssss');
 
 	Route::resource('preinvoices', 'PreInvoiceController');
 	Route::resource('invoices', 'InvoiceController');
@@ -159,6 +162,15 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('pos', 'SaleController@posSale')->name('sale.pos');
 	Route::get('sales/lims_sale_search', 'SaleController@limsSaleSearch')->name('sale.search');
 	Route::get('sales/lims_product_search', 'SaleController@limsProductSearch')->name('product_sale.search');
+	Route::get('lims_sales_product_search', 'SaleController@limsSaleProductSearch')->name('product_sale_lims.search');
+	Route::get('lims_sales_product_get', 'SaleController@getSaleProduct')->name('sale.getsaleproduct');
+
+
+	
+	Route::get('sales/create/invoice', 'SaleController@invoiceCreate')->name('sales.invoiceCreate');
+	Route::post('sales/store/invoice', 'SaleController@invoiceStore')->name('sales.invoiceStore');
+
+
 	Route::get('sales/getcustomergroup/{id}', 'SaleController@getCustomerGroup')->name('sale.getcustomergroup');
 	Route::get('sales/getproduct', 'SaleController@getProduct')->name('sale.getproduct');
 	Route::get('sales/getproduct/{category_id}/{brand_id}', 'SaleController@getProductByFilter');
@@ -187,9 +199,21 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('create/sale/invoice/{id}', 'SaleController@createSaleInvoice')->name('sales.createSaleInvoice');
 	Route::get('sales/invoices', 'SaleController@salesInvoices')->name('sales.salesInvoices');
 	Route::get('generate-preinvoice-pdf/{id}', 'SaleController@generatePreInvoicePDF')->name('sales.generatePreInvoicePDF');
+	Route::get('generate-invoice-pdf/{id}', 'SaleController@generateInvoicePDF')->name('sales.generateInvoicePDF');
+	Route::get('generate-delivery-pdf/{id}', 'SaleController@generateDeliveryPDF')->name('sales.generateDeliveryPDF');
+
 	Route::get('invoice/edit/{id}', 'SaleController@editInvoice')->name('sales.editInvoice');
 	Route::put('invoice/update/{id}', 'SaleController@updateInvoice')->name('sales.updateInvoice');
 	Route::get('invoice/change/status/{id}/{val}', 'SaleController@changeInvoiceStatus')->name('sales.changeInvoiceStatus');
+	Route::get('invoice/preview/{id}', 'SaleController@invoicePreview')->name('sales.invoicePreview');
+	Route::get('sales/create/deliveryslip/{invoice_id?}/{sale_id?}', 'SaleController@createDeliverySlip')->name('sales.createDeliverySlip');
+	Route::get('sales/deliveryslips', 'SaleController@salesDeliverySlips')->name('sales.deliveryslips');
+	Route::get('deliveryslip/preview/{id}', 'SaleController@deliverySlipPreview')->name('sales.deliverySlipPreview');
+
+	
+
+
+
 
 
 
@@ -236,6 +260,11 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('purchases/purchase_by_csv', 'PurchaseController@purchaseByCsv');
 	Route::post('importpurchase', 'PurchaseController@importPurchase')->name('purchase.import');
 	Route::post('purchases/deletebyselection', 'PurchaseController@deleteBySelection');
+	Route::get('purchases/preview/{id}', 'PurchaseController@purchasePreview')->name('purchases.purchasePreview');
+	Route::get('generate/purchase/pdf/{id}', 'PurchaseController@generatePurchasePDF')->name('purchases.generatePurchasePDF');
+
+
+
 	Route::resource('purchases', 'PurchaseController');
 
 	Route::get('transfers/product_transfer/{id}','TransferController@productTransferData');

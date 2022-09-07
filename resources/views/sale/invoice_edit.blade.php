@@ -486,8 +486,10 @@
 <script type="text/javascript">
 
     $(document).ready(function(){
+        console.log('hahahahahhaha7777777777')
         var c_id = $('select[name="customer_id"]').val();
-        $.get('/invoices/getproduct/' + c_id, function(data) {
+        $.get('/sales/getproduct/', function(data) {
+            console.log('hahahahahhahahahahahaha')
         lims_product_array = [];
         product_code = data[0];
         product_name = data[1];
@@ -600,7 +602,7 @@
     $('#grand_total').text(parseFloat($('input[name="grand_total"]').val()).toFixed(2));
 
     var id = $('select[name="customer_id"]').val();
-    $.get('../getcustomergroup/' + id, function(data) {
+    $.get('/sales/getcustomergroup/' + id, function(data) {
         customer_group_rate = (data / 100);
     });
     
@@ -631,7 +633,7 @@
                 lims_product_array.push(product_code[index] + ' (' + product_name[index] + ')');
             });
         });
-        $.get('../getcustomergroup/' + id, function(data) {
+        $.get('/sales/getcustomergroup/' + id, function(data) {
             customer_group_rate = (data / 100);
         });
        
@@ -639,8 +641,10 @@
     });
 
     $('select[name="warehouse_id"]').on('change', function() {
+        console.log('hehehehhehehehehehe')
         var id = $(this).val();
         $.get('/invoices/getproduct/' + id, function(data) {
+            console.log('hehehehhehehehehehe')
             lims_product_array = [];
             product_code = data[0];
             product_name = data[1];
@@ -689,7 +693,7 @@
           alert("Quantity can't be less than 1");
         }
         checkDiscount($(this).val(), true);
-        //checkQuantity($(this).val(), true);
+        //checkProQuantity($(this).val(), true);
     });
 
 
@@ -716,6 +720,7 @@
 
     //Update product
     $('button[name="update_btn"]').on("click", function() {
+        console.log('ithygyggggg')
         if(is_imei[rowindex]) {
             var imeiNumbers = $("#editModal input[name=imei_numbers]").val();
             $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.imei-number').val(imeiNumbers);
@@ -768,7 +773,7 @@
         }
         product_discount[rowindex] = $('input[name="edit_discount"]').val();
         checkDiscount(edit_qty, false);
-        //checkQuantity(edit_qty, false);
+        //checkProQuantity(edit_qty, false);
     });
 
     $("#myTable").on("change", ".batch-no", function () {
@@ -792,7 +797,7 @@
 
     function isCashRegisterAvailable(warehouse_id) {
         $.ajax({
-            url: '../../cash-register/check-availability/'+warehouse_id,
+            url: 'cash-register/check-availability/'+warehouse_id,
             type: "GET",
             success:function(data) {
                 if(data == 'false') {
@@ -811,75 +816,113 @@
     }
 
     function productSearch(data) {
-    // alert('djdhjd123');
-    $.ajax({
-        type: 'GET',
-        url: '/sales/lims_product_search',
-        data: {
-            data: data
-        },
-        success: function(data) {
-            console.log('jjkjk');
-            var flag = 1;
-            $(".product-code").each(function(i) {
-                if ($(this).val() == data[1]) {
-                    rowindex = i;
-                    var qty = parseFloat($('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ') .qty').val()) + 1;
+        var product_info = data.split(" ");
+        var code = product_info[0];
+        var pre_qty = 0;
+        $(".product-code").each(function(i) {
+            if ($(this).val() == code) {
+                rowindex = i;
+                pre_qty = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ') .qty').val();
+            }
+        });
+        data += '?'+$('#customer_id').val()+'?'+(parseFloat(pre_qty) + 1);
+        $.ajax({
+            type: 'GET',
+            url: '/lims_sales_product_search',
+            data: {
+                data: data
+            },
+            success: function(data) {
+                var flag = 1;
+                console.log('ithyyyyyyy'+product_price[rowindex])
+                if (pre_qty > 0) {
+                    if(pre_qty)
+                        var qty = parseFloat(pre_qty) + 1;
+                    else
+                        var qty = 1;
+                    console.log('stringgg'+ String(qty))
+
                     $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ') .qty').val(qty);
-                    checkInvoiceQuantity(String(qty), true);
+                    pos = product_code.indexOf(data[1]);
+                    if(!data[11] && product_warehouse_price[pos]) {
+                        product_price[rowindex] = parseFloat(product_warehouse_price[pos] * currency['exchange_rate']) + parseFloat(product_warehouse_price[pos] * currency['exchange_rate'] * customer_group_rate);
+                        console.log('ithyyyyyygggy'+customer_group_rate)
+                        
+
+                    }
+                    else{
+                        product_price[rowindex] = parseFloat(data[2] * currency['exchange_rate']) + parseFloat(data[2] * currency['exchange_rate'] * customer_group_rate);
+                        console.log('ithyhhhhyyyyyy'+product_price[rowindex])
+
+                    }
+                    flag = 0;
+                    console.log('string'+ qty)
+                    checkProQuantity(String(qty), true);
                     flag = 0;
                 }
-            });
-            $("input[name='product_code_name']").val('');
-            if (flag) {
-                var newRow = $("<tr>");
-                var cols = '';
-                temp_unit_name = (data[6]).split(',');
-                cols += '<td>' + data[0] + '<button type="button" class="edit-product btn btn-link" data-toggle="modal" data-target="#editModal"> <i class="dripicons-document-edit"></i></button></td>';
-                cols += '<td>' + data[1] + '</td>';
-                if(data[12])
-                    cols += '<td><input type="text" class="form-control batch-no" required/> <input type="hidden" class="product-batch-id" name="product_batch_id[]"/> </td>';
-                else
-                    cols += '<td><input type="text" class="form-control batch-no" disabled/> <input type="hidden" class="product-batch-id" name="product_batch_id[]"/> </td>';
-                cols += '<td><input type="number" class="form-control qty" name="qty[]" value="1" step="any" required/></td>';
-                cols += '<td class="net_unit_price"></td>';
-                cols += '<td class="discount">0.00</td>';
-                cols += '<td class="tax"></td>';
-                cols += '<td class="sub-total"></td>';
-                cols += '<td><button type="button" class="ibtnDel btn btn-md btn-danger">{{trans("file.delete")}}</button></td>';
-                cols += '<input type="hidden" class="product-code" name="product_code[]" value="' + data[1] + '"/>';
-                cols += '<input type="hidden" class="product-id" name="product_id[]" value="' + data[9] + '"/>';
-                cols += '<input type="hidden" name="product_variant_id[]" value="' + data[10] + '"/>';
-                cols += '<input type="hidden" class="sale-unit" name="sale_unit[]" value="' + temp_unit_name[0] + '"/>';
-                cols += '<input type="hidden" class="net_unit_price" name="net_unit_price[]" />';
-                cols += '<input type="hidden" class="discount-value" name="discount[]" />';
-                cols += '<input type="hidden" class="tax-rate" name="tax_rate[]" value="' + data[3] + '"/>';
-                cols += '<input type="hidden" class="tax-value" name="tax[]" />';
-                cols += '<input type="hidden" class="subtotal-value" name="subtotal[]" />';
+                $("input[name='product_code_name']").val('');
+                if(flag){
+                    console.log(data);
+                    var newRow = $("<tr>");
+                    var cols = '';
+                    pos = product_code.indexOf(data[1]);
+                    temp_unit_name = (data[6]).split(',');
+                    cols += '<td>' + data[0] + '<button type="button" class="edit-product btn btn-link" data-toggle="modal" data-target="#editModal"> <i class="dripicons-document-edit"></i></button></td>';
+                    cols += '<td>' + data[1] + '</td>';
+                    cols += '<td><input type="number" class="form-control qty" name="qty[]" value="1" step="any" required/></td>';
+                    if(data[12]) {
+                        cols += '<td><input type="text" class="form-control batch-no" value="'+batch_no[pos]+'" required/> <input type="hidden" class="product-batch-id" name="product_batch_id[]" value="'+product_batch_id[pos]+'"/> </td>';
+                        cols += '<td class="expired-date">'+expired_date[pos]+'</td>';
+                    }
+                    else {
+                        cols += '<td><input type="text" class="form-control batch-no" disabled/> <input type="hidden" class="product-batch-id" name="product_batch_id[]"/> </td>';
+                        cols += '<td class="expired-date">N/A</td>';
+                    }
+                    cols += '<td class="net_unit_price"></td>';
+                    cols += '<td class="discount">0.00</td>';
+                    cols += '<td class="tax"></td>';
+                    cols += '<td class="sub-total"></td>';
+                    cols += '<td><button type="button" class="ibtnDel btn btn-md btn-danger">{{trans("file.delete")}}</button></td>';
+                    cols += '<input type="hidden" class="product-code" name="product_code[]" value="' + data[1] + '"/>';
+                    cols += '<input type="hidden" class="product-id" name="product_id[]" value="' + data[9] + '"/>';
+                    cols += '<input type="hidden" class="sale-unit" name="sale_unit[]" value="' + temp_unit_name[0] + '"/>';
+                    cols += '<input type="hidden" class="net_unit_price" name="net_unit_price[]" />';
+                    cols += '<input type="hidden" class="discount-value" name="discount[]" />';
+                    cols += '<input type="hidden" class="tax-rate" name="tax_rate[]" value="' + data[3] + '"/>';
+                    cols += '<input type="hidden" class="tax-value" name="tax[]" />';
+                    cols += '<input type="hidden" class="subtotal-value" name="subtotal[]" />';
+                    cols += '<input type="hidden" class="imei-number" name="imei_number[]" />';
 
-                newRow.append(cols);
-                $("table.order-list tbody").prepend(newRow);
-                rowindex = newRow.index();
-                pos = product_code.indexOf(data[1]);
-                if(!data[11] && product_warehouse_price[pos]) {
-                    product_price.splice(rowindex, 0, parseFloat(product_warehouse_price[pos] * currency['exchange_rate']) + parseFloat(product_warehouse_price[pos] * currency['exchange_rate'] * customer_group_rate));
-                }
-                else {
-                    product_price.splice(rowindex, 0, parseFloat(data[2] * currency['exchange_rate']) + parseFloat(data[2] * currency['exchange_rate'] * customer_group_rate));
-                }
+                    newRow.append(cols);
+                    $("table.order-list tbody").prepend(newRow);
+                    rowindex = newRow.index();
 
-                product_discount.splice(rowindex, 0, '0.00');
-                tax_rate.splice(rowindex, 0, parseFloat(data[3]));
-                tax_name.splice(rowindex, 0, data[4]);
-                tax_method.splice(rowindex, 0, data[5]);
-                unit_name.splice(rowindex, 0, data[6]);
-                unit_operator.splice(rowindex, 0, data[7]);
-                unit_operation_value.splice(rowindex, 0, data[8]);
-                checkInvoiceQuantity(1, true);
+                    if(!data[11] && product_warehouse_price[pos]) {
+                        product_price.splice(rowindex, 0, parseFloat(product_warehouse_price[pos] * currency['exchange_rate']) + parseFloat(product_warehouse_price[pos] * currency['exchange_rate'] * customer_group_rate));
+                        console.log('g ithyghyy g'+parseFloat(product_warehouse_price[pos]))
+
+                    }
+                    else {
+                        product_price.splice(rowindex, 0, parseFloat(data[2] * currency['exchange_rate']) + parseFloat(data[2] * currency['exchange_rate'] * customer_group_rate));
+                        console.log('ithyghyy'+product_warehouse_price)
+
+                    }
+                    product_discount.splice(rowindex, 0, '0.00');
+                    tax_rate.splice(rowindex, 0, parseFloat(data[3]));
+                    tax_name.splice(rowindex, 0, data[4]);
+                    tax_method.splice(rowindex, 0, data[5]);
+                    unit_name.splice(rowindex, 0, data[6]);
+                    unit_operator.splice(rowindex, 0, data[7]);
+                    unit_operation_value.splice(rowindex, 0, data[8]);
+                    is_imei.splice(rowindex, 0, data[13]);
+                    checkProQuantity(1, true);
+                    if(data[13]) {
+                        $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.edit-product').click();
+                    }
+                }
             }
-        }
-    });
-}
+        });
+    }
 
     function edit()
     {
@@ -906,7 +949,7 @@
 
         pos = product_code.indexOf(row_product_code);
         if(product_type[pos] == 'standard'){
-            unitConversion();
+            unitSaleConversion();
             temp_unit_name = (unit_name[rowindex]).split(',');
             temp_unit_name.pop();
             temp_unit_operator = (unit_operator[rowindex]).split(',');
@@ -920,6 +963,7 @@
             $("#edit_unit").show();
         }
         else{
+            console.log('ithyy'+product_price[rowindex])
             row_product_price = product_price[rowindex];
             $("#edit_unit").hide();
         }
@@ -934,20 +978,20 @@
             $.ajax({
                 type: 'GET',
                 async: false,
-                url: '../check-discount?qty='+qty+'&customer_id='+customer_id+'&product_id='+product_id,
+                url: '/sales/check-discount?qty='+qty+'&customer_id='+customer_id+'&product_id='+product_id,
                 success: function(data) {
-                    console.log(data);
+                    console.log('ithyaja'+data[0]);
                     pos = product_code.indexOf($('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ') .product-code').val());
                     product_price[rowindex] = parseFloat(data[0] * currency['exchange_rate']) + parseFloat(data[0] * currency['exchange_rate'] * customer_group_rate);
                 }
             });
         }
         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ') .qty').val(qty);
-        checkQuantity(String(qty), flag);
+        checkProQuantity(String(qty), flag);
         localStorage.setItem("tbody-id", $("table.order-list tbody").html());
     }
 
-    function checkQuantity(sale_qty, flag) {
+    function checkProQuantity(sale_qty, flag) {
         var row_product_code = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('td:nth-child(2)').text();
         pos = product_code.indexOf(row_product_code);
         if(product_type[pos] == 'standard'){
@@ -993,15 +1037,17 @@
             $('#editModal').modal('hide');
             $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.qty').val(sale_qty);
         }
-
+        // console.log('salel ')
         calculateRowProductData(sale_qty);
     }
 
     function calculateRowProductData(quantity) {
+        console.log(product_type[pos])
         if(product_type[pos] == 'standard')
-            unitConversion();
+            unitSaleConversion();
         else
             row_product_price = product_price[rowindex];
+            console.log('ithy'+product_price[rowindex])
 
         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.discount').text((product_discount[rowindex] * quantity).toFixed(2));
         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.discount-value').val((product_discount[rowindex] * quantity).toFixed(2));
@@ -1035,15 +1081,16 @@
         calculateTotal();
     }
 
-    function unitConversion() {
+    function unitSaleConversion() {
         var row_unit_operator = unit_operator[rowindex].slice(0, unit_operator[rowindex].indexOf(","));
         var row_unit_operation_value = unit_operation_value[rowindex].slice(0, unit_operation_value[rowindex].indexOf(","));
-
+console.log(parseFloat(product_price))
         if (row_unit_operator == '*') {
-            row_product_price = product_price[rowindex] * row_unit_operation_value;
+            row_product_price = parseFloat(product_price[rowindex]) * parseFloat(row_unit_operation_value);
         } else {
-            row_product_price = product_price[rowindex] / row_unit_operation_value;
+            row_product_price = parseFloat(product_price[rowindex]) / parseFloat(row_unit_operation_value);
         }
+        console.log(row_product_price)
     }
 
     function calculateTotal() {

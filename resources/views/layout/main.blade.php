@@ -215,7 +215,7 @@
                 @endif
                 <li id="sale-list-menu"><a href="{{route('sales.index')}}">{{trans('file.Estimate List')}}</a></li>
                 <li id="invoices-list-menu"><a href="{{route('sales.salesInvoices')}}">{{trans('file.Invoice List')}}</a></li>
-                <li id="pre-invoices-list-menu"><a href="">{{trans('file.Delivery Slips')}}</a></li>
+                <li id="pre-invoices-list-menu"><a href="{{route('sales.deliveryslips')}}">{{trans('file.Delivery Slips')}}</a></li>
 
 
                 <?php
@@ -361,7 +361,7 @@
 
             ?>
             @if($index_permission_active || $balance_sheet_permission_active || $account_statement_permission_active || $money_transfer_permission_active)
-            <!-- <li class=""><a href="#account" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-briefcase"></i><span>{{trans('file.Accounting')}}</span></a> -->
+            <li class=""><a href="#account" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-briefcase"></i><span>{{trans('file.Accounting')}}</span></a>
             <ul id="account" class="collapse list-unstyled ">
                 @if($index_permission_active)
                 <li id="account-list-menu"><a href="{{route('accounts.index')}}">{{trans('file.Account List')}}</a></li>
@@ -451,11 +451,11 @@
                     ])->first();
             ?>
             @if($user_index_permission_active || $customer_index_permission_active || $biller_index_permission_active || $supplier_index_permission_active)
-            <!-- <li><a href="#people" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-user"></i><span>{{trans('file.People')}}</span></a> -->
+            <li><a href="#people" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-user"></i><span>{{trans('file.People')}}</span></a>
             <ul id="people" class="collapse list-unstyled ">
 
                 @if($user_index_permission_active)
-                <li id="user-list-menu"><a href="{{route('user.index')}}">{{trans('file.User List')}}</a></li>
+                <!-- <li id="user-list-menu"><a href="{{route('user.index')}}">{{trans('file.User List')}}</a></li> -->
                 <?php $user_add_permission_active = DB::table('permissions')
                     ->join('role_has_permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
                     ->where([
@@ -463,7 +463,7 @@
                         ['role_id', $role->id] ])->first();
                 ?>
                 @if($user_add_permission_active)
-                <li id="user-create-menu"><a href="{{route('user.create')}}">{{trans('file.Add User')}}</a></li>
+                <!-- <li id="user-create-menu"><a href="{{route('user.create')}}">{{trans('file.Add User')}}</a></li> -->
                 @endif
                 @endif
 
@@ -482,7 +482,7 @@
                 @endif
 
                 @if($biller_index_permission_active)
-                <li id="biller-list-menu"><a href="{{route('biller.index')}}">{{trans('file.Biller List')}}</a></li>
+                <!-- <li id="biller-list-menu"><a href="{{route('biller.index')}}">{{trans('file.Biller List')}}</a></li> -->
                 <?php
                 $biller_add_permission = DB::table('permissions')->where('name', 'billers-add')->first();
                 $biller_add_permission_active = DB::table('role_has_permissions')->where([
@@ -491,7 +491,7 @@
                 ])->first();
                 ?>
                 @if($biller_add_permission_active)
-                <li id="biller-create-menu"><a href="{{route('biller.create')}}">{{trans('file.Add Biller')}}</a></li>
+                <!-- <li id="biller-create-menu"><a href="{{route('biller.create')}}">{{trans('file.Add Biller')}}</a></li> -->
                 @endif
                 @endif
 

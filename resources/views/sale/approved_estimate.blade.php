@@ -72,9 +72,10 @@
 
                     <div class="row text-600 text-white pm-25 pb-3" style="background:lightgray;">
                         <div class="d-none d-sm-block col-1">#</div>
-                        <div class="col-9 col-sm-5">Description</div>
-                        <div class="d-none d-sm-block col-4 col-sm-2">Qty</div>
+                        <div class="col-8 col-sm-4">Description</div>
+                        <div class="d-none d-sm-block col-3 col-sm-1">Qty</div>
                         <div class="d-none d-sm-block col-sm-2">Unit Price</div>
+                        <div class="d-none d-sm-block col-sm-2">Unit Tax</div>
                         <div class="col-2">Total Amount</div>
                     </div>
 
@@ -84,13 +85,22 @@
                         @foreach($products as $product_id)
                         @php 
                         $product = App\Product::Find($product_id->product_id);
+                        $tax = App\Tax::Find($product->tax_id);
+
                         @endphp
                         <div class="row mb-2 mb-sm-0 py-25">
                             <div class="d-none d-sm-block col-1">{{$i+1}}</div>
-                            <div class="col-9 col-sm-5">{{$product->name}}</div>
-                            <div class="d-none d-sm-block col-2">{{$product_id->qty}}</div>
+                            <div class="col-8 col-sm-4">{{$product->name}}</div>
+                            <div class="d-none d-sm-block col-1">{{$product_id->qty}}</div>
                             <div class="d-none d-sm-block col-2 text-95">${{$product->price}}</div>
-                            <div class="col-2 text-secondary-d2">${{$product->price * $product_id->qty}}</div>
+                            @if($tax)
+                                @php $taxes = ($tax->rate * $product->price)/100; @endphp
+                            <div class="d-none d-sm-block col-2 text-95">${{$taxes}}</div>
+                            <div class="col-2 text-secondary-d2">${{($product->price +$taxes)  * $product_id->qty}}</div>
+                            @else
+                            <div class="d-none d-sm-block col-2 text-95">$0</div>
+                            <div class="col-2 text-secondary-d2">${{$product->price  * $product_id->qty}}</div>
+                            @endif
                         </div>
                         @php
                         $i++;

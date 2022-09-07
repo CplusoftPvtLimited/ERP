@@ -1,146 +1,11 @@
+@extends('layout.main') 
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ERP</title>
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
-<style>
-    body{
-    margin-top:20px;
-    color: #484b51;
-}
-.text-secondary-d1 {
-    color: #728299!important;
-}
-.page-header {
-    margin: 0 0 1rem;
-    padding-bottom: 1rem;
-    padding-top: .5rem;
-    border-bottom: 1px dotted #e2e2e2;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-pack: justify;
-    justify-content: space-between;
-    -ms-flex-align: center;
-    align-items: center;
-}
-.page-title {
-    padding: 0;
-    margin: 0;
-    font-size: 1.75rem;
-    font-weight: 300;
-}
-.brc-default-l1 {
-    border-color: #dce9f0!important;
-}
-
-.ml-n1, .mx-n1 {
-    margin-left: -.25rem!important;
-}
-.mr-n1, .mx-n1 {
-    margin-right: -.25rem!important;
-}
-.mb-4, .my-4 {
-    margin-bottom: 1.5rem!important;
-}
-
-hr {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    border: 0;
-    border-top: 1px solid rgba(0,0,0,.1);
-}
-
-.text-grey-m2 {
-    color: #888a8d!important;
-}
-
-.text-success-m2 {
-    color: #86bd68!important;
-}
-
-.font-bolder, .text-600 {
-    font-weight: 600!important;
-}
-
-.text-110 {
-    font-size: 110%!important;
-}
-.text-blue {
-    color: #478fcc!important;
-}
-.pb-25, .py-25 {
-    padding-bottom: .75rem!important;
-}
-
-.pt-25, .py-25 {
-    padding-top: .75rem!important;
-}
-.bgc-default-tp1 {
-    background-color: rgba(121,169,197,.92)!important;
-}
-.bgc-default-l4, .bgc-h-default-l4:hover {
-    background-color: #f3f8fa!important;
-}
-.page-header .page-tools {
-    -ms-flex-item-align: end;
-    align-self: flex-end;
-}
-
-.btn-light {
-    color: #757984;
-    background-color: #f5f6f9;
-    border-color: #dddfe4;
-}
-.w-2 {
-    width: 1rem;
-}
-
-.text-120 {
-    font-size: 120%!important;
-}
-.text-primary-m1 {
-    color: #4087d4!important;
-}
-
-.text-danger-m1 {
-    color: #dd4949!important;
-}
-.text-blue-m2 {
-    color: #68a3d5!important;
-}
-.text-150 {
-    font-size: 150%!important;
-}
-.text-60 {
-    font-size: 60%!important;
-}
-.text-grey-m1 {
-    color: #7b7d81!important;
-}
-.align-bottom {
-    vertical-align: bottom!important;
-}
-footer {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 75px;
-  background: white;
-  border-top: 5px solid #6699cc;
-}
-</style>
-  </head>
-  <body>
-<div class="page-content container">
+@section('content')
+<div class="page-content container mt-2 p-4">
+    <div class="card p-5">
     <div class="page-header text-blue-d2">
         <h1 class="page-title text-secondary-d1">
-            Estimate
+            Invoice
         </h1>
     </div>
 
@@ -160,23 +25,23 @@ footer {
                 <div class="row">
                     <div class="col-sm-5">
                         <div>
-                            <span class="text-600 text-110">Customer : </span>{{$lims_customer_data->name}}
+                            <span class="text-600 text-110">Customer : </span>{{$customer->name}}
                             <hr style="border: 2px solid black; opacity:1">
                         </div>
                         <div>
-                            <span class="">Company : </span>{{$lims_customer_data->company_name}}
+                            <span class="">Company : </span>{{$customer->company_name}}
                         </div>
                         <div>
-                            <span class="">Tax number : </span>{{$lims_customer_data->tax_no}}
+                            <span class="">Tax number : </span>{{$customer->tax_no}}
                         </div>
                         <div>
-                            <span class="">Mobile number : </span>{{$lims_customer_data->phone_number}}
+                            <span class="">Mobile number : </span>{{$customer->phone_number}}
                         </div>
                         <div>
-                            <span class="">Address : </span>{{$lims_customer_data->address}}
+                            <span class="">Address : </span>{{$customer->address}}
                         </div>
                         <div>
-                            <span class="">Email : </span>{{$lims_customer_data->email}}
+                            <span class="">Email : </span>{{$customer->email}}
                         </div>
                     </div>
                     <!-- /.col -->
@@ -189,7 +54,7 @@ footer {
                             <hr style="border: 2px solid black;opacity:1">
                             </div>
                             <div>
-                                <span class="">Document Date : </span>{{$request['created_at']}}
+                                <span class="">Document Date : </span>{{$invoice->created_at->format('d-m-Y')}}
                             </div>
                             <div>
                                 <span class="">Note : </span>
@@ -200,37 +65,41 @@ footer {
                 </div>
 
                 <div class="mt-4">
+                    <div class="row">
+                <hr style="border: 3px solid black;opacity:1;margin:0px;width:100%;">
+
+                    </div>
+
                     <div class="row text-600 text-white pm-25 pb-3" style="background:lightgray;">
-                    <hr style="border: 3px solid black;opacity:1">
                         <div class="d-none d-sm-block col-1">#</div>
                         <div class="col-8 col-sm-4">Description</div>
                         <div class="d-none d-sm-block col-3 col-sm-1">Qty</div>
                         <div class="d-none d-sm-block col-sm-2">Unit Price</div>
                         <div class="d-none d-sm-block col-sm-2">Unit Tax</div>
+
                         <div class="col-2">Total Amount</div>
                     </div>
 
                     <div class="text-95 text-secondary-d3">
                         @php $i = 0;
                         @endphp
-                        @foreach($request['product_id'] as $product_id)
+                        @foreach($products as $product_id)
                         @php 
-                        $product = App\Product::Find($product_id);
+                        $product = App\Product::Find($product_id->product_id);
                         $tax = App\Tax::Find($product->tax_id);
-                        $qty = $request['qty'][$i];
                         @endphp
                         <div class="row mb-2 mb-sm-0 py-25">
                             <div class="d-none d-sm-block col-1">{{$i+1}}</div>
                             <div class="col-8 col-sm-4">{{$product->name}}</div>
-                            <div class="d-none d-sm-block col-1">{{$qty}}</div>
+                            <div class="d-none d-sm-block col-1">{{$product_id->qty}}</div>
                             <div class="d-none d-sm-block col-2 text-95">${{$product->price}}</div>
                             @if($tax)
                                 @php $taxes = ($tax->rate * $product->price)/100; @endphp
                             <div class="d-none d-sm-block col-2 text-95">${{$taxes}}</div>
-                            <div class="col-2 text-secondary-d2">${{($product->price +$taxes)  * $qty}}</div>
+                            <div class="col-2 text-secondary-d2">${{($product->price +$taxes)  * $product_id->qty}}</div>
                             @else
                             <div class="d-none d-sm-block col-2 text-95">$0</div>
-                            <div class="col-2 text-secondary-d2">${{$product->price  * $qty}}</div>
+                            <div class="col-2 text-secondary-d2">${{$product->price  * $product_id->qty}}</div>
                             @endif
                         </div>
                         @php
@@ -276,50 +145,51 @@ footer {
                         </div>
 
                         <div class="col-12 col-sm-5 text-grey text-90 order-first order-sm-last">
-                            <div class="row my-2">
                     <hr style="border: 2px solid black;opacity:1">
+                            <div class="row my-2">
+                    <!-- <hr style="border: 2px solid black;opacity:1"> -->
 
-                                <div class="col-7 text-right">
+                                <div class="col-7 ">
                                     
                                     SubTotal
                                 </div>
                                 <div class="col-5">
-                                    <span class="text-120 text-secondary-d1">${{$request['total_price']}}</span>
+                                    <span class="text-120 text-secondary-d1">${{$invoice->total_price}}</span>
                                 </div>
                             </div>
 
                             <div class="row mt-2">
-                                <div class="col-7 text-right">
+                                <div class="col-7 ">
                                     Discount 
                                 </div>
                                 <div class="col-5">
-                                    <span class="text-110 text-secondary-d1">${{$request['order_discount']}}</span>
+                                    <span class="text-110 text-secondary-d1">${{$invoice->order_discount}}</span>
                                 </div>
                             </div>
 
                             <div class="row mt-2">
-                                <div class="col-7 text-right">
+                                <div class="col-7 ">
                                     Tax
                                 </div>
                                 <div class="col-5">
-                                    <span class="text-110 text-secondary-d1">${{$request['order_tax']}}</span>
+                                    <span class="text-110 text-secondary-d1">${{$invoice->order_tax}}</span>
                                 </div>
                             </div>
                             <div class="row mt-2">
-                                <div class="col-7 text-right">
+                                <div class="col-7 ">
                                     Shipping Cost
                                 </div>
                                 <div class="col-5">
-                                    <span class="text-110 text-secondary-d1">${{$request['shipping_cost']}}</span>
+                                    <span class="text-110 text-secondary-d1">${{$invoice->shipping_cost}}</span>
                                 </div>
                             </div>
 
                             <div class="row my-2 align-items-center bgc-primary-l3 p-2">
-                                <div class="col-7 text-right">
+                                <div class="col-7 ">
                                     Net To Pay
                                 </div>
                                 <div class="col-5">
-                                    <span class="text-150 text-success-d3 opacity-2">${{$request['grand_total']}}</span>
+                                    <span class="text-150 text-success-d3 opacity-2">${{$invoice->grand_total}}</span>
                                 </div>
                             </div>
                         </div>
@@ -334,17 +204,33 @@ footer {
         </div>
     </div>
 </div>
-<footer>
+</div>
+
+<footer style="position: fixed;bottom: 0;height: 75px;width:100%;background: white;border-top: 5px solid #6699cc;">
     <div class="row p-2">
         <div class="col-6">
-            <h1><i class="bi bi-file-earmark-text"></i> Estimate</h1>
+            <h1><i class="bi bi-file-earmark-text"></i><i class="fa-solid fa-file-lines"></i> Invoice</h1>
         </div>
-        <div class="col-6 mr-2" align="right">
-            <a href="{{route('sales.edit',$lims_sale_data->id)}}" class="btn btn-primary">Update</a>
-            <a href="{{route('sales.approveEstimate',$lims_sale_data->id)}}" class="btn btn-success">Approve</a>
+        <div class="col-6">
+            @if($invoice->status == 1)
+            <a href="{{route('sales.salesInvoices')}}" class="btn btn-primary">Return</a>
+            <a href="{{ route('sales.changeInvoiceStatus',[$invoice->id,3]) }}" class="btn btn-danger">Partial</a>
+            <a href="{{ route('sales.changeInvoiceStatus',[$invoice->id,2]) }}" class="btn btn-success">Paid</a>
+            <!-- <a href="{{route('sales.negotiateEstimate',$invoice->id)}}" class="btn btn-secondary">Negotiate</a> -->
+            @elseif($invoice->status == 3)
+            <a href="{{route('sales.salesInvoices')}}" class="btn btn-primary">Return</a>
+            <a href="{{ route('sales.changeInvoiceStatus',[$invoice->id,2]) }}" class="btn btn-danger">Paid</a>
+            <!-- <a href="{{route('sales.acceptEstimate',$invoice->id)}}" class="btn btn-success">Accept</a> -->
+            <!-- <a href="{{route('sales.negotiateEstimate',$invoice->id)}}" class="btn btn-secondary">Negotiate</a> -->
+            @elseif($invoice->status == 2)
+            <a href="{{route('sales.salesInvoices')}}" class="btn btn-primary">Return</a>
+            <!-- <a href="{{route('sales.reactivateEstimate',$invoice->id)}}" class="btn btn-secondary">Reactivate</a> -->
+            <!-- <a href="{{route('sales.acceptEstimate',$invoice->id)}}" class="btn btn-success">Accept</a>
+            <a href="{{route('sales.negotiateEstimate',$invoice->id)}}" class="btn btn-secondary">Negotiate</a> -->
+            @endif
         </div>
     </div>
 </footer>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
-  </body>
-</html>
+
+
+@endsection

@@ -16,7 +16,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>{{trans('file.Date')}}</label>
                                             <input type="text" name="created_at" class="form-control date" value="{{date($general_setting->date_format, strtotime($lims_purchase_data->created_at->toDateString()))}}" />
@@ -28,7 +28,7 @@
                                             <p><strong>{{ $lims_purchase_data->reference_no }}</strong> </p>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <!-- <div class="col-md-4">
                                         <div class="form-group">
                                             <label>{{trans('file.Warehouse')}} *</label>
                                             <input type="hidden" name="warehouse_id_hidden" value="{{$lims_purchase_data->warehouse_id}}" />
@@ -38,7 +38,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>{{trans('file.Supplier')}}</label>
@@ -58,8 +58,8 @@
                                             <input type="hidden" name="status_hidden" value="{{$lims_purchase_data->status}}">
                                             <select name="status" class="form-control">
                                                 <option value="1">{{trans('file.Recieved')}}</option>
-                                                <option value="2">{{trans('file.Partial')}}</option>
-                                                <option value="3">{{trans('file.Pending')}}</option>
+                                                <!-- <option value="2">{{trans('file.Partial')}}</option> -->
+                                                <!-- <option value="3">{{trans('file.Pending')}}</option> -->
                                                 <option value="4">{{trans('file.Ordered')}}</option>
                                             </select>
                                         </div>

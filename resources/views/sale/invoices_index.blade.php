@@ -15,12 +15,12 @@
             </div>
             {!! Form::close() !!}
         </div>
-            <!-- <a href="{{route('sales.create')}}" class="btn btn-info ml-4"><i class="dripicons-plus"></i> {{trans('file.Add')}}</a>&nbsp; -->
+            <a href="{{route('sales.invoiceCreate')}}" class="btn btn-info ml-4"><i class="dripicons-plus"></i> {{trans('file.Add')}}</a>&nbsp;
             <!-- <a href="{{url('sales/sale_by_csv')}}" class="btn btn-primary"><i class="dripicons-copy"></i> {{trans('file.Import Sale')}}</a> -->
     </div>
     <div class="card p-3">
     <div class="table-responsive">
-        <table id="sale-table" class="table sale-list" style="width: 100%">
+        <table id="invoice-table" class="table sale-list" style="width: 100%">
             <thead>
                 <tr>
                     <th>{{trans('file.Date')}}</th>
@@ -33,7 +33,10 @@
                     <!-- <th>{{trans('file.Payment Method')}}</th> -->
 
                     <!-- <th>{{trans('file.Paid')}}</th> -->
+                    <th>{{trans('file.Payment Method')}}</th>
+
                     <th>{{trans('file.Status')}}</th>
+
                     <th>{{trans('file.action')}}</th>
                 </tr>
             </thead>
@@ -42,10 +45,21 @@
                 @php 
                 $customer=App\Customer::find($invoice->customer_id); @endphp
                 <tr>
+                    @if($invoice->date)
+                    <td>{{$invoice->date}}</td>
+                    @else
                     <td>{{$invoice->created_at->format('d-m-Y')}}</td>
+                    @endif
                     <td>{{$invoice->invoice_number}}</td>
                     <td>{{$customer->name}}</td>
                     <td>{{$invoice->grand_total}}</td>
+                    @if($invoice->payment_method == 1)
+                    <td>{{trans('file.White Cash')}}</td>
+                    @elseif($invoice->payment_method == 2)
+                    <td>{{trans('file.Black Cash')}}</td>
+                    @else
+                    <td></td>
+                    @endif
                     @if($invoice->status == 1)
                     <td><div class="btn-group">
                             <button type="button" class="btn btn-sm dropdown-toggle btn-danger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{trans('file.Un Paid')}}
@@ -92,22 +106,23 @@
                             </ul>
                         </div></td>
                     @endif
+                    
                     <td>
                     @if($invoice->status != 2)
                         <a class="btn" href="{{route('sales.editInvoice',$invoice->id)}}"><i class="dripicons-document-edit"></i></a>
                         @endif
                         <!-- <a class="btn" href="">$</a> -->
-                        <!-- <a class="btn" href=""><i class="fa fa-file-pdf-o"></i></a> -->
-                        <!-- <a class="btn" href="{{route('sales.approveEstimate',$invoice->id)}}"><i class="fa fa-eye"></i></a> -->
+                        <a class="btn" href="{{route('sales.generateInvoicePDF', $invoice->id)}}"><i class="fa fa-file-pdf-o"></i></a>
+                        <a class="btn" href="{{route('sales.invoicePreview',$invoice->id)}}"><i class="fa fa-eye"></i></a>
+                        @if($invoice->status == 2)
                         <div class="btn-group">
                             <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-refresh"></i>
                                 <span class="caret"></span>
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
-                                @if($invoice->status == 2)
                                 <li>
-                                <a class="btn btn-link" href="{{ route('sales.reactivateEstimate',$invoice->id) }}">{{trans('file.Delivery Slip')}}</a>
+                                <a class="btn btn-link" href="{{ route('sales.createDeliverySlip',[$invoice->id,0]) }}">{{trans('file.Delivery Slip')}}</a>
                                 </li>
                                 @endif
                             </ul>
@@ -120,7 +135,12 @@
     </div>
     </div>
 </section>
-
-
-
 @endsection
+@push('scripts')
+<script>
+    $(document).ready( function () {
+    $('#invoice-table').DataTable();
+} );
+</script>
+<script type="text/javascript" src="https://js.stripe.com/v3/"></script>
+@endpush

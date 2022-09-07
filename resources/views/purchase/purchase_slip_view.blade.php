@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -17,7 +18,7 @@
 <div style="padding:25px">
 <table style="width:100%;">
     <tr style="border-bottom:1px dotted grey;">
-        <td colspan="5"><h1 style="color:#728299">Pre Invoice</h1></td>
+        <td colspan="5"><h1 style="color:#728299">Purchase Slip</h1></td>
         <td></td>
         <td></td>
         <td></td>
@@ -35,29 +36,29 @@
 
     </tr>
     <tr>
-        <td style="border-bottom:3px solid black;padding-top:10px" colspan="4"><strong>Customer:</strong> {{$customer->name}}</td>
+        <td style="border-bottom:3px solid black;padding-top:10px" colspan="4"><strong>Supplier:</strong> {{$supplier->name}}</td>
         <td style="padding-top:10px" colspan="2"> </td>
         <td style="border-bottom:3px solid black;padding-top:10px" colspan="3"><strong>Document Details:</strong></td>
     </tr>
     <tr>
-        <td colspan="4"><strong>Company:</strong> {{$customer->company_name}}</td>
+        <td colspan="4"><strong>Company:</strong> {{$supplier->company_name}}</td>
         <td colspan="2"></td>
-        <td colspan="3" ><strong>Document Date:</strong> {{$sale->created_at->format('d-m-Y')}}</td>
+        <td colspan="3" ><strong>Document Date:</strong> {{$purchase->created_at->format('d-m-Y')}}</td>
     </tr>
     <tr>
-        <td colspan="4"><strong>Tax Number:</strong> {{$customer->tax_no}}</td>
+        <td colspan="4"><strong>Tax Number:</strong> {{$supplier->tax_no}}</td>
         <td colspan="2"></td>
         <td colspan="3"><strong>Note:</strong></td>
 
     </tr>
     <tr>
-        <td colspan="7"><strong>Mobile Number:</strong> {{$customer->phone_number}}</td>
+        <td colspan="7"><strong>Mobile Number:</strong> {{$supplier->phone_number}}</td>
     </tr>
     <tr>
-        <td colspan="7"><strong>Address:</strong> {{$customer->address}}</td>
+        <td colspan="7"><strong>Address:</strong> {{$supplier->address}}</td>
     </tr>
     <tr>
-        <td colspan="7" style="padding-bottom:10px"><strong>Email:</strong> {{$customer->email}}</td>
+        <td colspan="7" style="padding-bottom:10px"><strong>Email:</strong> {{$supplier->email}}</td>
     </tr>
     <tr style="background:lightgrey;border-top:5px solid black; ">
         <td style="padding:10px;" >#</td>
@@ -78,14 +79,14 @@
         <td colspan="3">{{$product->name}}</td>
         <td></td>
         <td>{{$prd->qty}}</td>
-        <td>${{$product->price}}</td>
+        <td>${{$product->cost}}</td>
         @if($tax)
-        @php $taxes = ($tax->rate * $product->price)/100; @endphp
+        @php $taxes = ($tax->rate * $product->cost)/100; @endphp
         <td>${{$taxes}}</td>
-        <td>${{($product->price + $taxes) * $prd->qty}}</td>
+        <td>${{($product->cost + $taxes) * $prd->qty}}</td>
         @else
         <td>$0</td>
-        <td>${{$product->price * $prd->qty}}</td>
+        <td>${{$product->cost * $prd->qty}}</td>
         @endif
     </tr>
         @php $i++; @endphp
@@ -96,24 +97,24 @@
         <tr >
             <td colspan="7"></td>
             <td style="border-top:3px solid black; padding-top:2px">Sub Total</td>
-            <td style="border-top:3px solid black; padding-top:2px">${{$sale->total_price}}</td>
+            <td style="border-top:3px solid black; padding-top:2px">${{$purchase->total_cost}}</td>
         </tr>
         <tr>
         <td colspan="7"></td>
             <td>Discount</td>
-            <td>${{$sale->order_discount}}</td>
+            <td>${{$purchase->order_discount}}</td>
         </tr>
         <tr>
         <td colspan="7"></td>
 
             <td>Order Tax</td>
-            <td>${{$sale->order_tax}}</td>
+            <td>${{$purchase->order_tax}}</td>
         </tr>
         <tr>
         <td colspan="7"></td>
 
             <td>Shipping Cost</td>
-            <td>${{$sale->shipping_cost}}</td>
+            <td>${{$purchase->shipping_cost}}</td>
         </tr>
         <tr>
             <td style="padding:10px;"></td>
@@ -122,12 +123,10 @@
         <td colspan="7"></td>
 
             <td style="border-top:2px dotted grey; padding-top:10px;">Net To Pay</td>
-            <td style="border-top:2px dotted grey;padding-top:10px;">${{$sale->grand_total}}</td>
+            <td style="border-top:2px dotted grey;padding-top:10px;">${{$purchase->grand_total}}</td>
         </tr>
 </table>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
   </body>
 </html>
-
-

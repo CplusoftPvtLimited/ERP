@@ -17,7 +17,7 @@
 <div style="padding:25px">
 <table style="width:100%;">
     <tr style="border-bottom:1px dotted grey;">
-        <td colspan="5"><h1 style="color:#728299">Pre Invoice</h1></td>
+        <td colspan="5"><h1 style="color:#728299">Delivery Slip</h1></td>
         <td></td>
         <td></td>
         <td></td>
@@ -42,7 +42,7 @@
     <tr>
         <td colspan="4"><strong>Company:</strong> {{$customer->company_name}}</td>
         <td colspan="2"></td>
-        <td colspan="3" ><strong>Document Date:</strong> {{$sale->created_at->format('d-m-Y')}}</td>
+        <td colspan="3" ><strong>Document Date:</strong> {{$deliveryslip->created_at->format('d-m-Y')}}</td>
     </tr>
     <tr>
         <td colspan="4"><strong>Tax Number:</strong> {{$customer->tax_no}}</td>
@@ -96,24 +96,40 @@
         <tr >
             <td colspan="7"></td>
             <td style="border-top:3px solid black; padding-top:2px">Sub Total</td>
+            @if($sale != null)
             <td style="border-top:3px solid black; padding-top:2px">${{$sale->total_price}}</td>
+            @elseif($invoice != null)
+            <td style="border-top:3px solid black; padding-top:2px">${{$invoice->total_price}}</td>
+            @endif
         </tr>
         <tr>
         <td colspan="7"></td>
             <td>Discount</td>
+            @if($sale != null)
             <td>${{$sale->order_discount}}</td>
+            @elseif($invoice != null)
+            <td>${{$invoice->order_discount}}</td>
+            @endif
         </tr>
         <tr>
         <td colspan="7"></td>
 
             <td>Order Tax</td>
+            @if($sale != null)
             <td>${{$sale->order_tax}}</td>
+            @elseif($invoice != null)
+            <td>${{$invoice->order_tax}}</td>
+            @endif
         </tr>
         <tr>
         <td colspan="7"></td>
 
             <td>Shipping Cost</td>
+            @if($sale != null)
             <td>${{$sale->shipping_cost}}</td>
+            @elseif($invoice != null)
+            <td>${{$invoice->shipping_cost}}</td>
+            @endif
         </tr>
         <tr>
             <td style="padding:10px;"></td>
@@ -122,12 +138,15 @@
         <td colspan="7"></td>
 
             <td style="border-top:2px dotted grey; padding-top:10px;">Net To Pay</td>
+            @if($sale != null)
             <td style="border-top:2px dotted grey;padding-top:10px;">${{$sale->grand_total}}</td>
+            @elseif($invoice != null)
+            <td style="border-top:2px dotted grey;padding-top:10px;">${{$invoice->grand_total}}</td>
+            @endif
         </tr>
 </table>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
   </body>
 </html>
-
 

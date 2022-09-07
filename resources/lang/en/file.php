@@ -10,6 +10,8 @@ return [
 	'Sales Estimate List' => 'Sales Estimate List',
 	'Delivery Slips' => 'Delivery Slips',
 	'Un Paid'=> 'Un Paid',
+	'Estimate Ref. No.'=> 'Estimate Ref. No.',
+	'Sales Delivery Slips' => 'Sales Delivery Slips',
 
 	'Reference' => 'Reference',
 	'Customer' => 'Customer',
