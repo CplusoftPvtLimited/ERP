@@ -16,4 +16,8 @@ class Manufacturer extends Model
         return $this->hasOne(CarBody::class);
     }
 
+    public function articleCrosses(){
+        $this->belongsTo(ArticleCross::class,'mfrId','manuId');
+    }
+
 }

@@ -1,5 +1,9 @@
 <?php 
 return [
+
+	'Sections' => 'Sections',
+	'Section Parts' => 'Section Parts',
+	'Brand Languages' => 'Brand Languages',
 	'Sales Invoices List' => 'Sales Invoices List',
 	'Invoice Number' => 'Invoice Number',
 	'Delivery Slip' => 'Delivery Slip',
@@ -13,6 +17,8 @@ return [
 	'Estimate Ref. No.'=> 'Estimate Ref. No.',
 	'Sales Delivery Slips' => 'Sales Delivery Slips',
 
+	'Suppliers' => 'Suppliers',
+	'All Makes' => 'All Makes',
 	'Reference' => 'Reference',
 	'Customer' => 'Customer',
 	'Grand Total' => 'Grand Total',

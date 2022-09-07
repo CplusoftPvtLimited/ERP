@@ -11,12 +11,19 @@ class ArticleVehicleTree extends Model
 
     protected $table = "articlesvehicletrees";
 
-    public function articles(){
-        return $this->belongsTo(Article::class);
+    public function article() {
+        return $this->belongsTo(Article::class, 'legacyArticleId', 'legacyArticleId');
     }
 
-    public function vehicles(){
-        return $this->belongsTo(VehicleTree::class);
+    public function articleText() {
+        return $this->belongsTo(ArticleText::class, 'legacyArticleId', 'legacyArticleId');
     }
 
+    public function linkageTarget() {
+        return $this->belongsTo(LinkageTarget::class, 'linkingTargetId', 'linkageTargetId');
+    }
+
+    public function assemblyGroupNodes() {
+        return $this->belongsTo(AssemblyGroupNode::class, 'assemblyGroupNodeId', 'assemblyGroupNodeId');
+    }
 }

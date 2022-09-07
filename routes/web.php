@@ -1,8 +1,16 @@
 <?php
+
+use App\Http\Controllers\AssemblyGroupNodeController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\RetailerRegisterController;
 use App\Http\Controllers\Auth\RetailerLoginController;
 use App\Http\Controllers\FormController;
+use App\Http\Controllers\ProductController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\MakeController;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -32,6 +40,14 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('preinvoice_preview', 'PurchaseController@Purchasesssssss');
 
 	Route::resource('preinvoices', 'PreInvoiceController');
+
+    Route::resource('assembly_group_nodes', 'AssemblyGroupNodeController');  // for erp
+	Route::get('assembly_group_nodes/getSectionParts/{id}','AssemblyGroupNodeController@getSectionParts')->name('get_section.parts'); // for erp
+	Route::get('assembly_group_nodes/language/{id}','AssemblyGroupNodeController@getLanguage')->name('get_language'); // for erp
+    Route::resource('languages', 'LanguagesController'); // for erp
+
+
+
 	Route::resource('invoices', 'InvoiceController');
 	Route::get('invoices/getproduct/{id}', 'InvoiceController@getProduct')->name('invoice.getproduct');
 	Route::get('preinvoices/getproduct/{id}', 'PreInvoiceController@getProduct')->name('preinvoice.getproduct');
@@ -72,7 +88,6 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	});
 	Route::get('/user_show/{user_id}/{noti_id}',[UserController::class,'show']);
 	
-
 	Route::get('/', 'HomeController@index');
 	Route::get('/approved_dashboard/{id?}', 'HomeController@approvedDashboard');
 	Route::get('switch-theme/{theme}', 'HomeController@switchTheme')->name('switchTheme');
@@ -407,6 +422,11 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 
 	Route::get('/home', 'HomeController@index')->name('home');
 	Route::get('my-transactions/{year}/{month}', 'HomeController@myTransaction');
+
+	Route::get('products', [ProductController::class, 'getProducts'])->name('product.get');
+	Route::get('suppliers', [SupplierController::class, 'getSuppliers'])->name('supplier.get');
+	Route::get('allMakes', [MakeController::class, 'getAllMakes'])->name('allmake.get');
+
 });
 Route::get('/logout', 'HomeController@logOut');
 Route::get('/verify/mail', 'MailController@index');
