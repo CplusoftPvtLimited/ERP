@@ -10,4 +10,8 @@ class ArticleCross extends Model
     use HasFactory;
     protected $table = "articlecrosses";
 
+    public function articles(){
+        $this->belongsTo(Article::class,'legacyArticleId','legacyArticleId');
+    }
+
 }

@@ -11,7 +11,7 @@ class GenericArticle extends Model
 
     protected $table = "genericarticles";
 
-    public function article()
+    public function articles()
     {
         return $this->belongsTo(Article::class);
     }

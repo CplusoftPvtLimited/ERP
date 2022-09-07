@@ -10,4 +10,8 @@ class ArticleCriteria extends Model
     use HasFactory;
     protected $table = "articlecriteria";
 
+    public function articles(){
+        $this->hasMany(Article::class,'legacyArticleId','legacyArticleId');
+    }
+
 }
