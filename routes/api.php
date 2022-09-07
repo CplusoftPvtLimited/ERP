@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\API\GeneralController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +18,6 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::get('get_manufacturers',[GeneralController::class,'getManufacturer']);
+Route::post('get_models',[GeneralController::class,'getModel']);
+Route::post('get_vehicle_details',[GeneralController::class,'getVehical']);
