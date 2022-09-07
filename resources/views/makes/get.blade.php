@@ -42,9 +42,7 @@
                     </tr>
                 @endforeach
             </tbody>
-
         </table>
-        
         <div class="pull-right">
             {{$makes->links()}}
         </div>
