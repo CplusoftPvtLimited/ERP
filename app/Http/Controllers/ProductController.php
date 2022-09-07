@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Keygen;
 use App\Brand;
 use App\Category;
+use App\Models\ArticleVehicleTree;
 use App\Unit;
 use App\Tax;
 use App\Warehouse;
@@ -38,6 +39,24 @@ class ProductController extends Controller
         }
         else
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+    }
+
+    public function getProducts() 
+    {         
+
+        $products = ArticleVehicleTree::with(['article' => function($query) {
+            $query->select(['legacyArticleId','articleNumber','genericArticleDescription', 'dataSupplierId']);
+            $query->with(['brand' => function($query) {
+                $query->select(['brandId', 'brandName']);
+            }]);
+        } , 'linkageTarget' => function($query){
+            $query->select(['linkageTargetId','mfrId','mfrName']);
+        }, 'assemblyGroupNodes' => function ($query) {
+            $query->select(['assemblyGroupNodeId', 'assemblyGroupName']);
+        }
+        ])->paginate(10);
+        
+        return view('product.get', compact('products'));
     }
 
     public function productData(Request $request)
@@ -334,171 +353,169 @@ class ProductController extends Controller
 
     public function updateProduct(Request $request)
     {
+        $this->validate($request, [
+            'name' => [
+                'max:255',
+                Rule::unique('products')->ignore($request->input('id'))->where(function ($query) {
+                    return $query->where('is_active', 1);
+                }),
+            ],
+
+            'code' => [
+                'max:255',
+                Rule::unique('products')->ignore($request->input('id'))->where(function ($query) {
+                    return $query->where('is_active', 1);
+                }),
+            ]
+        ]);
+        
+        $lims_product_data = Product::findOrFail($request->input('id'));
+        $data = $request->except('image', 'file', 'prev_img');
+        $data['name'] = htmlspecialchars(trim($data['name']));
+
+        if($data['type'] == 'combo') {
+            $data['product_list'] = implode(",", $data['product_id']);
+            $data['variant_list'] = implode(",", $data['variant_id']);
+            $data['qty_list'] = implode(",", $data['product_qty']);
+            $data['price_list'] = implode(",", $data['unit_price']);
+            $data['cost'] = $data['unit_id'] = $data['purchase_unit_id'] = $data['sale_unit_id'] = 0;
+        }
+        elseif($data['type'] == 'digital' || $data['type'] == 'service')
+            $data['cost'] = $data['unit_id'] = $data['purchase_unit_id'] = $data['sale_unit_id'] = 0;
+
+        if(!isset($data['featured']))
+            $data['featured'] = 0;
+
+        if(!isset($data['promotion']))
+            $data['promotion'] = null;
+
+        if(!isset($data['is_batch']))
+            $data['is_batch'] = null;
+
+        if(!isset($data['is_imei']))
+            $data['is_imei'] = null;
+
+        $data['product_details'] = str_replace('"', '@', $data['product_details']);
+        $data['product_details'] = $data['product_details'];
+        if($data['starting_date'])
+            $data['starting_date'] = date('Y-m-d', strtotime($data['starting_date']));
+        if($data['last_date'])
+            $data['last_date'] = date('Y-m-d', strtotime($data['last_date']));
+
+        $previous_images = [];
+        //dealing with previous images
+        if($request->prev_img) {
+            foreach ($request->prev_img as $key => $prev_img) {
+                if(!in_array($prev_img, $previous_images))
+                    $previous_images[] = $prev_img;
+            }
+            $lims_product_data->image = implode(",", $previous_images);
+            $lims_product_data->save();
+        }
         else {
-            $this->validate($request, [
-                'name' => [
-                    'max:255',
-                    Rule::unique('products')->ignore($request->input('id'))->where(function ($query) {
-                        return $query->where('is_active', 1);
-                    }),
-                ],
+            $lims_product_data->image = null;
+            $lims_product_data->save();
+        }
 
-                'code' => [
-                    'max:255',
-                    Rule::unique('products')->ignore($request->input('id'))->where(function ($query) {
-                        return $query->where('is_active', 1);
-                    }),
-                ]
-            ]);
-            
-            $lims_product_data = Product::findOrFail($request->input('id'));
-            $data = $request->except('image', 'file', 'prev_img');
-            $data['name'] = htmlspecialchars(trim($data['name']));
-
-            if($data['type'] == 'combo') {
-                $data['product_list'] = implode(",", $data['product_id']);
-                $data['variant_list'] = implode(",", $data['variant_id']);
-                $data['qty_list'] = implode(",", $data['product_qty']);
-                $data['price_list'] = implode(",", $data['unit_price']);
-                $data['cost'] = $data['unit_id'] = $data['purchase_unit_id'] = $data['sale_unit_id'] = 0;
+        //dealing with new images
+        if($request->image) {
+            $images = $request->image;
+            $image_names = [];
+            $length = count(explode(",", $lims_product_data->image));
+            foreach ($images as $key => $image) {
+                $ext = pathinfo($image->getClientOriginalName(), PATHINFO_EXTENSION);
+                /*$image = Image::make($image)->resize(512, 512);*/
+                $imageName = date("Ymdhis") . ($length + $key+1) . '.' . $ext;
+                $image->move('public/images/product', $imageName);
+                $image_names[] = $imageName;
             }
-            elseif($data['type'] == 'digital' || $data['type'] == 'service')
-                $data['cost'] = $data['unit_id'] = $data['purchase_unit_id'] = $data['sale_unit_id'] = 0;
-
-            if(!isset($data['featured']))
-                $data['featured'] = 0;
-
-            if(!isset($data['promotion']))
-                $data['promotion'] = null;
-
-            if(!isset($data['is_batch']))
-                $data['is_batch'] = null;
-
-            if(!isset($data['is_imei']))
-                $data['is_imei'] = null;
-
-            $data['product_details'] = str_replace('"', '@', $data['product_details']);
-            $data['product_details'] = $data['product_details'];
-            if($data['starting_date'])
-                $data['starting_date'] = date('Y-m-d', strtotime($data['starting_date']));
-            if($data['last_date'])
-                $data['last_date'] = date('Y-m-d', strtotime($data['last_date']));
-
-            $previous_images = [];
-            //dealing with previous images
-            if($request->prev_img) {
-                foreach ($request->prev_img as $key => $prev_img) {
-                    if(!in_array($prev_img, $previous_images))
-                        $previous_images[] = $prev_img;
-                }
-                $lims_product_data->image = implode(",", $previous_images);
-                $lims_product_data->save();
-            }
-            else {
-                $lims_product_data->image = null;
-                $lims_product_data->save();
-            }
-
-            //dealing with new images
-            if($request->image) {
-                $images = $request->image;
-                $image_names = [];
-                $length = count(explode(",", $lims_product_data->image));
-                foreach ($images as $key => $image) {
-                    $ext = pathinfo($image->getClientOriginalName(), PATHINFO_EXTENSION);
-                    /*$image = Image::make($image)->resize(512, 512);*/
-                    $imageName = date("Ymdhis") . ($length + $key+1) . '.' . $ext;
-                    $image->move('public/images/product', $imageName);
-                    $image_names[] = $imageName;
-                }
-                if($lims_product_data->image)
-                    $data['image'] = $lims_product_data->image. ',' . implode(",", $image_names);
-                else
-                    $data['image'] = implode(",", $image_names);
-            }
+            if($lims_product_data->image)
+                $data['image'] = $lims_product_data->image. ',' . implode(",", $image_names);
             else
-                $data['image'] = $lims_product_data->image;
+                $data['image'] = implode(",", $image_names);
+        }
+        else
+            $data['image'] = $lims_product_data->image;
 
-            $file = $request->file;
-            if ($file) {
-                $ext = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-                $fileName = strtotime(date('Y-m-d H:i:s'));
-                $fileName = $fileName . '.' . $ext;
-                $file->move('public/product/files', $fileName);
-                $data['file'] = $fileName;
+        $file = $request->file;
+        if ($file) {
+            $ext = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+            $fileName = strtotime(date('Y-m-d H:i:s'));
+            $fileName = $fileName . '.' . $ext;
+            $file->move('public/product/files', $fileName);
+            $data['file'] = $fileName;
+        }
+
+        $lims_product_variant_data = ProductVariant::where('product_id', $request->input('id'))->select('id', 'variant_id')->get();
+        foreach ($lims_product_variant_data as $key => $value) {
+            if (!in_array($value->variant_id, $data['variant_id'])) {
+                ProductVariant::find($value->id)->delete();
             }
+        }
+        //dealing with product variant
+        if(isset($data['is_variant'])) {
+            foreach ($data['variant_name'] as $key => $variant_name) {
+                if($data['product_variant_id'][$key] == 0) {
+                    $lims_variant_data = Variant::firstOrCreate(['name' => $data['variant_name'][$key]]);
+                    $lims_product_variant_data = new ProductVariant();
 
-            $lims_product_variant_data = ProductVariant::where('product_id', $request->input('id'))->select('id', 'variant_id')->get();
-            foreach ($lims_product_variant_data as $key => $value) {
-                if (!in_array($value->variant_id, $data['variant_id'])) {
-                    ProductVariant::find($value->id)->delete();
+                    $lims_product_variant_data->product_id = $lims_product_data->id;
+                    $lims_product_variant_data->variant_id = $lims_variant_data->id;
+
+                    $lims_product_variant_data->position = $key + 1;
+                    $lims_product_variant_data->item_code = $data['item_code'][$key];
+                    $lims_product_variant_data->additional_price = $data['additional_price'][$key];
+                    $lims_product_variant_data->qty = 0;
+                    $lims_product_variant_data->save();
+                }
+                else {
+                    Variant::find($data['variant_id'][$key])->update(['name' => $variant_name]);
+                    ProductVariant::find($data['product_variant_id'][$key])->update([
+                        'position' => $key+1,
+                        'item_code' => $data['item_code'][$key],
+                        'additional_price' => $data['additional_price'][$key]
+                    ]);
                 }
             }
-            //dealing with product variant
-            if(isset($data['is_variant'])) {
-                foreach ($data['variant_name'] as $key => $variant_name) {
-                    if($data['product_variant_id'][$key] == 0) {
-                        $lims_variant_data = Variant::firstOrCreate(['name' => $data['variant_name'][$key]]);
-                        $lims_product_variant_data = new ProductVariant();
-
-                        $lims_product_variant_data->product_id = $lims_product_data->id;
-                        $lims_product_variant_data->variant_id = $lims_variant_data->id;
-
-                        $lims_product_variant_data->position = $key + 1;
-                        $lims_product_variant_data->item_code = $data['item_code'][$key];
-                        $lims_product_variant_data->additional_price = $data['additional_price'][$key];
-                        $lims_product_variant_data->qty = 0;
-                        $lims_product_variant_data->save();
+        }
+        else {
+            $data['is_variant'] = null;
+            $product_variants = ProductVariant::where('product_id', $lims_product_data->id)->get();
+            foreach ($product_variants as $key => $product_variant) {
+                $product_variant->delete();
+            }
+        }
+        if(isset($data['is_diffPrice'])) {
+            foreach ($data['diff_price'] as $key => $diff_price) {
+                if($diff_price) {
+                    $lims_product_warehouse_data = Product_Warehouse::FindProductWithoutVariant($lims_product_data->id, $data['warehouse_id'][$key])->first();
+                    if($lims_product_warehouse_data) {
+                        $lims_product_warehouse_data->price = $diff_price;
+                        $lims_product_warehouse_data->save();
                     }
                     else {
-                        Variant::find($data['variant_id'][$key])->update(['name' => $variant_name]);
-                        ProductVariant::find($data['product_variant_id'][$key])->update([
-                            'position' => $key+1,
-                            'item_code' => $data['item_code'][$key],
-                            'additional_price' => $data['additional_price'][$key]
+                        Product_Warehouse::create([
+                            "product_id" => $lims_product_data->id,
+                            "warehouse_id" => $data["warehouse_id"][$key],
+                            "qty" => 0,
+                            "price" => $diff_price
                         ]);
                     }
                 }
             }
-            else {
-                $data['is_variant'] = null;
-                $product_variants = ProductVariant::where('product_id', $lims_product_data->id)->get();
-                foreach ($product_variants as $key => $product_variant) {
-                    $product_variant->delete();
-                }
-            }
-            if(isset($data['is_diffPrice'])) {
-                foreach ($data['diff_price'] as $key => $diff_price) {
-                    if($diff_price) {
-                        $lims_product_warehouse_data = Product_Warehouse::FindProductWithoutVariant($lims_product_data->id, $data['warehouse_id'][$key])->first();
-                        if($lims_product_warehouse_data) {
-                            $lims_product_warehouse_data->price = $diff_price;
-                            $lims_product_warehouse_data->save();
-                        }
-                        else {
-                            Product_Warehouse::create([
-                                "product_id" => $lims_product_data->id,
-                                "warehouse_id" => $data["warehouse_id"][$key],
-                                "qty" => 0,
-                                "price" => $diff_price
-                            ]);
-                        }
-                    }
-                }
-            }
-            else {
-                $data['is_diffPrice'] = false;
-                foreach ($data['warehouse_id'] as $key => $warehouse_id) {
-                    $lims_product_warehouse_data = Product_Warehouse::FindProductWithoutVariant($lims_product_data->id, $warehouse_id)->first();
-                    if($lims_product_warehouse_data) {
-                        $lims_product_warehouse_data->price = null;
-                        $lims_product_warehouse_data->save();
-                    }
-                }
-            }
-            $lims_product_data->update($data);
-            \Session::flash('edit_message', 'Product updated successfully');
         }
+        else {
+            $data['is_diffPrice'] = false;
+            foreach ($data['warehouse_id'] as $key => $warehouse_id) {
+                $lims_product_warehouse_data = Product_Warehouse::FindProductWithoutVariant($lims_product_data->id, $warehouse_id)->first();
+                if($lims_product_warehouse_data) {
+                    $lims_product_warehouse_data->price = null;
+                    $lims_product_warehouse_data->save();
+                }
+            }
+        }
+        $lims_product_data->update($data);
+        \Session::flash('edit_message', 'Product updated successfully');
     }
 
     public function generateCode()

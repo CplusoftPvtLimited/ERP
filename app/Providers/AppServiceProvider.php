@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Repositories\AssemblyGroupNodeRepository;
+use App\Repositories\Interfaces\AssemblyGroupNodeInterface;
+use App\Repositories\Interfaces\LanguageGroupInterface;
+use App\Repositories\LanguageGroupRepository;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -24,6 +28,9 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
+        $this->app->bind(AssemblyGroupNodeInterface::class,AssemblyGroupNodeRepository::class);
+        $this->app->bind(LanguageGroupInterface::class,LanguageGroupRepository::class);
+
     }
 
     public function boot()
