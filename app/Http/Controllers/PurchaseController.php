@@ -22,7 +22,7 @@ use App\PaymentWithCreditCard;
 use App\PosSetting;
 use App\Models\AssemblyGroupNode;
 use App\Models\Article;
-
+use App\Models\Ambrand;
 use DB;
 use App\GeneralSetting;
 use Stripe\Stripe;
@@ -1268,7 +1268,7 @@ class PurchaseController extends Controller
         try {
             $manufacturer = Manufacturer::where('manuId',$request->manufacture_id)->first();
             // if($manufacturer){
-                $models = ModelSeries::where('manuId',$request->manufacture_id)->get();
+                $models = ModelSeries::select('modelId','modelname')->where('manuId',$request->manufacture_id)->get();
                 // dd($request->manufacture_id);
                 return response()->json([
                     'data' => $models
@@ -1286,7 +1286,8 @@ class PurchaseController extends Controller
 
     public function getEnginesByModel(Request $request){
         try {
-            $engines = LinkageTarget::where('vehicleModelSeriesId',$request->model_id)->get();
+            $engines = LinkageTarget::select('linkageTargetId','description','beginYearMonth','endYearMonth')
+            ->where('vehicleModelSeriesId',$request->model_id)->get();
             // dd($models);
             return response()->json([
                 'data' => $engines
@@ -1298,7 +1299,8 @@ class PurchaseController extends Controller
 
     public function getSectionsByEngine(Request $request){
         try {
-            $sections = AssemblyGroupNode::where('request__linkingTargetId',$request->engine_id)->get();
+            $sections = AssemblyGroupNode::select('assemblyGroupNodeId','assemblyGroupName')
+            ->where('request__linkingTargetId',$request->engine_id)->get();
             // dd($models);
             return response()->json([
                 'data' => $sections
@@ -1310,7 +1312,8 @@ class PurchaseController extends Controller
 
     public function getSectionParts(Request $request){
         try {
-            $section_parts = Article::where('assemblyGroupNodeId',$request->section_id)->get();
+            $section_parts = Article::select('legacyArticleId','genericArticleDescription','articleNumber')
+            ->where('assemblyGroupNodeId',$request->section_id)->get();
             // dd($models);
             return response()->json([
                 'data' => $section_parts
@@ -1322,8 +1325,10 @@ class PurchaseController extends Controller
 
     public function getBrandsBySectionPart(Request $request){
         try {
-            $suppliers = Ambrand::where('barndId',$request->section_part_id)->get();
-            // dd($models);
+            $suppliers = Ambrand::select('brandId','brandName')
+            ->where('brandId',$request->section_part_id)->get();
+            // $product = Article::where('legacyArticleId',$request->section_part_id)
+            // dd($suppliers);
             return response()->json([
                 'data' => $suppliers
             ],200);

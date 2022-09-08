@@ -133,8 +133,8 @@
                                                         <th>{{trans('file.Code')}}</th>
                                                         <th>{{trans('file.Quantity')}}</th>
                                                         <th class="recieved-product-qty d-none">{{trans('file.Recieved')}}</th>
-                                                        <th>{{trans('file.Batch No')}}</th>
-                                                        <th>{{trans('file.Expired Date')}}</th>
+                                                        <!-- <th>{{trans('file.Batch No')}}</th>
+                                                        <th>{{trans('file.Expired Date')}}</th> -->
                                                         <th>{{trans('file.Net Unit Cost')}}</th>
                                                         <th>{{trans('file.Discount')}}</th>
                                                         <th>{{trans('file.Tax')}}</th>
@@ -148,8 +148,8 @@
                                                     <th colspan="2">{{trans('file.Total')}}</th>
                                                     <th id="total-qty">0</th>
                                                     <th class="recieved-product-qty d-none"></th>
-                                                    <th></th>
-                                                    <th></th>
+                                                    <!-- <th></th>
+                                                    <th></th> -->
                                                     <th></th>
                                                     <th id="total-discount">0.00</th>
                                                     <th id="total-tax">0.00</th>
@@ -903,8 +903,7 @@ $(document).on('change', '#engine_id', function() {
 
 function getSections(url, engine_id) {
     $.get(url + '?engine_id=' + engine_id, function(data) {
-        $('#engine_id').html('<option value="">Select One</option>');
-        $('#engine_id').selectpicker("refresh");
+        
         $('#section_part_id').html('<option value="">Select One</option>');
         $('#section_part_id').selectpicker("refresh");
         
@@ -934,13 +933,13 @@ $(document).on('change', '#section_id', function() {
 
 function getSectionParts(url, section_id) {
     $.get(url + '?section_id=' + section_id, function(data) {
-        $('#section_part_id').html('<option value="">Select One</option>');
-        $('#section_part_id').selectpicker("refresh");
+        // $('#section_part_id').html('<option value="" selected>Select One</option>');
+        // $('#section_part_id').selectpicker("refresh");
         
         $('#supplier_id').html('<option value="">Select One</option>');
         $('#supplier_id').selectpicker("refresh");
         let response = data.data;
-        let view_html = `<option value="">Select One</option>`;
+        let view_html = `<option value="" selected>Select One</option>`;
         $.each(response, function(key, value) {
             view_html += `<option value="${value.legacyArticleId}">${value.genericArticleDescription +"-"+value.articleNumber}</option>`;
         });
