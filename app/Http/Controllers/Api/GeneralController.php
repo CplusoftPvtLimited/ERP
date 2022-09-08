@@ -5,14 +5,11 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\EngineResource;
 use Illuminate\Http\Request;
-use App\Models\VehicleDetail;
 use App\Http\Resources\ManufactureResource;
 use App\Http\Resources\SectionPartResource;
 use App\Http\Resources\SectionResource;
 use Illuminate\Http\JsonResponse;
-use App\Models\Car;
 use App\Repositories\Interfaces\GeneralInterface;
-use PhpParser\Node\Stmt\TryCatch;
 
 class GeneralController extends Controller
 {
