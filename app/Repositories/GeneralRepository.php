@@ -2,6 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Models\Article;
+use App\Models\AssemblyGroupNode;
+use App\Models\LinkageTarget;
 use App\Repositories\Interfaces\GeneralInterface;
 use App\Models\Manufacturer;
 use App\Models\ModelSeries;
@@ -21,5 +24,20 @@ class GeneralRepository implements GeneralInterface
         $oldmodels = ModelSeriesOld::where('manuId',$id)->get()->toArray();
         $models = array_merge($models, $oldmodels);
         return $models;
+    }
+    public function getEngineDetails($id)
+    {
+        $enginedetails = LinkageTarget::select('linkageTargetId','description','beginYearMonth','endYearMonth','engineTypeKey','engineType','horsePowerFrom','horsePowerTo','kiloWattsFrom','kiloWattsTo','cylinders','capacityCC','capacityLiters')->get();
+        return $enginedetails;
+    }
+    public function getSections($id)
+    {
+        $sections = AssemblyGroupNode::where('request__linkingTargetId',$id)->get();
+        return $sections;
+    }
+    public function getSectionParts($id)
+    {
+        $sectionparts = Article::where('assemblyGroupNodeId',$id);
+        return $sectionparts;
     }
 }
