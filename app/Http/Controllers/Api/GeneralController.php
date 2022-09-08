@@ -96,3 +96,4 @@ class GeneralController extends Controller
             return $this->apiResponse(JsonResponse::HTTP_UNPROCESSABLE_ENTITY, 'message', $e->getMessage());
         }
     }
+}

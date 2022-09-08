@@ -37,7 +37,7 @@ class GeneralRepository implements GeneralInterface
     }
     public function getSectionParts($id)
     {
-        $sectionparts = Article::where('assemblyGroupNodeId',$id);
+        $sectionparts = Article::where('assemblyGroupNodeId',$id)->get();
         return $sectionparts;
     }
 }

@@ -19,10 +19,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::get('get_manufacturers',[GeneralController::class,'getManufacturer']);
-Route::post('get_models',[GeneralController::class,'getModel']);
-Route::post('get_vehicle_details',[GeneralController::class,'getVehical']);
-Route::post('get_enigine_details',[GeneralController::class,'getEngineDetails']);
-Route::post('get_sections',[GeneralController::class,'getSections']);
-Route::post('get_section_parts',[GeneralController::class,'getSectionParts']);
+Route::get('get_models',[GeneralController::class,'getModel']);
+Route::get('get_vehicle_details',[GeneralController::class,'getVehical']);
+Route::get('get_enigine_details',[GeneralController::class,'getEngineDetails']);
+Route::get('get_sections',[GeneralController::class,'getSections']);
+Route::get('get_section_parts',[GeneralController::class,'getSectionParts']);
 
 
