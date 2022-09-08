@@ -16,4 +16,9 @@ class Manufacturer extends Model
         return $this->hasOne(CarBody::class);
     }
 
+    public function modelSeries()
+    {
+        return $this->hasMany(ModelSeries::class, 'manuId','manuId');
+    }
+
 }

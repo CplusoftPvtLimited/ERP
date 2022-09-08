@@ -253,6 +253,17 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::post('purchases/deletebyselection', 'PurchaseController@deleteBySelection');
 	Route::resource('purchases', 'PurchaseController');
 
+	Route::get('get_models_by_manufacturer', 'PurchaseController@getModelsByManufacturer')->name('get_models_by_manufacturer');
+	Route::get('get_engines_by_model', 'PurchaseController@getEnginesByModel')->name('get_engines_by_model');
+	Route::get('get_sections_by_engine', 'PurchaseController@getSectionsByEngine')->name('get_sections_by_engine');
+	Route::get('get_section_parts', 'PurchaseController@getSectionParts')->name('get_section_parts');// get all articles
+	Route::get('get_brands_by_section_part', 'PurchaseController@getBrandsBySectionPart')->name('get_brands_by_section_part'); // get all suppliers against an article
+
+
+
+
+
+
 	Route::get('transfers/product_transfer/{id}','TransferController@productTransferData');
 	Route::get('transfers/transfer_by_csv', 'TransferController@transferByCsv');
 	Route::post('importtransfer', 'TransferController@importTransfer')->name('transfer.import');

@@ -4,6 +4,7 @@ return [
 	'Sections' => 'Sections',
 	'Section Parts' => 'Section Parts',
 	'Brand Languages' => 'Brand Languages',
+	'Manufacturers' => 'Manufacturers',
 	'Sales Invoices List' => 'Sales Invoices List',
 	'Invoice Number' => 'Invoice Number',
 	'Delivery Slip' => 'Delivery Slip',
