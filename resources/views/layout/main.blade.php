@@ -70,7 +70,10 @@
   </head>
 
   <body onload="myFunction()">
-  @php $userr_id = auth()->user()->id; @endphp
+  @php
+    $userr_id = auth()->user()->id;
+    $route = \Request::route()->getName();
+  @endphp
     <div id="loader"></div>
       <!-- Side Navbar -->
       <nav class="side-navbar">
@@ -146,6 +149,7 @@
             </ul>
             </li>
             @endif
+            <li id="maufacturer-list-menu" class="{{ $route == 'manufacturer.index' ? 'active' : '' }}"><a href=""><i class="dripicons-user-group"></i> {{trans('file.Manufacturer')}}</a></li>
             <?php
             $index_permission = DB::table('permissions')->where('name', 'purchases-index')->first();
                 $index_permission_active = DB::table('role_has_permissions')->where([
@@ -401,18 +405,18 @@
             <!-- <li class=""><a href="#hrm" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-user-group"></i><span>HRM</span></a> -->
             <ul id="hrm" class="collapse list-unstyled ">
                 @if($department_active)
-                <li id="dept-menu"><a href="{{route('departments.index')}}">{{trans('file.Department')}}</a></li>
+                <!-- <li id="dept-menu"><a href="{{route('departments.index')}}">{{trans('file.Department')}}</a></li> -->
                 @endif
                 @if($index_employee_active)
-                <li id="employee-menu"><a href="{{route('employees.index')}}">{{trans('file.Employee')}}</a></li>
+                <!-- <li id="employee-menu"><a href="{{route('employees.index')}}">{{trans('file.Employee')}}</a></li> -->
                 @endif
                 @if($attendance_active)
-                <li id="attendance-menu"><a href="{{route('attendance.index')}}">{{trans('file.Attendance')}}</a></li>
+                <!-- <li id="attendance-menu"><a href="{{route('attendance.index')}}">{{trans('file.Attendance')}}</a></li> -->
                 @endif
                 @if($payroll_active)
-                <li id="payroll-menu"><a href="{{route('payroll.index')}}">{{trans('file.Payroll')}}</a></li>
+                <!-- <li id="payroll-menu"><a href="{{route('payroll.index')}}">{{trans('file.Payroll')}}</a></li> -->
                 @endif
-                <li id="holiday-menu"><a href="{{route('holidays.index')}}">{{trans('file.Holiday')}}</a></li>
+                <!-- <li id="holiday-menu"><a href="{{route('holidays.index')}}">{{trans('file.Holiday')}}</a></li> -->
             </ul>
             </li>
             @endif
@@ -458,7 +462,7 @@
                         ['role_id', $role->id] ])->first();
                 ?>
                 @if($user_add_permission_active)
-                <li id="user-create-menu"><a href="{{route('user.create')}}">{{trans('file.Add Customer')}}</a></li>
+                <!-- <li id="user-create-menu"><a href="{{route('user.create')}}">{{trans('file.Add Customer')}}</a></li> -->
                 <!-- <li id="form-list-menu"><a href="{{route('submittedforms')}}">{{trans('file.Submitted Forms')}}</a></li> -->
 
                 <li id="form-list-menu"><a href="{{route('form.index')}}">{{trans('file.Customer Forms')}}</a></li>
@@ -725,7 +729,7 @@
             </ul>
             </li>
 
-            <li><a href="#setting" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-gear"></i><span>{{trans('file.settings')}}</span></a>
+            <!-- <li><a href="#setting" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-gear"></i><span>{{trans('file.settings')}}</span></a> -->
                 <ul id="setting" class="collapse list-unstyled ">
                     <?php
                         $send_notification_permission = DB::table('permissions')->where('name', 'send_notification')->first();
@@ -833,7 +837,7 @@
                                             ])->first();
                     ?>
                     @if($role->id <= 2)
-                    <li id="role-menu"><a href="{{route('role.index')}}">{{trans('file.Role Permission')}}</a></li>
+                    <!-- <li id="role-menu"><a href="{{route('role.index')}}">{{trans('file.Role Permission')}}</a></li> -->
                     <!-- <li id="role-menu"><a href="{{route('form.index')}}">{{trans('file.Forms')}}</a></li> -->
 
                     @endif
@@ -879,7 +883,7 @@
                     @if($mail_setting_permission_active)
                     <!-- <li id="mail-setting-menu"><a href="{{route('setting.mail')}}">{{trans('file.Mail Setting')}}</a></li> -->
                     @endif
-                    <li id="general-mail-setting-menu"><a href="{{route('setting.generalmail')}}">{{trans('file.General Mail Setting')}}</a></li>
+                    <!-- <li id="general-mail-setting-menu"><a href="{{route('setting.generalmail')}}">{{trans('file.General Mail Setting')}}</a></li> -->
                     @if($reward_point_setting_permission_active)
                     <!-- <li id="reward-point-setting-menu"><a href="{{route('setting.rewardPoint')}}">{{trans('file.Reward Point Setting')}}</a></li> -->
                     @endif
@@ -930,12 +934,19 @@
                 <!-- <li class="nav-item"><a href="{{route('cashRegister.index')}}" data-toggle="tooltip" title="{{trans('file.Cash Register List')}}"><i class="dripicons-archive"></i></a></li> -->
             @endif
             
-               
+            <li class="nav-item">
+                <a rel="nofollow" data-toggle="tooltip" title="{{__('Settings')}}" class="nav-link dropdown-item"><i class="dripicons-gear"></i>
+                </a>
+                <ul class="right-sidebar"  id="notify">
+                <li style="background-color: #F7F7F7" id="role-menu"><a href="{{route('role.index')}}">{{trans('file.Role Permission')}}</a></li>
+                <li style="background-color: #F7F7F7" id="general-mail-setting-menu"><a href="{{route('setting.generalmail')}}">{{trans('file.General Mail Setting')}}</a></li>
+                </ul>
+            </li>
             <li class="nav-item">
                 <a rel="nofollow" data-toggle="tooltip" title="{{__('Notifications')}}" class="nav-link dropdown-item"><i class="dripicons-bell"></i><span class="badge badge-danger notification-number">{{ count(\Auth::user()->unreadNotifications) > 0 ?  count(\Auth::user()->unreadNotifications) : '' }}</span>
                 </a>
                 @php $user_notifications = auth()->user()->notifications()->get(); @endphp
-                <ul class="right-sidebar" id="notify">
+                <ul class="right-sidebar" style="margin-top:;" id="notify">
                     @foreach($user_notifications as $noti)
                         @if($noti->noti_type == "registration" && $noti->read_at == NULL)
                         <li style="background-color: lightgrey"><a href="{{url('user_show',[$noti->id,$noti->data['sender_id']])}}">{{Str::limit($noti->data['message'], 30)}}</a></li>
@@ -944,10 +955,10 @@
                         <li style="background-color: lightgrey"><a href="{{url('submitted_form_show',[$noti->id,$noti->data['sender_id']])}}">{{Str::limit($noti->data['message'], 30)}}</a></li>
 
                         @elseif($noti->noti_type == "registration" && $noti->read_at != NULL )
-                        <li style="background-color: white"><a href="{{url('user_show',[$noti->id,$noti->data['sender_id']])}}">{{Str::limit($noti->data['message'], 30)}}</a></li>
+                        <li style="background-color: #F7F7F7"><a href="{{url('user_show',[$noti->id,$noti->data['sender_id']])}}">{{Str::limit($noti->data['message'], 30)}}</a></li>
                         
                         @elseif($noti->noti_type == "formsubmission" && $noti->read_at != NULL)
-                        <li style="background-color: white"><a href="{{url('submitted_form_show',[$noti->id,$noti->data['sender_id']])}}">{{Str::limit($noti->data['message'], 30)}}</a></li>
+                        <li style="background-color: #F7F7F7"><a href="{{url('submitted_form_show',[$noti->id,$noti->data['sender_id']])}}">{{Str::limit($noti->data['message'], 30)}}</a></li>
                         @endif
                     @endforeach
                 </ul>
@@ -956,13 +967,13 @@
             <li class="nav-item">
                     <a rel="nofollow" title="{{trans('file.language')}}" data-toggle="tooltip" class="nav-link dropdown-item"><i class="dripicons-web"></i></a>
                     <ul class="right-sidebar">
-                        <li>
+                        <li style="background-color: #F7F7F7">
                         <a href="{{ url('language_switch/en') }}" class="btn btn-link"> English</a>
                         </li>
                         <!-- <li> -->
                         <!-- <a href="{{ url('language_switch/es') }}" class="btn btn-link"> Español</a> -->
                         <!-- </li> -->
-                        <li>
+                        <li style="background-color: #F7F7F7">
                         <a href="{{ url('language_switch/ar') }}" class="btn btn-link"> عربى</a>
                         </li>
                         <!-- <li>
@@ -1010,12 +1021,31 @@
                     </ul>
             </li>
             <li class="nav-item">
-                <a rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-item"><i class="dripicons-user"></i> <span>{{ucfirst(Auth::user()->name)}}</span> <i class="fa fa-angle-down"></i>
+                <a rel="nofollow" data-toggle="tooltip" class="nav-link dropdown-item"><i class="dripicons-user"></i> <span>{{ucfirst(Auth::user()->name)}}</span> <i class="fa fa-angle-down"></i>
                 </a>
-                <ul class="right-sidebar">
-                    <li>
+                <ul class="right-sidebar"  id="notify">
+                <li style="background-color: #F7F7F7">
                     <a href="{{route('user.profile', ['id' => Auth::id()])}}"><i class="dripicons-user"></i> {{trans('file.profile')}}</a>
                     </li>
+                    <li style="background-color: #F7F7F7">
+                    <a href="{{ route('logout') }}"
+                        onclick="event.preventDefault();
+                                        document.getElementById('logout-form').submit();"><i class="dripicons-power"></i>
+                        {{trans('file.logout')}}
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                    </li>
+                </ul>
+            </li>
+            <!-- <li class="nav-item">
+                <a rel="nofollow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-item"><i class="dripicons-user"></i> <span>{{ucfirst(Auth::user()->name)}}</span> <i class="fa fa-angle-down"></i>
+                </a>
+                <ul class="right-sidebar">
+                    <li style="background-color: #F7F7F7">
+                    <a href="{{route('user.profile', ['id' => Auth::id()])}}"><i class="dripicons-user"></i> {{trans('file.profile')}}</a>
+                    </li> -->
                     @if($general_setting_permission_active)
                     <!-- <li>
                     <a href="{{route('setting.general')}}"><i class="dripicons-gear"></i> {{trans('file.settings')}}</a>
@@ -1034,7 +1064,7 @@
                     <a onclick="return confirm('Are you sure want to delete? If you do this all of your data will be lost.')" href="{{route('setting.emptyDatabase')}}"><i class="dripicons-stack"></i> {{trans('file.Empty Database')}}</a>
                     </li> -->
                     @endif
-                    <li>
+                    <!-- <li style="background-color: #F7F7F7">
                     <a href="{{ route('logout') }}"
                         onclick="event.preventDefault();
                                         document.getElementById('logout-form').submit();"><i class="dripicons-power"></i>
@@ -1045,7 +1075,7 @@
                     </form>
                     </li>
                 </ul>
-            </li>
+            </li> -->
             </ul>
         </nav>
         

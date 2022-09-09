@@ -2492,14 +2492,17 @@ a>code {
 .right-sidebar {
 	background-color: #FFF;
 	box-shadow: 0 0 35px 0 rgba(154, 161, 171, .15);
-	height: 100%;
-	padding: 20px 5px;
-	position: fixed;
+	height: auto;
+	margin-top: 61px;
+	/* margin-right: 1.6%; */
+	padding:1px;
+	position: absolute;
 	right: 0;
 	top: 0;
 	visibility: hidden;
 	width: 0;
-	z-index: 999
+	z-index: 999;
+	border-radius:2%;
 }
 
 .dark-mode .right-sidebar {
@@ -2521,10 +2524,10 @@ a>code {
 }
 
 .right-sidebar li {
-	border-bottom: 1px solid #f5f6f7;
+	border-bottom: 1px solid white;
 	list-style: none;
 	padding: 0 20px;
-	line-height: 50px
+	line-height: 5px
 }
 
 .dark-mode .right-sidebar li {

@@ -7,7 +7,7 @@
 @endif
 
 <section>
-<div class="row allforms p-3">
+<div class="row allforms pr-4 pl-4">
             <div class="col-lg-6">
                 <div class="pull-left">
                     <h2>Create New Form</h2>
@@ -21,7 +21,7 @@
         </div>
 </div>
 
-<div class="row pl-5 pr-5">
+<div class="row mr-4 ml-4">
     <!-- <div class="col-lg-3"></div> -->
     <div class="col-lg-12">
         @if(Session::has('error'))
@@ -44,8 +44,8 @@
 
 <form action="{{ route('form.store') }}" method="post" enctype="multipart/form-data">
     @csrf
-<div class="row card mt-2 p-2">
-    <div class="col-md-12">
+<div class="row bg-white mt-2 p-2">
+    <div class="col-6">
         <div class="form-group">
             <strong>Role:</strong>
             <select name="role" id="" class="form-control">
@@ -54,7 +54,7 @@
             </select>
         </div>
     </div>
-    <div class="col-md-12">
+    <div class="col-6">
         <div class="form-group">
             <strong>Form Name:</strong>
             <input type="text" name="name" class="form-control">
@@ -89,8 +89,8 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="form-group">
-                    <button id="addRow" type="button" class="btn btn-success mt-2"><i class="fa fa-plus"></i> Add More</button>
+                <div class="form-group pull-right">
+                    <button id="addRow" type="button" class="btn btn-success mt-4"><i class="fa fa-plus"></i> Add More</button>
                 </div>
             </div>
         </div>
@@ -121,9 +121,8 @@
         html += '<div class="col-md-3"><div class="form-group"><strong>Field Label:</strong><input type="text" name="field_label[]" class="form-control" required></div></div>';
         html += '<div class="col-md-3"><div class="form-group"><strong>Field Name:</strong><input type="text" name="field_name[]" class="form-control" required></div></div>';
         html += '<div class="col-md-3"><div class="form-group"><strong>Field Type:</strong><select name="field_type[]" id="" class="form-control" required><option value="1">Text</option><option value="2">Text Area</option><option value="3">File Upload</option><option value="5">Password</option><option value="6">Email</option></select></div></div>';
-        // html += '<div class="col-md-4"><div class="form-group"><button id="addRow" class="btn btn-success mt-2"><i class="fa fa-plus"></i> Add More</button></div></div>';
-        html += '<div class="col-md-3"><div class="form-group">';
-        html += '<button id="removeRow" type="button" class="btn btn-danger">Remove</button>';
+        html += '<div class="col-md-3"><div class="form-group pull-right">';
+        html += '<button id="removeRow" type="button" class="btn btn-danger mt-4"><i class="fa fa-minus"></i>&nbsp&nbsp&nbspRemove</button>';
         html += '</div>';
         html += '</div>';
         $('#newRow').append(html);

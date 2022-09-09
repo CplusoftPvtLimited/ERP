@@ -18,16 +18,16 @@
     <!-- login stylesheet-->
     <link rel="stylesheet" href="<?php echo asset('css/auth.css') ?>" id="theme-stylesheet" type="text/css">
   </head>
-  <body>
-    <div class="page login-page">
-      <div class="container">
-        <div class="form-outer text-center d-flex align-items-center">
-          <div class="form-inner">
+  <body >
+    <div style="background-image: url('images/auto-2179220.jpg') !important; background-repeat: no-repeat !important; background-size: 100% 100%" class="page login-page" >
+      <div class="container" >
+        <div class="form-outer text-center d-flex align-items-center" >
+          <div class="form-inner" style="background-color: transparent !important;">
             <div class="logo">
                 @if($general_setting->site_logo)
-                <img src="{{url('logo', $general_setting->site_logo)}}" width="110">
+                <img src="{{url('logo', $general_setting->site_logo)}}" width="150">
                 @else
-                <img src="{{url('logo', $general_setting->site_logo)}}" width="110">
+                <img src="{{url('logo', $general_setting->site_logo)}}" width="150">
                 @endif
             </div>
             @if(session()->has('delete_message'))
