@@ -146,7 +146,6 @@
                                                         <!-- <th>{{trans('file.Code')}}</th> -->
                                                         <th>{{trans('file.Black Items')}}</th>
                                                         <th>{{trans('file.White Items')}}</th>
-                                                        <th class="recieved-product-qty d-none">{{trans('file.Recieved')}}</th>
                                                         <!-- <th>{{trans('file.Batch No')}}</th>
                                                         <th>{{trans('file.Expired Date')}}</th> -->
                                                         <th>{{trans('file.Net Unit Cost')}}</th>
@@ -158,18 +157,16 @@
                                                 </thead>
                                                 <tbody>
                                                 </tbody>
-                                                <tfoot class="tfoot active">
-                                                    <th colspan="2">{{trans('file.Total')}}</th>
-                                                    <th id="total-qty">0</th>
-                                                    <th class="recieved-product-qty d-none"></th>
-                                                    <!-- <th></th>
-                                                    <th></th> -->
+                                                <!-- <tfoot class="tfoot active">
+                                                    <th colspan="">{{trans('file.Total')}}</th>
+                                                    <th id="black-qty">0</th>
+                                                    <th id="white-qty">0</th>
+                                                    
                                                     <th></th>
-                                                    <th id="total-discount">0.00</th>
-                                                    <th id="total-tax">0.00</th>
+                                                    
                                                     <th id="total">0.00</th>
                                                     <th><i class="dripicons-trash"></i></th>
-                                                </tfoot>
+                                                </tfoot> -->
                                             </table>
                                         </div>
                                     </div>
@@ -994,7 +991,8 @@ $("#save-btn").click(function(){
         },
         success: function(data){
             var tableBody = $("table tbody");
-            markup = "<tr><td> + information + </td></tr>"
+            markup = "<tr id='article'"+data.legacyArticleId+
+            "><td>"+ data.genericArticleDescription +"-"+ data.articleNumber + "</td><td><input type='number' name='black_qty' required></td><td><input type='number' name='white_qty' required></td></tr>"
 
         }
     });
