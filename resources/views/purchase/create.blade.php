@@ -960,6 +960,7 @@ function getSuppliers(url, section_part_id) {
     })
 }
 var supplier_ids_array = [];
+var article_ids_array = [];
 $("#save-btn").click(function(){
     var id = $('#section_part_id').val();
     
@@ -973,7 +974,7 @@ $("#save-btn").click(function(){
             console.log(data)
             var tableBody = $("table tbody");
             var length = document.getElementById("myTable").rows.length;
-            var article_ids_array = [];
+            
             
 
             $('#myTable tr').each(function() {
@@ -1004,7 +1005,9 @@ $("#save-btn").click(function(){
             
             markup = '<tr id="article_'+data.data.legacyArticleId+'"><td>'+ data.data.genericArticleDescription +'-'+ data.data.articleNumber + '</td><td><input type="number" name="black_qty" min="1" required></td><td><input type="number" min="1" name="white_qty" required></td><td><input type="number" min="0" name="unit_price" required></td><td><i id="article_delete_'+data.data.legacyArticleId+'" onclick="deleteArticle('+data.data.legacyArticleId+')" class="fa fa-trash"></i></td></tr>';
             if (length >= 1) {
-                
+                if(length == 1){
+                    tableBody.append(markup);
+                }
                 if(article_ids_array.length > 0 ){
                     article_ids_array.forEach(checkProduct);
                     function checkProduct(item, index) {
