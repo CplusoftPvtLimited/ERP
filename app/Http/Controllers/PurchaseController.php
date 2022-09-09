@@ -33,9 +33,19 @@ use App\ProductBatch;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
+use App\Repositories\Interfaces\PurchaseInterface;
 
 class PurchaseController extends Controller
 {
+    private $purchase;
+
+    public function __construct(PurchaseInterface $purchaseInterface)
+    {
+        $this->purchase = $purchaseInterface;
+        // $this->auth_user = auth()->guard('api')->user();
+    }
+
+
     public function index(Request $request)
     {
         $role = Role::find(Auth::user()->role_id);
@@ -359,151 +369,8 @@ class PurchaseController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->except('document');
-        //return dd($data);
-        $data['user_id'] = Auth::id();
-        $data['reference_no'] = 'pr-' . date("Ymd") . '-'. date("his");
-        $document = $request->document;
-        if ($document) {
-            $v = Validator::make(
-                [
-                    'extension' => strtolower($request->document->getClientOriginalExtension()),
-                ],
-                [
-                    'extension' => 'in:jpg,jpeg,png,gif,pdf,csv,docx,xlsx,txt',
-                ]
-            );
-            if ($v->fails())
-                return redirect()->back()->withErrors($v->errors());
-
-            $documentName = $document->getClientOriginalName();
-            $document->move('public/documents/purchase', $documentName);
-            $data['document'] = $documentName;
-        }
-        if(isset($data['created_at']))
-            $data['created_at'] = date("Y-m-d H:i:s", strtotime($data['created_at']));
-        else
-            $data['created_at'] = date("Y-m-d H:i:s");
-        //return dd($data);
-        Purchase::create($data);
-
-        $lims_purchase_data = Purchase::latest()->first();
-        $product_id = $data['product_id'];
-        $product_code = $data['product_code'];
-        $qty = $data['qty'];
-        $recieved = $data['recieved'];
-        $batch_no = $data['batch_no'];
-        $expired_date = $data['expired_date'];
-        $purchase_unit = $data['purchase_unit'];
-        $net_unit_cost = $data['net_unit_cost'];
-        $discount = $data['discount'];
-        $tax_rate = $data['tax_rate'];
-        $tax = $data['tax'];
-        $total = $data['subtotal'];
-        $imei_numbers = $data['imei_number'];
-        $product_purchase = [];
-
-        foreach ($product_id as $i => $id) {
-            $lims_purchase_unit_data  = Unit::where('unit_name', $purchase_unit[$i])->first();
-
-            if ($lims_purchase_unit_data->operator == '*') {
-                $quantity = $recieved[$i] * $lims_purchase_unit_data->operation_value;
-            } else {
-                $quantity = $recieved[$i] / $lims_purchase_unit_data->operation_value;
-            }
-            $lims_product_data = Product::find($id);
-
-            //dealing with product barch
-            if($batch_no[$i]) {
-                $product_batch_data = ProductBatch::where([
-                                        ['product_id', $lims_product_data->id],
-                                        ['batch_no', $batch_no[$i]]
-                                    ])->first();
-                if($product_batch_data) {
-                    $product_batch_data->expired_date = $expired_date[$i];
-                    $product_batch_data->qty += $quantity;
-                    $product_batch_data->save();
-                }
-                else {
-                    $product_batch_data = ProductBatch::create([
-                                            'product_id' => $lims_product_data->id,
-                                            'batch_no' => $batch_no[$i],
-                                            'expired_date' => $expired_date[$i],
-                                            'qty' => $quantity
-                                        ]);   
-                }
-                $product_purchase['product_batch_id'] = $product_batch_data->id;
-            }
-            else
-                $product_purchase['product_batch_id'] = null;
-
-            if($lims_product_data->is_variant) {
-                $lims_product_variant_data = ProductVariant::select('id', 'variant_id', 'qty')->FindExactProductWithCode($lims_product_data->id, $product_code[$i])->first();
-                $lims_product_warehouse_data = Product_Warehouse::where([
-                    ['product_id', $id],
-                    ['variant_id', $lims_product_variant_data->variant_id],
-                    ['warehouse_id', $data['warehouse_id']]
-                ])->first();
-                $product_purchase['variant_id'] = $lims_product_variant_data->variant_id;
-                //add quantity to product variant table
-                $lims_product_variant_data->qty += $quantity;
-                $lims_product_variant_data->save();
-            }
-            else {
-                $product_purchase['variant_id'] = null;
-                if($product_purchase['product_batch_id']) {
-                    $lims_product_warehouse_data = Product_Warehouse::where([
-                        ['product_id', $id],
-                        ['product_batch_id', $product_purchase['product_batch_id'] ],
-                        ['warehouse_id', $data['warehouse_id'] ],
-                    ])->first();
-                }
-                else {
-                    $lims_product_warehouse_data = Product_Warehouse::where([
-                        ['product_id', $id],
-                        ['warehouse_id', $data['warehouse_id'] ],
-                    ])->first();
-                }
-            }
-            //add quantity to product table
-            $lims_product_data->qty = $lims_product_data->qty + $quantity;
-            $lims_product_data->save();
-            //add quantity to warehouse
-            if ($lims_product_warehouse_data) {
-                $lims_product_warehouse_data->qty = $lims_product_warehouse_data->qty + $quantity;
-            } 
-            else {
-                $lims_product_warehouse_data = new Product_Warehouse();
-                $lims_product_warehouse_data->product_id = $id;
-                $lims_product_warehouse_data->product_batch_id = $product_purchase['product_batch_id'];
-                $lims_product_warehouse_data->warehouse_id = $data['warehouse_id'];
-                $lims_product_warehouse_data->qty = $quantity;
-                if($lims_product_data->is_variant)
-                    $lims_product_warehouse_data->variant_id = $lims_product_variant_data->variant_id;
-            }
-            //added imei numbers to product_warehouse table
-            if($imei_numbers[$i]) {
-                if($lims_product_warehouse_data->imei_number)
-                    $lims_product_warehouse_data->imei_number .= ',' . $imei_numbers[$i];
-                else
-                    $lims_product_warehouse_data->imei_number = $imei_numbers[$i];
-            }
-            $lims_product_warehouse_data->save();
-
-            $product_purchase['purchase_id'] = $lims_purchase_data->id ;
-            $product_purchase['product_id'] = $id;
-            $product_purchase['imei_number'] = $imei_numbers[$i];
-            $product_purchase['qty'] = $qty[$i];
-            $product_purchase['recieved'] = $recieved[$i];
-            $product_purchase['purchase_unit_id'] = $lims_purchase_unit_data->id;
-            $product_purchase['net_unit_cost'] = $net_unit_cost[$i];
-            $product_purchase['discount'] = $discount[$i];
-            $product_purchase['tax_rate'] = $tax_rate[$i];
-            $product_purchase['tax'] = $tax[$i];
-            $product_purchase['total'] = $total[$i];
-            ProductPurchase::create($product_purchase);
-        }
-
+        
+        $purchase = $this->purchase->store($request);
         return redirect('purchases')->with('message', 'Purchase created successfully');
     }
 
@@ -1328,8 +1195,6 @@ class PurchaseController extends Controller
             $id = explode('-',$request->section_part_id);
             $suppliers = Ambrand::select('brandId','brandName')
             ->where('brandId',$id[0])->get();
-            // $product = Article::where('legacyArticleId',$request->section_part_id)
-            // dd($suppliers);
             return response()->json([
                 'data' => $suppliers
             ],200);
@@ -1339,14 +1204,25 @@ class PurchaseController extends Controller
     }
 
     public function showSectionParts(Request $request){
-        
+        // dd($request->all());
         $id = explode('-',$request->id);
+        $section_part_id = explode('-',$request->section_part_id);
+
         // dd($id);
         $product = Article::where('dataSupplierId',$id[0])->where('legacyArticleId',$id[1])->first();
             // dd($product);
             return response()->json([
                 'data' => $product,
                 'supplier' => Ambrand::where('brandId',$product->dataSupplierId)->first(),
+                'manufacturer_id' => $request->manufacturer_id,
+                'model_id' => $request->model_id,
+                'engine_id' => $request->engine_id,
+                'section_id' => $request->section_id,
+                'section_part_id' => $section_part_id[1],
+                'status' => $request->status,
+                'date' => $request->date,
+                
+
             ]);
     }
 

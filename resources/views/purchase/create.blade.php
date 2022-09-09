@@ -16,11 +16,12 @@
                         {!! Form::open(['route' => 'purchases.store', 'method' => 'post', 'files' => true, 'id' => 'purchase-form']) !!}
                         <div class="row">
                             <div class="col-md-12">
+                                <div id="other_data"></div>
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>{{trans('file.Date')}}</label>
-                                            <input type="text" name="created_at" class="form-control date" placeholder="Choose date"/>
+                                            <input type="text" id="product_purchase_date" name="created_at" class="form-control date" placeholder="Choose date"/>
                                         </div>
                                     </div>
                                     <!-- <div class="col-md-4">
@@ -95,7 +96,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>{{trans('file.Purchase Status')}}</label>
-                                            <select name="status" class="form-control">
+                                            <select name="status" id="status" class="form-control">
                                                 <option value="1">{{trans('file.Recieved')}}</option>
                                                 <option value="2">{{trans('file.Partial')}}</option>
                                                 <option value="3">{{trans('file.Pending')}}</option>
@@ -159,16 +160,16 @@
                                                 </thead>
                                                 <tbody>
                                                 </tbody>
-                                                <!-- <tfoot class="tfoot active">
-                                                    <th colspan="">{{trans('file.Total')}}</th>
-                                                    <th id="black-qty">0</th>
-                                                    <th id="white-qty">0</th>
-                                                    
-                                                    <th></th>
-                                                    
-                                                    <th id="total">0.00</th>
-                                                    <th><i class="dripicons-trash"></i></th>
-                                                </tfoot> -->
+                                                <tfoot class="tfoot active">
+                                                    <tr>
+                                                        <th colspan="">{{trans('file.Total Quantity')}}</th>
+                                                        <th id="total-quantity">0</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th colspan="">{{trans('file.Total')}}</th>
+                                                        <th id="total-amount">0</th>
+                                                    </tr>
+                                                </tfoot>
                                             </table>
                                         </div>
                                     </div>
@@ -811,12 +812,7 @@
                 return false;
             }
         });
-        if(!flag){
-            alert('Quantity and Recieved value is same! Please Change Purchase Status or Recieved value');
-            e.preventDefault();
-        }
-        else
-            $(".batch-no, .expired-date").prop('disabled', false);
+        
     }
     else
         $(".batch-no, .expired-date").prop('disabled', false);
@@ -963,25 +959,55 @@ function getSuppliers(url, section_part_id) {
 }
 var supplier_ids_array = [];
 var article_ids_array = [];
+var total_quantity = $('#total-quantity');
+var total_amount = $('#total-amount');
+
 // var tableBody = $("table tbody");
 // // var len = tableBody.attr('tr');
 // console.log(len)
 $("#save-btn").click(function(){
     var id = $('#section_part_id').val();
-    
+    var manufacturer_id = $('#manufacture_id').find(":selected").val();
+    var model_id = $('#model_id').find(":selected").val();
+    var engine_id = $('#engine_id').find(":selected").val();
+    var section_id = $('#section_id').find(":selected").val();
+    var section_part_id = $('#section_part_id').find(":selected").val();
+    var supplier_id = $('#supplier_id').find(":selected").val();
+    var status = $('#status').find(":selected").val();
+    var date = $('#product_purchase_date').val();
+
+
+    // alert(manufacturer_id);exit();
     $.ajax({
         method : "GET",
         url : "{{ url('show_section_parts_in_table') }}",
         data : {
-            id:id
+            id:id,
+            manufacturer_id:manufacturer_id,
+            model_id:model_id,
+            engine_id:engine_id,
+            section_id:section_id,
+            section_part_id:section_part_id,
+            supplier_id:supplier_id,
+            status:status,
+            date:date
         },
         success: function(data){
             console.log(data)
             var tableBody = $("table tbody");
+            var other_data_div = $('#other_data');
 
             var length = document.getElementById("myTable").rows.length;
+            var html = '';
+            html += '<input type="hidden" name="manufacturer_id[]" value="'+data.manufacturer_id+'">';
+            html += '<input type="hidden" name="modell_id[]" value="'+data.model_id+'">';
+            html += '<input type="hidden" name="enginee_id[]" value="'+data.engine_id+'">';
+            html += '<input type="hidden" name="sectionn_id[]" value="'+data.section_id+'">';
+            html += '<input type="hidden" name="sectionn_part_id[]" value="'+data.section_part_id+'">';
+            html += '<input type="hidden" name="statuss[]" value="'+data.status+'">';
+            html += '<input type="hidden" name="datee[]" value="'+data.date+'">';
             
-            
+
 
             $('#myTable tr').each(function() {
                 if(this.id != ''){
@@ -1009,9 +1035,10 @@ $("#save-btn").click(function(){
             console.log(article_ids_array)
             supplier_ids_array.push(data.supplier.brandId);
             
-            markup = '<tr id="article_'+data.data.legacyArticleId+'"><td>'+ data.data.genericArticleDescription +'-'+ data.data.articleNumber + '</td><td><input type="number" name="black_qty" value="0" min="1" required></td><td><input type="number" value="0" min="1" name="white_qty" required></td><td><input type="number" value="0" min="0" name="purchase_price" required></td><td><input type="number" value="0" min="0" name="sale_price" required></td><td><i id="article_delete_'+data.data.legacyArticleId+'" onclick="deleteArticle('+data.data.legacyArticleId+')" class="fa fa-trash"></i></td></tr>';
+            markup = '<tr id="article_'+data.data.legacyArticleId+'"><td>'+ data.data.genericArticleDescription +'-'+ data.data.articleNumber + '</td><td><input type="number" name="black_qty[]" value="0" min="0" onkeyup="alterQty('+data.data.legacyArticleId+')" id="black_qty_'+data.data.legacyArticleId+'" required></td><td><input type="number" onkeyup="alterQty('+data.data.legacyArticleId+')" id="white_qty_'+data.data.legacyArticleId+'" value="0" min="0" name="white_qty[]" required></td><td><input type="number" value="0" min="0" id="purchase_price_'+data.data.legacyArticleId+'" name="purchase_price[]" required></td><td><input type="number" value="0" min="0" id="sale_price_'+data.data.legacyArticleId+'" name="sale_price[]" required></td><td><i id="article_delete_'+data.data.legacyArticleId+'" onclick="deleteArticle('+data.data.legacyArticleId+')" class="fa fa-trash"></i></td><td style="display:none;">'+html+'</td></tr>';
                 if(length <= 1){
                     tableBody.append(markup);
+                   
                     $('#myTable tr').each(function() {
                         if(this.id != ''){
                             article_ids_array.push(this.id)
@@ -1020,7 +1047,9 @@ $("#save-btn").click(function(){
                     })
                 }else{
                     if(!article_ids_array.includes("article_"+data.data.legacyArticleId)){
+                        
                         tableBody.append(markup);
+                        
                     }else{
                             Swal.fire({
                                 icon: 'error',
@@ -1043,6 +1072,16 @@ $("#save-btn").click(function(){
         }
     });
 });
+var t_qty = 0;
+function alterQty(id){
+    t_qty = t_qty + parseInt($("#black_qty_"+id).val()) + parseInt($("#white_qty_"+id).val());
+    total_quantity.html(t_qty);
+}
+
+// function alterBlackQty(id){
+//     t_qty = parseInt($("#black_qty_"+id).val()) + parseInt($("#white_qty_"+id).val());
+//     total_quantity.html(t_qty);
+// }
 
 function deleteArticle(id){
     $('#article_'+id).remove();
