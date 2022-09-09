@@ -22,7 +22,6 @@
 </div>
 
 <div class="row mr-4 ml-4">
-    <!-- <div class="col-lg-3"></div> -->
     <div class="col-lg-12">
         @if(Session::has('error'))
             <p class="bg-danger text-white p-2 rounded">{{Session::get('error')}}</p>
