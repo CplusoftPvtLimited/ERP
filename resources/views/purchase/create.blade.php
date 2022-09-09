@@ -148,7 +148,9 @@
                                                         <th>{{trans('file.White Items')}}</th>
                                                         <!-- <th>{{trans('file.Batch No')}}</th>
                                                         <th>{{trans('file.Expired Date')}}</th> -->
-                                                        <th>{{trans('file.Net Unit Cost')}}</th>
+                                                        <th>{{trans('file.Purchase Price')}}</th>
+                                                        <th>{{trans('file.Sale Price')}}</th>
+
                                                         <!-- <th>{{trans('file.Discount')}}</th>
                                                         <th>{{trans('file.Tax')}}</th> -->
                                                         <!-- <th>{{trans('file.Subtotal')}}</th> -->
@@ -930,7 +932,7 @@ function getSectionParts(url, section_id) {
         let response = data.data;
         let view_html = `<option value="" selected>Select One</option>`;
         $.each(response, function(key, value) {
-            view_html += `<option value="${value.dataSupplierId}">${value.genericArticleDescription +"-"+value.articleNumber}</option>`;
+            view_html += `<option value="${value.dataSupplierId+"-"+value.legacyArticleId}">${value.genericArticleDescription +"-"+value.articleNumber}</option>`;
         });
         console.log(data, view_html);
         $('#section_part_id').html(view_html);
@@ -961,6 +963,9 @@ function getSuppliers(url, section_part_id) {
 }
 var supplier_ids_array = [];
 var article_ids_array = [];
+// var tableBody = $("table tbody");
+// // var len = tableBody.attr('tr');
+// console.log(len)
 $("#save-btn").click(function(){
     var id = $('#section_part_id').val();
     
@@ -973,6 +978,7 @@ $("#save-btn").click(function(){
         success: function(data){
             console.log(data)
             var tableBody = $("table tbody");
+
             var length = document.getElementById("myTable").rows.length;
             
             
@@ -1003,28 +1009,31 @@ $("#save-btn").click(function(){
             console.log(article_ids_array)
             supplier_ids_array.push(data.supplier.brandId);
             
-            markup = '<tr id="article_'+data.data.legacyArticleId+'"><td>'+ data.data.genericArticleDescription +'-'+ data.data.articleNumber + '</td><td><input type="number" name="black_qty" min="1" required></td><td><input type="number" min="1" name="white_qty" required></td><td><input type="number" min="0" name="unit_price" required></td><td><i id="article_delete_'+data.data.legacyArticleId+'" onclick="deleteArticle('+data.data.legacyArticleId+')" class="fa fa-trash"></i></td></tr>';
-            if (length >= 1) {
-                if(length == 1){
+            markup = '<tr id="article_'+data.data.legacyArticleId+'"><td>'+ data.data.genericArticleDescription +'-'+ data.data.articleNumber + '</td><td><input type="number" name="black_qty" value="0" min="1" required></td><td><input type="number" value="0" min="1" name="white_qty" required></td><td><input type="number" value="0" min="0" name="purchase_price" required></td><td><input type="number" value="0" min="0" name="sale_price" required></td><td><i id="article_delete_'+data.data.legacyArticleId+'" onclick="deleteArticle('+data.data.legacyArticleId+')" class="fa fa-trash"></i></td></tr>';
+                if(length <= 1){
                     tableBody.append(markup);
-                }
-                if(article_ids_array.length > 0 ){
-                    article_ids_array.forEach(checkProduct);
-                    function checkProduct(item, index) {
-                        if(item != "article_"+data.data.legacyArticleId){
-                            tableBody.append(markup);
-                        }else{
+                    $('#myTable tr').each(function() {
+                        if(this.id != ''){
+                            article_ids_array.push(this.id)
+                        }
+                        
+                    })
+                }else{
+                    if(!article_ids_array.includes("article_"+data.data.legacyArticleId)){
+                        tableBody.append(markup);
+                    }else{
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',
                                 text: 'This product is already added...you can update its quantity',
                                 
                             })
-                        }
                     }
+                    
                 
-            }
-            }
+                    
+                }
+                
             // else{
                 
                 
@@ -1037,6 +1046,8 @@ $("#save-btn").click(function(){
 
 function deleteArticle(id){
     $('#article_'+id).remove();
+    // var supplier_ids_array = [];
+var article_ids_array = [];
 }
 
 </script>

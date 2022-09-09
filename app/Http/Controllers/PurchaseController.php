@@ -1325,8 +1325,9 @@ class PurchaseController extends Controller
 
     public function getBrandsBySectionPart(Request $request){
         try {
+            $id = explode('-',$request->section_part_id);
             $suppliers = Ambrand::select('brandId','brandName')
-            ->where('brandId',$request->section_part_id)->get();
+            ->where('brandId',$id[0])->get();
             // $product = Article::where('legacyArticleId',$request->section_part_id)
             // dd($suppliers);
             return response()->json([
@@ -1338,7 +1339,10 @@ class PurchaseController extends Controller
     }
 
     public function showSectionParts(Request $request){
-        $product = Article::where('dataSupplierId',$request->id)->first();
+        
+        $id = explode('-',$request->id);
+        // dd($id);
+        $product = Article::where('dataSupplierId',$id[0])->where('legacyArticleId',$id[1])->first();
             // dd($product);
             return response()->json([
                 'data' => $product,
