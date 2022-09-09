@@ -5,6 +5,7 @@ return [
 	'Section Parts' => 'Section Parts',
 	'Brand Languages' => 'Brand Languages',
 	'Manufacturers' => 'Manufacturers',
+	'save' => 'save',
 	'Sales Invoices List' => 'Sales Invoices List',
 	'Invoice Number' => 'Invoice Number',
 	'Delivery Slip' => 'Delivery Slip',

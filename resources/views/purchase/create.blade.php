@@ -122,6 +122,19 @@
                                         </div>
                                     </div> -->
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-9"></div>
+                                    <div class="col-md-1">
+                                        <div class="form-group">
+                                            <button type="button" class="btn btn-success" id="save-btn">{{trans('file.save')}}</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary" id="submit-btn">{{trans('file.submit')}}</button>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row mt-4">
                                     <div class="col-md-12">
                                         <h5>{{trans('file.Order Table')}} *</h5>
@@ -130,14 +143,15 @@
                                                 <thead>
                                                     <tr>
                                                         <th>{{trans('file.name')}}</th>
-                                                        <th>{{trans('file.Code')}}</th>
-                                                        <th>{{trans('file.Quantity')}}</th>
+                                                        <!-- <th>{{trans('file.Code')}}</th> -->
+                                                        <th>{{trans('file.Black Items')}}</th>
+                                                        <th>{{trans('file.White Items')}}</th>
                                                         <th class="recieved-product-qty d-none">{{trans('file.Recieved')}}</th>
                                                         <!-- <th>{{trans('file.Batch No')}}</th>
                                                         <th>{{trans('file.Expired Date')}}</th> -->
                                                         <th>{{trans('file.Net Unit Cost')}}</th>
-                                                        <th>{{trans('file.Discount')}}</th>
-                                                        <th>{{trans('file.Tax')}}</th>
+                                                        <!-- <th>{{trans('file.Discount')}}</th>
+                                                        <th>{{trans('file.Tax')}}</th> -->
                                                         <th>{{trans('file.Subtotal')}}</th>
                                                         <th><i class="dripicons-trash"></i></th>
                                                     </tr>
@@ -195,7 +209,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mt-3">
+                                <!-- <div class="row mt-3">
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>{{trans('file.Order Tax')}}</label>
@@ -231,10 +245,8 @@
                                             <textarea rows="5" class="form-control" name="note"></textarea>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary" id="submit-btn">{{trans('file.submit')}}</button>
-                                </div>
+                                </div> -->
+                                
                             </div>
                         </div>
                         {!! Form::close() !!}
@@ -970,7 +982,26 @@ function getSuppliers(url, section_part_id) {
         $("#supplier_id").selectpicker("refresh");
     })
 }
+
+$("#save-btn").click(function(){
+    var id = $('#section_part_id').val();
+    
+    $.ajax({
+        method : "GET",
+        url : "{{ url('show_section_parts_in_table') }}",
+        data : {
+            id:id
+        },
+        success: function(data){
+            var tableBody = $("table tbody");
+            markup = "<tr><td> + information + </td></tr>"
+
+        }
+    });
+});
+
 </script>
+
 
 <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
 @endpush

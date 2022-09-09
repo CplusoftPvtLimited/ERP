@@ -1337,5 +1337,11 @@ class PurchaseController extends Controller
         }
     }
 
+    public function showSectionParts(Request $request){
+        $product = Article::where('legacyArticleId',$request->id)->first();
+            // dd($suppliers);
+            return response()->json($product);
+    }
+
     
 }

@@ -258,6 +258,8 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('get_sections_by_engine', 'PurchaseController@getSectionsByEngine')->name('get_sections_by_engine');
 	Route::get('get_section_parts', 'PurchaseController@getSectionParts')->name('get_section_parts');// get all articles
 	Route::get('get_brands_by_section_part', 'PurchaseController@getBrandsBySectionPart')->name('get_brands_by_section_part'); // get all suppliers against an article
+	Route::get('show_section_parts_in_table', 'PurchaseController@showSectionParts')->name('show_section_parts_in_table'); 
+
 
 
 
