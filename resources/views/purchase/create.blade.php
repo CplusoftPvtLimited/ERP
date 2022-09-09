@@ -10,6 +10,7 @@
                     <div class="card-header d-flex align-items-center">
                         <h4>{{trans('file.Add Purchase')}}</h4>
                     </div>
+                    
                     <div class="card-body">
                         <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
                         {!! Form::open(['route' => 'purchases.store', 'method' => 'post', 'files' => true, 'id' => 'purchase-form']) !!}
@@ -34,11 +35,60 @@
                                     </div> -->
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>{{trans('file.Supplier')}}</label>
-                                            <select name="supplier_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select supplier...">
-                                                @foreach($lims_supplier_list as $supplier)
-                                                <option value="{{$supplier->id}}">{{$supplier->name .' ('. $supplier->company_name .')'}}</option>
+                                            <label>{{trans('file.Manufacturers')}}</label>
+                                            <select name="manufacture_id" id="manufacture_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select Manufacturer..." data-href="{{ route('get_models_by_manufacturer') }}">
+                                                @foreach($manufacturers as $manufacturer)
+                                                <option value="{{$manufacturer->manuId}}">{{ $manufacturer->manuName }}</option>
                                                 @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="model_id">{{ __('Select Model') }}</label>
+                                            <select name="model_id" id="model_id"
+                                            data-href="{{ route('get_engines_by_model') }}" class="form-control" required>
+                                                
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="engine_id">{{ __('Select Engine') }}</label>
+                                            <select name="engine_id" id="engine_id"
+                                            data-href="{{ route('get_sections_by_engine') }}" class="form-control" required>
+                                                
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="section_id">{{ __('Select Section') }}</label>
+                                            <select name="section_id" id="section_id"
+                                            data-href="{{ route('get_section_parts') }}" class="form-control" required>
+                                                
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="section_part_id">{{ __('Select Section Part') }}</label>
+                                            <select name="section_part_id" id="section_part_id"
+                                            data-href="{{ route('get_brands_by_section_part') }}" class="form-control" required>
+                                                
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                    
+                                <div class="row">
+                                <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>{{trans('file.Supplier')}}</label>
+                                            <select name="supplier_id" id="supplier_id"  data-href="#" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select supplier...">
+                                                
                                             </select>
                                         </div>
                                     </div>
@@ -64,13 +114,13 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-12 mt-3">
+                                    <!-- <div class="col-md-12 mt-3">
                                         <label>{{trans('file.Select Product')}}</label>
                                         <div class="search-box input-group">
                                             <button class="btn btn-secondary"><i class="fa fa-barcode"></i></button>
                                             <input type="text" name="product_code_name" id="lims_productcodeSearch" placeholder="Please type product code and select..." class="form-control" />
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <div class="row mt-4">
                                     <div class="col-md-12">
@@ -780,6 +830,147 @@
     else
         $(".batch-no, .expired-date").prop('disabled', false);
  });
+
+
+ $(document).on('change', '#manufacture_id', function() {
+    let manufacture_id = $(this).val();
+    // alert(manufacture_id)
+    let url = $(this).attr('data-href');
+    getModels(url, manufacture_id);
+});
+
+function getModels(url, manufacture_id) {
+    $.get(url + '?manufacture_id=' + manufacture_id, function(data) {
+        // $('#model_id').html(`<option value="">Select Model</option>`);
+        $('#section_id').html('<option value="">Select One</option>');
+        $('#section_id').selectpicker("refresh");
+        $('#section_part_id').html('<option value="">Select One</option>');
+        $('#section_part_id').selectpicker("refresh");
+        $('#engine_id').html('<option value="">Select One</option>');
+        $('#engine_id').selectpicker("refresh");
+        $('#supplier_id').html('<option value="">Select One</option>');
+        $('#supplier_id').selectpicker("refresh");
+
+        let response = data.data;
+        let view_html = `<option value="">Select One</option>`;
+        $.each(response, function(key, value) {
+            view_html += `<option value="${value.modelId}">${value.modelname}</option>`;
+        });
+        console.log(data, view_html);
+        $('#model_id').html(view_html);
+        // $("#model_id").val(4);
+        $("#model_id").selectpicker("refresh");
+        
+        
+    })
+}
+
+
+$(document).on('change', '#model_id', function() {
+    let model_id = $(this).val();
+    let url = $(this).attr('data-href');
+    getEngines(url, model_id);
+});
+
+function getEngines(url, model_id) {
+    $.get(url + '?model_id=' + model_id, function(data) {
+        $('#section_id').html('<option value="">Select One</option>');
+        $('#section_id').selectpicker("refresh");
+        $('#section_part_id').html('<option value="">Select One</option>');
+        $('#section_part_id').selectpicker("refresh");
+        $('#engine_id').html('<option value="">Select One</option>');
+        $('#engine_id').selectpicker("refresh");
+        $('#supplier_id').html('<option value="">Select One</option>');
+        $('#supplier_id').selectpicker("refresh");
+        let response = data.data;
+        let view_html = `<option value="">Select One</option>`;
+        $.each(response, function(key, value) {
+            view_html += `<option value="${value.linkageTargetId}">${value.description + "(" + value.beginYearMonth+ " - "+ value.endYearMonth}</option>`;
+        });
+        console.log(data, view_html);
+        $('#engine_id').html(view_html);
+        $("#engine_id").val(4);
+        $("#engine_id").selectpicker("refresh");
+    })
+}
+
+
+$(document).on('change', '#engine_id', function() {
+    let engine_id = $(this).val();
+    let url = $(this).attr('data-href');
+    getSections(url, engine_id);
+});
+
+function getSections(url, engine_id) {
+    $.get(url + '?engine_id=' + engine_id, function(data) {
+        $('#engine_id').html('<option value="">Select One</option>');
+        $('#engine_id').selectpicker("refresh");
+        $('#section_part_id').html('<option value="">Select One</option>');
+        $('#section_part_id').selectpicker("refresh");
+        
+        $('#supplier_id').html('<option value="">Select One</option>');
+        $('#supplier_id').selectpicker("refresh");
+        let response = data.data;
+        let view_html = `<option value="">Select One</option>`;
+        $.each(response, function(key, value) {
+            view_html += `<option value="${value.assemblyGroupNodeId}">${value.assemblyGroupName}</option>`;
+        });
+        console.log(data, view_html);
+        $('#section_id').html(view_html);
+        $("#section_id").val(4);
+        $("#section_id").selectpicker("refresh");
+    })
+}
+
+
+
+
+
+$(document).on('change', '#section_id', function() {
+    let section_id = $(this).val();
+    let url = $(this).attr('data-href');
+    getSectionParts(url, section_id);
+});
+
+function getSectionParts(url, section_id) {
+    $.get(url + '?section_id=' + section_id, function(data) {
+        $('#section_part_id').html('<option value="">Select One</option>');
+        $('#section_part_id').selectpicker("refresh");
+        
+        $('#supplier_id').html('<option value="">Select One</option>');
+        $('#supplier_id').selectpicker("refresh");
+        let response = data.data;
+        let view_html = `<option value="">Select One</option>`;
+        $.each(response, function(key, value) {
+            view_html += `<option value="${value.legacyArticleId}">${value.genericArticleDescription +"-"+value.articleNumber}</option>`;
+        });
+        console.log(data, view_html);
+        $('#section_part_id').html(view_html);
+        $("#section_part_id").val(4);
+        $("#section_part_id").selectpicker("refresh");
+    })
+}
+
+
+$(document).on('change', '#section_part_id', function() {
+    let section_part_id = $(this).val();
+    let url = $(this).attr('data-href');
+    getSuppliers(url, section_part_id);
+});
+
+function getSuppliers(url, section_part_id) {
+    $.get(url + '?section_part_id=' + section_part_id, function(data) {
+        let response = data.data;
+        let view_html = `<option value="">Select One</option>`;
+        $.each(response, function(key, value) {
+            view_html += `<option value="${value.brandId}">${value.brandName}</option>`;
+        });
+        console.log(data, view_html);
+        $('#supplier_id').html(view_html);
+        $("#supplier_id").val(4);
+        $("#supplier_id").selectpicker("refresh");
+    })
+}
 </script>
 
 <script type="text/javascript" src="https://js.stripe.com/v3/"></script>

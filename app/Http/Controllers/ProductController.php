@@ -55,7 +55,6 @@ class ProductController extends Controller
             $query->select(['assemblyGroupNodeId', 'assemblyGroupName']);
         }
         ])->paginate(10);
-        
         return view('product.get', compact('products'));
     }
 

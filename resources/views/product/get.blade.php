@@ -29,15 +29,10 @@
                 <tr>
                     <th>Article Number</th>
                     <th>Geeneric Article Description</th>
-                    <th>Information Type Description</th>
-                    <th>Text</th>
                     <th>Brand</th>
                     <th>Assembly Group Name</th>
-                    {{-- <th>legacyArticleId</th> --}}
-                    <th>Immediate Display</th>
                     <th>Manufacturer</th>
                     <th>Manufacturer Id</th>
-                    {{-- <th class="not-exported">{{trans('file.action')}}</th> --}}
                 </tr>
             </thead>
             <tbody>
@@ -46,15 +41,11 @@
                     <tr>
                         <td>{{ $item->article->articleNumber }}</td>
                         <td>{{ $item->article->genericArticleDescription }}</td>
-                        <td>{{ $item->articleText->informationTypeDescription }}</td>
-                        <td>{{ $item->articleText->text }}</td>
                         <td>{{ isset($item->article->brand->brandName) ? $item->article->brand->brandName : "" }}</td>
-                        <td>{{ $item->assemblyGroupNodes->assemblyGroupName }}</td>
-                        {{-- <td>{{ $item->assemblyGroupNodes->legacyArticleId }}</td> --}}
-                        <td>{{ $item->articleText->isImmediateDisplay }}</td>
+                        <td>{{ isset($item->assemblyGroupNodes) ? $item->assemblyGroupNodes->assemblyGroupName : '' }}</td>
                         
-                        <td>{{ $item->linkageTarget->mfrName }}</td>
-                        <td>{{ $item->linkageTarget->mfrId }}</td>
+                        <td>{{ isset($item->linkageTarget) ? $item->linkageTarget->mfrName : '' }}</td>
+                        <td>{{ isset($item->linkageTarget) ? $item->linkageTarget->mfrId : '' }}</td>
                     </tr>
                 @endforeach
             </tbody>
