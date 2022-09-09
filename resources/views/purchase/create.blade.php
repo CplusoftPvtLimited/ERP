@@ -123,15 +123,15 @@
                                     </div> -->
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-9"></div>
+                                    <div class="col-md-10"></div>
                                     <div class="col-md-1">
                                         <div class="form-group">
-                                            <button type="button" class="btn btn-success" id="save-btn">{{trans('file.save')}}</button>
+                                            <button type="button" class="btn btn-info purchase-save-btn" id="save-btn">{{trans('file.Save')}}</button>
                                         </div>
                                     </div>
                                     <div class="col-md-1">
                                         <div class="form-group">
-                                            <button type="submit" class="btn btn-primary" id="submit-btn">{{trans('file.submit')}}</button>
+                                            <button type="submit" class="btn btn-primary purchase-save-btn" id="submit-btn">{{trans('file.submit')}}</button>
                                         </div>
                                     </div>
                                 </div>
@@ -151,7 +151,7 @@
                                                         <th>{{trans('file.Net Unit Cost')}}</th>
                                                         <!-- <th>{{trans('file.Discount')}}</th>
                                                         <th>{{trans('file.Tax')}}</th> -->
-                                                        <th>{{trans('file.Subtotal')}}</th>
+                                                        <!-- <th>{{trans('file.Subtotal')}}</th> -->
                                                         <th><i class="dripicons-trash"></i></th>
                                                     </tr>
                                                 </thead>
@@ -991,8 +991,10 @@ $("#save-btn").click(function(){
         },
         success: function(data){
             var tableBody = $("table tbody");
+
             markup = "<tr id='article'"+data.legacyArticleId+
-            "><td>"+ data.genericArticleDescription +"-"+ data.articleNumber + "</td><td><input type='number' name='black_qty' required></td><td><input type='number' name='white_qty' required></td></tr>"
+            "><td>"+ data.genericArticleDescription +"-"+ data.articleNumber + "</td><td><input type='number' name='black_qty' min='1' required></td><td><input type='number' min='1' name='white_qty' required></td><td><input type='number' min='0' name='unit_price' required></td></tr>";
+            tableBody.append(markup)
 
         }
     });
