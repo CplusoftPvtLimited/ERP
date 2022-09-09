@@ -9,6 +9,10 @@ use App\Product;
 use App\Unit;
 use App\Tax;
 use App\Account;
+use App\Models\Manufacturer;
+use App\Models\ModelSeries;
+use App\Models\LinkageTarget;
+
 use App\Purchase;
 use App\ProductPurchase;
 use App\Product_Warehouse;
@@ -16,6 +20,9 @@ use App\Payment;
 use App\PaymentWithCheque;
 use App\PaymentWithCreditCard;
 use App\PosSetting;
+use App\Models\AssemblyGroupNode;
+use App\Models\Article;
+use App\Models\Ambrand;
 use DB;
 use App\GeneralSetting;
 use Stripe\Stripe;
@@ -266,8 +273,9 @@ class PurchaseController extends Controller
             $lims_tax_list = Tax::where('is_active', true)->get();
             $lims_product_list_without_variant = $this->productWithoutVariant();
             $lims_product_list_with_variant = $this->productWithVariant();
-
-            return view('purchase.create', compact('lims_supplier_list', 'lims_warehouse_list', 'lims_tax_list', 'lims_product_list_without_variant', 'lims_product_list_with_variant'));
+            $manufacturers = Manufacturer::all();
+            // dd($manufacturers);
+            return view('purchase.create', compact('lims_supplier_list', 'lims_warehouse_list', 'lims_tax_list', 'lims_product_list_without_variant', 'lims_product_list_with_variant','manufacturers'));
         }
         else
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
@@ -1255,4 +1263,85 @@ class PurchaseController extends Controller
         }
         
     }
+
+    public function getModelsByManufacturer(Request $request){
+        try {
+            $manufacturer = Manufacturer::where('manuId',$request->manufacture_id)->first();
+            // if($manufacturer){
+                $models = ModelSeries::select('modelId','modelname')->where('manuId',$request->manufacture_id)->get();
+                // dd($request->manufacture_id);
+                return response()->json([
+                    'data' => $models
+                ],200);
+            // }else{
+            //     return response()->json([
+            //         'data' => null
+            //     ],200);
+            // }
+            
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function getEnginesByModel(Request $request){
+        try {
+            $engines = LinkageTarget::select('linkageTargetId','description','beginYearMonth','endYearMonth')
+            ->where('vehicleModelSeriesId',$request->model_id)->get();
+            // dd($models);
+            return response()->json([
+                'data' => $engines
+            ],200);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function getSectionsByEngine(Request $request){
+        try {
+            $sections = AssemblyGroupNode::select('assemblyGroupNodeId','assemblyGroupName')
+            ->where('request__linkingTargetId',$request->engine_id)->get();
+            // dd($models);
+            return response()->json([
+                'data' => $sections
+            ],200);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function getSectionParts(Request $request){
+        try {
+            $section_parts = Article::select('legacyArticleId','genericArticleDescription','articleNumber')
+            ->where('assemblyGroupNodeId',$request->section_id)->get();
+            // dd($models);
+            return response()->json([
+                'data' => $section_parts
+            ],200);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function getBrandsBySectionPart(Request $request){
+        try {
+            $suppliers = Ambrand::select('brandId','brandName')
+            ->where('brandId',$request->section_part_id)->get();
+            // $product = Article::where('legacyArticleId',$request->section_part_id)
+            // dd($suppliers);
+            return response()->json([
+                'data' => $suppliers
+            ],200);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function showSectionParts(Request $request){
+        $product = Article::where('legacyArticleId',$request->id)->first();
+            // dd($product);
+            return response()->json($product);
+    }
+
+    
 }

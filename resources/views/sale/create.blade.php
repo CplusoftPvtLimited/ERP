@@ -534,7 +534,7 @@ $('#lims_productcodeSearch').on('input', function(){
     temp_data = $('#lims_productcodeSearch').val();
     if(!customer_id){
         $('#lims_productcodeSearch').val(temp_data.substring(0, temp_data.length - 1));
-        alert('Please select Customer!');
+        // alert('Please select Customer!');
     }
 
 });
