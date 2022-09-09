@@ -252,28 +252,7 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid">
-        <table class="table table-bordered table-condensed totals">
-            <td><strong>{{trans('file.Items')}}</strong>
-                <span class="pull-right" id="item">0.00</span>
-            </td>
-            <td><strong>{{trans('file.Total')}}</strong>
-                <span class="pull-right" id="subtotal">0.00</span>
-            </td>
-            <td><strong>{{trans('file.Order Tax')}}</strong>
-                <span class="pull-right" id="order_tax">0.00</span>
-            </td>
-            <td><strong>{{trans('file.Order Discount')}}</strong>
-                <span class="pull-right" id="order_discount">0.00</span>
-            </td>
-            <td><strong>{{trans('file.Shipping Cost')}}</strong>
-                <span class="pull-right" id="shipping_cost">0.00</span>
-            </td>
-            <td><strong>{{trans('file.grand total')}}</strong>
-                <span class="pull-right" id="grand_total">0.00</span>
-            </td>
-        </table>
-    </div>
+    
     <div id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
         <div role="document" class="modal-dialog">
             <div class="modal-content">
@@ -328,6 +307,7 @@
 
 @endsection
 @push('scripts')
+
 <script type="text/javascript">
 
     $("ul#purchase").siblings('a').attr('aria-expanded','true');
@@ -950,7 +930,7 @@ function getSectionParts(url, section_id) {
         let response = data.data;
         let view_html = `<option value="" selected>Select One</option>`;
         $.each(response, function(key, value) {
-            view_html += `<option value="${value.legacyArticleId}">${value.genericArticleDescription +"-"+value.articleNumber}</option>`;
+            view_html += `<option value="${value.dataSupplierId}">${value.genericArticleDescription +"-"+value.articleNumber}</option>`;
         });
         console.log(data, view_html);
         $('#section_part_id').html(view_html);
@@ -979,7 +959,7 @@ function getSuppliers(url, section_part_id) {
         $("#supplier_id").selectpicker("refresh");
     })
 }
-
+var supplier_ids_array = [];
 $("#save-btn").click(function(){
     var id = $('#section_part_id').val();
     
@@ -990,15 +970,71 @@ $("#save-btn").click(function(){
             id:id
         },
         success: function(data){
+            console.log(data)
             var tableBody = $("table tbody");
+            var length = document.getElementById("myTable").rows.length;
+            var article_ids_array = [];
+            
 
-            markup = "<tr id='article'"+data.legacyArticleId+
-            "><td>"+ data.genericArticleDescription +"-"+ data.articleNumber + "</td><td><input type='number' name='black_qty' min='1' required></td><td><input type='number' min='1' name='white_qty' required></td><td><input type='number' min='0' name='unit_price' required></td></tr>";
-            tableBody.append(markup)
+            $('#myTable tr').each(function() {
+                if(this.id != ''){
+                    article_ids_array.push(this.id)
+                }
+                
+            })
+           
+            if(supplier_ids_array.length > 0 ){
+                supplier_ids_array.forEach(checkSupplier);
+                function checkSupplier(item, index) {
+                    if(item != data.supplier.brandId){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'You have selected one supplier',
+                            
+                        });
+                        exit();
+                    }
+                }
+                
+            }
+            
+            console.log(article_ids_array)
+            supplier_ids_array.push(data.supplier.brandId);
+            
+            markup = '<tr id="article_'+data.data.legacyArticleId+'"><td>'+ data.data.genericArticleDescription +'-'+ data.data.articleNumber + '</td><td><input type="number" name="black_qty" min="1" required></td><td><input type="number" min="1" name="white_qty" required></td><td><input type="number" min="0" name="unit_price" required></td><td><i id="article_delete_'+data.data.legacyArticleId+'" onclick="deleteArticle('+data.data.legacyArticleId+')" class="fa fa-trash"></i></td></tr>';
+            if (length >= 1) {
+                
+                if(article_ids_array.length > 0 ){
+                    article_ids_array.forEach(checkProduct);
+                    function checkProduct(item, index) {
+                        if(item != "article_"+data.data.legacyArticleId){
+                            tableBody.append(markup);
+                        }else{
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'This product is already added...you can update its quantity',
+                                
+                            })
+                        }
+                    }
+                
+            }
+            }
+            // else{
+                
+                
+            // }
+            
 
         }
     });
 });
+
+function deleteArticle(id){
+    $('#article_'+id).remove();
+}
 
 </script>
 

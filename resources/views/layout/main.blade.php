@@ -1401,6 +1401,9 @@
       </footer>
     </div>
     @endif
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- <script src="src/toaster.js"></script> -->
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/jquery.min.js') ?>"></script>
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/jquery-ui.min.js') ?>"></script>
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/bootstrap-datepicker.min.js') ?>"></script>

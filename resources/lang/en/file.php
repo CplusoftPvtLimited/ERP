@@ -6,6 +6,8 @@ return [
 	'Brand Languages' => 'Brand Languages',
 	'Manufacturers' => 'Manufacturers',
 	'Save' => 'Save',
+	'Black Items' => 'Black Items',
+	'White Items' => 'White Items',
 	'Sales Invoices List' => 'Sales Invoices List',
 	'Invoice Number' => 'Invoice Number',
 	'Delivery Slip' => 'Delivery Slip',

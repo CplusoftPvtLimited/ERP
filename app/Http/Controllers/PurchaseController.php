@@ -1312,7 +1312,7 @@ class PurchaseController extends Controller
 
     public function getSectionParts(Request $request){
         try {
-            $section_parts = Article::select('legacyArticleId','genericArticleDescription','articleNumber')
+            $section_parts = Article::select('legacyArticleId','dataSupplierId','genericArticleDescription','articleNumber')
             ->where('assemblyGroupNodeId',$request->section_id)->get();
             // dd($models);
             return response()->json([
@@ -1338,9 +1338,12 @@ class PurchaseController extends Controller
     }
 
     public function showSectionParts(Request $request){
-        $product = Article::where('legacyArticleId',$request->id)->first();
+        $product = Article::where('dataSupplierId',$request->id)->first();
             // dd($product);
-            return response()->json($product);
+            return response()->json([
+                'data' => $product,
+                'supplier' => Ambrand::where('brandId',$product->dataSupplierId)->first(),
+            ]);
     }
 
     
