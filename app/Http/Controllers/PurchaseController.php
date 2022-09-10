@@ -369,9 +369,41 @@ class PurchaseController extends Controller
 
     public function store(Request $request)
     {
-        
+        // dd($request->all());
+        // $document = $request->document;
+        // if($document){
+        //     $v = Validator::make(
+        //         [
+        //             'extension' => strtolower($request->document->getClientOriginalExtension()),
+        //         ],
+        //         [
+        //             'extension' => 'in:jpg,jpeg,png,gif,pdf,csv,docx,xlsx,txt',
+        //         ]
+        //     );
+        //     if ($v->fails())
+        //         return redirect()->back()->withErrors($v->errors());
+        // }
+        $request->validate([
+            'black_qty.*' => 'required',
+            'white_qty.*' => 'required',
+            'sale_price.*' => 'required',
+            'purchase_price.*' => 'required',
+            'modell_id.*' => 'required',
+            'enginee_id.*' => 'required',
+            'sectionn_id.*' => 'required',
+            'sectionn_part_id.*' => 'required',
+            'manufacturer_id.*' => 'required',
+            'statuss.*' => 'required',
+            'datee.*' => 'required',
+
+        ]);
         $purchase = $this->purchase->store($request);
-        return redirect('purchases')->with('message', 'Purchase created successfully');
+        if($purchase == "true"){
+            return redirect('purchases')->with('message', 'Purchase created successfully');
+        }else{
+            dd($purchase);
+            return redirect()->back()->withErrors($purchase);
+        }
     }
 
     public function productPurchaseData($id)

@@ -1035,7 +1035,7 @@ $("#save-btn").click(function(){
             console.log(article_ids_array)
             supplier_ids_array.push(data.supplier.brandId);
             
-            markup = '<tr id="article_'+data.data.legacyArticleId+'"><td>'+ data.data.genericArticleDescription +'-'+ data.data.articleNumber + '</td><td><input type="number" name="black_qty[]" value="0" min="0" onkeyup="alterQty('+data.data.legacyArticleId+')" id="black_qty_'+data.data.legacyArticleId+'" required></td><td><input type="number" onkeyup="alterQty('+data.data.legacyArticleId+')" id="white_qty_'+data.data.legacyArticleId+'" value="0" min="0" name="white_qty[]" required></td><td><input type="number" value="0" min="0" id="purchase_price_'+data.data.legacyArticleId+'" name="purchase_price[]" required></td><td><input type="number" value="0" min="0" id="sale_price_'+data.data.legacyArticleId+'" name="sale_price[]" required></td><td><i id="article_delete_'+data.data.legacyArticleId+'" onclick="deleteArticle('+data.data.legacyArticleId+')" class="fa fa-trash"></i></td><td style="display:none;">'+html+'</td></tr>';
+            markup = '<tr id="article_'+data.data.legacyArticleId+'"><td>'+ data.data.genericArticleDescription +'-'+ data.data.articleNumber + '</td><td><input type="number" name="black_qty[]" value="0" min="0" onkeyup="alterBlackQty('+data.data.legacyArticleId+')" id="black_qty_'+data.data.legacyArticleId+'" required></td><td><input type="number" onkeyup="alterWhiteQty('+data.data.legacyArticleId+')" id="white_qty_'+data.data.legacyArticleId+'" value="0" min="0" name="white_qty[]" required></td><td><input type="number" value="0" min="0" id="purchase_price_'+data.data.legacyArticleId+'" name="purchase_price[]" required></td><td><input type="number" value="0" min="0" id="sale_price_'+data.data.legacyArticleId+'" name="sale_price[]" required></td><td><i id="article_delete_'+data.data.legacyArticleId+'" onclick="deleteArticle('+data.data.legacyArticleId+')" class="fa fa-trash"></i></td><td style="display:none;">'+html+'</td></tr>';
                 if(length <= 1){
                     tableBody.append(markup);
                    
@@ -1073,15 +1073,16 @@ $("#save-btn").click(function(){
     });
 });
 var t_qty = 0;
-function alterQty(id){
-    t_qty = t_qty + parseInt($("#black_qty_"+id).val()) + parseInt($("#white_qty_"+id).val());
-    total_quantity.html(t_qty);
+function alterWhiteQty(id){
+    t_qty = t_qty + total_quantity.html( parseInt($("#black_qty_"+id).val()) + parseInt($("#white_qty_"+id).val()));
+    // parseInt($("#black_qty_"+id).val()) + parseInt($("#white_qty_"+id).val());
+    // total_quantity.html(t_qty);
 }
 
-// function alterBlackQty(id){
-//     t_qty = parseInt($("#black_qty_"+id).val()) + parseInt($("#white_qty_"+id).val());
-//     total_quantity.html(t_qty);
-// }
+function alterBlackQty(id){
+    // total_quantity.html() + parseInt($("#black_qty_"+id).val()) + parseInt($("#white_qty_"+id).val());
+    t_qty = t_qty + total_quantity.html(parseInt($("#white_qty_"+id).val()) + parseInt($("#black_qty_"+id).val()));
+}
 
 function deleteArticle(id){
     $('#article_'+id).remove();
