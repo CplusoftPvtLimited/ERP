@@ -160,7 +160,7 @@
                                                 </thead>
                                                 <tbody>
                                                 </tbody>
-                                                <tfoot class="tfoot active">
+                                                <!-- <tfoot class="tfoot active">
                                                     <tr>
                                                         <th colspan="">{{trans('file.Total Quantity')}}</th>
                                                         <th id="total-quantity">0</th>
@@ -169,7 +169,7 @@
                                                         <th colspan="">{{trans('file.Total')}}</th>
                                                         <th id="total-amount">0</th>
                                                     </tr>
-                                                </tfoot>
+                                                </tfoot> -->
                                             </table>
                                         </div>
                                     </div>
@@ -1073,15 +1073,31 @@ $("#save-btn").click(function(){
     });
 });
 var t_qty = 0;
+let w_qty=0;
+let b_qty=0;
+var id_array = [];
 function alterWhiteQty(id){
-    t_qty = t_qty + total_quantity.html( parseInt($("#black_qty_"+id).val()) + parseInt($("#white_qty_"+id).val()));
-    // parseInt($("#black_qty_"+id).val()) + parseInt($("#white_qty_"+id).val());
-    // total_quantity.html(t_qty);
+   
+    // t_qty = t_qty + parseInt($("#black_qty_"+id).val()) + parseInt($("#white_qty_"+id).val());
+    w_qty = parseInt($("#black_qty_"+id).val()) + parseInt($("#white_qty_"+id).val());
+    // var t_w_qty = parseInt(total_quantity.html()) + w_qty;
+    // console.log("WWWWWWWWWWW----",t_w_qty)
+    allQuantity(w_qty);
 }
+
 
 function alterBlackQty(id){
     // total_quantity.html() + parseInt($("#black_qty_"+id).val()) + parseInt($("#white_qty_"+id).val());
-    t_qty = t_qty + total_quantity.html(parseInt($("#white_qty_"+id).val()) + parseInt($("#black_qty_"+id).val()));
+    // t_qty = t_qty +parseInt($("#white_qty_"+id).val()) + parseInt($("#black_qty_"+id).val());
+    b_qty= parseInt($("#black_qty_"+id).val()) + parseInt($("#white_qty_"+id).val());
+    
+
+    allQuantity(b_qty);
+}
+
+function allQuantity(a_qty){
+    var prev = total_quantity.html() + a_qty;
+    total_quantity.html(prev);
 }
 
 function deleteArticle(id){

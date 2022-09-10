@@ -48,6 +48,7 @@ class PurchaseController extends Controller
 
     public function index(Request $request)
     {
+        // dd($request->all());
         $role = Role::find(Auth::user()->role_id);
         if($role->hasPermissionTo('purchases-index')) {
             if($request->input('warehouse_id'))
@@ -369,7 +370,7 @@ class PurchaseController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
+        \Log::debug($request->all());
         // $document = $request->document;
         // if($document){
         //     $v = Validator::make(
