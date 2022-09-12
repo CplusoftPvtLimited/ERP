@@ -145,7 +145,7 @@
                                                             $product_cost = $product_purchase->total;
                                                         }
 
-
+ 
                                                         $temp_unit_name = $unit_name = implode(",",$unit_name) . ',';
 
                                                         $temp_unit_operator = $unit_operator = implode(",",$unit_operator) .',';

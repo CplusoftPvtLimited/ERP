@@ -11,6 +11,7 @@ return [
 	'Purchase Price' => 'Purchase Price',
 	'Sale Price' => 'Sale Price',
 	'Total Quantity' => 'Total Quantity',
+	'Purchase Products' => 'Purchase Products',
 	'Sales Invoices List' => 'Sales Invoices List',
 	'Invoice Number' => 'Invoice Number',
 	'Delivery Slip' => 'Delivery Slip',

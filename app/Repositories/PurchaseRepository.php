@@ -1,10 +1,15 @@
 <?php
 
 namespace App\Repositories;
+
+use App\Models\Ambrand;
 use App\Purchase;
 use App\ProductPurchase;
 use App\Models\Article;
+use App\Models\AssemblyGroupNode;
 use App\Models\LinkageTarget;
+use App\Models\Manufacturer;
+use App\Models\ModelSeries;
 use App\Repositories\Interfaces\PurchaseInterface;
 use Illuminate\Support\Facades\DB;
 
@@ -74,4 +79,102 @@ class PurchaseRepository implements PurchaseInterface
             return $e->getMessage();
         }
     }    
+
+    public function view($id){
+        $purchase_get = Purchase::find($id);
+
+        if($purchase_get){
+            $purchase_products = [];
+            $purchases_products = ProductPurchase::where('purchase_id',$purchase_get->id)->get();
+            foreach($purchases_products as $lims_purchase_data){
+                $manufacturer = Manufacturer::where('manuId',$lims_purchase_data->manufacture_id)->first();
+                $model = ModelSeries::where('modelId',$lims_purchase_data->model_id)->first();
+                $engine = LinkageTarget::where('linkageTargetId',$lims_purchase_data->eng_linkage_target_id)->first();
+                $section = AssemblyGroupNode::where('assemblyGroupNodeId',$lims_purchase_data->assembly_group_node_id)->first();
+                $section_part = Article::where('legacyArticleId',$lims_purchase_data->legacyArticleId)->first();
+                $supplier = Ambrand::where('BrandId',$lims_purchase_data->supplier_id)->first();
+
+                $lims_purchase_data['manufacturer'] = isset($manufacturer) ? $manufacturer->manuName : '';
+                $lims_purchase_data['model'] = isset($model) ? $model->modelname : '';
+                $lims_purchase_data['engine'] = isset($engine) ? $engine->description : '';
+                $lims_purchase_data['section'] = isset($section) ? $section->assemblyGroupName : '';
+                $lims_purchase_data['section_part'] = isset($section_part) ? $section_part->articleNumber : '';
+                $lims_purchase_data['supplier'] = isset($supplier) ? $supplier->brandName : '';
+
+                array_push($purchase_products,$lims_purchase_data);
+            }
+            $purchase = [
+                'purchase' => $purchase_get,
+                'purchase_products' => $purchase_products
+            ];
+             return $purchase;
+        }else{
+            return "null";
+        }
+    }
+
+    public function edit($id){
+        $purchase_get = Purchase::find($id);
+
+        if($purchase_get){
+            $purchase_products = [];
+            $purchases_products = ProductPurchase::where('purchase_id',$purchase_get->id)->get();
+            foreach($purchases_products as $lims_purchase_data){
+                $manufacturer = Manufacturer::where('manuId',$lims_purchase_data->manufacture_id)->first();
+                $model = ModelSeries::where('modelId',$lims_purchase_data->model_id)->first();
+                $engine = LinkageTarget::where('linkageTargetId',$lims_purchase_data->eng_linkage_target_id)->first();
+                $section = AssemblyGroupNode::where('assemblyGroupNodeId',$lims_purchase_data->assembly_group_node_id)->first();
+                $section_part = Article::where('legacyArticleId',$lims_purchase_data->legacyArticleId)->first();
+                $supplier = Ambrand::where('BrandId',$lims_purchase_data->supplier_id)->first();
+
+                $lims_purchase_data['manufacturer'] = isset($manufacturer) ? $manufacturer->manuName : '';
+                $lims_purchase_data['model'] = isset($model) ? $model->modelname : '';
+                $lims_purchase_data['engine'] = isset($engine) ? $engine->description : '';
+                $lims_purchase_data['section'] = isset($section) ? $section->assemblyGroupName : '';
+                $lims_purchase_data['section_part'] = isset($section_part) ? $section_part->articleNumber : '';
+                $lims_purchase_data['supplier'] = isset($supplier) ? $supplier->brandName : '';
+
+                array_push($purchase_products,$lims_purchase_data);
+            }
+            $purchase = [
+                'purchase' => $purchase_get,
+                'purchase_products' => $purchase_products
+            ];
+             return $purchase;
+        }else{
+            return "null";
+        }
+    }
+
+    public function updatePurchase($request){
+        
+        $product_purchase = ProductPurchase::find($request->id);
+        if($product_purchase){
+            $product_purchase->status = $request->status;
+            $product_purchase->save();
+
+            return "true";
+        }else{
+            return "false";
+        }
+    }
+
+
+    public function deletePurchaseProduct($purchase_id,$id){
+        $product_purchase = ProductPurchase::find($id);
+        if($product_purchase){
+            
+            $product_purchase->delete();
+            $product_purchases = ProductPurchase::where('purchase_id',$purchase_id)->get();
+            if(count($product_purchases) <= 0){
+                $purchase = Purchase::find($purchase_id);
+                if($purchase){
+                    $purchase->delete();
+                }
+            }
+            return "true";
+        }else{
+            return "false";
+        }
+    }
 }

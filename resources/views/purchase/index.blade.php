@@ -543,7 +543,7 @@
             "columns": [
                 {"data": "key"},
                 {"data": "date"},
-                {"data": "reference_no"},
+                // {"data": "reference_no"},
                 {"data": "supplier"},
                 {"data": "purchase_status"},
                 {"data": "grand_total"},
@@ -566,7 +566,7 @@
             'columnDefs': [
                 {
                     "orderable": false,
-                    'targets': [0, 3, 4, 7, 8,9]
+                    'targets': [0, 3, 7, 8,9]
                 },
                 {
                     'render': function(data, type, row, meta){
