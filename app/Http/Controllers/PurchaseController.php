@@ -587,9 +587,23 @@ class PurchaseController extends Controller
             $lims_product_list_without_variant = $this->productWithoutVariant();
             $lims_product_list_with_variant = $this->productWithVariant();
             $lims_purchase_data = Purchase::find($id);
-            $lims_product_purchase_data = ProductPurchase::where('purchase_id', $id)->get();
+            if(!empty($lims_purchase_data)){
+                // $manufacturer = Manufacturer::where('manuId',$lims_purchase_data->manufacture_id)->first();
+                // // dd($manufacturer);
+                // $model = ModelSeries::where('modelId',$lims_purchase_data->model_id)->first();
+                // $engine = LinkageTarget::where('linkageTargetId',$lims_purchase_data->engine_id)->first();
+                // $section = AssemblyGroupNode::where('assemblyGroupNodeId',$lims_purchase_data->section_id)->first();
+                // $section_part = Article::where('legacyArticleId',$lims_purchase_data->section_part_id)->first();
+                // $supplier = Ambrand::where('BrandId',$lims_purchase_data->supplier_id)->first();
 
-            return view('purchase.edit', compact('lims_warehouse_list', 'lims_supplier_list', 'lims_product_list_without_variant', 'lims_product_list_with_variant', 'lims_tax_list', 'lims_purchase_data', 'lims_product_purchase_data'));
+                // dd($lims_purchase_data);
+                $lims_product_purchase_data = ProductPurchase::where('purchase_id', $id)->get();
+
+                return view('purchase.edit', compact('lims_warehouse_list', 'lims_supplier_list', 'lims_product_list_without_variant', 'lims_product_list_with_variant', 'lims_tax_list', 'lims_purchase_data', 'lims_product_purchase_data'));
+            }else{
+                return back();
+            }
+            
         }
         else
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');

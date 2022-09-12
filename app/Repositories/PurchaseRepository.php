@@ -20,7 +20,7 @@ class PurchaseRepository implements PurchaseInterface
                 $total_qty = $total_qty + ($request->black_qty[$i] + $request->white_qty[$i]);
             }
             for($i=0; $i < count($request->purchase_price); $i++){
-                $total_amount = $total_amount + ($request->purchase_price[$i]);
+                $total_amount = $total_amount + ($request->purchase_price[$i]) + ($request->sale_price[$i]);
             }
 
             $purchase->user_id = auth()->user()->id;
@@ -28,6 +28,7 @@ class PurchaseRepository implements PurchaseInterface
             $purchase->total_qty = $total_qty;
             $purchase->total_cost = $total_amount;
             $purchase->grand_total = $total_amount;
+            $purchase->supplier_id = $request->supplier_id;
             $purchase->status = 0;
 
             $purchase->date = date('Y-m-d');
@@ -58,9 +59,10 @@ class PurchaseRepository implements PurchaseInterface
                 $product_purchase->assembly_group_node_id = $request->sectionn_id[$i];
                 $product_purchase->legacy_article_id = $request->section_part_id[$i];
                 $product_purchase->status = $request->statuss[$i];
+                $product_purchase->supplier_id = $request->supplier_id;
                 $date = date("Y-m-d", strtotime($request->datee[$i]));
                 $product_purchase->date = $date;
-                $product_purchase->qty = 0;
+                $product_purchase->qty = $request->black_qty[$i] + $request->white_qty[$i];
                 $product_purchase->save();
             }
 
