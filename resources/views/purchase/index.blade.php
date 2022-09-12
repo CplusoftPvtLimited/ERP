@@ -518,6 +518,7 @@
         var starting_date = $("input[name=starting_date]").val();
         var ending_date = $("input[name=ending_date]").val();
         var warehouse_id = $("#warehouse_id").val();
+        // alert(starting_date)
         $('#purchase-table').DataTable( {
             "processing": true,
             "serverSide": true,

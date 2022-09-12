@@ -975,6 +975,8 @@ $("#save-btn").click(function(){
     var supplier_id = $('#supplier_id').find(":selected").val();
     var status = $('#status').find(":selected").val();
     var date = $('#product_purchase_date').val();
+    
+    checkIfExists(manufacturer_id,model_id,engine_id,section_id,section_part_id,supplier_id,status,date);
 
 
     // alert(manufacturer_id);exit();
@@ -1072,6 +1074,81 @@ $("#save-btn").click(function(){
         }
     });
 });
+
+function checkIfExists(manufacturer_id,model_id,engine_id,section_id,section_part_id,supplier_id,status,date){
+    if(!manufacturer_id){
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please select a manufacturer',
+            
+        });
+        exit();
+    }
+    if(!model_id){
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please select a Model',
+            
+        });
+        exit();
+    }
+    if(!engine_id){
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please select an engine',
+            
+        });
+        exit();
+    }
+    if(!section_id){
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please select a section',
+            
+        });
+        exit();
+    }
+    if(!section_part_id){
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please select a section part',
+            
+        });
+        exit();
+    }
+    if(!supplier_id){
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please select a supplier',
+            
+        });
+        exit();
+    }
+    if(!status){
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please select a status',
+            
+        });
+        exit();
+    }
+    if(!date){
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please select a date',
+            
+        });
+        exit();
+    }
+}
 var t_qty = 0;
 let w_qty=0;
 let b_qty=0;
