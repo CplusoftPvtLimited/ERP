@@ -34,7 +34,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
 use App\Repositories\Interfaces\PurchaseInterface;
-use Barryvdh\DomPDF\PDF;
+use PDF;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\DataTables;
 class PurchaseController extends Controller
@@ -81,7 +81,7 @@ class PurchaseController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $all_purchase = Purchase::orderBy('id', 'desc')->get();
+            $all_purchase = Purchase::where('user_id',Auth::user()->id)->orderBy('id', 'desc')->get();
             return Datatables::of($all_purchase)
                 ->addIndexColumn('id')
                 ->addColumn('supplier', function($row) {
@@ -540,11 +540,45 @@ class PurchaseController extends Controller
     }
 
     public function pdfDownload(){
-        
-        $get_purchase = $this->purchaseRepository->pdfDownload();
-        $pdf = PDF::loadView('purchase_pdf', $data);
-    
-        return $pdf->download('product_purchases.pdf');
+
+        $purchases = Purchase::where('user_id',Auth::user()->id)->get();
+        $all_data = [];
+        if (count($purchases) > 0) {
+            foreach ($purchases as $purchase_get) {
+                $purchase_products = [];
+                $purchases_products = ProductPurchase::where('purchase_id', $purchase_get->id)->get();
+                foreach ($purchases_products as $lims_purchase_data) {
+                    $manufacturer = Manufacturer::where('manuId', $lims_purchase_data->manufacture_id)->first();
+                    $model = ModelSeries::where('modelId', $lims_purchase_data->model_id)->first();
+                    $engine = LinkageTarget::where('linkageTargetId', $lims_purchase_data->eng_linkage_target_id)->first();
+                    $section = AssemblyGroupNode::where('assemblyGroupNodeId', $lims_purchase_data->assembly_group_node_id)->first();
+                    $section_part = Article::where('legacyArticleId', $lims_purchase_data->legacy_article_id)->first();
+                    // dd($lims_purchase_data->legacy_article_id);
+                    $supplier = Ambrand::where('BrandId', $lims_purchase_data->supplier_id)->first();
+
+                    $lims_purchase_data['manufacturer'] = isset($manufacturer) ? $manufacturer->manuName : '';
+                    $lims_purchase_data['model'] = isset($model) ? $model->modelname : '';
+                    $lims_purchase_data['engine'] = isset($engine) ? $engine->description : '';
+                    $lims_purchase_data['section'] = isset($section) ? $section->assemblyGroupName : '';
+                    $lims_purchase_data['section_part'] = isset($section_part) ? $section_part->articleNumber : '';
+                    $lims_purchase_data['supplier'] = isset($supplier) ? $supplier->brandName : '';
+
+                    array_push($purchase_products, $lims_purchase_data);
+                }
+                $purchase = [
+                    'purchase' => $purchase_get,
+                    'purchase_products' => $purchase_products
+                ];
+                array_push($all_data,$purchase);
+            }
+
+            $pdf = PDF::loadView('purchase.purchase_pdf', compact('all_data'));
+            // dd($pdf);
+            return $pdf->download('product_purchases.pdf');
+        }else{
+            toastr()->info('Data not found');
+            return back();
+        }
     }
 
 
