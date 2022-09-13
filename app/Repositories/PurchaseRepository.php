@@ -177,4 +177,6 @@ class PurchaseRepository implements PurchaseInterface
             return "false";
         }
     }
+
+    public function deleteParentPurchase($purchase_id){}
 }

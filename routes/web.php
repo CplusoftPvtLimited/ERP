@@ -252,10 +252,13 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::post('importpurchase', 'PurchaseController@importPurchase')->name('purchase.import');
 	Route::post('purchases/deletebyselection', 'PurchaseController@deleteBySelection');
 	Route::resource('purchases', 'PurchaseController');
+
 	Route::get('viewPurchase/{id}','PurchaseController@viewPurchase'); // view a purchase
 	Route::get('editPurchase/{id}','PurchaseController@editPurchase'); // edit a purchase
 	Route::get('updatePurchaseProduct','PurchaseController@updatePurchase')->name('update_purchase'); // update a purchase
 	Route::get('deletePurchaseProduct/{purchase_id}/{id}','PurchaseController@deletePurchaseProduct')->name('delete_purchase'); // delete a purchase product
+	Route::get('deletePurchase/{purchase_id}','PurchaseController@deleteParentPurchase')->name('delete_parent_purchase'); // delete a parent purchase
+
 
 
 

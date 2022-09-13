@@ -470,6 +470,18 @@ class PurchaseController extends Controller
         $get_purchase_product = $this->purchase->deletePurchaseProduct($purchase_id,$id);
         if ($get_purchase_product == "true") {
             
+            return redirect()->route('purchases.index');
+        } else {
+            
+            return redirect()->back();
+        }
+    }
+
+    public function deleteParentPurchase($purchase_id){
+        // dd($id);
+        $get_purchase = $this->purchase->deleteParentPurchase($purchase_id);
+        if ($get_purchase == "true") {
+            
             return redirect()->back();
         } else {
             
