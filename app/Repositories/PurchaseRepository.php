@@ -9,12 +9,21 @@ use App\Models\Article;
 use App\Models\AssemblyGroupNode;
 use App\Models\LinkageTarget;
 use App\Models\Manufacturer;
+use App\Models\StockManagement;
 use App\Models\ModelSeries;
 use App\Repositories\Interfaces\PurchaseInterface;
+use App\Repositories\Interfaces\StockManagementInterface;
 use Illuminate\Support\Facades\DB;
 
 class PurchaseRepository implements PurchaseInterface
 {
+    protected $stockManagementRepository;
+
+    public function __construct(StockManagementInterface $stockManagementInterface)
+    {
+        $this->stockManagementRepository = $stockManagementInterface;
+        // $this->auth_user = auth()->guard('api')->user();
+    }
     public function store($request){
         DB::beginTransaction();
         try {
@@ -153,13 +162,19 @@ class PurchaseRepository implements PurchaseInterface
     public function updatePurchase($request){
         
         $product_purchase = ProductPurchase::find($request->id);
+        DB::beginTransaction();
+        
         if($product_purchase){
             $product_purchase->status = $request->status;
             $product_purchase->save();
-
-            return "true";
+            
+            $purchase = Purchase::find($product_purchase->purchase_id);
+            $this->stockManagementRepository->store($product_purchase, $purchase); // stock manage here
+            DB::commit(); 
+            return true;
         }else{
-            return "false";
+            DB::rollBack();
+            return false;
         }
     }
 
@@ -196,4 +211,55 @@ class PurchaseRepository implements PurchaseInterface
             return "false";
         }
     }
+
+
+    public function exportPurchases(){
+
+        $purchase_with_products = Purchase::with(['productPurchases'])->get();
+        // dd($purchase_with_products);
+        $all_data = [];
+        if(count($purchase_with_products) > 0){
+                foreach($purchase_with_products as $purchase){
+                    $purchase_data = [];
+                    $purchase_data['Retailer ID'] = auth()->user()->id;
+                    $purchase_data['Retailer'] = auth()->user()->name;
+                    $purchase_data['Total Quantity'] = $purchase->total_qty;
+                    $purchase_data['Total Items'] = $purchase->item;
+                    $purchase_data['Grand Total'] = $purchase->grand_total;
+                    foreach ($purchase->productPurchases as $key => $lims_purchase_data) {
+                        $manufacturer = Manufacturer::where('manuId',$lims_purchase_data->manufacture_id)->first();
+                        $model = ModelSeries::where('modelId',$lims_purchase_data->model_id)->first();
+                        $engine = LinkageTarget::where('linkageTargetId',$lims_purchase_data->eng_linkage_target_id)->first();
+                        $section = AssemblyGroupNode::where('assemblyGroupNodeId',$lims_purchase_data->assembly_group_node_id)->first();
+                        $section_part = Article::where('legacyArticleId',$lims_purchase_data->legacy_article_id)->first();
+                        $supplier = Ambrand::where('BrandId',$lims_purchase_data->supplier_id)->first();
+
+                        $purchase_data['Manufacturer ID'] = isset($manufacturer) ? $manufacturer->manuId : '';
+                        $purchase_data['Manufacturer'] = isset($manufacturer) ? $manufacturer->manuName : '';
+                        $purchase_data['Model ID'] = isset($model) ? $model->modelId : '';
+                        $purchase_data['Model'] = isset($model) ? $model->modelname : '';
+                        $purchase_data['Engine ID'] = isset($engine) ? $engine->linkageTargetId : '';
+                        $purchase_data['Engine'] = isset($engine) ? $engine->description : '';
+                        $purchase_data['Section ID'] = isset($section) ? $section->assemblyGroupNodeId : '';
+                        $purchase_data['Section'] = isset($section) ? $section->assemblyGroupName : '';
+                        $purchase_data['Section Part ID'] = isset($section_part) ? $section_part->legacyArticleId : '';
+                        $purchase_data['Section_part'] = isset($section_part) ? $section_part->articleNumber : '';
+                        $purchase_data['Supplier ID'] = isset($supplier) ? $supplier->brandId : '';
+                        $purchase_data['Supplier'] = isset($supplier) ? $supplier->brandName : '';
+                        $purchase_data['White Item'] = $lims_purchase_data->white_item_qty;
+                        $purchase_data['Black Item'] = $lims_purchase_data->black_item_qty;
+                        $purchase_data['Total Cost'] = $lims_purchase_data->total_cost;
+                        $purchase_data['Engine Detail'] = $lims_purchase_data->engine_details;
+
+                        array_push($all_data,$purchase_data);
+                    }
+                }
+                
+                 return $all_data;
+        }else{
+            return "false";
+        }
+    }
+
+    public function pdfDownload(){}
 }

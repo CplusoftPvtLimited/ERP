@@ -7,7 +7,7 @@ use App\Warehouse;
 use App\Supplier;
 use App\Product;
 use App\Unit;
-use App\Tax; 
+use App\Tax;
 use App\Account;
 use App\Models\Manufacturer;
 use App\Models\ModelSeries;
@@ -34,8 +34,10 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
 use App\Repositories\Interfaces\PurchaseInterface;
+use Barryvdh\DomPDF\PDF;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\DataTables;
+
 class PurchaseController extends Controller
 {
     private $purchaseRepository;
@@ -83,24 +85,24 @@ class PurchaseController extends Controller
             $all_purchase = Purchase::orderBy('id', 'desc')->get();
             return Datatables::of($all_purchase)
                 ->addIndexColumn('id')
-                ->addColumn('supplier', function($row) {
+                ->addColumn('supplier', function ($row) {
                     return $row->brand->brandName;
                 })
-                ->addColumn('due_amount', function($row) {
+                ->addColumn('due_amount', function ($row) {
                     $due_amount = $row->grand_total - $row->paid_amount;
                     return $due_amount;
                 })
-                ->addColumn('purchase_status',function($row){
+                ->addColumn('purchase_status', function ($row) {
                     $check_odd_one = [];
-                    foreach($row->productPurchases as $product){
-                          if($product->status == "ordered"){
-                            array_push($check_odd_one,$product->status);
-                          }
+                    foreach ($row->productPurchases as $product) {
+                        if ($product->status == "ordered") {
+                            array_push($check_odd_one, $product->status);
+                        }
                     }
                     $purchase_status = "";
-                    if(count($check_odd_one) > 0){
+                    if (count($check_odd_one) > 0) {
                         $purchase_status = "Pending";
-                    }else{
+                    } else {
                         $purchase_status = "Completed";
                     }
                     return $purchase_status;
@@ -108,20 +110,20 @@ class PurchaseController extends Controller
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="row">
                          <div class="col-md-4">
-                         <a href="deletePurchase/' . $row['id'].'"> <button
+                         <a href="deletePurchase/' . $row['id'] . '"> <button
                          class="btn btn-danger btn-sm " style="" type="button"
                          data-original-title="btn btn-danger btn-sm"
                          title=""><i class="fa fa-trash"></i></button></a>
          
                          </div>
                          <div class="col-md-4">
-                         <a href="editPurchase/' . $row["id"].'"> <button
+                         <a href="editPurchase/' . $row["id"] . '"> <button
                                      class="btn btn-primary btn-sm " type="button"
                                      data-original-title="btn btn-danger btn-xs"
                                      title=""><i class="fa fa-edit"></i></button></a>
                          </div>
                          <div class="col-md-4">
-                         <a href="viewPurchase/' . $row["id"].'"> <button
+                         <a href="viewPurchase/' . $row["id"] . '"> <button
                                      class="btn btn-success btn-sm " type="button"
                                      data-original-title="btn btn-success btn-xs"
                                      title=""><i class="fa fa-eye"></i></button></a>
@@ -445,47 +447,56 @@ class PurchaseController extends Controller
         }
     }
 
-    public function viewPurchase($id){
+    public function viewPurchase($id)
+    {
         $get_purchase = $this->purchaseRepository->view($id);
         if ($get_purchase != "null") {
             $purchase = $get_purchase['purchase'];
             $purchase_products = $get_purchase['purchase_products'];
             // dd($purchase_products);
-            return view('purchase.view',compact('purchase','purchase_products'));
+            return view('purchase.view', compact('purchase', 'purchase_products'));
         } else {
             toastr()->info('product not found');
             return redirect()->back();
         }
     }
 
-    public function editPurchase($id){
+    public function editPurchase($id)
+    {
         $get_purchase = $this->purchaseRepository->edit($id);
         if ($get_purchase != "null") {
             $purchase = $get_purchase['purchase'];
             $purchase_products = $get_purchase['purchase_products'];
             // dd($purchase_products);
-            return view('purchase.edit_purchase',compact('purchase','purchase_products'));
+            return view('purchase.edit_purchase', compact('purchase', 'purchase_products'));
         } else {
             toastr()->info('product not found');
             return redirect()->back();
         }
     }
 
-    public function updatePurchase(Request $request){
-        // dd($request->all());
-        $get_purchase = $this->purchaseRepository->updatePurchase($request);
-        if ($get_purchase == "true") {
-            toastr()->success('product status updated successfully');
-            return redirect()->back();
-        } else {
-            toastr()->info('product not found');
-            return redirect()->back();
+    public function updatePurchase(Request $request)
+    {
+        Log::debug($request->all());
+        try {
+            $get_purchase = $this->purchaseRepository->updatePurchase($request);
+            if ($get_purchase) {
+                toastr()->success('product status updated and stock updated successfully');
+                return redirect()->back();
+            } else {
+                toastr()->info('product not found');
+                return redirect()->back();
+            }
+        } catch (\Exception $e) {
+            Log::debug($e->getMessage());
+            return $e->getMessage();
         }
     }
 
-    public function deletePurchaseProduct($purchase_id,$id){
+    public function deletePurchaseProduct($purchase_id, $id)
+    {
         // dd($id);
-        $get_purchase_product = $this->purchaseRepository->deletePurchaseProduct($purchase_id,$id);
+        $get_purchase_product = $this->purchaseRepository->deletePurchaseProduct($purchase_id, $id);
         if ($get_purchase_product == "true") {
             toastr()->success('Product Deleted Successfully');
             return redirect()->route('purchases.index');
@@ -495,7 +506,8 @@ class PurchaseController extends Controller
         }
     }
 
-    public function deleteParentPurchase($purchase_id){
+    public function deleteParentPurchase($purchase_id)
+    {
         // dd($id);
         $get_purchase = $this->purchaseRepository->deleteParentPurchase($purchase_id);
         if ($get_purchase == "true") {
@@ -507,6 +519,44 @@ class PurchaseController extends Controller
         }
     }
 
+    public function exportPurchases()
+    {
+        $headers = [
+            'Cache-Control'        => 'must-revalidate, post-check=0, pre-check=0', 'Content-type'        => 'text/csv', 'Content-Disposition' => 'attachment; filename=purchases_csv_export.csv', 'Expires'             => '0', 'Pragma'              => 'public',
+        ];
+
+        $get_purchase = $this->purchaseRepository->exportPurchases();
+
+        if ($get_purchase != "false") {
+            array_unshift($get_purchase, array_keys($get_purchase[0]));
+            // dd($new_list);
+
+            $callback = function () use ($get_purchase) {
+                $FH = fopen('php://output', 'w');
+                foreach ($get_purchase as $row) {
+                    fputcsv($FH, $row);
+                }
+                fclose($FH);
+            };
+
+            return response()->stream($callback, 200, $headers);
+        } else {
+            toastr()->info('Purchases not found');
+        }
+    }
+
+    public function pdfDownload()
+    {
+
+        $get_purchase = $this->purchaseRepository->pdfDownload();
+        $pdf = PDF::loadView('purchase_pdf', $data);
+
+        return $pdf->download('product_purchases.pdf');
+    }
+
+
+
+    // ========================= Above code is ours code ====================
     public function productPurchaseData($id)
     {
         $lims_product_purchase_data = ProductPurchase::where('purchase_id', $id)->get();
