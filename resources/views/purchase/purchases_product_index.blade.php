@@ -105,7 +105,7 @@
                         {"data": "supplier",  name: 'supplier'},
                         {"data": "item",  name: 'item'},
                         {"data": "total_qty",  name: 'total_qty'},
-                        {"data": "status",  name: 'status'},
+                        {"data": "purchase_status",  name: 'purchase_status'},
                         {"data": "paid_amount",  name: 'paid_amount'},
                         {"data": "due_amount",  name: 'due_amount'},
                         {"data": "grand_total",  name: 'grand_total'},

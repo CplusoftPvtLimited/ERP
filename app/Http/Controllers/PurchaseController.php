@@ -90,6 +90,21 @@ class PurchaseController extends Controller
                     $due_amount = $row->grand_total - $row->paid_amount;
                     return $due_amount;
                 })
+                ->addColumn('purchase_status',function($row){
+                    $check_odd_one = [];
+                    foreach($row->productPurchases as $product){
+                          if($product->status == "ordered"){
+                            array_push($check_odd_one,$product->status);
+                          }
+                    }
+                    $purchase_status = "";
+                    if(count($check_odd_one) > 0){
+                        $purchase_status = "Pending";
+                    }else{
+                        $purchase_status = "Completed";
+                    }
+                    return $purchase_status;
+                })
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="row">
                          <div class="col-md-4">
