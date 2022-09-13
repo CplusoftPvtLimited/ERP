@@ -4,6 +4,7 @@ namespace App;
 
 use App\Models\Ambrand;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Purchase extends Model
@@ -27,5 +28,10 @@ class Purchase extends Model
     public function warehouse()
     {
     	return $this->belongsTo('App\Warehouse');
+    }
+
+    public function productPurchases() :HasMany
+    {
+        return  $this->hasMany(ProductPurchase::class,'purchase_id','id');
     }
 }

@@ -183,9 +183,17 @@ class PurchaseRepository implements PurchaseInterface
     }
 
     public function deleteParentPurchase($purchase_id){
-        $purchase = Purchase::find($purchase_id);
-        // if($purchase){
+        $purchase_with_products = Purchase::where('id',$purchase_id)->with(['productPurchases'])->first();
+        // dd($purchase_with_products);
+        if(!empty($purchase_with_products)){
+                 foreach ($purchase_with_products->productPurchases as $key => $product) {
+                    $product->delete();
+                 }
 
-        // }
+                 $purchase_with_products->delete();
+                 return "true";
+        }else{
+            return "false";
+        }
     }
 }

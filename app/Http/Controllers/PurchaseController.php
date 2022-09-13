@@ -420,9 +420,11 @@ class PurchaseController extends Controller
         ]);
         $purchase = $this->purchase->store($request);
         if ($purchase == "true") {
+            toastr()->success('Purchase created successfully');
             return redirect('purchases')->with('message', 'Purchase created successfully');
         } else {
             // dd($purchase);
+            toastr()->error($purchase);
             return redirect()->back()->withErrors($purchase);
         }
     }
@@ -435,7 +437,7 @@ class PurchaseController extends Controller
             // dd($purchase_products);
             return view('purchase.view',compact('purchase','purchase_products'));
         } else {
-            
+            toastr()->info('product not found');
             return redirect()->back();
         }
     }
@@ -448,7 +450,7 @@ class PurchaseController extends Controller
             // dd($purchase_products);
             return view('purchase.edit_purchase',compact('purchase','purchase_products'));
         } else {
-            
+            toastr()->info('product not found');
             return redirect()->back();
         }
     }
@@ -457,10 +459,10 @@ class PurchaseController extends Controller
         // dd($request->all());
         $get_purchase = $this->purchase->updatePurchase($request);
         if ($get_purchase == "true") {
-            
+            toastr()->success('product status updated successfully');
             return redirect()->back();
         } else {
-            
+            toastr()->info('product not found');
             return redirect()->back();
         }
     }
@@ -469,10 +471,10 @@ class PurchaseController extends Controller
         // dd($id);
         $get_purchase_product = $this->purchase->deletePurchaseProduct($purchase_id,$id);
         if ($get_purchase_product == "true") {
-            
+            toastr()->success('Product Deleted Successfully');
             return redirect()->route('purchases.index');
         } else {
-            
+            toastr()->info('Product not found');
             return redirect()->back();
         }
     }
@@ -481,10 +483,10 @@ class PurchaseController extends Controller
         // dd($id);
         $get_purchase = $this->purchase->deleteParentPurchase($purchase_id);
         if ($get_purchase == "true") {
-            
-            return redirect()->back();
+            toastr()->success('Purchase and related products has been deleted successfully!');
+            return redirect()->route('purchases.index');
         } else {
-            
+            toastr()->info('Purchase not found!');
             return redirect()->back();
         }
     }
