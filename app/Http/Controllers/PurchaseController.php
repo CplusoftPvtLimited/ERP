@@ -79,23 +79,20 @@ class PurchaseController extends Controller
 
     public function index(Request $request)
     {
-
-        //    dd($request->ajax());
         if ($request->ajax()) {
-
-            $purchases = [];
             $all_purchase = Purchase::orderBy('id', 'desc')->get();
-            foreach ($all_purchase as $purchase) {
-                $purchase['due_amount'] = (float)$purchase->grand_total - (float)$purchase->paid_amount;
-                array_push($purchases, $purchase);
-            }
-            $k = 1;
-            return Datatables::of($purchases)
+            return Datatables::of($all_purchase)
                 ->addIndexColumn('id')
+                ->addColumn('supplier', function($row) {
+                    return $row->brand->brandName;
+                })
+                ->addColumn('due_amount', function($row) {
+                    $due_amount = $row->grand_total - $row->paid_amount;
+                    return $due_amount;
+                })
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="row">
                          <div class="col-md-2">
-         
                          <a href="purchases/' . $row['id'] . '"> <button
                          class="btn btn-success btn-xs " type="button"
                          data-original-title="btn btn-danger btn-xs"
@@ -110,11 +107,9 @@ class PurchaseController extends Controller
                          </div>
                      </div>
                      ';
-
-
                     return $btn;
                 })
-                ->rawColumns(['action'])->make(true);
+                ->rawColumns(['action', 'supplier', 'due_amount'])->make(true);
         }
 
         return view('purchase.purchases_product_index');
