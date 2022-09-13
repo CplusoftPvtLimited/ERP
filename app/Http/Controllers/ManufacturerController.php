@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Manufacturer;
 use App\Http\Requests\StoreManufacturerRequest;
 use App\Http\Requests\UpdateManufacturerRequest;
+use App\Repositories\Interfaces\ManufacturerInterface;
+use Illuminate\Http\Request;
 
 class ManufacturerController extends Controller
 {
@@ -13,9 +15,16 @@ class ManufacturerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    private $manufacturer;
+
+    public function __construct(ManufacturerInterface $manufacturer)
+    {
+        $this->manufacturer = $manufacturer;
+    }
     public function index()
     {
-        //
+        $manufacturers= $this->manufacturer->index();
+        return view ('manufacturer.index', compact('manufacturers'));
     }
 
     /**
@@ -25,7 +34,7 @@ class ManufacturerController extends Controller
      */
     public function create()
     {
-        //
+        return view('manufacturer.create');
     }
 
     /**
@@ -36,7 +45,8 @@ class ManufacturerController extends Controller
      */
     public function store(StoreManufacturerRequest $request)
     {
-        //
+        $message = $this->manufacturer->store($request);
+        return redirect(route('manufacturer.index'))->withMessage($message);
     }
 
     /**
@@ -58,7 +68,7 @@ class ManufacturerController extends Controller
      */
     public function edit(Manufacturer $manufacturer)
     {
-        //
+        return view('manufacturer.edit',compact('manufacturer'));
     }
 
     /**
@@ -70,7 +80,8 @@ class ManufacturerController extends Controller
      */
     public function update(UpdateManufacturerRequest $request, Manufacturer $manufacturer)
     {
-        //
+        $message = $this->manufacturer->update($request,$manufacturer);
+        return redirect()->back()->withMessage($message);
     }
 
     /**
@@ -81,6 +92,7 @@ class ManufacturerController extends Controller
      */
     public function destroy(Manufacturer $manufacturer)
     {
-        //
+        $message = $this->manufacturer->delete($manufacturer);
+        return redirect()->back()->withMessage($message);
     }
 }

@@ -13,7 +13,7 @@ class StoreManufacturerRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,19 @@ class StoreManufacturerRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'manuName'=> 'required|unique:manufacturers,manuName|max:255',
+            'linkingTargetType'=> 'required',
+        ];
+    }
+    public function messages()
+    {
+
+        return [
+            'manuName.required'            =>  __('Manufacturer Name is required.'),
+            'manuName.unique'              =>  __('This Manufacturer Name already exist.'),
+            'manuName.max'              =>  __('Manufacturer Name must be less than 255 characters.'),
+            'linkingTargetType.required'            =>  __('Linkage Target Type is required.'),
+
         ];
     }
 }

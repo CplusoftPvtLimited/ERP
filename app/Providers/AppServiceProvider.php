@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\Interfaces\ManufacturerInterface;
+use App\Repositories\ManufacturerRepository;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -23,7 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(ManufacturerInterface::class,ManufacturerRepository::class);
+        
     }
 
     public function boot()

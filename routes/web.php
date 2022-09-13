@@ -11,6 +11,9 @@
 |
 */
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
 Auth::routes();
 Route::get('test', function () {
     event(new App\Events\NotificationSend('Someone'));
@@ -31,6 +34,8 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('/user_show/{user_id}/{noti_id}','UserController@show');
 	Route::get('/submitted_form_show/{user_id}/{noti_id}','FormController@showSubmittedForm');
 	Route::get('showSubmitForm',[FormController::class,'showSubmitForm'])->name('showSubmitForm');
+	Route::resource('manufacturer', 'ManufacturerController');
+
 
 
 

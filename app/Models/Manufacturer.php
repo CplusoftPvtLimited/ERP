@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Manufacturer extends Model
 {
     use HasFactory;
+    protected $table = "manufacturers";
+    protected $fillable = [
+        'manuId',
+        'manuName',
+        'linkingTargetType'
+    ];
+    
 }

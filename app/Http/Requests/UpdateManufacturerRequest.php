@@ -13,7 +13,7 @@ class UpdateManufacturerRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,15 @@ class UpdateManufacturerRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'manuName'=> 'required|max:255'
+        ];
+    }
+    public function messages()
+    {
+
+        return [
+            'manuName.required'            =>  __('Manufacturer Name is required.'),
+            'manuName.max'              =>  __('Manufacturer Name must be less than 255 characters.'),
         ];
     }
 }
