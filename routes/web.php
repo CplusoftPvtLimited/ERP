@@ -251,7 +251,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('purchases/purchase_by_csv', 'PurchaseController@purchaseByCsv');
 	Route::post('importpurchase', 'PurchaseController@importPurchase')->name('purchase.import');
 	Route::post('purchases/deletebyselection', 'PurchaseController@deleteBySelection');
-	Route::resource('purchases', 'PurchaseController');
+	Route::resource('purchases', PurchaseController::class);
 
 	Route::get('viewPurchase/{id}','PurchaseController@viewPurchase'); // view a purchase
 	Route::get('editPurchase/{id}','PurchaseController@editPurchase'); // edit a purchase

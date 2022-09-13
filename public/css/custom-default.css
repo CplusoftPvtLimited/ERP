@@ -1164,3 +1164,10 @@ table.dataTable tbody td.dt-checkboxes-cell {
 	width: 75px !important;
 }
 
+div#purchase-table_filter {
+    width: 100% !important;
+}
+
+div#purchase-table_paginate {
+    width: 100%;
+}
