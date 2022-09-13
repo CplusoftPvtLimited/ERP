@@ -50,6 +50,7 @@
     46 => 'App\\Providers\\BroadcastServiceProvider',
     47 => 'App\\Providers\\EventServiceProvider',
     48 => 'App\\Providers\\RouteServiceProvider',
+    49 => 'Yajra\\DataTables\\DataTablesServiceProvider',
   ),
   'eager' => 
   array (
@@ -88,6 +89,7 @@
     32 => 'App\\Providers\\BroadcastServiceProvider',
     33 => 'App\\Providers\\EventServiceProvider',
     34 => 'App\\Providers\\RouteServiceProvider',
+    35 => 'Yajra\\DataTables\\DataTablesServiceProvider',
   ),
   'deferred' => 
   array (

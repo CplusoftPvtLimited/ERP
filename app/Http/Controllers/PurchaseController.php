@@ -7,7 +7,7 @@ use App\Warehouse;
 use App\Supplier;
 use App\Product;
 use App\Unit;
-use App\Tax;
+use App\Tax; 
 use App\Account;
 use App\Models\Manufacturer;
 use App\Models\ModelSeries;
@@ -38,11 +38,11 @@ use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\DataTables;
 class PurchaseController extends Controller
 {
-    private $purchase;
+    private $purchaseRepository;
 
     public function __construct(PurchaseInterface $purchaseInterface)
     {
-        $this->purchase = $purchaseInterface;
+        $this->purchaseRepository = $purchaseInterface;
         // $this->auth_user = auth()->guard('api')->user();
     }
 
@@ -79,42 +79,43 @@ class PurchaseController extends Controller
 
     public function index(Request $request)
     {
-
-        //    dd($request->ajax());
         if ($request->ajax()) {
-
-            $purchases = [];
             $all_purchase = Purchase::orderBy('id', 'desc')->get();
-            foreach ($all_purchase as $purchase) {
-                $purchase['due_amount'] = (float)$purchase->grand_total - (float)$purchase->paid_amount;
-                array_push($purchases, $purchase);
-            }
-            $k = 1;
-            return Datatables::of($purchases)
+            return Datatables::of($all_purchase)
                 ->addIndexColumn('id')
+                ->addColumn('supplier', function($row) {
+                    return $row->brand->brandName;
+                })
+                ->addColumn('due_amount', function($row) {
+                    $due_amount = $row->grand_total - $row->paid_amount;
+                    return $due_amount;
+                })
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="row">
-                         <div class="col-md-2">
-         
-                         <a href="purchases/' . $row['id'] . '"> <button
-                         class="btn btn-success btn-xs " type="button"
-                         data-original-title="btn btn-danger btn-xs"
+                         <div class="col-md-4">
+                         <a href="deletePurchase/' . $row['id'].'"> <button
+                         class="btn btn-danger btn-sm " style="" type="button"
+                         data-original-title="btn btn-danger btn-sm"
                          title=""><i class="fa fa-trash"></i></button></a>
          
                          </div>
-                         <div class="col-md-2">
-                         <a href="purchases/' . $row["id"] . '/edit"> <button
-                                     class="btn btn-success btn-xs " type="button"
+                         <div class="col-md-4">
+                         <a href="editPurchase/' . $row["id"].'"> <button
+                                     class="btn btn-primary btn-sm " type="button"
                                      data-original-title="btn btn-danger btn-xs"
                                      title=""><i class="fa fa-edit"></i></button></a>
                          </div>
+                         <div class="col-md-4">
+                         <a href="viewPurchase/' . $row["id"].'"> <button
+                                     class="btn btn-primary btn-sm " type="button"
+                                     data-original-title="btn btn-success btn-xs"
+                                     title=""><i class="fa fa-eye"></i></button></a>
+                         </div>
                      </div>
                      ';
-
-
                     return $btn;
                 })
-                ->rawColumns(['action'])->make(true);
+                ->rawColumns(['action', 'supplier', 'due_amount'])->make(true);
         }
 
         return view('purchase.purchases_product_index');
@@ -418,7 +419,7 @@ class PurchaseController extends Controller
             'datee.*' => 'required',
 
         ]);
-        $purchase = $this->purchase->store($request);
+        $purchase = $this->purchaseRepository->store($request);
         if ($purchase == "true") {
             toastr()->success('Purchase created successfully');
             return redirect('purchases')->with('message', 'Purchase created successfully');
@@ -430,7 +431,7 @@ class PurchaseController extends Controller
     }
 
     public function viewPurchase($id){
-        $get_purchase = $this->purchase->view($id);
+        $get_purchase = $this->purchaseRepository->view($id);
         if ($get_purchase != "null") {
             $purchase = $get_purchase['purchase'];
             $purchase_products = $get_purchase['purchase_products'];
@@ -443,7 +444,7 @@ class PurchaseController extends Controller
     }
 
     public function editPurchase($id){
-        $get_purchase = $this->purchase->edit($id);
+        $get_purchase = $this->purchaseRepository->edit($id);
         if ($get_purchase != "null") {
             $purchase = $get_purchase['purchase'];
             $purchase_products = $get_purchase['purchase_products'];
@@ -457,7 +458,7 @@ class PurchaseController extends Controller
 
     public function updatePurchase(Request $request){
         // dd($request->all());
-        $get_purchase = $this->purchase->updatePurchase($request);
+        $get_purchase = $this->purchaseRepository->updatePurchase($request);
         if ($get_purchase == "true") {
             toastr()->success('product status updated successfully');
             return redirect()->back();
@@ -469,7 +470,7 @@ class PurchaseController extends Controller
 
     public function deletePurchaseProduct($purchase_id,$id){
         // dd($id);
-        $get_purchase_product = $this->purchase->deletePurchaseProduct($purchase_id,$id);
+        $get_purchase_product = $this->purchaseRepository->deletePurchaseProduct($purchase_id,$id);
         if ($get_purchase_product == "true") {
             toastr()->success('Product Deleted Successfully');
             return redirect()->route('purchases.index');
@@ -481,7 +482,7 @@ class PurchaseController extends Controller
 
     public function deleteParentPurchase($purchase_id){
         // dd($id);
-        $get_purchase = $this->purchase->deleteParentPurchase($purchase_id);
+        $get_purchase = $this->purchaseRepository->deleteParentPurchase($purchase_id);
         if ($get_purchase == "true") {
             toastr()->success('Purchase and related products has been deleted successfully!');
             return redirect()->route('purchases.index');

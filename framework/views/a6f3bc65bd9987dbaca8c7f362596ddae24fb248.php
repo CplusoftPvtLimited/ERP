@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html dir="@if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl){{'rtl'}}@endif">
+<html dir="<?php if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl): ?><?php echo e('rtl'); ?><?php endif; ?>">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="icon" type="image/png" href="{{url('public/logo', $general_setting->site_logo)}}" />
-    <title>{{$general_setting->site_title}}</title>
+    <link rel="icon" type="image/png" href="<?php echo e(url('public/logo', $general_setting->site_logo)); ?>" />
+    <title><?php echo e($general_setting->site_title); ?></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="all,follow">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     <link rel="manifest" crossorigin="use-credentials" href="/manifest.json">
     <!-- Bootstrap CSS-->
     <link rel="stylesheet" href="<?php echo asset('vendor/bootstrap/css/bootstrap.min.css') ?>" type="text/css">
@@ -40,7 +40,7 @@
     <link rel="preload" href="<?php echo asset('vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css') ?>" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="<?php echo asset('vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css') ?>" rel="stylesheet"></noscript>
 
-    @if(Route::current()->getName() != '/')
+    <?php if(Route::current()->getName() != '/'): ?>
     <!-- date range stylesheet-->
     <link rel="preload" href="<?php echo asset('vendor/daterange/css/daterangepicker.min.css') ?>" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="<?php echo asset('vendor/daterange/css/daterangepicker.min.css') ?>" rel="stylesheet"></noscript>
@@ -51,27 +51,27 @@
     <noscript><link href="https://cdn.datatables.net/fixedheader/3.1.6/css/fixedHeader.bootstrap.min.css" rel="stylesheet"></noscript>
     <link rel="preload" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap.min.css" rel="stylesheet"></noscript>
-    @endif
+    <?php endif; ?>
 
     <link rel="stylesheet" href="<?php echo asset('css/style.default.css') ?>" id="theme-stylesheet" type="text/css">
     <link rel="stylesheet" href="<?php echo asset('css/dropzone.css') ?>">
     <!-- Custom stylesheet - for your changes-->
     <link rel="stylesheet" href="<?php echo asset('css/custom-'.$general_setting->theme) ?>" type="text/css" id="custom-style">
 
-    @if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl)
+    <?php if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl): ?>
       <!-- RTL css -->
       <link rel="stylesheet" href="<?php echo asset('vendor/bootstrap/css/bootstrap-rtl.min.css') ?>" type="text/css">
       <link rel="stylesheet" href="<?php echo asset('css/custom-rtl.css') ?>" type="text/css" id="custom-style">
-    @endif
+    <?php endif; ?>
 
     
   </head>
 
   <body onload="myFunction()">
-  @php
+  <?php
   $route =\Request::route()->getName();
-  @endphp
-  @php $userr_id = auth()->user()->id; @endphp
+  ?>
+  <?php $userr_id = auth()->user()->id; ?>
 
     <div id="loader"></div>
     <?php
@@ -79,21 +79,21 @@
     $FormUser = DB::table('form_user')->where('status',1)->where('user_id',auth::user()->id)->first();
     // dd($FormUser);
     ?>
-      @if($FormUser != Null)
+      <?php if($FormUser != Null): ?>
 
       
       <!-- Side Navbar -->
       
       <nav class="side-navbar">
         <span class="brand-big">
-            @if($general_setting->site_logo)
-            <a href="{{url('/')}}"><img src="{{url('logo', $general_setting->site_logo)}}" width="115"></a>
-            @else
-            <a href="{{url('/')}}"><h1 class="d-inline">{{$general_setting->site_title}}</h1></a>
-            @endif
+            <?php if($general_setting->site_logo): ?>
+            <a href="<?php echo e(url('/')); ?>"><img src="<?php echo e(url('logo', $general_setting->site_logo)); ?>" width="115"></a>
+            <?php else: ?>
+            <a href="<?php echo e(url('/')); ?>"><h1 class="d-inline"><?php echo e($general_setting->site_title); ?></h1></a>
+            <?php endif; ?>
         </span>
         <ul id="side-main-menu" class="side-menu list-unstyled">
-            <li><a href="{{url('/')}}"> <i class="dripicons-meter"></i><span>{{ __('file.dashboard') }}</span></a></li>
+            <li><a href="<?php echo e(url('/')); ?>"> <i class="dripicons-meter"></i><span><?php echo e(__('file.dashboard')); ?></span></a></li>
             <?php
                 $role = DB::table('roles')->find(Auth::user()->role_id);
                 $category_permission_active = DB::table('permissions')
@@ -125,9 +125,9 @@
                     ['role_id', $role->id]
                 ])->first();
             ?>
-            @if($category_permission_active || $index_permission_active || $print_barcode_active || $stock_count_active || $adjustment_active)
+            <?php if($category_permission_active || $index_permission_active || $print_barcode_active || $stock_count_active || $adjustment_active): ?>
             
-            @endif
+            <?php endif; ?>
             <?php
             $index_permission = DB::table('permissions')->where('name', 'purchases-index')->first();
                 $index_permission_active = DB::table('role_has_permissions')->where([
@@ -135,19 +135,19 @@
                     ['role_id', $role->id]
                 ])->first();
             ?>
-            @if($index_permission_active)
+            <?php if($index_permission_active): ?>
             <li>
                 <a href="#purchase" aria-expanded="false" data-toggle="collapse"> 
-                    <i class="dripicons-card"></i><span>{{trans('file.Purchase')}}</span>
+                    <i class="dripicons-card"></i><span><?php echo e(trans('file.Purchase')); ?></span>
                 </a>
             <ul id="purchase" class="collapse list-unstyled ">
-                <li id="purchase-list-menu"><a href="{{route('purchases.index')}}">{{trans('file.Purchase List')}}</a></li>
-                <!-- <li id=""><a href="{{route('purchases.index')}}">{{trans('file.Pre Invoice List')}}</a></li> -->
-                <!-- <li id=""><a href="{{route('purchases.index')}}">{{trans('file.Invoice List')}}</a></li> -->
+                <li id="purchase-list-menu"><a href="<?php echo e(route('purchases.index')); ?>"><?php echo e(trans('file.Purchase List')); ?></a></li>
+                <!-- <li id=""><a href="<?php echo e(route('purchases.index')); ?>"><?php echo e(trans('file.Pre Invoice List')); ?></a></li> -->
+                <!-- <li id=""><a href="<?php echo e(route('purchases.index')); ?>"><?php echo e(trans('file.Invoice List')); ?></a></li> -->
 
             </ul>
             </li>
-            @endif
+            <?php endif; ?>
             <?php
             $sale_index_permission = DB::table('permissions')->where('name', 'sales-index')->first();
             $sale_index_permission_active = DB::table('role_has_permissions')->where([
@@ -179,20 +179,20 @@
                 ['role_id', $role->id]
             ])->first();
             ?>
-            @if($sale_index_permission_active || $gift_card_permission_active || $coupon_permission_active || $delivery_permission_active)
-            <li><a href="#sale" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-cart"></i><span>{{trans('file.Sale')}}</span></a>
+            <?php if($sale_index_permission_active || $gift_card_permission_active || $coupon_permission_active || $delivery_permission_active): ?>
+            <li><a href="#sale" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-cart"></i><span><?php echo e(trans('file.Sale')); ?></span></a>
             <ul id="sale" class="collapse list-unstyled ">
-                @if($sale_index_permission_active)
-                <!-- <li id="sale-list-menu"><a href="{{route('sales.index')}}">{{trans('file.Sale List')}}</a></li> -->
-                @if($sale_add_permission_active)
-                <!-- <li><a href="{{route('sale.pos')}}">POS</a></li> -->
-                <!-- <li id="sale-create-menu"><a href="{{route('sales.create')}}">{{trans('file.Add Sale')}}</a></li> -->
-                <!-- <li id="sale-import-menu"><a href="{{url('sales/sale_by_csv')}}">{{trans('file.Import Sale By CSV')}}</a></li> -->
-                @endif
-                @endif
-                <li id="sale-list-menu"><a href="{{route('sales.index')}}">{{trans('file.Estimate List')}}</a></li>
-                <li id="invoices-list-menu"><a href="{{route('sales.salesInvoices')}}">{{trans('file.Invoice List')}}</a></li>
-                <li id="pre-invoices-list-menu"><a href="">{{trans('file.Delivery Slips')}}</a></li>
+                <?php if($sale_index_permission_active): ?>
+                <!-- <li id="sale-list-menu"><a href="<?php echo e(route('sales.index')); ?>"><?php echo e(trans('file.Sale List')); ?></a></li> -->
+                <?php if($sale_add_permission_active): ?>
+                <!-- <li><a href="<?php echo e(route('sale.pos')); ?>">POS</a></li> -->
+                <!-- <li id="sale-create-menu"><a href="<?php echo e(route('sales.create')); ?>"><?php echo e(trans('file.Add Sale')); ?></a></li> -->
+                <!-- <li id="sale-import-menu"><a href="<?php echo e(url('sales/sale_by_csv')); ?>"><?php echo e(trans('file.Import Sale By CSV')); ?></a></li> -->
+                <?php endif; ?>
+                <?php endif; ?>
+                <li id="sale-list-menu"><a href="<?php echo e(route('sales.index')); ?>"><?php echo e(trans('file.Estimate List')); ?></a></li>
+                <li id="invoices-list-menu"><a href="<?php echo e(route('sales.salesInvoices')); ?>"><?php echo e(trans('file.Invoice List')); ?></a></li>
+                <li id="pre-invoices-list-menu"><a href=""><?php echo e(trans('file.Delivery Slips')); ?></a></li>
 
 
                 <?php
@@ -203,26 +203,26 @@
                 ])->first();
                 ?>
 
-                @if($gift_card_permission_active)
-                <!-- <li id="gift-card-menu"><a href="{{route('gift_cards.index')}}">{{trans('file.Gift Card List')}}</a> </li> -->
-                @endif
-                @if($coupon_permission_active)
-                <!-- <li id="coupon-menu"><a href="{{route('coupons.index')}}">{{trans('file.Coupon List')}}</a> </li> -->
-                @endif
-                @if($delivery_permission_active)
-                <!-- <li id="delivery-menu"><a href="{{route('delivery.index')}}">{{trans('file.Delivery List')}}</a></li> -->
-                @endif
+                <?php if($gift_card_permission_active): ?>
+                <!-- <li id="gift-card-menu"><a href="<?php echo e(route('gift_cards.index')); ?>"><?php echo e(trans('file.Gift Card List')); ?></a> </li> -->
+                <?php endif; ?>
+                <?php if($coupon_permission_active): ?>
+                <!-- <li id="coupon-menu"><a href="<?php echo e(route('coupons.index')); ?>"><?php echo e(trans('file.Coupon List')); ?></a> </li> -->
+                <?php endif; ?>
+                <?php if($delivery_permission_active): ?>
+                <!-- <li id="delivery-menu"><a href="<?php echo e(route('delivery.index')); ?>"><?php echo e(trans('file.Delivery List')); ?></a></li> -->
+                <?php endif; ?>
             </ul>
             </li>
-            @endif
-            <li id="sale-list-menu" class="{{ $route == 'product.get' ? 'active' : '' }}"><a href="{{route('product.get')}}"><i class="dripicons-list"></i> {{trans('file.Products')}}</a></li>
+            <?php endif; ?>
+            <li id="sale-list-menu" class="<?php echo e($route == 'product.get' ? 'active' : ''); ?>"><a href="<?php echo e(route('product.get')); ?>"><i class="dripicons-list"></i> <?php echo e(trans('file.Products')); ?></a></li>
             
-            <li id="sale-list-menu" class="{{ $route == 'assembly_group_nodes.index' ? 'active' : '' }}"><a href="{{route('assembly_group_nodes.index')}}"><i class="dripicons-list"></i> {{trans('file.Sections')}}</a></li>
+            <li id="sale-list-menu" class="<?php echo e($route == 'assembly_group_nodes.index' ? 'active' : ''); ?>"><a href="<?php echo e(route('assembly_group_nodes.index')); ?>"><i class="dripicons-list"></i> <?php echo e(trans('file.Sections')); ?></a></li>
             
            
-            <li id="supplier-list-menu" class="{{ $route == 'supplier.get' ? 'active' : '' }}"><a href="{{route('supplier.get')}}"><i class="dripicons-user-group"></i> {{trans('file.Suppliers')}}</a></li>
+            <li id="supplier-list-menu" class="<?php echo e($route == 'supplier.get' ? 'active' : ''); ?>"><a href="<?php echo e(route('supplier.get')); ?>"><i class="dripicons-user-group"></i> <?php echo e(trans('file.Suppliers')); ?></a></li>
             
-            <li id="makes-list-menu" class="{{ $route == 'allmake.get' ? 'active' : '' }}"><a href="{{route('allmake.get')}}"><i class="dripicons-wallet"></i> {{trans('file.All Makes')}}</a></li>
+            <li id="makes-list-menu" class="<?php echo e($route == 'allmake.get' ? 'active' : ''); ?>"><a href="<?php echo e(route('allmake.get')); ?>"><i class="dripicons-wallet"></i> <?php echo e(trans('file.All Makes')); ?></a></li>
             
             
             
@@ -236,11 +236,11 @@
                     ['role_id', $role->id]
                 ])->first();
             ?>
-            @if($index_permission_active)
-            <!-- <li><a href="#expense" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-wallet"></i><span>{{trans('file.Expense')}}</span></a> -->
+            <?php if($index_permission_active): ?>
+            <!-- <li><a href="#expense" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-wallet"></i><span><?php echo e(trans('file.Expense')); ?></span></a> -->
             <ul id="expense" class="collapse list-unstyled ">
-                <li id="exp-cat-menu"><a href="{{route('expense_categories.index')}}">{{trans('file.Expense Category')}}</a></li>
-                <li id="exp-list-menu"><a href="{{route('expenses.index')}}">{{trans('file.Expense List')}}</a></li>
+                <li id="exp-cat-menu"><a href="<?php echo e(route('expense_categories.index')); ?>"><?php echo e(trans('file.Expense Category')); ?></a></li>
+                <li id="exp-list-menu"><a href="<?php echo e(route('expenses.index')); ?>"><?php echo e(trans('file.Expense List')); ?></a></li>
                 <?php
                 $add_permission = DB::table('permissions')->where('name', 'expenses-add')->first();
                 $add_permission_active = DB::table('role_has_permissions')->where([
@@ -248,12 +248,12 @@
                     ['role_id', $role->id]
                 ])->first();
                 ?>
-                @if($add_permission_active)
-                <li><a id="add-expense" href=""> {{trans('file.Add Expense')}}</a></li>
-                @endif
+                <?php if($add_permission_active): ?>
+                <li><a id="add-expense" href=""> <?php echo e(trans('file.Add Expense')); ?></a></li>
+                <?php endif; ?>
             </ul>
             </li>
-            @endif
+            <?php endif; ?>
             <?php
             $index_permission = DB::table('permissions')->where('name', 'quotes-index')->first();
             $index_permission_active = DB::table('role_has_permissions')->where([
@@ -261,16 +261,16 @@
                     ['role_id', $role->id]
                 ])->first();
             ?>
-            @if($index_permission_active)
-            <!-- <li><a href="#quotation" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-document"></i><span>{{trans('file.Quotation')}}</span><span></a> -->
+            <?php if($index_permission_active): ?>
+            <!-- <li><a href="#quotation" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-document"></i><span><?php echo e(trans('file.Quotation')); ?></span><span></a> -->
             <ul id="quotation" class="collapse list-unstyled ">
-                <li id="quotation-list-menu"><a href="{{route('quotations.index')}}">{{trans('file.Estimate List')}}</a></li>
-                <li id=""><a href="{{route('preinvoices.index')}}">{{trans('file.Pre Invoice List')}}</a></li>
-                <li id=""><a href="{{route('invoices.index')}}">{{trans('file.Invoice List')}}</a></li>
+                <li id="quotation-list-menu"><a href="<?php echo e(route('quotations.index')); ?>"><?php echo e(trans('file.Estimate List')); ?></a></li>
+                <li id=""><a href="<?php echo e(route('preinvoices.index')); ?>"><?php echo e(trans('file.Pre Invoice List')); ?></a></li>
+                <li id=""><a href="<?php echo e(route('invoices.index')); ?>"><?php echo e(trans('file.Invoice List')); ?></a></li>
 
             </ul>
             </li>
-            @endif
+            <?php endif; ?>
             <?php
             $index_permission = DB::table('permissions')->where('name', 'transfers-index')->first();
             $index_permission_active = DB::table('role_has_permissions')->where([
@@ -278,10 +278,10 @@
                     ['role_id', $role->id]
                 ])->first();
             ?>
-            @if($index_permission_active)
-            <!-- <li><a href="#transfer" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-export"></i><span>{{trans('file.Transfer')}}</span></a> -->
+            <?php if($index_permission_active): ?>
+            <!-- <li><a href="#transfer" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-export"></i><span><?php echo e(trans('file.Transfer')); ?></span></a> -->
             <ul id="transfer" class="collapse list-unstyled ">
-                <li id="transfer-list-menu"><a href="{{route('transfers.index')}}">{{trans('file.Transfer List')}}</a></li>
+                <li id="transfer-list-menu"><a href="<?php echo e(route('transfers.index')); ?>"><?php echo e(trans('file.Transfer List')); ?></a></li>
                 <?php
                 $add_permission = DB::table('permissions')->where('name', 'transfers-add')->first();
                 $add_permission_active = DB::table('role_has_permissions')->where([
@@ -289,13 +289,13 @@
                     ['role_id', $role->id]
                 ])->first();
                 ?>
-                @if($add_permission_active)
-                <li id="transfer-create-menu"><a href="{{route('transfers.create')}}">{{trans('file.Add Transfer')}}</a></li>
-                <li id="transfer-import-menu"><a href="{{url('transfers/transfer_by_csv')}}">{{trans('file.Import Transfer By CSV')}}</a></li>
-                @endif
+                <?php if($add_permission_active): ?>
+                <li id="transfer-create-menu"><a href="<?php echo e(route('transfers.create')); ?>"><?php echo e(trans('file.Add Transfer')); ?></a></li>
+                <li id="transfer-import-menu"><a href="<?php echo e(url('transfers/transfer_by_csv')); ?>"><?php echo e(trans('file.Import Transfer By CSV')); ?></a></li>
+                <?php endif; ?>
             </ul>
             </li>
-            @endif
+            <?php endif; ?>
 
             <?php
             $sale_return_index_permission = DB::table('permissions')->where('name', 'returns-index')->first();
@@ -312,18 +312,18 @@
                         ['role_id', $role->id]
                     ])->first();
             ?>
-            @if($sale_return_index_permission_active || $purchase_return_index_permission_active)
-            <!-- <li><a href="#return" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-return"></i><span>{{trans('file.return')}}</span></a> -->
+            <?php if($sale_return_index_permission_active || $purchase_return_index_permission_active): ?>
+            <!-- <li><a href="#return" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-return"></i><span><?php echo e(trans('file.return')); ?></span></a> -->
             <ul id="return" class="collapse list-unstyled ">
-                @if($sale_return_index_permission_active)
-                <li id="sale-return-menu"><a href="{{route('return-sale.index')}}">{{trans('file.Sale')}}</a></li>
-                @endif
-                @if($purchase_return_index_permission_active)
-                <li id="purchase-return-menu"><a href="{{route('return-purchase.index')}}">{{trans('file.Purchase')}}</a></li>
-                @endif
+                <?php if($sale_return_index_permission_active): ?>
+                <li id="sale-return-menu"><a href="<?php echo e(route('return-sale.index')); ?>"><?php echo e(trans('file.Sale')); ?></a></li>
+                <?php endif; ?>
+                <?php if($purchase_return_index_permission_active): ?>
+                <li id="purchase-return-menu"><a href="<?php echo e(route('return-purchase.index')); ?>"><?php echo e(trans('file.Purchase')); ?></a></li>
+                <?php endif; ?>
             </ul>
             </li>
-            @endif
+            <?php endif; ?>
             <?php
             $index_permission = DB::table('permissions')->where('name', 'account-index')->first();
             $index_permission_active = DB::table('role_has_permissions')->where([
@@ -350,25 +350,25 @@
                 ])->first();
 
             ?>
-            @if($index_permission_active || $balance_sheet_permission_active || $account_statement_permission_active || $money_transfer_permission_active)
-            <!-- <li class=""><a href="#account" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-briefcase"></i><span>{{trans('file.Accounting')}}</span></a> -->
+            <?php if($index_permission_active || $balance_sheet_permission_active || $account_statement_permission_active || $money_transfer_permission_active): ?>
+            <!-- <li class=""><a href="#account" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-briefcase"></i><span><?php echo e(trans('file.Accounting')); ?></span></a> -->
             <ul id="account" class="collapse list-unstyled ">
-                @if($index_permission_active)
-                <li id="account-list-menu"><a href="{{route('accounts.index')}}">{{trans('file.Account List')}}</a></li>
-                <li><a id="add-account" href="">{{trans('file.Add Account')}}</a></li>
-                @endif
-                @if($money_transfer_permission_active)
-                <li id="money-transfer-menu"><a href="{{route('money-transfers.index')}}">{{trans('file.Money Transfer')}}</a></li>
-                @endif
-                @if($balance_sheet_permission_active)
-                <li id="balance-sheet-menu"><a href="{{route('accounts.balancesheet')}}">{{trans('file.Balance Sheet')}}</a></li>
-                @endif
-                @if($account_statement_permission_active)
-                <li id="account-statement-menu"><a id="account-statement" href="">{{trans('file.Account Statement')}}</a></li>
-                @endif
+                <?php if($index_permission_active): ?>
+                <li id="account-list-menu"><a href="<?php echo e(route('accounts.index')); ?>"><?php echo e(trans('file.Account List')); ?></a></li>
+                <li><a id="add-account" href=""><?php echo e(trans('file.Add Account')); ?></a></li>
+                <?php endif; ?>
+                <?php if($money_transfer_permission_active): ?>
+                <li id="money-transfer-menu"><a href="<?php echo e(route('money-transfers.index')); ?>"><?php echo e(trans('file.Money Transfer')); ?></a></li>
+                <?php endif; ?>
+                <?php if($balance_sheet_permission_active): ?>
+                <li id="balance-sheet-menu"><a href="<?php echo e(route('accounts.balancesheet')); ?>"><?php echo e(trans('file.Balance Sheet')); ?></a></li>
+                <?php endif; ?>
+                <?php if($account_statement_permission_active): ?>
+                <li id="account-statement-menu"><a id="account-statement" href=""><?php echo e(trans('file.Account Statement')); ?></a></li>
+                <?php endif; ?>
             </ul>
             </li>
-            @endif
+            <?php endif; ?>
             <?php
             $department = DB::table('permissions')->where('name', 'department')->first();
             $department_active = DB::table('role_has_permissions')->where([
@@ -392,25 +392,25 @@
                 ])->first();
             ?>
 
-            @if(Auth::user()->role_id != 5)
+            <?php if(Auth::user()->role_id != 5): ?>
             <!-- <li class=""><a href="#hrm" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-user-group"></i><span>HRM</span></a> -->
             <ul id="hrm" class="collapse list-unstyled ">
-                @if($department_active)
-                <li id="dept-menu"><a href="{{route('departments.index')}}">{{trans('file.Department')}}</a></li>
-                @endif
-                @if($index_employee_active)
-                <li id="employee-menu"><a href="{{route('employees.index')}}">{{trans('file.Employee')}}</a></li>
-                @endif
-                @if($attendance_active)
-                <li id="attendance-menu"><a href="{{route('attendance.index')}}">{{trans('file.Attendance')}}</a></li>
-                @endif
-                @if($payroll_active)
-                <li id="payroll-menu"><a href="{{route('payroll.index')}}">{{trans('file.Payroll')}}</a></li>
-                @endif
-                <li id="holiday-menu"><a href="{{route('holidays.index')}}">{{trans('file.Holiday')}}</a></li>
+                <?php if($department_active): ?>
+                <li id="dept-menu"><a href="<?php echo e(route('departments.index')); ?>"><?php echo e(trans('file.Department')); ?></a></li>
+                <?php endif; ?>
+                <?php if($index_employee_active): ?>
+                <li id="employee-menu"><a href="<?php echo e(route('employees.index')); ?>"><?php echo e(trans('file.Employee')); ?></a></li>
+                <?php endif; ?>
+                <?php if($attendance_active): ?>
+                <li id="attendance-menu"><a href="<?php echo e(route('attendance.index')); ?>"><?php echo e(trans('file.Attendance')); ?></a></li>
+                <?php endif; ?>
+                <?php if($payroll_active): ?>
+                <li id="payroll-menu"><a href="<?php echo e(route('payroll.index')); ?>"><?php echo e(trans('file.Payroll')); ?></a></li>
+                <?php endif; ?>
+                <li id="holiday-menu"><a href="<?php echo e(route('holidays.index')); ?>"><?php echo e(trans('file.Holiday')); ?></a></li>
             </ul>
             </li>
-            @endif
+            <?php endif; ?>
 
             <?php
                 $user_index_permission_active = DB::table('permissions')
@@ -440,25 +440,25 @@
                         ['role_id', $role->id]
                     ])->first();
             ?>
-            @if($user_index_permission_active || $customer_index_permission_active || $biller_index_permission_active || $supplier_index_permission_active)
-            <!-- <li><a href="#people" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-user"></i><span>{{trans('file.People')}}</span></a> -->
+            <?php if($user_index_permission_active || $customer_index_permission_active || $biller_index_permission_active || $supplier_index_permission_active): ?>
+            <!-- <li><a href="#people" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-user"></i><span><?php echo e(trans('file.People')); ?></span></a> -->
             <ul id="people" class="collapse list-unstyled ">
 
-                @if($user_index_permission_active)
-                <li id="user-list-menu"><a href="{{route('user.index')}}">{{trans('file.User List')}}</a></li>
+                <?php if($user_index_permission_active): ?>
+                <li id="user-list-menu"><a href="<?php echo e(route('user.index')); ?>"><?php echo e(trans('file.User List')); ?></a></li>
                 <?php $user_add_permission_active = DB::table('permissions')
                     ->join('role_has_permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
                     ->where([
                         ['permissions.name', 'users-add'],
                         ['role_id', $role->id] ])->first();
                 ?>
-                @if($user_add_permission_active)
-                <li id="user-create-menu"><a href="{{route('user.create')}}">{{trans('file.Add User')}}</a></li>
-                @endif
-                @endif
+                <?php if($user_add_permission_active): ?>
+                <li id="user-create-menu"><a href="<?php echo e(route('user.create')); ?>"><?php echo e(trans('file.Add User')); ?></a></li>
+                <?php endif; ?>
+                <?php endif; ?>
 
-                @if($customer_index_permission_active)
-                <li id="customer-list-menu"><a href="{{route('customer.index')}}">{{trans('file.Customer List')}}</a></li>
+                <?php if($customer_index_permission_active): ?>
+                <li id="customer-list-menu"><a href="<?php echo e(route('customer.index')); ?>"><?php echo e(trans('file.Customer List')); ?></a></li>
                 <?php
                 $customer_add_permission = DB::table('permissions')->where('name', 'customers-add')->first();
                 $customer_add_permission_active = DB::table('role_has_permissions')->where([
@@ -466,13 +466,13 @@
                     ['role_id', $role->id]
                 ])->first();
                 ?>
-                @if($customer_add_permission_active)
-                <li id="customer-create-menu"><a href="{{route('customer.create')}}">{{trans('file.Add Customer')}}</a></li>
-                @endif
-                @endif
+                <?php if($customer_add_permission_active): ?>
+                <li id="customer-create-menu"><a href="<?php echo e(route('customer.create')); ?>"><?php echo e(trans('file.Add Customer')); ?></a></li>
+                <?php endif; ?>
+                <?php endif; ?>
 
-                @if($biller_index_permission_active)
-                <li id="biller-list-menu"><a href="{{route('biller.index')}}">{{trans('file.Biller List')}}</a></li>
+                <?php if($biller_index_permission_active): ?>
+                <li id="biller-list-menu"><a href="<?php echo e(route('biller.index')); ?>"><?php echo e(trans('file.Biller List')); ?></a></li>
                 <?php
                 $biller_add_permission = DB::table('permissions')->where('name', 'billers-add')->first();
                 $biller_add_permission_active = DB::table('role_has_permissions')->where([
@@ -480,13 +480,13 @@
                     ['role_id', $role->id]
                 ])->first();
                 ?>
-                @if($biller_add_permission_active)
-                <li id="biller-create-menu"><a href="{{route('biller.create')}}">{{trans('file.Add Biller')}}</a></li>
-                @endif
-                @endif
+                <?php if($biller_add_permission_active): ?>
+                <li id="biller-create-menu"><a href="<?php echo e(route('biller.create')); ?>"><?php echo e(trans('file.Add Biller')); ?></a></li>
+                <?php endif; ?>
+                <?php endif; ?>
 
-                @if($supplier_index_permission_active)
-                <li id="supplier-list-menu"><a href="{{route('supplier.index')}}">{{trans('file.Supplier List')}}</a></li>
+                <?php if($supplier_index_permission_active): ?>
+                <li id="supplier-list-menu"><a href="<?php echo e(route('supplier.index')); ?>"><?php echo e(trans('file.Supplier List')); ?></a></li>
                 <?php
                 $supplier_add_permission = DB::table('permissions')->where('name', 'suppliers-add')->first();
                 $supplier_add_permission_active = DB::table('role_has_permissions')->where([
@@ -494,13 +494,13 @@
                     ['role_id', $role->id]
                 ])->first();
                 ?>
-                @if($supplier_add_permission_active)
-                <li id="supplier-create-menu"><a href="{{route('supplier.create')}}">{{trans('file.Add Supplier')}}</a></li>
-                @endif
-                @endif
+                <?php if($supplier_add_permission_active): ?>
+                <li id="supplier-create-menu"><a href="<?php echo e(route('supplier.create')); ?>"><?php echo e(trans('file.Add Supplier')); ?></a></li>
+                <?php endif; ?>
+                <?php endif; ?>
             </ul>
             </li>
-            @endif
+            <?php endif; ?>
 
             <?php
             $profit_loss_active = DB::table('permissions')
@@ -590,126 +590,138 @@
                     ['permissions.name', 'due-report'],
                     ['role_id', $role->id] ])->first();
             ?>
-            @if($profit_loss_active || $best_seller_active || $warehouse_report_active || $warehouse_stock_report_active || $product_report_active || $daily_sale_active || $monthly_sale_active || $daily_purchase_active || $monthly_purchase_active || $purchase_report_active || $sale_report_active || $payment_report_active || $product_qty_alert_active || $user_report_active || $customer_report_active || $supplier_report_active || $due_report_active)
-            <!-- <li><a href="#report" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-document-remove"></i><span>{{trans('file.Reports')}}</span></a> -->
+            <?php if($profit_loss_active || $best_seller_active || $warehouse_report_active || $warehouse_stock_report_active || $product_report_active || $daily_sale_active || $monthly_sale_active || $daily_purchase_active || $monthly_purchase_active || $purchase_report_active || $sale_report_active || $payment_report_active || $product_qty_alert_active || $user_report_active || $customer_report_active || $supplier_report_active || $due_report_active): ?>
+            <!-- <li><a href="#report" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-document-remove"></i><span><?php echo e(trans('file.Reports')); ?></span></a> -->
             <ul id="report" class="collapse list-unstyled ">
-                @if($profit_loss_active)
+                <?php if($profit_loss_active): ?>
                 <li id="profit-loss-report-menu">
-                {!! Form::open(['route' => 'report.profitLoss', 'method' => 'post', 'id' => 'profitLoss-report-form']) !!}
-                <input type="hidden" name="start_date" value="{{date('Y-m').'-'.'01'}}" />
-                <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
-                <a id="profitLoss-link" href="">{{trans('file.Summary Report')}}</a>
-                {!! Form::close() !!}
+                <?php echo Form::open(['route' => 'report.profitLoss', 'method' => 'post', 'id' => 'profitLoss-report-form']); ?>
+
+                <input type="hidden" name="start_date" value="<?php echo e(date('Y-m').'-'.'01'); ?>" />
+                <input type="hidden" name="end_date" value="<?php echo e(date('Y-m-d')); ?>" />
+                <a id="profitLoss-link" href=""><?php echo e(trans('file.Summary Report')); ?></a>
+                <?php echo Form::close(); ?>
+
                 </li>
-                @endif
-                @if($best_seller_active)
+                <?php endif; ?>
+                <?php if($best_seller_active): ?>
                 <li id="best-seller-report-menu">
-                <a href="{{url('report/best_seller')}}">{{trans('file.Best Seller')}}</a>
+                <a href="<?php echo e(url('report/best_seller')); ?>"><?php echo e(trans('file.Best Seller')); ?></a>
                 </li>
-                @endif
-                @if($product_report_active)
+                <?php endif; ?>
+                <?php if($product_report_active): ?>
                 <li id="product-report-menu">
-                {!! Form::open(['route' => 'report.product', 'method' => 'get', 'id' => 'product-report-form']) !!}
-                <input type="hidden" name="start_date" value="{{date('Y-m').'-'.'01'}}" />
-                <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
+                <?php echo Form::open(['route' => 'report.product', 'method' => 'get', 'id' => 'product-report-form']); ?>
+
+                <input type="hidden" name="start_date" value="<?php echo e(date('Y-m').'-'.'01'); ?>" />
+                <input type="hidden" name="end_date" value="<?php echo e(date('Y-m-d')); ?>" />
                 <input type="hidden" name="warehouse_id" value="0" />
-                <a id="report-link" href="">{{trans('file.Product Report')}}</a>
-                {!! Form::close() !!}
+                <a id="report-link" href=""><?php echo e(trans('file.Product Report')); ?></a>
+                <?php echo Form::close(); ?>
+
                 </li>
-                @endif
-                @if($daily_sale_active)
+                <?php endif; ?>
+                <?php if($daily_sale_active): ?>
                 <li id="daily-sale-report-menu">
-                <a href="{{url('report/daily_sale/'.date('Y').'/'.date('m'))}}">{{trans('file.Daily Sale')}}</a>
+                <a href="<?php echo e(url('report/daily_sale/'.date('Y').'/'.date('m'))); ?>"><?php echo e(trans('file.Daily Sale')); ?></a>
                 </li>
-                @endif
-                @if($monthly_sale_active)
+                <?php endif; ?>
+                <?php if($monthly_sale_active): ?>
                 <li id="monthly-sale-report-menu">
-                <a href="{{url('report/monthly_sale/'.date('Y'))}}">{{trans('file.Monthly Sale')}}</a>
+                <a href="<?php echo e(url('report/monthly_sale/'.date('Y'))); ?>"><?php echo e(trans('file.Monthly Sale')); ?></a>
                 </li>
-                @endif
-                @if($daily_purchase_active)
+                <?php endif; ?>
+                <?php if($daily_purchase_active): ?>
                 <li id="daily-purchase-report-menu">
-                <a href="{{url('report/daily_purchase/'.date('Y').'/'.date('m'))}}">{{trans('file.Daily Purchase')}}</a>
+                <a href="<?php echo e(url('report/daily_purchase/'.date('Y').'/'.date('m'))); ?>"><?php echo e(trans('file.Daily Purchase')); ?></a>
                 </li>
-                @endif
-                @if($monthly_purchase_active)
+                <?php endif; ?>
+                <?php if($monthly_purchase_active): ?>
                 <li id="monthly-purchase-report-menu">
-                <a href="{{url('report/monthly_purchase/'.date('Y'))}}">{{trans('file.Monthly Purchase')}}</a>
+                <a href="<?php echo e(url('report/monthly_purchase/'.date('Y'))); ?>"><?php echo e(trans('file.Monthly Purchase')); ?></a>
                 </li>
-                @endif
-                @if($sale_report_active)
+                <?php endif; ?>
+                <?php if($sale_report_active): ?>
                 <li id="sale-report-menu">
-                {!! Form::open(['route' => 'report.sale', 'method' => 'post', 'id' => 'sale-report-form']) !!}
-                <input type="hidden" name="start_date" value="{{date('Y-m').'-'.'01'}}" />
-                <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
+                <?php echo Form::open(['route' => 'report.sale', 'method' => 'post', 'id' => 'sale-report-form']); ?>
+
+                <input type="hidden" name="start_date" value="<?php echo e(date('Y-m').'-'.'01'); ?>" />
+                <input type="hidden" name="end_date" value="<?php echo e(date('Y-m-d')); ?>" />
                 <input type="hidden" name="warehouse_id" value="0" />
-                <a id="sale-report-link" href="">{{trans('file.Sale Report')}}</a>
-                {!! Form::close() !!}
+                <a id="sale-report-link" href=""><?php echo e(trans('file.Sale Report')); ?></a>
+                <?php echo Form::close(); ?>
+
                 </li>
-                @endif
-                @if($payment_report_active)
+                <?php endif; ?>
+                <?php if($payment_report_active): ?>
                 <li id="payment-report-menu">
-                {!! Form::open(['route' => 'report.paymentByDate', 'method' => 'post', 'id' => 'payment-report-form']) !!}
-                <input type="hidden" name="start_date" value="{{date('Y-m').'-'.'01'}}" />
-                <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
-                <a id="payment-report-link" href="">{{trans('file.Payment Report')}}</a>
-                {!! Form::close() !!}
+                <?php echo Form::open(['route' => 'report.paymentByDate', 'method' => 'post', 'id' => 'payment-report-form']); ?>
+
+                <input type="hidden" name="start_date" value="<?php echo e(date('Y-m').'-'.'01'); ?>" />
+                <input type="hidden" name="end_date" value="<?php echo e(date('Y-m-d')); ?>" />
+                <a id="payment-report-link" href=""><?php echo e(trans('file.Payment Report')); ?></a>
+                <?php echo Form::close(); ?>
+
                 </li>
-                @endif
-                @if($purchase_report_active)
+                <?php endif; ?>
+                <?php if($purchase_report_active): ?>
                 <li id="purchase-report-menu">
-                {!! Form::open(['route' => 'report.purchase', 'method' => 'post', 'id' => 'purchase-report-form']) !!}
-                <input type="hidden" name="start_date" value="{{date('Y-m').'-'.'01'}}" />
-                <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
+                <?php echo Form::open(['route' => 'report.purchase', 'method' => 'post', 'id' => 'purchase-report-form']); ?>
+
+                <input type="hidden" name="start_date" value="<?php echo e(date('Y-m').'-'.'01'); ?>" />
+                <input type="hidden" name="end_date" value="<?php echo e(date('Y-m-d')); ?>" />
                 <input type="hidden" name="warehouse_id" value="0" />
-                <a id="purchase-report-link" href="">{{trans('file.Purchase Report')}}</a>
-                {!! Form::close() !!}
+                <a id="purchase-report-link" href=""><?php echo e(trans('file.Purchase Report')); ?></a>
+                <?php echo Form::close(); ?>
+
                 </li>
-                @endif
-                @if($warehouse_report_active)
+                <?php endif; ?>
+                <?php if($warehouse_report_active): ?>
                 <li id="warehouse-report-menu">
-                <a id="warehouse-report-link" href="">{{trans('file.Warehouse Report')}}</a>
+                <a id="warehouse-report-link" href=""><?php echo e(trans('file.Warehouse Report')); ?></a>
                 </li>
-                @endif
-                @if($warehouse_stock_report_active)
+                <?php endif; ?>
+                <?php if($warehouse_stock_report_active): ?>
                 <li id="warehouse-stock-report-menu">
-                <a href="{{route('report.warehouseStock')}}">{{trans('file.Warehouse Stock Chart')}}</a>
+                <a href="<?php echo e(route('report.warehouseStock')); ?>"><?php echo e(trans('file.Warehouse Stock Chart')); ?></a>
                 </li>
-                @endif
-                @if($product_qty_alert_active)
+                <?php endif; ?>
+                <?php if($product_qty_alert_active): ?>
                 <li id="qtyAlert-report-menu">
-                <a href="{{route('report.qtyAlert')}}">{{trans('file.Product Quantity Alert')}}</a>
+                <a href="<?php echo e(route('report.qtyAlert')); ?>"><?php echo e(trans('file.Product Quantity Alert')); ?></a>
                 </li>
-                @endif
-                @if($user_report_active)
+                <?php endif; ?>
+                <?php if($user_report_active): ?>
                 <li id="user-report-menu">
-                <a id="user-report-link" href="">{{trans('file.User Report')}}</a>
+                <a id="user-report-link" href=""><?php echo e(trans('file.User Report')); ?></a>
                 </li>
-                @endif
-                @if($customer_report_active)
+                <?php endif; ?>
+                <?php if($customer_report_active): ?>
                 <li id="customer-report-menu">
-                <a id="customer-report-link" href="">{{trans('file.Customer Report')}}</a>
+                <a id="customer-report-link" href=""><?php echo e(trans('file.Customer Report')); ?></a>
                 </li>
-                @endif
-                @if($supplier_report_active)
+                <?php endif; ?>
+                <?php if($supplier_report_active): ?>
                 <li id="supplier-report-menu">
-                <a id="supplier-report-link" href="">{{trans('file.Supplier Report')}}</a>
+                <a id="supplier-report-link" href=""><?php echo e(trans('file.Supplier Report')); ?></a>
                 </li>
-                @endif
-                @if($due_report_active)
+                <?php endif; ?>
+                <?php if($due_report_active): ?>
                 <li id="due-report-menu">
-                {!! Form::open(['route' => 'report.dueByDate', 'method' => 'post', 'id' => 'due-report-form']) !!}
-                <input type="hidden" name="start_date" value="{{date('Y-m').'-'.'01'}}" />
-                <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
-                <a id="due-report-link" href="">{{trans('file.Due Report')}}</a>
-                {!! Form::close() !!}
+                <?php echo Form::open(['route' => 'report.dueByDate', 'method' => 'post', 'id' => 'due-report-form']); ?>
+
+                <input type="hidden" name="start_date" value="<?php echo e(date('Y-m').'-'.'01'); ?>" />
+                <input type="hidden" name="end_date" value="<?php echo e(date('Y-m-d')); ?>" />
+                <a id="due-report-link" href=""><?php echo e(trans('file.Due Report')); ?></a>
+                <?php echo Form::close(); ?>
+
                 </li>
-                @endif
+                <?php endif; ?>
             </ul>
             </li>
-            @endif
+            <?php endif; ?>
 
-            <!-- <li><a href="#setting" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-gear"></i><span>{{trans('file.settings')}}</span></a> -->
+            <!-- <li><a href="#setting" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-gear"></i><span><?php echo e(trans('file.settings')); ?></span></a> -->
                 <ul id="setting" class="collapse list-unstyled ">
                     <?php
                         $send_notification_permission = DB::table('permissions')->where('name', 'send_notification')->first();
@@ -816,73 +828,73 @@
                                             ['role_id', $role->id]
                                             ])->first();
                     ?>
-                    @if($role->id <= 2)
-                    <!-- <li id="role-menu"><a href="{{route('role.index')}}">{{trans('file.Role Permission')}}</a></li> -->
-                    <!-- <li id="role-menu"><a href="{{route('form.index')}}">{{trans('file.Forms')}}</a></li> -->
+                    <?php if($role->id <= 2): ?>
+                    <!-- <li id="role-menu"><a href="<?php echo e(route('role.index')); ?>"><?php echo e(trans('file.Role Permission')); ?></a></li> -->
+                    <!-- <li id="role-menu"><a href="<?php echo e(route('form.index')); ?>"><?php echo e(trans('file.Forms')); ?></a></li> -->
 
-                    @endif
-                    @if($discount_plan_permission_active)
-                    <li id="discount-plan-list-menu"><a href="{{route('discount-plans.index')}}">{{trans('file.Discount Plan')}}</a></li>
-                    @endif
-                    @if($discount_permission_active)
-                    <li id="discount-list-menu"><a href="{{route('discounts.index')}}">{{trans('file.Discount')}}</a></li>
-                    @endif
-                    @if($send_notification_permission_active)
+                    <?php endif; ?>
+                    <?php if($discount_plan_permission_active): ?>
+                    <li id="discount-plan-list-menu"><a href="<?php echo e(route('discount-plans.index')); ?>"><?php echo e(trans('file.Discount Plan')); ?></a></li>
+                    <?php endif; ?>
+                    <?php if($discount_permission_active): ?>
+                    <li id="discount-list-menu"><a href="<?php echo e(route('discounts.index')); ?>"><?php echo e(trans('file.Discount')); ?></a></li>
+                    <?php endif; ?>
+                    <?php if($send_notification_permission_active): ?>
                     <li id="notification-menu">
-                    <!-- <a href="" id="send-notification">{{trans('file.Send Notification')}}</a> -->
+                    <!-- <a href="" id="send-notification"><?php echo e(trans('file.Send Notification')); ?></a> -->
                     </li>
-                    @endif
-                    @if($warehouse_permission_active)
-                    <li id="warehouse-menu"><a href="{{route('warehouse.index')}}">{{trans('file.Warehouse')}}</a></li>
-                    @endif
-                    @if($customer_group_permission_active)
-                    <li id="customer-group-menu"><a href="{{route('customer_group.index')}}">{{trans('file.Customer Group')}}</a></li>
-                    @endif
-                    @if($brand_permission_active)
-                    <li id="brand-menu"><a href="{{route('brand.index')}}">{{trans('file.Brand')}}</a></li>
-                    @endif
-                    @if($unit_permission_active)
-                    <li id="unit-menu"><a href="{{route('unit.index')}}">{{trans('file.Unit')}}</a></li>
-                    @endif
-                    @if($currency_permission_active)
-                    <li id="currency-menu"><a href="{{route('currency.index')}}">{{trans('file.Currency')}}</a></li>
-                    @endif
-                    @if($tax_permission_active)
-                    <li id="tax-menu"><a href="{{route('tax.index')}}">{{trans('file.Tax')}}</a></li>
-                    @endif
-                    <li id="user-menu"><a href="{{route('user.profile', ['id' => Auth::id()])}}">{{trans('file.User Profile')}}</a></li>
-                    @if($create_sms_permission_active)
-                    <!-- <li id="create-sms-menu"><a href="{{route('setting.createSms')}}">{{trans('file.Create SMS')}}</a></li> -->
-                    @endif
-                    @if($backup_database_permission_active)
-                    <!-- <li><a href="{{route('setting.backup')}}">{{trans('file.Backup Database')}}</a></li> -->
-                    @endif
-                    @if($general_setting_permission_active)
-                    <!-- <li id="general-setting-menu"><a href="{{route('setting.general')}}">{{trans('file.General Setting')}}</a></li> -->
-                    @endif
-                    @if($mail_setting_permission_active)
-                    <!-- <li id="mail-setting-menu"><a href="{{route('setting.mail')}}">{{trans('file.Mail Setting')}}</a></li> -->
-                    @endif
-                    @if($reward_point_setting_permission_active)
-                    <li id="reward-point-setting-menu"><a href="{{route('setting.rewardPoint')}}">{{trans('file.Reward Point Setting')}}</a></li>
-                    @endif
-                    @if($sms_setting_permission_active)
-                    <!-- <li id="sms-setting-menu"><a href="{{route('setting.sms')}}">{{trans('file.SMS Setting')}}</a></li> -->
-                    @endif
-                    @if($pos_setting_permission_active)
-                    <!-- <li id="pos-setting-menu"><a href="{{route('setting.pos')}}">POS {{trans('file.settings')}}</a></li> -->
-                    @endif
-                    @if($hrm_setting_permission_active)
-                    <!-- <li id="hrm-setting-menu"><a href="{{route('setting.hrm')}}"> {{trans('file.HRM Setting')}}</a></li> -->
-                    @endif
+                    <?php endif; ?>
+                    <?php if($warehouse_permission_active): ?>
+                    <li id="warehouse-menu"><a href="<?php echo e(route('warehouse.index')); ?>"><?php echo e(trans('file.Warehouse')); ?></a></li>
+                    <?php endif; ?>
+                    <?php if($customer_group_permission_active): ?>
+                    <li id="customer-group-menu"><a href="<?php echo e(route('customer_group.index')); ?>"><?php echo e(trans('file.Customer Group')); ?></a></li>
+                    <?php endif; ?>
+                    <?php if($brand_permission_active): ?>
+                    <li id="brand-menu"><a href="<?php echo e(route('brand.index')); ?>"><?php echo e(trans('file.Brand')); ?></a></li>
+                    <?php endif; ?>
+                    <?php if($unit_permission_active): ?>
+                    <li id="unit-menu"><a href="<?php echo e(route('unit.index')); ?>"><?php echo e(trans('file.Unit')); ?></a></li>
+                    <?php endif; ?>
+                    <?php if($currency_permission_active): ?>
+                    <li id="currency-menu"><a href="<?php echo e(route('currency.index')); ?>"><?php echo e(trans('file.Currency')); ?></a></li>
+                    <?php endif; ?>
+                    <?php if($tax_permission_active): ?>
+                    <li id="tax-menu"><a href="<?php echo e(route('tax.index')); ?>"><?php echo e(trans('file.Tax')); ?></a></li>
+                    <?php endif; ?>
+                    <li id="user-menu"><a href="<?php echo e(route('user.profile', ['id' => Auth::id()])); ?>"><?php echo e(trans('file.User Profile')); ?></a></li>
+                    <?php if($create_sms_permission_active): ?>
+                    <!-- <li id="create-sms-menu"><a href="<?php echo e(route('setting.createSms')); ?>"><?php echo e(trans('file.Create SMS')); ?></a></li> -->
+                    <?php endif; ?>
+                    <?php if($backup_database_permission_active): ?>
+                    <!-- <li><a href="<?php echo e(route('setting.backup')); ?>"><?php echo e(trans('file.Backup Database')); ?></a></li> -->
+                    <?php endif; ?>
+                    <?php if($general_setting_permission_active): ?>
+                    <!-- <li id="general-setting-menu"><a href="<?php echo e(route('setting.general')); ?>"><?php echo e(trans('file.General Setting')); ?></a></li> -->
+                    <?php endif; ?>
+                    <?php if($mail_setting_permission_active): ?>
+                    <!-- <li id="mail-setting-menu"><a href="<?php echo e(route('setting.mail')); ?>"><?php echo e(trans('file.Mail Setting')); ?></a></li> -->
+                    <?php endif; ?>
+                    <?php if($reward_point_setting_permission_active): ?>
+                    <li id="reward-point-setting-menu"><a href="<?php echo e(route('setting.rewardPoint')); ?>"><?php echo e(trans('file.Reward Point Setting')); ?></a></li>
+                    <?php endif; ?>
+                    <?php if($sms_setting_permission_active): ?>
+                    <!-- <li id="sms-setting-menu"><a href="<?php echo e(route('setting.sms')); ?>"><?php echo e(trans('file.SMS Setting')); ?></a></li> -->
+                    <?php endif; ?>
+                    <?php if($pos_setting_permission_active): ?>
+                    <!-- <li id="pos-setting-menu"><a href="<?php echo e(route('setting.pos')); ?>">POS <?php echo e(trans('file.settings')); ?></a></li> -->
+                    <?php endif; ?>
+                    <?php if($hrm_setting_permission_active): ?>
+                    <!-- <li id="hrm-setting-menu"><a href="<?php echo e(route('setting.hrm')); ?>"> <?php echo e(trans('file.HRM Setting')); ?></a></li> -->
+                    <?php endif; ?>
                 </ul>
             </li>
-            @if(Auth::user()->role_id != 5)
-            <!-- <li><a target="_blank" href="{{url('public/read_me')}}"> <i class="dripicons-information"></i><span>{{trans('file.Documentation')}}</span></a></li> -->
-            @endif
-            @if(Auth::user()->role_id != 5)
-            <!-- <li><a target="_blank" href="{{url('showSubmitForm')}}"> <i class="dripicons-information"></i><span>{{trans('file.Forms')}}</span></a></li> -->
-            @endif
+            <?php if(Auth::user()->role_id != 5): ?>
+            <!-- <li><a target="_blank" href="<?php echo e(url('public/read_me')); ?>"> <i class="dripicons-information"></i><span><?php echo e(trans('file.Documentation')); ?></span></a></li> -->
+            <?php endif; ?>
+            <?php if(Auth::user()->role_id != 5): ?>
+            <!-- <li><a target="_blank" href="<?php echo e(url('showSubmitForm')); ?>"> <i class="dripicons-information"></i><span><?php echo e(trans('file.Forms')); ?></span></a></li> -->
+            <?php endif; ?>
         </ul>
       </nav>
      
@@ -908,133 +920,134 @@
                     ['role_id', $role->id]
                 ])->first();
             ?>
-            @if($add_permission_active)
-            <li class="nav-item"><a class="dropdown-item btn-pos btn-sm" href="{{route('sale.pos')}}"><i class="dripicons-shopping-bag"></i><span> POS</span></a></li>
-            @endif
-            <li class="nav-item"><a id="switch-theme" data-toggle="tooltip" title="{{trans('file.Switch Theme')}}"><i class="dripicons-brightness-max"></i></a></li>
-            <li class="nav-item"><a id="btnFullscreen" data-toggle="tooltip" title="{{trans('file.Full Screen')}}"><i class="dripicons-expand"></i></a></li>
-            @if(\Auth::user()->role_id <= 2)
-                <li class="nav-item"><a href="{{route('cashRegister.index')}}" data-toggle="tooltip" title="{{trans('file.Cash Register List')}}"><i class="dripicons-archive"></i></a></li>
-            @endif
+            <?php if($add_permission_active): ?>
+            <li class="nav-item"><a class="dropdown-item btn-pos btn-sm" href="<?php echo e(route('sale.pos')); ?>"><i class="dripicons-shopping-bag"></i><span> POS</span></a></li>
+            <?php endif; ?>
+            <li class="nav-item"><a id="switch-theme" data-toggle="tooltip" title="<?php echo e(trans('file.Switch Theme')); ?>"><i class="dripicons-brightness-max"></i></a></li>
+            <li class="nav-item"><a id="btnFullscreen" data-toggle="tooltip" title="<?php echo e(trans('file.Full Screen')); ?>"><i class="dripicons-expand"></i></a></li>
+            <?php if(\Auth::user()->role_id <= 2): ?>
+                <li class="nav-item"><a href="<?php echo e(route('cashRegister.index')); ?>" data-toggle="tooltip" title="<?php echo e(trans('file.Cash Register List')); ?>"><i class="dripicons-archive"></i></a></li>
+            <?php endif; ?>
 
                 <li class="nav-item">
-                <a rel="nofollow" data-toggle="tooltip" title="{{__('Notifications')}}" class="nav-link dropdown-item"><i class="dripicons-bell"></i><span class="badge badge-danger notification-number">{{ count(\Auth::user()->unreadNotifications) > 0 ?  count(\Auth::user()->unreadNotifications) : '' }}</span>
+                <a rel="nofollow" data-toggle="tooltip" title="<?php echo e(__('Notifications')); ?>" class="nav-link dropdown-item"><i class="dripicons-bell"></i><span class="badge badge-danger notification-number"><?php echo e(count(\Auth::user()->unreadNotifications) > 0 ?  count(\Auth::user()->unreadNotifications) : ''); ?></span>
                 </a>
-                @php $user_notifications = auth()->user()->notifications()->get(); @endphp
+                <?php $user_notifications = auth()->user()->notifications()->get(); ?>
                 <ul class="right-sidebar" id="notify">
-                    @foreach($user_notifications as $noti)
-                    @if($noti->noti_type == "formapprove" && $noti->read_at == NULL)
-                        <li style="background-color: lightgrey"><a href="{{url('approved_dashboard',$noti->id)}}">{{Str::limit($noti->data['message'], 30)}}</a></li>
+                    <?php $__currentLoopData = $user_notifications; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $noti): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php if($noti->noti_type == "formapprove" && $noti->read_at == NULL): ?>
+                        <li style="background-color: lightgrey"><a href="<?php echo e(url('approved_dashboard',$noti->id)); ?>"><?php echo e(Str::limit($noti->data['message'], 30)); ?></a></li>
                     
-                        @elseif($noti->noti_type == "formreject" && $noti->read_at == NULL)
-                        <li style="background-color: lightgrey"><a href="{{url('reShowSubmitForm',$noti->id)}}">{{Str::limit($noti->data['message'], 30)}}</a></li>
+                        <?php elseif($noti->noti_type == "formreject" && $noti->read_at == NULL): ?>
+                        <li style="background-color: lightgrey"><a href="<?php echo e(url('reShowSubmitForm',$noti->id)); ?>"><?php echo e(Str::limit($noti->data['message'], 30)); ?></a></li>
                         
-                        @elseif($noti->noti_type == "formresubmit" && $noti->read_at == NULL)
-                        <li style="background-color: lightgrey"><a href="{{url('reShowSubmitForm',$noti->id)}}">{{Str::limit($noti->data['message'], 30)}}</a></li>
+                        <?php elseif($noti->noti_type == "formresubmit" && $noti->read_at == NULL): ?>
+                        <li style="background-color: lightgrey"><a href="<?php echo e(url('reShowSubmitForm',$noti->id)); ?>"><?php echo e(Str::limit($noti->data['message'], 30)); ?></a></li>
                         
-                        @elseif($noti->noti_type == "formapprove" && $noti->read_at != NULL )
-                        <li style="background-color: white"><a href="{{url('approved_dashboard',$noti->id)}}">{{Str::limit($noti->data['message'], 30)}}</a></li>
+                        <?php elseif($noti->noti_type == "formapprove" && $noti->read_at != NULL ): ?>
+                        <li style="background-color: white"><a href="<?php echo e(url('approved_dashboard',$noti->id)); ?>"><?php echo e(Str::limit($noti->data['message'], 30)); ?></a></li>
                         
-                        @elseif($noti->noti_type == "formreject" && $noti->read_at != NULL)
-                        <li style="background-color: white"><a href="{{url('reShowSubmitForm',$noti->id)}}">{{Str::limit($noti->data['message'], 30)}}</a></li>
+                        <?php elseif($noti->noti_type == "formreject" && $noti->read_at != NULL): ?>
+                        <li style="background-color: white"><a href="<?php echo e(url('reShowSubmitForm',$noti->id)); ?>"><?php echo e(Str::limit($noti->data['message'], 30)); ?></a></li>
                         
-                        @elseif($noti->noti_type == "formresubmit" && $noti->read_at != NULL)
-                        <li style="background-color: white"><a href="{{url('reShowSubmitForm',$noti->id)}}">{{Str::limit($noti->data['message'], 30)}}</a></li>
-                        @endif
+                        <?php elseif($noti->noti_type == "formresubmit" && $noti->read_at != NULL): ?>
+                        <li style="background-color: white"><a href="<?php echo e(url('reShowSubmitForm',$noti->id)); ?>"><?php echo e(Str::limit($noti->data['message'], 30)); ?></a></li>
+                        <?php endif; ?>
 
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </ul>
             </li>
 
             <li class="nav-item">
-                    <a rel="nofollow" title="{{trans('file.language')}}" data-toggle="tooltip" class="nav-link dropdown-item"><i class="dripicons-web"></i></a>
+                    <a rel="nofollow" title="<?php echo e(trans('file.language')); ?>" data-toggle="tooltip" class="nav-link dropdown-item"><i class="dripicons-web"></i></a>
                     <ul class="right-sidebar">
                         <li>
-                        <a href="{{ url('language_switch/en') }}" class="btn btn-link"> English</a>
+                        <a href="<?php echo e(url('language_switch/en')); ?>" class="btn btn-link"> English</a>
                         </li>
                         <!--<li>-->
-                        <!--<a href="{{ url('language_switch/es') }}" class="btn btn-link"> Español</a>-->
+                        <!--<a href="<?php echo e(url('language_switch/es')); ?>" class="btn btn-link"> Español</a>-->
                         <!--</li>-->
                         <li>
-                        <a href="{{ url('language_switch/ar') }}" class="btn btn-link"> عربى</a>
+                        <a href="<?php echo e(url('language_switch/ar')); ?>" class="btn btn-link"> عربى</a>
                         </li>
                         <!--<li>-->
-                        <!--<a href="{{ url('language_switch/s_chinese') }}" class="btn btn-link">中国人</a>-->
+                        <!--<a href="<?php echo e(url('language_switch/s_chinese')); ?>" class="btn btn-link">中国人</a>-->
                         <!--</li>-->
                         <!--<li>-->
-                        <!--<a href="{{ url('language_switch/t_chinese') }}" class="btn btn-link">中國人</a>-->
+                        <!--<a href="<?php echo e(url('language_switch/t_chinese')); ?>" class="btn btn-link">中國人</a>-->
                         <!--</li>-->
                         <!--<li>-->
-                        <!--<a href="{{ url('language_switch/pt_BR') }}" class="btn btn-link"> Portuguese</a>-->
+                        <!--<a href="<?php echo e(url('language_switch/pt_BR')); ?>" class="btn btn-link"> Portuguese</a>-->
                         <!--</li>-->
                         <!--<li>-->
-                        <!--<a href="{{ url('language_switch/fr') }}" class="btn btn-link"> Français</a>-->
+                        <!--<a href="<?php echo e(url('language_switch/fr')); ?>" class="btn btn-link"> Français</a>-->
                         <!--</li>-->
                         <!--<li>-->
-                        <!--<a href="{{ url('language_switch/de') }}" class="btn btn-link"> Deutsche</a>-->
+                        <!--<a href="<?php echo e(url('language_switch/de')); ?>" class="btn btn-link"> Deutsche</a>-->
                         <!--</li>-->
                         <!--<li>-->
-                        <!--<a href="{{ url('language_switch/id') }}" class="btn btn-link"> Malay</a>-->
+                        <!--<a href="<?php echo e(url('language_switch/id')); ?>" class="btn btn-link"> Malay</a>-->
                         <!--</li>-->
                         <!--<li>-->
-                        <!--<a href="{{ url('language_switch/hi') }}" class="btn btn-link"> हिंदी</a>-->
+                        <!--<a href="<?php echo e(url('language_switch/hi')); ?>" class="btn btn-link"> हिंदी</a>-->
                         <!--</li>-->
                         <!--<li>-->
-                        <!--<a href="{{ url('language_switch/vi') }}" class="btn btn-link"> Tiếng Việt</a>-->
+                        <!--<a href="<?php echo e(url('language_switch/vi')); ?>" class="btn btn-link"> Tiếng Việt</a>-->
                         <!--</li>-->
                         <!--<li>-->
-                        <!--<a href="{{ url('language_switch/ru') }}" class="btn btn-link"> русский</a>-->
+                        <!--<a href="<?php echo e(url('language_switch/ru')); ?>" class="btn btn-link"> русский</a>-->
                         <!--</li>-->
                         <!--<li>-->
-                        <!--<a href="{{ url('language_switch/bg') }}" class="btn btn-link"> български</a>-->
+                        <!--<a href="<?php echo e(url('language_switch/bg')); ?>" class="btn btn-link"> български</a>-->
                         <!--</li>-->
                         <!--<li>-->
-                        <!--<a href="{{ url('language_switch/tr') }}" class="btn btn-link"> Türk</a>-->
+                        <!--<a href="<?php echo e(url('language_switch/tr')); ?>" class="btn btn-link"> Türk</a>-->
                         <!--</li>-->
                         <!--<li>-->
-                        <!--<a href="{{ url('language_switch/it') }}" class="btn btn-link"> Italiano</a>-->
+                        <!--<a href="<?php echo e(url('language_switch/it')); ?>" class="btn btn-link"> Italiano</a>-->
                         <!--</li>-->
                         <!--<li>-->
-                        <!--<a href="{{ url('language_switch/nl') }}" class="btn btn-link"> Nederlands</a>-->
+                        <!--<a href="<?php echo e(url('language_switch/nl')); ?>" class="btn btn-link"> Nederlands</a>-->
                         <!--</li>-->
                         <!--<li>-->
-                        <!--<a href="{{ url('language_switch/lao') }}" class="btn btn-link"> Lao</a>-->
+                        <!--<a href="<?php echo e(url('language_switch/lao')); ?>" class="btn btn-link"> Lao</a>-->
                         <!--</li>-->
                     </ul>
             </li>
             <li class="nav-item">
-                <a rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-item"><i class="dripicons-user"></i> <span>{{ucfirst(Auth::user()->name)}}</span> <i class="fa fa-angle-down"></i>
+                <a rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-item"><i class="dripicons-user"></i> <span><?php echo e(ucfirst(Auth::user()->name)); ?></span> <i class="fa fa-angle-down"></i>
                 </a>
                 <ul class="right-sidebar">
                     <li>
-                    <a href="{{route('user.profile', ['id' => Auth::id()])}}"><i class="dripicons-user"></i> {{trans('file.profile')}}</a>
+                    <a href="<?php echo e(route('user.profile', ['id' => Auth::id()])); ?>"><i class="dripicons-user"></i> <?php echo e(trans('file.profile')); ?></a>
                     </li>
-                    @if($general_setting_permission_active)
+                    <?php if($general_setting_permission_active): ?>
                     <li>
-                    <a href="{{route('setting.general')}}"><i class="dripicons-gear"></i> {{trans('file.settings')}}</a>
+                    <a href="<?php echo e(route('setting.general')); ?>"><i class="dripicons-gear"></i> <?php echo e(trans('file.settings')); ?></a>
                     </li>
-                    @endif
+                    <?php endif; ?>
                     <li>
-                    <a href="{{url('my-transactions/'.date('Y').'/'.date('m'))}}"><i class="dripicons-swap"></i> {{trans('file.My Transaction')}}</a>
+                    <a href="<?php echo e(url('my-transactions/'.date('Y').'/'.date('m'))); ?>"><i class="dripicons-swap"></i> <?php echo e(trans('file.My Transaction')); ?></a>
                     </li>
-                    @if(Auth::user()->role_id != 5)
+                    <?php if(Auth::user()->role_id != 5): ?>
                     <li>
-                    <a href="{{url('holidays/my-holiday/'.date('Y').'/'.date('m'))}}"><i class="dripicons-vibrate"></i> {{trans('file.My Holiday')}}</a>
+                    <a href="<?php echo e(url('holidays/my-holiday/'.date('Y').'/'.date('m'))); ?>"><i class="dripicons-vibrate"></i> <?php echo e(trans('file.My Holiday')); ?></a>
                     </li>
-                    @endif
-                    @if($empty_database_permission_active)
+                    <?php endif; ?>
+                    <?php if($empty_database_permission_active): ?>
                     <li>
-                    <a onclick="return confirm('Are you sure want to delete? If you do this all of your data will be lost.')" href="{{route('setting.emptyDatabase')}}"><i class="dripicons-stack"></i> {{trans('file.Empty Database')}}</a>
+                    <a onclick="return confirm('Are you sure want to delete? If you do this all of your data will be lost.')" href="<?php echo e(route('setting.emptyDatabase')); ?>"><i class="dripicons-stack"></i> <?php echo e(trans('file.Empty Database')); ?></a>
                     </li>
-                    @endif
+                    <?php endif; ?>
                     <li>
-                    <a href="{{ route('logout') }}"
+                    <a href="<?php echo e(route('logout')); ?>"
                         onclick="event.preventDefault();
                                         document.getElementById('logout-form').submit();"><i class="dripicons-power"></i>
-                        {{trans('file.logout')}}
+                        <?php echo e(trans('file.logout')); ?>
+
                     </a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                        @csrf
+                    <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST" style="display: none;">
+                        <?php echo csrf_field(); ?>
                     </form>
                     </li>
                 </ul>
@@ -1047,12 +1060,13 @@
         <div role="document" class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Send Notification')}}</h5>
+                    <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Send Notification')); ?></h5>
                     <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                 </div>
                 <div class="modal-body">
-                  <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                    {!! Form::open(['route' => 'notifications.store', 'method' => 'post']) !!}
+                  <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
+                    <?php echo Form::open(['route' => 'notifications.store', 'method' => 'post']); ?>
+
                       <div class="row">
                           <?php
                               $lims_user_list = DB::table('users')->where([
@@ -1061,22 +1075,23 @@
                               ])->get();
                           ?>
                           <div class="col-md-6 form-group">
-                              <label>{{trans('file.User')}} *</label>
+                              <label><?php echo e(trans('file.User')); ?> *</label>
                               <select name="user_id" class="selectpicker form-control" required data-live-search="true" data-live-search-style="begins" title="Select user...">
-                                  @foreach($lims_user_list as $user)
-                                  <option value="{{$user->id}}">{{$user->name . ' (' . $user->email. ')'}}</option>
-                                  @endforeach
+                                  <?php $__currentLoopData = $lims_user_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                  <option value="<?php echo e($user->id); ?>"><?php echo e($user->name . ' (' . $user->email. ')'); ?></option>
+                                  <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                               </select>
                           </div>
                           <div class="col-md-12 form-group">
-                              <label>{{trans('file.Message')}} *</label>
+                              <label><?php echo e(trans('file.Message')); ?> *</label>
                               <textarea rows="5" name="message" class="form-control" required></textarea>
                           </div>
                       </div>
                       <div class="form-group">
-                          <button type="submit" class="btn btn-primary">{{trans('file.submit')}}</button>
+                          <button type="submit" class="btn btn-primary"><?php echo e(trans('file.submit')); ?></button>
                       </div>
-                    {{ Form::close() }}
+                    <?php echo e(Form::close()); ?>
+
                 </div>
             </div>
         </div>
@@ -1087,12 +1102,13 @@
         <div role="document" class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Add Expense')}}</h5>
+                    <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Add Expense')); ?></h5>
                     <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                 </div>
                 <div class="modal-body">
-                  <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                    {!! Form::open(['route' => 'expenses.store', 'method' => 'post']) !!}
+                  <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
+                    <?php echo Form::open(['route' => 'expenses.store', 'method' => 'post']); ?>
+
                     <?php
                       $lims_expense_category_list = DB::table('expense_categories')->where('is_active', true)->get();
                       if(Auth::user()->role_id > 2)
@@ -1107,50 +1123,51 @@
                     ?>
                       <div class="row">
                         <div class="col-md-6 form-group">
-                            <label>{{trans('file.Date')}}</label>
+                            <label><?php echo e(trans('file.Date')); ?></label>
                             <input type="text" name="created_at" class="form-control date" placeholder="Choose date"/>
                         </div>
                         <div class="col-md-6 form-group">
-                            <label>{{trans('file.Expense Category')}} *</label>
+                            <label><?php echo e(trans('file.Expense Category')); ?> *</label>
                             <select name="expense_category_id" class="selectpicker form-control" required data-live-search="true" data-live-search-style="begins" title="Select Expense Category...">
-                                @foreach($lims_expense_category_list as $expense_category)
-                                <option value="{{$expense_category->id}}">{{$expense_category->name . ' (' . $expense_category->code. ')'}}</option>
-                                @endforeach
+                                <?php $__currentLoopData = $lims_expense_category_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $expense_category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($expense_category->id); ?>"><?php echo e($expense_category->name . ' (' . $expense_category->code. ')'); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                         <div class="col-md-6 form-group">
-                            <label>{{trans('file.Warehouse')}} *</label>
+                            <label><?php echo e(trans('file.Warehouse')); ?> *</label>
                             <select name="warehouse_id" class="selectpicker form-control" required data-live-search="true" data-live-search-style="begins" title="Select Warehouse...">
-                                @foreach($lims_warehouse_list as $warehouse)
-                                <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
-                                @endforeach
+                                <?php $__currentLoopData = $lims_warehouse_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $warehouse): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($warehouse->id); ?>"><?php echo e($warehouse->name); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                         <div class="col-md-6 form-group">
-                            <label>{{trans('file.Amount')}} *</label>
+                            <label><?php echo e(trans('file.Amount')); ?> *</label>
                             <input type="number" name="amount" step="any" required class="form-control">
                         </div>
                         <div class="col-md-6 form-group">
-                            <label> {{trans('file.Account')}}</label>
+                            <label> <?php echo e(trans('file.Account')); ?></label>
                             <select class="form-control selectpicker" name="account_id">
-                            @foreach($lims_account_list as $account)
-                                @if($account->is_default)
-                                <option selected value="{{$account->id}}">{{$account->name}} [{{$account->account_no}}]</option>
-                                @else
-                                <option value="{{$account->id}}">{{$account->name}} [{{$account->account_no}}]</option>
-                                @endif
-                            @endforeach
+                            <?php $__currentLoopData = $lims_account_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $account): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php if($account->is_default): ?>
+                                <option selected value="<?php echo e($account->id); ?>"><?php echo e($account->name); ?> [<?php echo e($account->account_no); ?>]</option>
+                                <?php else: ?>
+                                <option value="<?php echo e($account->id); ?>"><?php echo e($account->name); ?> [<?php echo e($account->account_no); ?>]</option>
+                                <?php endif; ?>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                       </div>
                       <div class="form-group">
-                          <label>{{trans('file.Note')}}</label>
+                          <label><?php echo e(trans('file.Note')); ?></label>
                           <textarea name="note" rows="3" class="form-control"></textarea>
                       </div>
                       <div class="form-group">
-                          <button type="submit" class="btn btn-primary">{{trans('file.submit')}}</button>
+                          <button type="submit" class="btn btn-primary"><?php echo e(trans('file.submit')); ?></button>
                       </div>
-                    {{ Form::close() }}
+                    <?php echo e(Form::close()); ?>
+
                 </div>
             </div>
         </div>
@@ -1162,32 +1179,34 @@
         <div role="document" class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Add Account')}}</h5>
+                    <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Add Account')); ?></h5>
                     <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                 </div>
                 <div class="modal-body">
-                  <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                    {!! Form::open(['route' => 'accounts.store', 'method' => 'post']) !!}
+                  <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
+                    <?php echo Form::open(['route' => 'accounts.store', 'method' => 'post']); ?>
+
                       <div class="form-group">
-                          <label>{{trans('file.Account No')}} *</label>
+                          <label><?php echo e(trans('file.Account No')); ?> *</label>
                           <input type="text" name="account_no" required class="form-control">
                       </div>
                       <div class="form-group">
-                          <label>{{trans('file.name')}} *</label>
+                          <label><?php echo e(trans('file.name')); ?> *</label>
                           <input type="text" name="name" required class="form-control">
                       </div>
                       <div class="form-group">
-                          <label>{{trans('file.Initial Balance')}}</label>
+                          <label><?php echo e(trans('file.Initial Balance')); ?></label>
                           <input type="number" name="initial_balance" step="any" class="form-control">
                       </div>
                       <div class="form-group">
-                          <label>{{trans('file.Note')}}</label>
+                          <label><?php echo e(trans('file.Note')); ?></label>
                           <textarea name="note" rows="3" class="form-control"></textarea>
                       </div>
                       <div class="form-group">
-                          <button type="submit" class="btn btn-primary">{{trans('file.submit')}}</button>
+                          <button type="submit" class="btn btn-primary"><?php echo e(trans('file.submit')); ?></button>
                       </div>
-                    {{ Form::close() }}
+                    <?php echo e(Form::close()); ?>
+
                 </div>
             </div>
         </div>
@@ -1199,31 +1218,32 @@
         <div role="document" class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Account Statement')}}</h5>
+                    <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Account Statement')); ?></h5>
                     <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                 </div>
                 <div class="modal-body">
-                  <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                    {!! Form::open(['route' => 'accounts.statement', 'method' => 'post']) !!}
+                  <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
+                    <?php echo Form::open(['route' => 'accounts.statement', 'method' => 'post']); ?>
+
                       <div class="row">
                         <div class="col-md-6 form-group">
-                            <label> {{trans('file.Account')}}</label>
+                            <label> <?php echo e(trans('file.Account')); ?></label>
                             <select class="form-control selectpicker" name="account_id">
-                            @foreach($lims_account_list as $account)
-                                <option value="{{$account->id}}">{{$account->name}} [{{$account->account_no}}]</option>
-                            @endforeach
+                            <?php $__currentLoopData = $lims_account_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $account): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($account->id); ?>"><?php echo e($account->name); ?> [<?php echo e($account->account_no); ?>]</option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                         <div class="col-md-6 form-group">
-                            <label> {{trans('file.Type')}}</label>
+                            <label> <?php echo e(trans('file.Type')); ?></label>
                             <select class="form-control selectpicker" name="type">
-                                <option value="0">{{trans('file.All')}}</option>
-                                <option value="1">{{trans('file.Debit')}}</option>
-                                <option value="2">{{trans('file.Credit')}}</option>
+                                <option value="0"><?php echo e(trans('file.All')); ?></option>
+                                <option value="1"><?php echo e(trans('file.Debit')); ?></option>
+                                <option value="2"><?php echo e(trans('file.Credit')); ?></option>
                             </select>
                         </div>
                         <div class="col-md-12 form-group">
-                            <label>{{trans('file.Choose Your Date')}}</label>
+                            <label><?php echo e(trans('file.Choose Your Date')); ?></label>
                             <div class="input-group">
                                 <input type="text" class="daterangepicker-field form-control" required />
                                 <input type="hidden" name="start_date" />
@@ -1232,9 +1252,10 @@
                         </div>
                       </div>
                       <div class="form-group">
-                          <button type="submit" class="btn btn-primary">{{trans('file.submit')}}</button>
+                          <button type="submit" class="btn btn-primary"><?php echo e(trans('file.submit')); ?></button>
                       </div>
-                    {{ Form::close() }}
+                    <?php echo e(Form::close()); ?>
+
                 </div>
             </div>
         </div>
@@ -1246,31 +1267,33 @@
         <div role="document" class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Warehouse Report')}}</h5>
+                    <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Warehouse Report')); ?></h5>
                     <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                 </div>
                 <div class="modal-body">
-                  <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                    {!! Form::open(['route' => 'report.warehouse', 'method' => 'post']) !!}
+                  <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
+                    <?php echo Form::open(['route' => 'report.warehouse', 'method' => 'post']); ?>
+
                     <?php
                       $lims_warehouse_list = DB::table('warehouses')->where('is_active', true)->get();
                     ?>
                       <div class="form-group">
-                          <label>{{trans('file.Warehouse')}} *</label>
+                          <label><?php echo e(trans('file.Warehouse')); ?> *</label>
                           <select name="warehouse_id" class="selectpicker form-control" required data-live-search="true" id="warehouse-id" data-live-search-style="begins" title="Select warehouse...">
-                              @foreach($lims_warehouse_list as $warehouse)
-                              <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
-                              @endforeach
+                              <?php $__currentLoopData = $lims_warehouse_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $warehouse): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                              <option value="<?php echo e($warehouse->id); ?>"><?php echo e($warehouse->name); ?></option>
+                              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                           </select>
                       </div>
 
-                      <input type="hidden" name="start_date" value="{{date('Y-m').'-'.'01'}}" />
-                      <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
+                      <input type="hidden" name="start_date" value="<?php echo e(date('Y-m').'-'.'01'); ?>" />
+                      <input type="hidden" name="end_date" value="<?php echo e(date('Y-m-d')); ?>" />
 
                       <div class="form-group">
-                          <button type="submit" class="btn btn-primary">{{trans('file.submit')}}</button>
+                          <button type="submit" class="btn btn-primary"><?php echo e(trans('file.submit')); ?></button>
                       </div>
-                    {{ Form::close() }}
+                    <?php echo e(Form::close()); ?>
+
                 </div>
             </div>
         </div>
@@ -1282,31 +1305,33 @@
         <div role="document" class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="exampleModalLabel" class="modal-title">{{trans('file.User Report')}}</h5>
+                    <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.User Report')); ?></h5>
                     <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                 </div>
                 <div class="modal-body">
-                  <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                    {!! Form::open(['route' => 'report.user', 'method' => 'post']) !!}
+                  <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
+                    <?php echo Form::open(['route' => 'report.user', 'method' => 'post']); ?>
+
                     <?php
                       $lims_user_list = DB::table('users')->where('is_active', true)->get();
                     ?>
                       <div class="form-group">
-                          <label>{{trans('file.User')}} *</label>
+                          <label><?php echo e(trans('file.User')); ?> *</label>
                           <select name="user_id" class="selectpicker form-control" required data-live-search="true" id="user-id" data-live-search-style="begins" title="Select user...">
-                              @foreach($lims_user_list as $user)
-                              <option value="{{$user->id}}">{{$user->name . ' (' . $user->phone. ')'}}</option>
-                              @endforeach
+                              <?php $__currentLoopData = $lims_user_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                              <option value="<?php echo e($user->id); ?>"><?php echo e($user->name . ' (' . $user->phone. ')'); ?></option>
+                              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                           </select>
                       </div>
 
-                      <input type="hidden" name="start_date" value="{{date('Y-m').'-'.'01'}}" />
-                      <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
+                      <input type="hidden" name="start_date" value="<?php echo e(date('Y-m').'-'.'01'); ?>" />
+                      <input type="hidden" name="end_date" value="<?php echo e(date('Y-m-d')); ?>" />
 
                       <div class="form-group">
-                          <button type="submit" class="btn btn-primary">{{trans('file.submit')}}</button>
+                          <button type="submit" class="btn btn-primary"><?php echo e(trans('file.submit')); ?></button>
                       </div>
-                    {{ Form::close() }}
+                    <?php echo e(Form::close()); ?>
+
                 </div>
             </div>
         </div>
@@ -1318,31 +1343,33 @@
         <div role="document" class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Customer Report')}}</h5>
+                    <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Customer Report')); ?></h5>
                     <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                 </div>
                 <div class="modal-body">
-                  <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                    {!! Form::open(['route' => 'report.customer', 'method' => 'post']) !!}
+                  <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
+                    <?php echo Form::open(['route' => 'report.customer', 'method' => 'post']); ?>
+
                     <?php
                       $lims_customer_list = DB::table('customers')->where('is_active', true)->get();
                     ?>
                       <div class="form-group">
-                          <label>{{trans('file.customer')}} *</label>
+                          <label><?php echo e(trans('file.customer')); ?> *</label>
                           <select name="customer_id" class="selectpicker form-control" required data-live-search="true" id="customer-id" data-live-search-style="begins" title="Select customer...">
-                              @foreach($lims_customer_list as $customer)
-                              <option value="{{$customer->id}}">{{$customer->name . ' (' . $customer->phone_number. ')'}}</option>
-                              @endforeach
+                              <?php $__currentLoopData = $lims_customer_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $customer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                              <option value="<?php echo e($customer->id); ?>"><?php echo e($customer->name . ' (' . $customer->phone_number. ')'); ?></option>
+                              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                           </select>
                       </div>
 
-                      <input type="hidden" name="start_date" value="{{date('Y-m').'-'.'01'}}" />
-                      <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
+                      <input type="hidden" name="start_date" value="<?php echo e(date('Y-m').'-'.'01'); ?>" />
+                      <input type="hidden" name="end_date" value="<?php echo e(date('Y-m-d')); ?>" />
 
                       <div class="form-group">
-                          <button type="submit" class="btn btn-primary">{{trans('file.submit')}}</button>
+                          <button type="submit" class="btn btn-primary"><?php echo e(trans('file.submit')); ?></button>
                       </div>
-                    {{ Form::close() }}
+                    <?php echo e(Form::close()); ?>
+
                 </div>
             </div>
         </div>
@@ -1354,40 +1381,42 @@
         <div role="document" class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Supplier Report')}}</h5>
+                    <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Supplier Report')); ?></h5>
                     <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                 </div>
                 <div class="modal-body">
-                  <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                    {!! Form::open(['route' => 'report.supplier', 'method' => 'post']) !!}
+                  <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
+                    <?php echo Form::open(['route' => 'report.supplier', 'method' => 'post']); ?>
+
                     <?php
                       $lims_supplier_list = DB::table('suppliers')->where('is_active', true)->get();
                     ?>
                       <div class="form-group">
-                          <label>{{trans('file.Supplier')}} *</label>
+                          <label><?php echo e(trans('file.Supplier')); ?> *</label>
                           <select name="supplier_id" class="selectpicker form-control" required data-live-search="true" id="supplier-id" data-live-search-style="begins" title="Select Supplier...">
-                              @foreach($lims_supplier_list as $supplier)
-                              <option value="{{$supplier->id}}">{{$supplier->name . ' (' . $supplier->phone_number. ')'}}</option>
-                              @endforeach
+                              <?php $__currentLoopData = $lims_supplier_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $supplier): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                              <option value="<?php echo e($supplier->id); ?>"><?php echo e($supplier->name . ' (' . $supplier->phone_number. ')'); ?></option>
+                              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                           </select>
                       </div>
 
-                      <input type="hidden" name="start_date" value="{{date('Y-m').'-'.'01'}}" />
-                      <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
+                      <input type="hidden" name="start_date" value="<?php echo e(date('Y-m').'-'.'01'); ?>" />
+                      <input type="hidden" name="end_date" value="<?php echo e(date('Y-m-d')); ?>" />
 
                       <div class="form-group">
-                          <button type="submit" class="btn btn-primary">{{trans('file.submit')}}</button>
+                          <button type="submit" class="btn btn-primary"><?php echo e(trans('file.submit')); ?></button>
                       </div>
-                    {{ Form::close() }}
+                    <?php echo e(Form::close()); ?>
+
                 </div>
             </div>
         </div>
       </div>
       <!-- end supplier modal -->
-    @php $count = count(\Auth::user()->unreadNotifications); @endphp
+    <?php $count = count(\Auth::user()->unreadNotifications); ?>
 
       <div style="display:none" id="content" class="animate-bottom">
-          @yield('content')
+          <?php echo $__env->yieldContent('content'); ?>
       </div>
 
       <footer class="main-footer">
@@ -1400,10 +1429,7 @@
         </div>
       </footer>
     </div>
-    @endif
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<!-- <script src="src/toaster.js"></script> -->
+    <?php endif; ?>
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/jquery.min.js') ?>"></script>
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/jquery-ui.min.js') ?>"></script>
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/bootstrap-datepicker.min.js') ?>"></script>
@@ -1421,13 +1447,13 @@
     <script type="text/javascript" src="<?php echo asset('js/charts-custom.js') ?>"></script>
     <script type="text/javascript" src="<?php echo asset('vendor/jquery-validation/jquery.validate.min.js') ?>"></script>
     <script type="text/javascript" src="<?php echo asset('vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js')?>"></script>
-    @if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl)
+    <?php if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl): ?>
       <script type="text/javascript" src="<?php echo asset('js/front_rtl.js') ?>"></script>
-    @else
+    <?php else: ?>
       <script type="text/javascript" src="<?php echo asset('js/front.js') ?>"></script>
-    @endif
+    <?php endif; ?>
 
-    @if(Route::current()->getName() != '/')
+    <?php if(Route::current()->getName() != '/'): ?>
     <script type="text/javascript" src="<?php echo asset('vendor/daterange/js/moment.min.js') ?>"></script>
     <script type="text/javascript" src="<?php echo asset('vendor/daterange/js/knockout-3.4.2.js') ?>"></script>
     <script type="text/javascript" src="<?php echo asset('vendor/daterange/js/daterangepicker.min.js') ?>"></script>
@@ -1450,20 +1476,20 @@
     <script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.1.6/js/dataTables.fixedHeader.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.min.js"></script>
-    @endif
-    @stack('scripts')
+    <?php endif; ?>
+    <?php echo $__env->yieldPushContent('scripts'); ?>
     <script>
-        // if ('serviceWorker' in navigator ) {
-        //     window.addEventListener('load', function() {
-        //         navigator.serviceWorker.register('/salepro/service-worker.js').then(function(registration) {
-        //             // Registration was successful
-        //             console.log('ServiceWorker registration successful with scope: ', registration.scope);
-        //         }, function(err) {
-        //             // registration failed :(
-        //             console.log('ServiceWorker registration failed: ', err);
-        //         });
-        //     });
-        // }
+        if ('serviceWorker' in navigator ) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/salepro/service-worker.js').then(function(registration) {
+                    // Registration was successful
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, function(err) {
+                    // registration failed :(
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
     </script>
     <script type="text/javascript">
         var theme = <?php echo json_encode($theme); ?>;
@@ -1665,3 +1691,4 @@
     </script>
   </body>
 </html>
+<?php /**PATH C:\xampp\htdocs\ERP\resources\views/layout/main.blade.php ENDPATH**/ ?>

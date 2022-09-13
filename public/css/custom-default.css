@@ -1168,6 +1168,10 @@ div#purchase-table_filter {
     width: 100% !important;
 }
 
+div#data-table_filter {
+    width: 100%;
+}
+
 div#purchase-table_paginate {
     width: 100%;
 }
