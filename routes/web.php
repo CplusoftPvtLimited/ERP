@@ -258,6 +258,9 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('updatePurchaseProduct','PurchaseController@updatePurchase')->name('update_purchase'); // update a purchase
 	Route::get('deletePurchaseProduct/{purchase_id}/{id}','PurchaseController@deletePurchaseProduct')->name('delete_purchase'); // delete a purchase product
 	Route::get('deletePurchase/{purchase_id}','PurchaseController@deleteParentPurchase')->name('delete_parent_purchase'); // delete a parent purchase
+	Route::get('exportPurchases','PurchaseController@exportPurchases')->name('exportPurchases'); // Export Purchase
+	Route::get('pdfDownload','PurchaseController@pdfDownload')->name('pdfDownload'); //  Purchases pdf download
+
 
 
 

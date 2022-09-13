@@ -34,6 +34,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
 use App\Repositories\Interfaces\PurchaseInterface;
+use Barryvdh\DomPDF\PDF;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\DataTables;
 class PurchaseController extends Controller
@@ -507,6 +508,48 @@ class PurchaseController extends Controller
         }
     }
 
+    public function exportPurchases(){
+        $headers = [
+            'Cache-Control'        => 'must-revalidate, post-check=0, pre-check=0'
+            ,'Content-type'        => 'text/csv'
+            ,'Content-Disposition' => 'attachment; filename=purchases_csv_export.csv'
+            ,'Expires'             => '0'
+            ,'Pragma'              => 'public',
+        ];
+
+        $get_purchase = $this->purchaseRepository->exportPurchases();
+
+        if($get_purchase != "false"){
+            array_unshift($get_purchase, array_keys($get_purchase[0]));
+                // dd($new_list);
+    
+                $callback = function () use ($get_purchase) {
+                    $FH = fopen('php://output', 'w');
+                    foreach ($get_purchase as $row) {
+                        fputcsv($FH, $row);
+                    }
+                    fclose($FH);
+                };
+                
+                return response()->stream($callback, 200, $headers);
+        }else{
+            toastr()->info('Purchases not found');
+        }
+
+
+    }
+
+    public function pdfDownload(){
+        
+        $get_purchase = $this->purchaseRepository->pdfDownload();
+        $pdf = PDF::loadView('purchase_pdf', $data);
+    
+        return $pdf->download('product_purchases.pdf');
+    }
+
+
+
+    // ========================= Above code is ours code ====================
     public function productPurchaseData($id)
     {
         $lims_product_purchase_data = ProductPurchase::where('purchase_id', $id)->get();

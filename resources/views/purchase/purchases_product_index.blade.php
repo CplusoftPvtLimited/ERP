@@ -43,9 +43,9 @@
                     <div class="card-body">
                         <div class="container">
                             <div class="d-flex flex-row-reverse mb-3">
-                                <a class="p-1" href=""><button class="btn btn-primary">CSV</button></a>
-                                <a class="p-1" href=""><button class="btn btn-warning">Export</button></a>
-                                <a class="p-1" href=""><button class="btn btn-success">Add</button></a>
+                                <a class="p-1" href=""><button class="btn btn-primary"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button></a>
+                                <a class="p-1" href="{{ route('exportPurchases') }}"><button class="btn btn-warning">Export</button></a>
+                                <a class="p-1" href="{{ route('purchases.create') }}"><button class="btn btn-success"><i class="fa fa-plus"></i> Add</button></a>
                             </div>
 
                             <div class="product-table">

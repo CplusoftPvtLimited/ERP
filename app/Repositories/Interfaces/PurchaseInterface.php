@@ -9,6 +9,9 @@ interface PurchaseInterface{
     public function updatePurchase($request); // for purchase product update
     public function deletePurchaseProduct($purchase_id,$id); // for delete purchase product
     public function deleteParentPurchase($purchase_id); // for delete a parent purchase
+    public function exportPurchases(); // for purchases export
+    public function pdfDownload();
+
 
 
 

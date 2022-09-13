@@ -69,6 +69,7 @@
                                             enctype="multipart/form-data">
                                             @csrf
                                             <input type="hidden" name="product_purchase_id" value="{{ $product->id }}">
+                                            @if($product->status == 'ordered')
                                             <select name="product_purchase_status" id="status_{{$product->id}}" class="form-control">
                                                 <option value="ordered"
                                                     {{ $product->status == 'ordered' ? 'selected' : '' }}>Ordered</option>
@@ -76,6 +77,9 @@
                                                     {{ $product->status == 'received' ? 'selected' : '' }}>Received
                                                 </option>
                                             </select>
+                                            @else
+                                            {{$product->status}}
+                                            @endif
                                             
                                         </form>
                                         <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
