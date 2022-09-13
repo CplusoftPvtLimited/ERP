@@ -18,6 +18,7 @@ class PurchaseRepository implements PurchaseInterface
     public function store($request){
         DB::beginTransaction();
         try {
+            // dd($request->all());
             $purchase = new Purchase();
             $total_qty = 0;
             $total_amount = 0;
@@ -25,7 +26,7 @@ class PurchaseRepository implements PurchaseInterface
                 $total_qty = $total_qty + ($request->black_qty[$i] + $request->white_qty[$i]);
             }
             for($i=0; $i < count($request->purchase_price); $i++){
-                $total_amount = $total_amount + ($request->purchase_price[$i]) + ($request->sale_price[$i]);
+                $total_amount = $total_amount + ($request->purchase_price[$i]);
             }
 
             $purchase->user_id = auth()->user()->id;
@@ -53,7 +54,7 @@ class PurchaseRepository implements PurchaseInterface
                 $product_purchase->purchase_id = $purchase->id;
                 $product_purchase->reference_no = $artcle->articleNumber;
                 $product_purchase->engine_details = $linkage->description;
-                $product_purchase->product_id = $request->section_part_id[$i];
+                $product_purchase->product_id = $request->sectionn_part_id[$i];
                 $product_purchase->black_item_qty = $request->black_qty[$i];
                 $product_purchase->white_item_qty = $request->white_qty[$i];
                 $product_purchase->actual_price = $request->purchase_price[$i];
@@ -62,9 +63,11 @@ class PurchaseRepository implements PurchaseInterface
                 $product_purchase->model_id = $request->modell_id[$i];
                 $product_purchase->eng_linkage_target_id = $request->enginee_id[$i];
                 $product_purchase->assembly_group_node_id = $request->sectionn_id[$i];
-                $product_purchase->legacy_article_id = $request->section_part_id[$i];
+                $product_purchase->legacy_article_id = $request->sectionn_part_id[$i];
                 $product_purchase->status = $request->statuss[$i];
                 $product_purchase->supplier_id = $request->supplier_id;
+                $product_purchase->total_cost = $request->total_price[$i];
+
                 $date = date("Y-m-d", strtotime($request->datee[$i]));
                 $product_purchase->date = $date;
                 $product_purchase->qty = $request->black_qty[$i] + $request->white_qty[$i];
@@ -91,7 +94,8 @@ class PurchaseRepository implements PurchaseInterface
                 $model = ModelSeries::where('modelId',$lims_purchase_data->model_id)->first();
                 $engine = LinkageTarget::where('linkageTargetId',$lims_purchase_data->eng_linkage_target_id)->first();
                 $section = AssemblyGroupNode::where('assemblyGroupNodeId',$lims_purchase_data->assembly_group_node_id)->first();
-                $section_part = Article::where('legacyArticleId',$lims_purchase_data->legacyArticleId)->first();
+                $section_part = Article::where('legacyArticleId',$lims_purchase_data->legacy_article_id)->first();
+                // dd($lims_purchase_data->legacy_article_id);
                 $supplier = Ambrand::where('BrandId',$lims_purchase_data->supplier_id)->first();
 
                 $lims_purchase_data['manufacturer'] = isset($manufacturer) ? $manufacturer->manuName : '';
@@ -124,7 +128,7 @@ class PurchaseRepository implements PurchaseInterface
                 $model = ModelSeries::where('modelId',$lims_purchase_data->model_id)->first();
                 $engine = LinkageTarget::where('linkageTargetId',$lims_purchase_data->eng_linkage_target_id)->first();
                 $section = AssemblyGroupNode::where('assemblyGroupNodeId',$lims_purchase_data->assembly_group_node_id)->first();
-                $section_part = Article::where('legacyArticleId',$lims_purchase_data->legacyArticleId)->first();
+                $section_part = Article::where('legacyArticleId',$lims_purchase_data->legacy_article_id)->first();
                 $supplier = Ambrand::where('BrandId',$lims_purchase_data->supplier_id)->first();
 
                 $lims_purchase_data['manufacturer'] = isset($manufacturer) ? $manufacturer->manuName : '';
@@ -178,5 +182,10 @@ class PurchaseRepository implements PurchaseInterface
         }
     }
 
-    public function deleteParentPurchase($purchase_id){}
+    public function deleteParentPurchase($purchase_id){
+        $purchase = Purchase::find($purchase_id);
+        // if($purchase){
+
+        // }
+    }
 }

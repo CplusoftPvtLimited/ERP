@@ -40,7 +40,7 @@
                         <div class="card-header d-flex align-items-center">
                             <h4>{{ trans('file.Purchase Products') }}</h4>
                         </div>
-                        <table class="table">
+                        <table class="table" id="purchase-table">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -56,6 +56,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($purchase_products as $key => $product)
+                                <tr>
                                     <td>{{ ++$key }}</td>
                                     <td>{{ $product->date }}</td>
                                     <td>{{ $product->reference_no }}</td>
@@ -106,8 +107,9 @@
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
+                                                    <h3>Product Detail ({{ $product->section_part }} <span>Article Number</span>)</h3>
                                                     <h5 class="modal-title" id="exampleModalLabel">
-                                                        {{ $product->section_part }}</h5>
+                                                        </h5>
                                                     <button type="button" class="close" data-dismiss="modal"
                                                         aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
@@ -155,11 +157,7 @@
                                                             <input type="text" class="form-control"
                                                                 value="{{ $product->engine_details }}" readonly>
                                                         </div>
-                                                        <div class="col-md-4">
-                                                            <label for="">Net Unit Cost</label>
-                                                            <input type="text" class="form-control"
-                                                                value="{{ $product->net_unit_cost }}" readonly>
-                                                        </div>
+                                                        
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -169,6 +167,8 @@
                                             </div>
                                         </div>
                                     </div>
+                                </tr>
+                                    
                                 @endforeach
 
                             </tbody>
@@ -183,5 +183,11 @@
     </section>
 @endsection
 @push('scripts')
+    <script>
+        $('#purchase-table').DataTable( {
+            "processing": true,
+            "searching" : true,
+        });
+    </script>
     <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
 @endpush
