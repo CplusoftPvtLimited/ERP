@@ -215,8 +215,12 @@
             </ul>
             </li>
             @endif
-            <li id="sale-list-menu" class="{{ $route == 'product.get' ? 'active' : '' }}"><a href="{{route('product.get')}}"><i class="dripicons-list"></i> {{trans('file.Products')}}</a></li>
+            <li id="" class="{{ $route == 'products.index' ? 'active' : '' }}"><a href="{{route('products.index')}}"><i class="dripicons-list"></i> {{trans('file.Products')}}</a></li>
             
+            {{-- <ul id="" class="collapse list-unstyled ">
+                <li id=""><a href="{{route('products.index')}}">{{trans('file.Product List')}}</a></li>
+            </ul> --}}
+
             <li id="sale-list-menu" class="{{ $route == 'assembly_group_nodes.index' ? 'active' : '' }}"><a href="{{route('assembly_group_nodes.index')}}"><i class="dripicons-list"></i> {{trans('file.Sections')}}</a></li>
             
            

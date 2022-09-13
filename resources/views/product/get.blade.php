@@ -53,8 +53,8 @@
                         {{-- <td>{{ $item->assemblyGroupNodes->legacyArticleId }}</td> --}}
                         <td>{{ $item->articleText->isImmediateDisplay }}</td>
                         
-                        <td>{{ $item->linkageTarget->mfrName }}</td>
-                        <td>{{ $item->linkageTarget->mfrId }}</td>
+                        <td>{{ isset($item->linkageTarget) ?  $item->linkageTarget->mfrName : "" }}</td>
+                        <td>{{ isset($item->linkageTarget) ?  $item->linkageTarget->mfrId : ""}}</td>
                     </tr>
                 @endforeach
             </tbody>

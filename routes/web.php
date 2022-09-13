@@ -55,15 +55,6 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 
 	// Route::get('data/edit/{id}','QuotationController@edit');
 
-
-
-
-
-
-
-
-
-	
 	Route::get('getform',[FormController::class,'getForm'])->name('getform');
 	Route::post('formSave',[FormController::class,'formSave'])->name('formSave');
 	Route::get('formMessage',[FormController::class,'formMessage'])->name('formMessage');
@@ -71,7 +62,6 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 
 	Route::get('/read_notification/{id?}', 'FormController@readNotification')->name('read_notification');
 
-	
 	Route::resource('form', 'FormController');
 	Route::get('fillform/{id}',[FormController::class,'showform'])->name('Filform');
 	Route::get('showSubmitForm',[FormController::class,'showSubmitForm'])->name('showSubmitForm');
@@ -141,7 +131,9 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('products/lims_product_search', 'ProductController@limsProductSearch')->name('product.search');
 	Route::post('products/deletebyselection', 'ProductController@deleteBySelection');
 	Route::post('products/update', 'ProductController@updateProduct');
-	Route::resource('products', 'ProductController');
+
+
+	// Route::resource('products', ProductController::class);
 
 	Route::post('importcustomer_group', 'CustomerGroupController@importCustomerGroup')->name('customer_group.import');
 	Route::post('customer_group/deletebyselection', 'CustomerGroupController@deleteBySelection');
@@ -206,18 +198,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::put('invoice/update/{id}', 'SaleController@updateInvoice')->name('sales.updateInvoice');
 	Route::get('invoice/change/status/{id}/{val}', 'SaleController@changeInvoiceStatus')->name('sales.changeInvoiceStatus');
 
-
-
-
-
 	// Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
-
-
-
-
-
-
-	
 
 	Route::resource('sales', 'SaleController');
 
@@ -251,13 +232,19 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('purchases/purchase_by_csv', 'PurchaseController@purchaseByCsv');
 	Route::post('importpurchase', 'PurchaseController@importPurchase')->name('purchase.import');
 	Route::post('purchases/deletebyselection', 'PurchaseController@deleteBySelection');
-	Route::resource('purchases', PurchaseController::class);
 
+    /////////////// Purchase Controller ////////////////
+	Route::resource('purchases', PurchaseController::class);
 	Route::get('viewPurchase/{id}','PurchaseController@viewPurchase')->name('view_purchase'); // view a purchase
 	Route::get('editPurchase/{id}','PurchaseController@editPurchase'); // edit a purchase
 	Route::get('updatePurchaseProduct','PurchaseController@updatePurchase')->name('update_purchase'); // update a purchase
 	Route::get('deletePurchaseProduct/{purchase_id}/{id}','PurchaseController@deletePurchaseProduct')->name('delete_purchase'); // delete a purchase product
 	Route::get('deletePurchase/{purchase_id}','PurchaseController@deleteParentPurchase')->name('delete_parent_purchase'); // delete a parent purchase
+    ////////////////Purchase END ////////////////////////
+   
+	/////////////// Product Controller /////////////////\
+	// Route::resource('products',ProductController::class);
+	Route::get('product/list','ProductController@index')->name('products.index'); // view a purchase
 
 
 

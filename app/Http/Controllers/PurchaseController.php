@@ -122,7 +122,7 @@ class PurchaseController extends Controller
                          </div>
                          <div class="col-md-4">
                          <a href="viewPurchase/' . $row["id"].'"> <button
-                                     class="btn btn-primary btn-sm " type="button"
+                                     class="btn btn-success btn-sm " type="button"
                                      data-original-title="btn btn-success btn-xs"
                                      title=""><i class="fa fa-eye"></i></button></a>
                          </div>

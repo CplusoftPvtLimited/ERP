@@ -15,6 +15,7 @@ use App\Product;
 use App\ProductBatch;
 use App\Product_Warehouse;
 use App\Product_Supplier;
+use App\ProductPurchase;
 use Auth;
 use DNS1D;
 use Spatie\Permission\Models\Role;
@@ -23,22 +24,83 @@ use Illuminate\Validation\Rule;
 use DB;
 use App\Variant;
 use App\ProductVariant;
+use App\Purchase;
+use Yajra\DataTables\Facades\DataTables;
 
 class ProductController extends Controller
 {
-    public function index()
+    // public function index()
+    // {
+    //     $role = Role::find(Auth::user()->role_id);
+    //     if($role->hasPermissionTo('products-index')){            
+    //         $permissions = Role::findByName($role->name)->permissions;
+    //         foreach ($permissions as $permission)
+    //             $all_permission[] = $permission->name;
+    //         if(empty($all_permission))
+    //             $all_permission[] = 'dummy text';
+    //         return view('product.index', compact('all_permission'));
+    //     }
+    //     else
+    //         return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+    // }
+
+    public function index(Request $request)
     {
-        $role = Role::find(Auth::user()->role_id);
-        if($role->hasPermissionTo('products-index')){            
-            $permissions = Role::findByName($role->name)->permissions;
-            foreach ($permissions as $permission)
-                $all_permission[] = $permission->name;
-            if(empty($all_permission))
-                $all_permission[] = 'dummy text';
-            return view('product.index', compact('all_permission'));
+        if ($request->ajax()) {
+            $all_purchase = ProductPurchase::orderBy('id', 'desc')->get();
+            return DataTables::of($all_purchase)
+                ->addIndexColumn('id')
+                ->addColumn('supplier', function($row) {
+                    return $row->brand->brandName;
+                })
+                ->addColumn('due_amount', function($row) {
+                    $due_amount = $row->grand_total - $row->paid_amount;
+                    return $due_amount;
+                })
+                ->addColumn('purchase_status',function($row){
+                    $check_odd_one = [];
+                    foreach($row->productPurchases as $product){
+                          if($product->status == "ordered"){
+                            array_push($check_odd_one,$product->status);
+                          }
+                    }
+                    $purchase_status = "";
+                    if(count($check_odd_one) > 0){
+                        $purchase_status = "Pending";
+                    }else{
+                        $purchase_status = "Completed";
+                    }
+                    return $purchase_status;
+                })
+                ->addColumn('action', function ($row) {
+                    $btn = '<div class="row">
+                         <div class="col-md-4">
+                         <a href="deletePurchase/' . $row['id'].'"> <button
+                         class="btn btn-danger btn-sm " style="" type="button"
+                         data-original-title="btn btn-danger btn-sm"
+                         title=""><i class="fa fa-trash"></i></button></a>
+         
+                         </div>
+                         <div class="col-md-4">
+                         <a href="editPurchaseByProduct/' . $row["id"].'"> <button
+                                     class="btn btn-primary btn-sm " type="button"
+                                     data-original-title="btn btn-danger btn-xs"
+                                     title=""><i class="fa fa-edit"></i></button></a>
+                         </div>
+                         <div class="col-md-4">
+                         <a href="viewPurchase/' . $row["id"].'"> <button
+                                     class="btn btn-success btn-sm " type="button"
+                                     data-original-title="btn btn-success btn-xs"
+                                     title=""><i class="fa fa-eye"></i></button></a>
+                         </div>
+                     </div>
+                     ';
+                    return $btn;
+                })
+                ->rawColumns(['action', 'supplier', 'due_amount'])->make(true);
         }
-        else
-            return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+
+        return view('product.product_index');
     }
 
     public function getProducts() 

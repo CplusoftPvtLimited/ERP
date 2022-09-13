@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class LanguagesController extends Controller
+class StockManagemnet extends Controller
 {
-
-    private $language;
     /**
      * Display a listing of the resource.
      *
