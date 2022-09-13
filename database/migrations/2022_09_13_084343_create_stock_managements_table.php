@@ -14,6 +14,7 @@ class CreateStockManagementsTable extends Migration
     public function up()
     {
         Schema::create('stock_managements', function (Blueprint $table) {
+
             $table->id();
             $table->bigInteger('product_id');
             $table->bigInteger('retailer_id');
@@ -23,8 +24,9 @@ class CreateStockManagementsTable extends Migration
             $table->string('unit_actual_price');
             $table->string('unit_sale_price');
             $table->string('total_qty');
-            $table->foreign('product_id')->references('LegacyArticleId')->on('articles');
-            $table->foreign('retailer_id')->references('id')->on('users');
+            // $table->foreign('product_id')->references('LegacyArticleId')->on('articles');
+            // $table->foreign('retailer_id')->references('id')->on('users');
+
             $table->softDeletes();
             $table->timestamps();
         });

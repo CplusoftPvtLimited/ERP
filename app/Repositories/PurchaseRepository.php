@@ -19,11 +19,7 @@ class PurchaseRepository implements PurchaseInterface
 {
     protected $stockManagementRepository;
 
-    public function __construct(StockManagementInterface $stockManagementInterface)
-    {
-        $this->stockManagementRepository = $stockManagementInterface;
-        // $this->auth_user = auth()->guard('api')->user();
-    }
+    
     public function store($request){
         DB::beginTransaction();
         try {
@@ -167,9 +163,18 @@ class PurchaseRepository implements PurchaseInterface
         if($product_purchase){
             $product_purchase->status = $request->status;
             $product_purchase->save();
-            
+
             $purchase = Purchase::find($product_purchase->purchase_id);
-            $this->stockManagementRepository->store($product_purchase, $purchase); // stock manage here
+            $stock_management = new StockManagement();
+            $stock_management->product_id = $product_purchase->legacy_article_id;
+            $stock_management->reference_no = $product_purchase->reference_no;
+            $stock_management->retailer_id = $purchase->user_id;
+            $stock_management->white_items = $product_purchase->white_item_qty;
+            $stock_management->black_items = $product_purchase->black_item_qty;
+            $stock_management->actual_price = $product_purchase->actual_price;
+            $stock_management->sale_price = $product_purchase->sell_price;
+            $stock_management->total_qty = $product_purchase->qty;
+            $stock_management->save();
             DB::commit(); 
             return true;
         }else{

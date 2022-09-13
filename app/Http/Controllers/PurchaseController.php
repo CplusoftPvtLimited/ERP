@@ -35,6 +35,7 @@ use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
 use App\Repositories\Interfaces\PurchaseInterface;
 use Barryvdh\DomPDF\PDF;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\DataTables;
 
@@ -82,7 +83,8 @@ class PurchaseController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $all_purchase = Purchase::orderBy('id', 'desc')->get();
+            $all_purchase = Purchase::where('user_id',Auth::user()->id)->orderBy('id', 'desc')->get();
+            
             return Datatables::of($all_purchase)
                 ->addIndexColumn('id')
                 ->addColumn('supplier', function ($row) {

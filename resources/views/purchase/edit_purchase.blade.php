@@ -101,9 +101,16 @@
                                             });
                                         </script>
                                     </td>
-                                    <td><button type="button" class="btn btn-info" data-toggle="modal"
-                                            data-target="#viewPurchaseProduct_{{ $product->id }}"><i class="fa fa-eye"></i></button>
-                                    <a href="{{ route('delete_purchase',[$purchase->id,$product->id]) }}" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal"
+                                                data-target="#viewPurchaseProduct_{{ $product->id }}"><i class="fa fa-eye"></i></button>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <a href="{{ route('delete_purchase',[$purchase->id,$product->id]) }}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                                            </div>
+                                        </div>
                                     </td>
                                     <!-- Modal -->
                                     <div class="modal fade" id="viewPurchaseProduct_{{ $product->id }}" tabindex="-1"
