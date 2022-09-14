@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\AmBrandController;
 use App\Http\Controllers\ManufacturerController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,10 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('editManufacturer/{id}',[ManufacturerController::class,'editManufacturer']);
 	Route::get('deleteManufacturer/{id}',[ManufacturerController::class,'delete']);
 	Route::resource('modelseries', 'ModelSeriesController');
+	Route::resource('suppliers', 'AmBrandController');
+	Route::get('editSupplier/{id}',[AmBrandController::class,'editSupplier']);
+	Route::get('deleteSupplier/{id}',[AmBrandController::class,'delete']);
+
 
 
 

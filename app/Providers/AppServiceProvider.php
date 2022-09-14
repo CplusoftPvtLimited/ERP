@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\AmBrandRepository;
+use App\Repositories\Interfaces\AmBrandInterface;
 use App\Repositories\Interfaces\ManufacturerInterface;
 use App\Repositories\ManufacturerRepository;
 use Illuminate\Support\ServiceProvider;
@@ -26,6 +28,8 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(ManufacturerInterface::class,ManufacturerRepository::class);
+        $this->app->bind(AmBrandInterface::class,AmBrandRepository::class);
+
         
     }
 

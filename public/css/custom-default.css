@@ -1161,3 +1161,6 @@ div#manufacturer-data-table_filter{
 div#model-data-table_filter{
 	width: 100% !important;
 }
+div#data-table_filter{
+	width: 100% !important;
+}

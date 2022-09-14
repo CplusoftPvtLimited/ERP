@@ -4,6 +4,8 @@ return [
 	'Add Manufacturer' => 'Add Manufacturer',
 	'Edit Manufacturer' => 'Edit Manufacturer',
 	'Model' => 'Model',
+	'Suppliers' => 'Suppliers',
+	'Edit Supplier' => 'Edit Supplier',
 	'Add Model' => 'Add Model',
 	'Submitted Forms' => 'Submitted Forms',
 	'View Form' => 'View Form',

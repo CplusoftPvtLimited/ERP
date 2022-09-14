@@ -151,6 +151,8 @@
             @endif
             <li id="maufacturer-list-menu" class="{{ $route == 'manufacturer.index' ? 'active' : '' }}"><a href="{{route('manufacturer.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Manufacturer')}}</a></li>
             <li id="modelseries-list-menu" class="{{ $route == 'modelseries.index' ? 'active' : '' }}"><a href="{{route('modelseries.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Model')}}</a></li>
+            <li id="suppliers-list-menu" class="{{ $route == 'suppliers.index' ? 'active' : '' }}"><a href="{{route('suppliers.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Suppliers')}}</a></li>
+
             <?php
             $index_permission = DB::table('permissions')->where('name', 'purchases-index')->first();
                 $index_permission_active = DB::table('role_has_permissions')->where([
