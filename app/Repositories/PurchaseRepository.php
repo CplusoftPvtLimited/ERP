@@ -14,13 +14,23 @@ use App\Models\ModelSeries;
 use App\Repositories\Interfaces\PurchaseInterface;
 use PDF;
 use Illuminate\Support\Facades\DB;
+
 class PurchaseRepository implements PurchaseInterface
 {
     public function store($request)
     {
         DB::beginTransaction();
         try {
-            // dd($request->all());
+
+            $count_black = $count_white = 0;
+            for ($i = 0; $i < count($request->black_qty); $i++) {
+                $count_black += $request->black_qty[$i];
+                $count_white += $request->white_qty[$i];
+            }
+            if ($count_black == 0 && $count_white == 0) {
+                return "submit_purchase_not_allowed";
+            }
+
             $purchase = new Purchase();
             $total_qty = 0;
             $total_amount = 0;
@@ -53,6 +63,9 @@ class PurchaseRepository implements PurchaseInterface
                 $product_purchase = new ProductPurchase();
                 $artcle = Article::where('legacyArticleId', $request->sectionn_part_id[$i])->first();
                 $linkage = LinkageTarget::where('linkageTargetId', $request->enginee_id[$i])->first();
+                if ($request->black_qty[$i] <= 0 && $request->white_qty[$i] <= 0) {
+                    continue;
+                }
                 $product_purchase->purchase_id = $purchase->id;
                 $product_purchase->reference_no = $artcle->articleNumber;
                 $product_purchase->engine_details = $linkage->description;
@@ -74,6 +87,20 @@ class PurchaseRepository implements PurchaseInterface
                 $product_purchase->date = $date;
                 $product_purchase->qty = $request->black_qty[$i] + $request->white_qty[$i];
                 $product_purchase->save();
+
+                if ($request->statuss[$i] == "received") {
+                    StockManagement::create([
+                        'product_id' => $product_purchase->legacy_article_id,
+                        'purchase_product_id' => $product_purchase->id,
+                        'reference_no' => $product_purchase->reference_no,
+                        'retailer_id' => $purchase->user_id,
+                        'white_items' => $product_purchase->white_item_qty,
+                        'black_items' => $product_purchase->black_item_qty,
+                        'unit_actual_price' => $product_purchase->actual_price,
+                        'unit_sale_price' => $product_purchase->sell_price,
+                        'total_qty' => $product_purchase->qty,
+                    ]);
+                }
             }
 
             DB::commit();
@@ -155,29 +182,34 @@ class PurchaseRepository implements PurchaseInterface
 
     public function updatePurchase($request)
     {
+        // dd($request->all());
+        try {
+            $product_purchase = ProductPurchase::find($request->id);
+            DB::beginTransaction();
+            if (!empty($product_purchase)) {
 
-        $product_purchase = ProductPurchase::find($request->id);
-        DB::beginTransaction();
-        if ($product_purchase) {
-            $product_purchase->status = $request->status;
-            $product_purchase->save();
-
-            $purchase = Purchase::find($product_purchase->purchase_id);
-            $stock_management = new StockManagement();
-            $stock_management->product_id = $product_purchase->legacy_article_id;
-            $stock_management->reference_no = $product_purchase->reference_no;
-            $stock_management->retailer_id = $purchase->user_id;
-            $stock_management->white_items = $product_purchase->white_item_qty;
-            $stock_management->black_items = $product_purchase->black_item_qty;
-            $stock_management->actual_price = $product_purchase->actual_price;
-            $stock_management->sale_price = $product_purchase->sell_price;
-            $stock_management->total_qty = $product_purchase->qty;
-            $stock_management->save();
-            DB::commit();
-            return "true";
-        } else {
-            DB::rollBack();
+                $product_purchase->update([
+                    'status' => $request->status
+                ]);
+                $purchase = Purchase::find($product_purchase->purchase_id);
+                // dd($purchase);
+                StockManagement::create([
+                    'product_id' => $product_purchase->legacy_article_id,
+                    'reference_no' => $product_purchase->reference_no,
+                    'retailer_id' => $purchase->user_id,
+                    'white_items' => $product_purchase->white_item_qty,
+                    'black_items' => $product_purchase->black_item_qty,
+                    'unit_actual_price' => $product_purchase->actual_price,
+                    'unit_sale_price' => $product_purchase->sell_price,
+                    'total_qty' => $product_purchase->qty,
+                ]);
+                DB::commit();
+                return true;
+            }
             return false;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return $th->getMessage();
         }
     }
 
@@ -187,14 +219,14 @@ class PurchaseRepository implements PurchaseInterface
         $product_purchase = ProductPurchase::find($id);
         if ($product_purchase) {
             $purchase = Purchase::find($purchase_id);
-            $purchase->total_qty = $purchase->total_qty - ($product_purchase->white_item_qty + $product_purchase->black_item_qty); 
+            $purchase->total_qty = $purchase->total_qty - ($product_purchase->white_item_qty + $product_purchase->black_item_qty);
             $purchase->grand_total = $purchase->grand_total - $product_purchase->actual_price;
             $purchase->save();
             $product_purchase->delete();
             $product_purchases = ProductPurchase::where('purchase_id', $purchase_id)->get();
-            
+
             if (count($product_purchases) <= 0) {
-                
+
                 if ($purchase) {
                     $purchase->delete();
                 }
@@ -304,15 +336,13 @@ class PurchaseRepository implements PurchaseInterface
                         'purchase' => $purchase_get,
                         'purchase_products' => $purchase_products
                     ];
-                    array_push($all_data,$purchase);
+                    array_push($all_data, $purchase);
                 }
 
                 $pdf = PDF::loadView('purchase.purchase_pdf', $all_data);
                 // dd($pdf);
                 return $pdf->download('product_purchases.pdf');
             }
-           
-
         } catch (\Exception $e) {
             return false;
         }

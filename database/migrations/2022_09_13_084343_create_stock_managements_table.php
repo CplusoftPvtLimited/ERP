@@ -17,6 +17,7 @@ class CreateStockManagementsTable extends Migration
 
             $table->id();
             $table->bigInteger('product_id');
+            $table->bigInteger('purchase_product_id');
             $table->bigInteger('retailer_id');
             $table->string('reference_no');
             $table->string('white_items');
@@ -24,9 +25,8 @@ class CreateStockManagementsTable extends Migration
             $table->string('unit_actual_price');
             $table->string('unit_sale_price');
             $table->string('total_qty');
-            // $table->foreign('product_id')->references('LegacyArticleId')->on('articles');
+            // $table->foreign('purchase_product_id')->references('id')->on('product_purchases')->cascadeOnDelete();
             // $table->foreign('retailer_id')->references('id')->on('users');
-
             $table->softDeletes();
             $table->timestamps();
         });

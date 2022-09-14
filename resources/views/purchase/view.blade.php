@@ -64,8 +64,8 @@
                                     <td>{{ $product->model }}</td>
                                     <td>{{ $product->section }}</td>
                                     <td>{{ $product->supplier }}</td>
-                                    <td><button type="button" class="btn btn-info" data-toggle="modal"
-                                            data-target="#viewPurchaseProduct_{{ $product->id }}">View</button></td>
+                                    <td><button type="button" class="btn btn-info btn-sm" data-toggle="modal"
+                                            data-target="#viewPurchaseProduct_{{ $product->id }}"><i class="fa fa-eye"></i></button></td>
                                     <!-- Modal -->
                                     <div class="modal fade" id="viewPurchaseProduct_{{ $product->id }}" tabindex="-1" role="dialog"
                                         aria-labelledby="exampleModalLabel" aria-hidden="true">

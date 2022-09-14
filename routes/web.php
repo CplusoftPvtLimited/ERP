@@ -9,7 +9,7 @@ use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\MakeController;
-
+use App\Http\Controllers\StockManagementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -242,8 +242,17 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('deletePurchase/{purchase_id}','PurchaseController@deleteParentPurchase')->name('delete_parent_purchase'); // delete a parent purchase
     ////////////////Purchase END ////////////////////////
    
-	/////////////// Product Controller /////////////////\
-	// Route::resource('products',ProductController::class);
+
+	/////////////// Product Controller /////////////////
+	Route::resource('products',ProductController::class);
+	Route::get('product/editPurchaseByProduct/{product_id}','ProductController@editProduct');
+	Route::get('product/viewPurchase/{product_id}','ProductController@viewProduct');
+
+    /////////////////// Product end /////////////////////
+
+	//////////////// Stock management //////////////////
+	Route::resource('stockManagement','StockManagementController');
+
 	Route::get('product/list','ProductController@index')->name('products.index'); // view a purchase
 	Route::get('exportPurchases','PurchaseController@exportPurchases')->name('exportPurchases'); // Export Purchase
 	Route::get('pdfDownload','PurchaseController@pdfDownload')->name('purchasesPdfDownload'); //  Purchases pdf download

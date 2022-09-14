@@ -63,15 +63,15 @@
                                 <table class="display" id="data-table">
                                     <thead>
                                         <tr>
-                                            <th>#</th>
-                                            <th>Date</th>
-                                            <th>Supplier</th>
-                                            <th>Items</th>
+                                            {{-- <th>#</th> --}}
+                                            <th>Product Id</th>
+                                            <th>Retailer Id</th>
+                                            <th>Refrence No</th>
+                                            <th>White Items</th>
+                                            <th>Black Items</th>
+                                            <th>Actual Price/Unit</th>
+                                            <th>Sale Price/Unit</th>
                                             <th>Total Quantity</th>
-                                            <th>Purchase Status</th>
-                                            <th>Paid</th>
-                                            <th>Due</th>
-                                            <th>Grand Total</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -98,17 +98,17 @@
                 $('#data-table').DataTable({
                     "processing" : true,
                     "serverside" : true,
-                    ajax: "{{ route('purchases.index') }}",
+                    ajax: "{{ route('products.index') }}",
                     columns: [
-                        {data: 'id', name: 'id'},
-                        {"data": "date",  name: 'date'},
-                        {"data": "supplier",  name: 'supplier'},
-                        {"data": "item",  name: 'item'},
+                        // {data: 'id', name: 'id'},
+                        {"data": "product_id",  name: 'product_id'},
+                        {"data": "retailer_id",  name: 'retailer_id'},
+                        {"data": "reference_no",  name: 'reference_no'},
+                        {"data": "white_items",  name: 'white_items'},
+                        {"data": "black_items",  name: 'black_items'},
+                        {"data": "unit_actual_price",  name: 'unit_actual_price'},
+                        {"data": "unit_sale_price",  name: 'unit_sale_price'},
                         {"data": "total_qty",  name: 'total_qty'},
-                        {"data": "purchase_status",  name: 'purchase_status'},
-                        {"data": "paid_amount",  name: 'paid_amount'},
-                        {"data": "due_amount",  name: 'due_amount'},
-                        {"data": "grand_total",  name: 'grand_total'},
                         {
                             "data": 'action',
                             name: 'action',

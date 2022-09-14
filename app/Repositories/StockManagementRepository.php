@@ -33,4 +33,13 @@ class StockManagementRepository implements StockManagementInterface
     //         return $e->getMessage();
     //     }
     // }
+    public function store($request)
+    {
+        DB::beginTransaction();
+        try {
+            // $stock = StockManagement::
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
 }

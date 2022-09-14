@@ -12,7 +12,6 @@ use App\Account;
 use App\Models\Manufacturer;
 use App\Models\ModelSeries;
 use App\Models\LinkageTarget;
-
 use App\Purchase;
 use App\ProductPurchase;
 use App\Product_Warehouse;
@@ -34,7 +33,6 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
 use App\Repositories\Interfaces\PurchaseInterface;
-use Barryvdh\DomPDF\PDF;
 use Illuminate\Support\Facades\Auth as FacadesAuth;
 use PDF;
 use Illuminate\Support\Facades\Log;
@@ -438,7 +436,12 @@ class PurchaseController extends Controller
             'datee.*' => 'required',
 
         ]);
+
         $purchase = $this->purchaseRepository->store($request);
+        if($purchase == "submit_purchase_not_allowed"){
+            toastr()->info('Please enter the black and white items greater than "0"');
+            return redirect('purchases');
+        }
         if ($purchase == "true") {
             toastr()->success('Purchase created successfully');
             return redirect('purchases')->with('message', 'Purchase created successfully');
@@ -481,8 +484,8 @@ class PurchaseController extends Controller
     {
         Log::debug($request->all());
         try {
-            $get_purchase = $this->purchaseRepository->updatePurchase($request);
-            if ($get_purchase) {
+            $update_purchase = $this->purchaseRepository->updatePurchase($request);
+            if ($update_purchase) {
                 toastr()->success('product status updated and stock updated successfully');
                 return redirect()->back();
             } else {
