@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="<?php echo asset('css/auth.css') ?>" id="theme-stylesheet" type="text/css">
   </head>
   <body >
-    <div style="background-image: url('images/auto-2179220.jpg') !important; background-repeat: no-repeat !important; background-size: 100% 100%" class="page login-page" >
+    <div class="page login-page" >
       <div class="container" >
         <div class="form-outer text-center d-flex align-items-center" >
           <div class="form-inner" style="background-color: transparent !important;">
