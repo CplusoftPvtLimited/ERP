@@ -24,7 +24,7 @@ class UpdateManufacturerRequest extends FormRequest
     public function rules()
     {
         return [
-            'manuName'=> 'required|max:255'
+            'manuName'=> 'required|max:255|unique:manufacturers,manuName,'.$this->manufacturer->id,
         ];
     }
     public function messages()

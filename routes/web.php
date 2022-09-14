@@ -38,6 +38,8 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::resource('manufacturer', 'ManufacturerController');
 	Route::get('editManufacturer/{id}',[ManufacturerController::class,'editManufacturer']);
 	Route::get('deleteManufacturer/{id}',[ManufacturerController::class,'delete']);
+	Route::resource('modelseries', 'ModelSeriesController');
+
 
 
 
