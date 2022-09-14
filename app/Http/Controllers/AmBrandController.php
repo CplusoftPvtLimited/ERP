@@ -145,7 +145,6 @@ class AmBrandController extends Controller
     {
         //
     }
-    
     public function delete($id)
     {
         $supplier = AmBrand::findOrFail($id);

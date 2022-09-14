@@ -138,15 +138,6 @@ class ManufacturerController extends Controller
         // return redirect()->back()->withMessage($message);
     }
 
-    public function editManufacturer($id)
-    {
-        try {
-            $manufacturer = Manufacturer::findOrFail($id);
-            return view('manufacturer.edit',compact('manufacturer'));
-        } catch (\Exception $e) {
-            return $e;
-        }
-    }
     public function delete($id)
     {
             $manufacturer = Manufacturer::findOrFail($id);

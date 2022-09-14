@@ -37,11 +37,9 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('/submitted_form_show/{user_id}/{noti_id}','FormController@showSubmittedForm');
 	Route::get('showSubmitForm',[FormController::class,'showSubmitForm'])->name('showSubmitForm');
 	Route::resource('manufacturer', 'ManufacturerController');
-	Route::get('editManufacturer/{id}',[ManufacturerController::class,'editManufacturer']);
 	Route::get('deleteManufacturer/{id}',[ManufacturerController::class,'delete']);
 	Route::resource('modelseries', 'ModelSeriesController');
 	Route::resource('suppliers', 'AmBrandController');
-	Route::get('editSupplier/{id}',[AmBrandController::class,'editSupplier']);
 	Route::get('deleteSupplier/{id}',[AmBrandController::class,'delete']);
 
 
