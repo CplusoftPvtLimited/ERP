@@ -1175,3 +1175,10 @@ div#data-table_filter {
 div#purchase-table_paginate {
     width: 100%;
 }
+
+header.container-fluid {
+    margin-bottom: 18px;
+}
+i.fa.fa-bars {
+    margin-top: 10px;
+}
