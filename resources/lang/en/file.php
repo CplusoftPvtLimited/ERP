@@ -1,6 +1,9 @@
 <?php 
 return [
 	'Manufacturer' => 'Manufacturer',
+	'Add Manufacturer' => 'Add Manufacturer',
+	'Model' => 'Model',
+	'Add Model' => 'Add Model',
 	'Submitted Forms' => 'Submitted Forms',
 	'View Form' => 'View Form',
 	'Form Status' => 'Form Status',

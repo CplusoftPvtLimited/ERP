@@ -8,11 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class ManufacturerRepository implements ManufacturerInterface
 {
-    public function index()
-    {
-        $manufacturers = Manufacturer::paginate(10);
-        return $manufacturers;
-    }
     public function store($data)
     {
         $input= $data->except('_token');
@@ -22,13 +17,11 @@ class ManufacturerRepository implements ManufacturerInterface
         DB::beginTransaction();
         try {
             $manufacturer = Manufacturer::create($input);
-            $message = "Manufacturer Added Successfully";
             DB::commit();
-            return $message;
+            return $manufacturer;
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = $e->getMessage();
-            return $message;
+            return $e;
         }
     }
     public function update($data, $item)
@@ -36,23 +29,13 @@ class ManufacturerRepository implements ManufacturerInterface
         $input = $data->except('_token');
         DB::beginTransaction();
         try {
-            $otheritem = Manufacturer::where('manuName',$data->manuName)->first();
-            if($otheritem->id != $item->id)
-            {
-                $message = "Manufacturer Name Already Exist";
-                return $message;
-            }
-            else{
                 $item->update($input);
-                $message = "Manufacturer Updated Successfully";
                 DB::commit();
-                return $message;
-            }
+                return $item;
             
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = $e->getMessage();
-            return $message;
+            return $e;
         }
     }
     public function delete($item)
@@ -63,8 +46,7 @@ class ManufacturerRepository implements ManufacturerInterface
             return $message;
         } catch (\Exception $e) {
             DB::rollBack();
-            $message = $e->getMessage();
-            return $message;
+            return $e;
         }
     }
 }

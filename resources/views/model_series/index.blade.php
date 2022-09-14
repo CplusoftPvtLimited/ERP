@@ -23,51 +23,38 @@
 @if(session()->has('not_permitted'))
     <div class="alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('not_permitted') }}</div>
 @endif
-
+@if(session()->has('message'))
+    <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('message') }}</div>
+@endif
 
 <section>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-12" >
-                <div class="card">
-                    <div class="card-body">
-                        <div class="container">
-                            <div class="d-flex flex-row-reverse mb-3 mr-4">
-                                <a href="{{route('manufacturer.create')}}" class="btn btn-info mb-1"><i class="dripicons-plus"></i> {{trans('file.Add Manufacturer')}}</a>
-                                <div class="col-10 pl-4 pt-1">
-                                    <h2>Manufacturers</h2>
-                                </div>
-                            </div>
-                            <div class="table-responsive">
-                                @if(session()->has('message')) 
-                                    <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('message') }}</div>
-                                @endif
-                                @if ($message = Session::get('success'))
-                                    <div class="alert alert-success"><p>{{ $message }}</p></div>
-                                @endif
-                                @if ($message = Session::get('error'))
-                                    <div class="alert alert-danger"><p>{{ $message }}</p></div>
-                                @endif
-                                <table id="manufacturer-data-table" class="table" style="width: 100% !important">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Manufacturer Id</th>
-                                            <th>Manufacturer Name</th>
-                                            <th>Linking Target Type</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="col" >
+            <a href="{{route('modelseries.create')}}" class="btn btn-info mb-1"><i class="dripicons-plus"></i> {{trans('file.Add Model')}}</a>
+                <h2>Models</h2>
             </div>
         </div>
     </div>
+    <div class="table-responsive">
+        <table id="model-data-table" class="table" style="width: 100% !important">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Model Id</th>
+                    <th>Model Name</th>
+                    <th>Construction Year From</th>
+                    <th>Construction Year To</th>
+                    <th>Linking Target Type</th>
+                    <th>Maufacturer Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
 </section>
 <script type="text/javascript">
         $(document).ready(function () {
@@ -77,15 +64,18 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-                $('#manufacturer-data-table').DataTable({
+                $('#model-data-table').DataTable({
                     "processing" : true,
                     "serverside" : true,
-                    ajax: "{{ route('manufacturer.index') }}",
+                    ajax: "{{ route('modelseries.index') }}",
                     columns: [
                         {data: 'id', name: 'id'},
-                        {"data": "manuId",  name: 'manuId'},
-                        {"data": "manuName",  name: 'manuName'},
+                        {"data": 'modelId',  name: 'modelId'},
+                        {"data": "modelname",  name: 'modelname'},
+                        {"data": "yearOfConstrFrom",  name: 'yearOfConstrFrom'},
+                        {"data": "yearOfConstrTo",  name: 'yearOfConstrTo'},
                         {"data": "linkingTargetType",  name: 'linkingTargetType'},
+                        {"data": "manuName",  name: 'manuName'},
                         {
                             "data": 'action',
                             name: 'action',
