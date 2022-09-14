@@ -246,7 +246,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	// Route::resource('products',ProductController::class);
 	Route::get('product/list','ProductController@index')->name('products.index'); // view a purchase
 	Route::get('exportPurchases','PurchaseController@exportPurchases')->name('exportPurchases'); // Export Purchase
-	Route::get('pdfDownload','PurchaseController@pdfDownload')->name('pdfDownload'); //  Purchases pdf download
+	Route::get('pdfDownload','PurchaseController@pdfDownload')->name('purchasesPdfDownload'); //  Purchases pdf download
 
 
 
