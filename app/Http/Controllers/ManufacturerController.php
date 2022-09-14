@@ -153,5 +153,6 @@ class ManufacturerController extends Controller
             }else{
                 return redirect()->back()->withError(__('Manufacturer does not exist'));
             }
-    }
+     }
 }
+        

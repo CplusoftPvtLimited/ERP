@@ -2,6 +2,7 @@
 return [
 	'Manufacturer' => 'Manufacturer',
 	'Add Manufacturer' => 'Add Manufacturer',
+	'Edit Manufacturer' => 'Edit Manufacturer',
 	'Model' => 'Model',
 	'Add Model' => 'Add Model',
 	'Submitted Forms' => 'Submitted Forms',
