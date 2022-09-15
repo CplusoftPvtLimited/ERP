@@ -8,6 +8,8 @@ return [
 	'Edit Supplier' => 'Edit Supplier',
 	'Add Model' => 'Add Model',
 	'Add New Form' => 'Add New Form',
+	'Add Form' => 'Add Form',
+	'Edit Form' => 'Edit Form',
 	'Submitted Forms' => 'Submitted Forms',
 	'View Form' => 'View Form',
 	'Form Status' => 'Form Status',

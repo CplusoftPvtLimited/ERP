@@ -186,12 +186,14 @@ catch(\Exception $e){
 
     public function update(Request $request, $id)
     {
+        // dd('ithy');
         DB::beginTransaction();
         try{
-            
+        // dump($request->has('field_label'));
         // dd($request->all());
         // dd($request->role);
-
+        if($request->has('field_label'))
+        {
             if(count($request->field_name) > 0 && count($request->field_type) > 0  && count($request->field_label) > 0 && count($request->field_type) == count($request->field_name)){
                 $form = Form::find($id);
                 $form->form_name = $request->name;
@@ -212,11 +214,12 @@ catch(\Exception $e){
                     $field->save();
                 }
                 DB::commit();
-                return redirect()->route('form.index')->with('success','Form Updated Successfully');
-        }
-        else
-        {
-        return back()->with('error','Whoops: Something Gone Wrong');
+                return redirect()->route('form.index')->withSuccess('Form Updated Successfully');
+            }else{
+                return back()->withError('Whoops: Something Gone Wrong');
+            }
+        }else{
+            return back()->withError('Fields Can not be Empty');
         }
     }
         catch(\Exception $e){
