@@ -11,14 +11,20 @@
 |
 */
 
+use App\Http\Controllers\AssemblyGroupNodesController;
+use App\Http\Controllers\LinkageTargetsController;
 use App\Http\Controllers\ManufacturerController;
+use App\Http\Controllers\ModelSeriesController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
+
 
 Auth::routes();
 Route::get('test', function () {
-    event(new App\Events\NotificationSend('Someone'));
-    return view('welcome');
+    // event(new App\Events\NotificationSend('Someone'));
+    // return view('welcome');
+	// dd((string) Str::uuid());
 });
 
 Route::get('welcome', function () {
@@ -39,6 +45,17 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('editManufacturer/{id}',[ManufacturerController::class,'editManufacturer']);
 	Route::get('deleteManufacturer/{id}',[ManufacturerController::class,'delete']);
 	Route::resource('modelseries', 'ModelSeriesController');
+	Route::post('model/delete', [ModelSeriesController::class,'delete']);
+
+	Route::resource('engine', 'LinkageTargetsController');
+	Route::get('engine/delete', [LinkageTargetsController::class,'delete']);
+
+
+	Route::resource('section', 'AssemblyGroupNodesController');
+	Route::post('section/delete', [AssemblyGroupNodesController::class,'delete']);
+
+	Route::resource('article', 'ArticlesController');
+
 
 
 

@@ -1158,3 +1158,20 @@ table.dataTable tbody td.dt-checkboxes-cell {
 div#manufacturer-data-table_filter{
 	width: 100% !important;
 }
+
+
+i.fa.fa-bars {
+    margin-top: 10px;
+}
+
+div#model-data-table_filter {
+    width: 100%;
+}
+
+.card.model-card{
+	padding: 10px;
+}
+
+.card.model-heading{
+	margin-top: 3px;
+}

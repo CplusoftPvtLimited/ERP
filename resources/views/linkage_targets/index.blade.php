@@ -41,10 +41,10 @@
                         <div class="card-body">
                             <div class="container">
                                 <div class="d-flex flex-row-reverse mb-3 mr-4">
-                                    <a href="{{ route('modelseries.create') }}" class="btn btn-info mb-1"><i
-                                            class="dripicons-plus"></i> {{ trans('file.Add Model') }}</a>
+                                    <a href="{{ route('engine.create') }}" class="btn btn-info mb-1"><i
+                                            class="dripicons-plus"></i> {{ trans('file.Add Engine') }}</a>
                                     <div class="col-10 pl-4 pt-1">
-                                        <h2>Models</h2>
+                                        <h2>Engines</h2>
                                     </div>
                                 </div>
                                 <div class="table-responsive">
@@ -68,12 +68,14 @@
                                         <thead>
                                             <tr>
                                                 <th>#</th>
-                                                <th>Model Id</th>
-                                                <th>Model Name</th>
-                                                <th>Construction Year From</th>
-                                                <th>Construction Year To</th>
-                                                <th>Linking Target Type</th>
-                                                <th>Maufacturer Name</th>
+                                                <th>Capacity (cc)</th>
+                                                <th>Capacity (liters)</th>
+                                                <th>Code</th>
+                                                <th>KiloWatt From</th>
+                                                <th>KiloWatt To</th>
+                                                <th>HorsePower From</th>
+                                                <th>HorsePower To</th>
+                                                <th>Engine Type</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -100,34 +102,42 @@
             $('#model-data-table').DataTable({
                 "processing": true,
                 "serverside": true,
-                ajax: "{{ route('modelseries.index') }}",
+                ajax: "{{ route('engine.index') }}",
                 columns: [{
-                        data: 'id',
-                        name: 'id'
+                        data: 'linkageTargetId',
+                        name: 'linkageTargetId'
                     },
                     {
-                        "data": 'modelId',
-                        name: 'modelId'
+                        "data": 'capacityCC',
+                        name: 'capacityCC'
                     },
                     {
-                        "data": "modelname",
-                        name: 'modelname'
+                        "data": "capacityLiters",
+                        name: 'capacityLiters'
                     },
                     {
-                        "data": "yearOfConstrFrom",
-                        name: 'yearOfConstrFrom'
+                        "data": "code",
+                        name: 'code'
                     },
                     {
-                        "data": "yearOfConstrTo",
-                        name: 'yearOfConstrTo'
+                        "data": "kiloWattsFrom",
+                        name: 'kiloWattsFrom'
                     },
                     {
-                        "data": "linkingTargetType",
-                        name: 'linkingTargetType'
+                        "data": "kiloWattsTo",
+                        name: 'kiloWattsTo'
                     },
                     {
-                        "data": "manuName",
-                        name: 'manuName'
+                        "data": "horsePowerFrom",
+                        name: 'horsePowerFrom'
+                    },
+                    {
+                        "data": "horsePowerTo",
+                        name: 'horsePowerTo'
+                    },
+                    {
+                        "data": "engineType",
+                        name: 'engineType'
                     },
                     {
                         "data": 'action',
@@ -140,7 +150,7 @@
         });
 
 
-        function deleteModel(id) {
+        function deleteEngine(id) {
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -153,7 +163,7 @@
                 if (result.isConfirmed) {
                         $.ajax({
                             method: "post",
-                            url: "{{ url('/model/delete') }}",
+                            url: "{{ url('engine/delete') }}",
                             data: {
                                 id: id
                             },

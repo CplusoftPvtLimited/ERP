@@ -2,7 +2,13 @@
 
 namespace App\Providers;
 
+use App\Repositories\ArticleRepository;
+use App\Repositories\AssemblyGroupNodesRepository;
+use App\Repositories\Interfaces\ArticleInterface;
+use App\Repositories\Interfaces\AssemblyGroupNodeInterface;
+use App\Repositories\Interfaces\LinkageTargetInterface;
 use App\Repositories\Interfaces\ManufacturerInterface;
+use App\Repositories\LinkageTargetRepository;
 use App\Repositories\ManufacturerRepository;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
@@ -26,6 +32,9 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(ManufacturerInterface::class,ManufacturerRepository::class);
+        $this->app->bind(LinkageTargetInterface::class,LinkageTargetRepository::class);
+        $this->app->bind(AssemblyGroupNodeInterface::class,AssemblyGroupNodesRepository::class);
+        $this->app->bind(ArticleInterface::class,ArticleRepository::class);
         
     }
 

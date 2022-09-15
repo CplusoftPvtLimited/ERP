@@ -146,11 +146,15 @@
                 @if($stock_count_active)
                 <li id="stock-count-menu"><a href="{{route('stock-count.index')}}">{{trans('file.Stock Count')}}</a></li>
                 @endif
+                <li id="maufacturer-list-menu" class="{{ $route == 'manufacturer.index' ? 'active' : '' }}"><a href="{{route('manufacturer.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Manufacturer')}}</a></li>
+                <li id="modelseries-list-menu" class="{{ $route == 'modelseries.index' ? 'active' : '' }}"><a href="{{route('modelseries.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Model')}}</a></li>
+                <li id="modelseries-list-menu" class="{{ $route == 'engine.index' ? 'active' : '' }}"><a href="{{route('engine.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Engines')}}</a></li>
+                <li id="modelseries-list-menu" class="{{ $route == 'section.index' ? 'active' : '' }}"><a href="{{route('section.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Sections')}}</a></li>
+                <li id="modelseries-list-menu" class="{{ $route == 'article.index' ? 'active' : '' }}"><a href="{{route('article.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Articles')}}</a></li>
             </ul>
             </li>
             @endif
-            <li id="maufacturer-list-menu" class="{{ $route == 'manufacturer.index' ? 'active' : '' }}"><a href="{{route('manufacturer.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Manufacturer')}}</a></li>
-            <li id="modelseries-list-menu" class="{{ $route == 'modelseries.index' ? 'active' : '' }}"><a href="{{route('modelseries.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Model')}}</a></li>
+            
             <?php
             $index_permission = DB::table('permissions')->where('name', 'purchases-index')->first();
                 $index_permission_active = DB::table('role_has_permissions')->where([

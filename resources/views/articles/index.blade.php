@@ -41,10 +41,10 @@
                         <div class="card-body">
                             <div class="container">
                                 <div class="d-flex flex-row-reverse mb-3 mr-4">
-                                    <a href="{{ route('modelseries.create') }}" class="btn btn-info mb-1"><i
-                                            class="dripicons-plus"></i> {{ trans('file.Add Model') }}</a>
+                                    <a href="{{ route('article.create') }}" class="btn btn-info mb-1"><i
+                                            class="dripicons-plus"></i> {{ trans('file.Add Product') }}</a>
                                     <div class="col-10 pl-4 pt-1">
-                                        <h2>Models</h2>
+                                        <h2>Products</h2>
                                     </div>
                                 </div>
                                 <div class="table-responsive">
@@ -68,12 +68,11 @@
                                         <thead>
                                             <tr>
                                                 <th>#</th>
-                                                <th>Model Id</th>
-                                                <th>Model Name</th>
-                                                <th>Construction Year From</th>
-                                                <th>Construction Year To</th>
-                                                <th>Linking Target Type</th>
-                                                <th>Maufacturer Name</th>
+                                                <th>Product ID</th>
+                                                <th>Product Number</th>
+                                                <th>Manufacturer</th>
+                                                <th>Section</th>
+                                                <th>Additional Description</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -100,34 +99,30 @@
             $('#model-data-table').DataTable({
                 "processing": true,
                 "serverside": true,
-                ajax: "{{ route('modelseries.index') }}",
+                ajax: "{{ route('article.index') }}",
                 columns: [{
                         data: 'id',
                         name: 'id'
                     },
                     {
-                        "data": 'modelId',
-                        name: 'modelId'
+                        "data": 'legacyArticleId',
+                        name: 'legacyArticleId'
                     },
                     {
-                        "data": "modelname",
-                        name: 'modelname'
+                        "data": "articleNumber",
+                        name: 'articleNumber'
                     },
                     {
-                        "data": "yearOfConstrFrom",
-                        name: 'yearOfConstrFrom'
+                        "data": "manufacturer",
+                        name: 'manufacturer'
                     },
                     {
-                        "data": "yearOfConstrTo",
-                        name: 'yearOfConstrTo'
+                        "data": "section",
+                        name: 'section'
                     },
                     {
-                        "data": "linkingTargetType",
-                        name: 'linkingTargetType'
-                    },
-                    {
-                        "data": "manuName",
-                        name: 'manuName'
+                        "data": "additionalDescription",
+                        name: 'additionalDescription'
                     },
                     {
                         "data": 'action',
@@ -140,7 +135,7 @@
         });
 
 
-        function deleteModel(id) {
+        function deleteSection(id) {
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -153,7 +148,7 @@
                 if (result.isConfirmed) {
                         $.ajax({
                             method: "post",
-                            url: "{{ url('/model/delete') }}",
+                            url: "{{ url('section/delete') }}",
                             data: {
                                 id: id
                             },

@@ -41,10 +41,10 @@
                         <div class="card-body">
                             <div class="container">
                                 <div class="d-flex flex-row-reverse mb-3 mr-4">
-                                    <a href="{{ route('modelseries.create') }}" class="btn btn-info mb-1"><i
-                                            class="dripicons-plus"></i> {{ trans('file.Add Model') }}</a>
+                                    <a href="{{ route('section.create') }}" class="btn btn-info mb-1"><i
+                                            class="dripicons-plus"></i> {{ trans('file.Add Section') }}</a>
                                     <div class="col-10 pl-4 pt-1">
-                                        <h2>Models</h2>
+                                        <h2>Sections</h2>
                                     </div>
                                 </div>
                                 <div class="table-responsive">
@@ -68,12 +68,12 @@
                                         <thead>
                                             <tr>
                                                 <th>#</th>
-                                                <th>Model Id</th>
-                                                <th>Model Name</th>
-                                                <th>Construction Year From</th>
-                                                <th>Construction Year To</th>
-                                                <th>Linking Target Type</th>
-                                                <th>Maufacturer Name</th>
+                                                <th>Section ID</th>
+                                                <th>Section Name</th>
+                                                <th>Engine Type ID</th>
+                                                <th>Engine Type</th>
+                                                <th>Language</th>
+                                                <th>Parent Section</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -100,34 +100,34 @@
             $('#model-data-table').DataTable({
                 "processing": true,
                 "serverside": true,
-                ajax: "{{ route('modelseries.index') }}",
+                ajax: "{{ route('section.index') }}",
                 columns: [{
                         data: 'id',
                         name: 'id'
                     },
                     {
-                        "data": 'modelId',
-                        name: 'modelId'
+                        "data": 'assemblyGroupNodeId',
+                        name: 'assemblyGroupNodeId'
                     },
                     {
-                        "data": "modelname",
-                        name: 'modelname'
+                        "data": "assemblyGroupName",
+                        name: 'assemblyGroupName'
                     },
                     {
-                        "data": "yearOfConstrFrom",
-                        name: 'yearOfConstrFrom'
+                        "data": "request__linkingTargetId",
+                        name: 'request__linkingTargetId'
                     },
                     {
-                        "data": "yearOfConstrTo",
-                        name: 'yearOfConstrTo'
+                        "data": "request__linkingTargetType",
+                        name: 'request__linkingTargetType'
                     },
                     {
-                        "data": "linkingTargetType",
-                        name: 'linkingTargetType'
+                        "data": "lang",
+                        name: 'lang'
                     },
                     {
-                        "data": "manuName",
-                        name: 'manuName'
+                        "data": "parentNodeId",
+                        name: 'parentNodeId'
                     },
                     {
                         "data": 'action',
@@ -140,7 +140,7 @@
         });
 
 
-        function deleteModel(id) {
+        function deleteSection(id) {
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -153,7 +153,7 @@
                 if (result.isConfirmed) {
                         $.ajax({
                             method: "post",
-                            url: "{{ url('/model/delete') }}",
+                            url: "{{ url('section/delete') }}",
                             data: {
                                 id: id
                             },

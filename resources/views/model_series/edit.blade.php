@@ -18,7 +18,7 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <h4>{{ trans('file.Add Model') }}</h4>
+                                    <h4>{{ trans('file.Edit Model') }}</h4>
                                 </div>
                                 <div class="col-md-6">
                                     <a href="{{ route('modelseries.index') }}" class="btn btn-primary float-right">Back</a>
@@ -42,8 +42,9 @@
                                     </ul>
                                 </div>
                             @endif
-                            <form action="{{ route('modelseries.store') }}" method="post" enctype="multipart/form-data">
+                            <form action="{{ route('modelseries.update',$modelSeries->id) }}" method="post" enctype="multipart/form-data">
                                 @csrf
+                                @method('PUT')
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="other_data"></div>
@@ -52,7 +53,7 @@
                                                 <div class="form-group">
                                                     <h6>Model Name:</h6>
                                                     <input type="text" name="modelname" class="form-control" required
-                                                        value="{{ old('modelname') }}">
+                                                        value="{{ $modelSeries->modelname }}">
                                                 </div>
                                             </div>
                                             <div class="col-4">
@@ -61,7 +62,7 @@
                                                     <select class="js-example-placeholder-multiple col-sm-12 form-control" name="yearOfConstrFrom">
                                                         <option value="-2">Select Year</option>
                                                         @foreach(range( $latest_year, $earliest_year ) as $i)
-                                                        <option value="{{ $i }}">{{ $i }}</option>
+                                                        <option value="{{ $i }}" {{ $i == $modelSeries->yearOfConstrFrom ? 'selected' : '' }}>{{ $i }}</option>
                                                         @endforeach
                         
                                                     </select>
@@ -74,7 +75,7 @@
                                                     <select class="js-example-placeholder-multiple col-sm-12 form-control" name="yearOfConstrTo">
                                                         <option value="-2">Select Year</option>
                                                         @foreach(range( $latest_year, $earliest_year ) as $i)
-                                                        <option value="{{ $i }}">{{ $i }}</option>
+                                                        <option value="{{ $i }}" {{ $i == $modelSeries->yearOfConstrTo ? 'selected' : '' }}>{{ $i }}</option>
                                                         @endforeach
                         
                                                     </select>
@@ -83,10 +84,11 @@
                                             <div class="col-4">
                                                 <div class="form-group">
                                                     <h6>Manufacturer:</h6>
-                                                    <select name="manuId" id="" class="form-control" required>
+                                                    <select name="manuId" id="" class="form-control"
+                                                        required>
                                                         <option value="" selected disabled>--Select One--</option>
                                                         @foreach ($manufacturers as $manufacturer)
-                                                            <option value="{{ $manufacturer->manuId }}">
+                                                            <option value="{{ $manufacturer->manuId }}" {{ $manufacturer->manuId == $modelSeries->manuId ? 'selected' : '' }}>
                                                                 {{ $manufacturer->manuName }}</option>
                                                         @endforeach
                                                     </select>
@@ -98,23 +100,23 @@
                                                     <select name="linkingTargetType" id="" class="form-control"
                                                         required>
                                                         <option value="" selected disabled>--Select One--</option>
-                                                        <option value="P">P</option>
-                                                        <option value="V">V</option>
-                                                        <option value="L">L</option>
-                                                        <option value="B">B</option>
-                                                        <option value="C">C</option>
-                                                        <option value="T">T</option>
-                                                        <option value="M">M</option>
-                                                        <option value="A">A</option>
-                                                        <option value="K">K</option>
-                                                        <option value="O">O</option>
+                                                        <option value="P" {{ $modelSeries->linkingTargetType == "P" ? 'selected' : '' }}>P</option>
+                                                        <option value="V" {{ $modelSeries->linkingTargetType == "V" ? 'selected' : '' }}>V</option>
+                                                        <option value="L" {{ $modelSeries->linkingTargetType == "L" ? 'selected' : '' }}>L</option>
+                                                        <option value="B" {{ $modelSeries->linkingTargetType == "B" ? 'selected' : '' }}>B</option>
+                                                        <option value="C" {{ $modelSeries->linkingTargetType == "C" ? 'selected' : '' }}>C</option>
+                                                        <option value="T" {{ $modelSeries->linkingTargetType == "T" ? 'selected' : '' }}>T</option>
+                                                        <option value="M" {{ $modelSeries->linkingTargetType == "M" ? 'selected' : '' }}>M</option>
+                                                        <option value="A" {{ $modelSeries->linkingTargetType == "A" ? 'selected' : '' }}>A</option>
+                                                        <option value="K" {{ $modelSeries->linkingTargetType == "K" ? 'selected' : '' }}>K</option>
+                                                        <option value="O" {{ $modelSeries->linkingTargetType == "O" ? 'selected' : '' }}>O</option>
                                                     </select>
                                                 </div>
                                             </div>
-
+                                            
                                         </div>
                                         <div class="d-flex flex-row-reverse">
-                                            <button type="submit" class="btn btn-primary" style="width:100px">Save</button>
+                                            <button type="submit" class="btn btn-primary" style="width:100px">Update</button>
                                         </div>
                                     </div>
                                 </div>

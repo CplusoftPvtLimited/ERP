@@ -18,10 +18,10 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <h4>{{ trans('file.Add Model') }}</h4>
+                                    <h4>{{ trans('file.Add Section') }}</h4>
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="{{ route('modelseries.index') }}" class="btn btn-primary float-right">Back</a>
+                                    <a href="{{ route('section.index') }}" class="btn btn-primary float-right">Back</a>
                                 </div>
                             </div>
                         </div>
@@ -42,7 +42,7 @@
                                     </ul>
                                 </div>
                             @endif
-                            <form action="{{ route('modelseries.store') }}" method="post" enctype="multipart/form-data">
+                            <form action="{{ route('section.store') }}" method="post" enctype="multipart/form-data">
                                 @csrf
                                 <div class="row">
                                     <div class="col-12">
@@ -50,69 +50,57 @@
                                         <div class="row">
                                             <div class="col-4">
                                                 <div class="form-group">
-                                                    <h6>Model Name:</h6>
-                                                    <input type="text" name="modelname" class="form-control" required
-                                                        value="{{ old('modelname') }}">
+                                                    <h6>Section Name</h6>
+                                                    <input type="text" min="0" name="assemblyGroupName" class="form-control" required
+                                                        value="{{ old('assemblyGroupName') }}">
                                                 </div>
                                             </div>
                                             <div class="col-4">
                                                 <div class="form-group">
-                                                    <h6>Year of Construction From:</h6>
-                                                    <select class="js-example-placeholder-multiple col-sm-12 form-control" name="yearOfConstrFrom">
-                                                        <option value="-2">Select Year</option>
-                                                        @foreach(range( $latest_year, $earliest_year ) as $i)
-                                                        <option value="{{ $i }}">{{ $i }}</option>
-                                                        @endforeach
-                        
-                                                    </select>
-                                                    
-                                                </div>
-                                            </div>
-                                            <div class="col-4">
-                                                <div class="form-group">
-                                                    <h6>Year of Construction To:</h6>
-                                                    <select class="js-example-placeholder-multiple col-sm-12 form-control" name="yearOfConstrTo">
-                                                        <option value="-2">Select Year</option>
-                                                        @foreach(range( $latest_year, $earliest_year ) as $i)
-                                                        <option value="{{ $i }}">{{ $i }}</option>
-                                                        @endforeach
-                        
+                                                    <h6>Has Childs</h6>
+                                                    <select name="hasChilds" id="" class="form-control">
+                                                        <option value="0">0</option>
+                                                        <option value="1">1</option>
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="col-4">
                                                 <div class="form-group">
-                                                    <h6>Manufacturer:</h6>
-                                                    <select name="manuId" id="" class="form-control" required>
-                                                        <option value="" selected disabled>--Select One--</option>
-                                                        @foreach ($manufacturers as $manufacturer)
-                                                            <option value="{{ $manufacturer->manuId }}">
-                                                                {{ $manufacturer->manuName }}</option>
-                                                        @endforeach
-                                                    </select>
+                                                    <h6>Short Cut ID</h6>
+                                                    <input type="number" name="shortCutId" class="form-control" required
+                                                        value="{{ old('shortCutId') }}">
                                                 </div>
                                             </div>
-                                            <div class="col-4">
-                                                <div class="form-group">
-                                                    <h6>Linkage Target Type:</h6>
-                                                    <select name="linkingTargetType" id="" class="form-control"
-                                                        required>
-                                                        <option value="" selected disabled>--Select One--</option>
-                                                        <option value="P">P</option>
-                                                        <option value="V">V</option>
-                                                        <option value="L">L</option>
-                                                        <option value="B">B</option>
-                                                        <option value="C">C</option>
-                                                        <option value="T">T</option>
-                                                        <option value="M">M</option>
-                                                        <option value="A">A</option>
-                                                        <option value="K">K</option>
-                                                        <option value="O">O</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
                                         </div>
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <h6>Select Language</h6>
+                                                <select name="lang" id="" class="form-control">
+                                                    @foreach ($languages as $lang)
+                                                        <option value="{{ $lang->lang }}">{{ $lang->languageName }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="form-group">
+                                                    <h6>Select Engine</h6>
+                                                    <select name="request__linkingTargetId" id="" class="form-control">
+                                                        @foreach ($engines as $engine)
+                                                            <option value="{{ $engine->linkageTargetId }}">{{ $engine->linkageTargetType }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="form-group">
+                                                    <h6>Parent Section</h6>
+                                                    <input type="number" min="0" name="parentNodeId" class="form-control" required
+                                                        value="{{ old('parentNodeId') }}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        
                                         <div class="d-flex flex-row-reverse">
                                             <button type="submit" class="btn btn-primary" style="width:100px">Save</button>
                                         </div>
@@ -127,5 +115,6 @@
         </div>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
     </section>
 @endsection
