@@ -40,10 +40,7 @@ class AmBrandController extends Controller
                                     title=""><i class="fa fa-edit"></i></button></a>
                                 </div>
                                 <div class="col-md-2">
-                                    <a href="deleteSupplier/' . $row['id'].'"> <button
-                                    class="btn btn-danger btn-sm " style="" type="button"
-                                    data-original-title="btn btn-danger btn-sm"
-                                    title=""><i class="fa fa-trash"></i></button></a>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteSupplier(\''.$row["id"].'\')"><i class="fa fa-trash"></i></button>
                                 </div>
                             </div>
                          ';
@@ -141,13 +138,19 @@ class AmBrandController extends Controller
      * @param  \App\Models\AmBrand  $amBrand
      * @return \Illuminate\Http\Response
      */
-    public function destroy(AmBrand $amBrand)
+    public function destroy(Request $request)
     {
-        //
+        $supplier = AmBrand::findOrFail($request->id);
+        $item = $this->amBrand->delete($supplier);
+        if($item == true){
+            return redirect()->route('suppliers.index')->withSuccess(__('Supplier Deleted Successfully.'));
+        }else{
+            return redirect()->back()->withError($item);
+        }
     }
-    public function delete($id)
+    public function delete(Request $request)
     {
-        $supplier = AmBrand::findOrFail($id);
+        $supplier = AmBrand::findOrFail($request->id);
         $item = $this->amBrand->delete($supplier);
         if($item == true){
             return redirect()->route('suppliers.index')->withSuccess(__('Supplier Deleted Successfully.'));

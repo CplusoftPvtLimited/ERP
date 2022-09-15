@@ -39,10 +39,7 @@ class ManufacturerController extends Controller
                                 title=""><i class="fa fa-edit"></i></button></a>
                             </div>
                             <div class="col-md-2">
-                                <a href="deleteManufacturer/' . $row['id'].'"> <button
-                                class="btn btn-danger btn-sm " style="" type="button"
-                                data-original-title="btn btn-danger btn-sm"
-                                title=""><i class="fa fa-trash"></i></button></a>
+                            <button class="btn btn-danger btn-sm" onclick="deleteManufacturer(\''.$row["id"].'\')"><i class="fa fa-trash"></i></button>
                             </div>
                         </div>
                      ';
@@ -138,9 +135,9 @@ class ManufacturerController extends Controller
         // return redirect()->back()->withMessage($message);
     }
 
-    public function delete($id)
+    public function delete(Request $request)
     {
-            $manufacturer = Manufacturer::findOrFail($id);
+            $manufacturer = Manufacturer::findOrFail($request->id);
             $item = $this->manufacturer->delete($manufacturer);
             if($item == true)
             {
