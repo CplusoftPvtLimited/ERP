@@ -152,6 +152,7 @@
             <li id="maufacturer-list-menu" class="{{ $route == 'manufacturer.index' ? 'active' : '' }}"><a href="{{route('manufacturer.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Manufacturer')}}</a></li>
             <li id="modelseries-list-menu" class="{{ $route == 'modelseries.index' ? 'active' : '' }}"><a href="{{route('modelseries.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Model')}}</a></li>
             <li id="suppliers-list-menu" class="{{ $route == 'suppliers.index' ? 'active' : '' }}"><a href="{{route('suppliers.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Suppliers')}}</a></li>
+            <li id="form-list-menu" class="{{ $route == 'form.index' ? 'active' : '' }}"><a href="{{route('form.index')}}"><i class="dripicons-list"></i>{{trans('file.Forms')}}</a></li>
 
             <?php
             $index_permission = DB::table('permissions')->where('name', 'purchases-index')->first();
@@ -453,7 +454,7 @@
                     ])->first();
             ?>
             @if($user_index_permission_active || $customer_index_permission_active || $biller_index_permission_active || $supplier_index_permission_active)
-            <li><a href="#people" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-user"></i><span>{{trans('file.Customer')}}</span></a>
+            <li ><a href="#people" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-user"></i><span>{{trans('file.Customer')}}</span></a>
             <ul id="people" class="collapse list-unstyled ">
 
                 @if($user_index_permission_active)
@@ -468,7 +469,7 @@
                 <!-- <li id="user-create-menu"><a href="{{route('user.create')}}">{{trans('file.Add Customer')}}</a></li> -->
                 <!-- <li id="form-list-menu"><a href="{{route('submittedforms')}}">{{trans('file.Submitted Forms')}}</a></li> -->
 
-                <li id="form-list-menu"><a href="{{route('form.index')}}">{{trans('file.Customer Forms')}}</a></li>
+                
                 @endif
                 @endif
 

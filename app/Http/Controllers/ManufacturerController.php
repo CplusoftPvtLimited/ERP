@@ -27,7 +27,7 @@ class ManufacturerController extends Controller
         // $manufacturers= $this->manufacturer->index();
         // return view ('manufacturer.index', compact('manufacturers'));
         if ($request->ajax()) {
-        $manufacturers = Manufacturer::orderBy('id','desc')->get();
+            $manufacturers = Manufacturer::orderBy('id','desc')->get();
             return DataTables::of($manufacturers)
                     ->addIndexColumn()
                     ->addColumn('action', function($row){

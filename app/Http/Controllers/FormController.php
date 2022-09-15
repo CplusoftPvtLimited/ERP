@@ -26,14 +26,36 @@ use App\GeneralMailSetting;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 
 class FormController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // dd();
-        $form_all = Form::all();
-        return view('forms.index', compact('form_all'));
+        if ($request->ajax()) {
+            $forms = Form::all();
+            return DataTables::of($forms)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($row){
+                        $btn = '<div class="row">
+                            <div class="col-md-2">
+                                <a href="form/' . $row["id"].'/edit"> <button
+                                class="btn btn-primary btn-sm " type="button"
+                                data-original-title="btn btn-danger btn-xs"
+                                title=""><i class="fa fa-edit"></i></button></a>
+                            </div>
+                            <div class="col-md-2">
+                            <button class="btn btn-danger btn-sm" onclick="deleteForm(\''.$row["id"].'\')"><i class="fa fa-trash"></i></button>
+                            </div>
+                        </div>
+                     ';
+                            return $btn;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+        }
+        return view('forms.index');
     }
 
     public function create()
@@ -519,4 +541,15 @@ public function showSubmittedForm($noti_id,$user_id)
         $form_fields = FormField::where('form_id',$form->id)->get();
         return view('forms.Form_index',compact('form','form_fields'));
     }
+    public function delete(Request $request)
+    {
+            $form = Form::findOrFail($request->id);
+            $item = $form->delete();
+            if($item == true)
+            {
+                return redirect()->back()->withSuccess(__('Manufacturer Deleted Successfully.'));
+            }else{
+                return redirect()->back()->withError($item);
+            }
+     }
 }
