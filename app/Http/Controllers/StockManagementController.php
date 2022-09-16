@@ -207,6 +207,7 @@ class StockManagementController extends Controller
             //     return redirect()->withErrors($validator)->withInput();
             // }
             // Remove the header column
+            $count =0;
             array_shift($records);
             $article_with_reference_no = Article::select('articleNumber')->get();
             foreach ($records as $record) {
@@ -224,39 +225,60 @@ class StockManagementController extends Controller
             $saved_stock = StockManagement::where('retailer_id', Auth::user()->id)->get();
             // dd($saved_stock);
             $record_save=false;
+
             foreach ($this->rows as $data) {
+                $reference_exist= false;
+                $record_repeat = false;
                 if ($data['reference_no'] == null || $data['reference_no'] == "" || $data['unit_actual_price'] < 0 || $data['unit_sale_price'] < 0) {
                     continue;
                 }
                 if ($data['white_items'] <= 0 && $data['black_items'] <= 0) {  // incase of the black and white items both are 0 we can ignore the row
                     continue;
                 }
-                $record_repeat = false;
+                // $record_repeat = false;
+                foreach ($article_with_reference_no as $key => $reference_no) {  // if reference is not exists in system then continue
+                    if($data['reference_no'] == $reference_no->articleNumber){
+                         $reference_exist = true;
+                    }
+                }
+                // if($reference_not_exist){
+                //     continue;
+                // }
                 foreach ($saved_stock as $key => $stock) {
                     if ($data['reference_no'] == $stock->reference_no) {
-                        $record_repeat = true;
+                        $count++;
+                        $record_repeat = true;     /// after true add the stock in existing record 
                     }
                 }
-                $article_of_this_reference_not_exist= false;
-                foreach ($article_with_reference_no as $key => $reference_no) {
-                    if($reference_no->articleNumber != $data['reference_no']){
-                       $article_of_this_reference_not_exist = true;
-                    }
-                }
-                if ($record_repeat == true || $article_of_this_reference_not_exist == true) {   /// incase some product (reference no is already exists in the table then we can ignore the record from the csv in storage procedure)
-                    continue;
-                } else {
-                    $legacy_article_id = Article::select('legacyArticleId')->where('articleNumber',$data['reference_no'])->first();
-                    // dd($legacy_article_id);
+                // dd("here",$record_repeat);
+                $legacy_article_id = Article::select('legacyArticleId')->where('articleNumber',$data['reference_no'])->first();
+                // dd("here");
+                if ($record_repeat == true && $reference_exist == true) {   /// incase some product (reference no is already exists in the table then we can ignore the record from the csv in storage procedure)
+                    $find_stock_on_existing_reference = StockManagement::where('retailer_id',Auth::user()->id)->where('reference_no',$data['reference_no'])->with(['purchaseProduct'])->first();
+                    $find_stock_on_existing_reference->update([
+                        // 'retailer_id' => Auth::user()->id,
+                        // 'reference_no' => $data['reference_no'],
+                        'purchase_product_id' => !empty($find_stock_on_existing_reference->purchaseProduct) ? $find_stock_on_existing_reference->purchaseProduct->id : null,
+                        'white_items' => $find_stock_on_existing_reference->white_items + isset($data['white_items']) ? (empty($data['white_items']) ?  0 : $data['white_items']) : 0,
+                        'black_items' => $find_stock_on_existing_reference->black_items + isset($data['black_items']) ? (empty($data['black_items']) ? 0 : $data['black_items']) : 0,
+                        'unit_actual_price' => isset($data['unit_actual_price']) ? $data['unit_actual_price'] : (!empty($find_stock_on_existing_reference->purchaseProduct) ? $find_stock_on_existing_reference->purchaseProduct->unit_actual_price : 0),
+                        'unit_sale_price' => isset($data['unit_sale_price']) ? $data['unit_actual_price'] : (!empty($find_stock_on_existing_reference->purchaseProduct) ? $find_stock_on_existing_reference->purchaseProduct->unit_actual_price : 0),
+                        'total_qty' => $find_stock_on_existing_reference->total_qty + (isset($data['white_items']) ? $data['white_items'] : 0)  + (isset($data['black_items']) ? $data['black_items'] : 0),
+                        // 'product_id' => $legacy_article_id,
+                    ]);
+                    $record_save = true;
+                } elseif ($reference_exist == true) {
+                    // dd($data['reference_no'],$data['white_items'],$data['black_items'],$data['unit_actual_price'],$data['unit_sale_price'],$data['white_items'],$legacy_article_id);
+                    dd(empty($data['black_items']));
                     StockManagement::create([
                         'retailer_id' => Auth::user()->id,
-                        'reference_no' => $data['reference_no'],
-                        'white_items' => $data['white_items'],
-                        'black_items' => $data['black_items'],
-                        'unit_actual_price' => $data['unit_actual_price'],
-                        'unit_sale_price' => $data['unit_sale_price'],
-                        'total_qty' => $data['white_items'] + $data['black_items'],
-                        'product_id' => $legacy_article_id,
+                        'reference_no' => isset($data['reference_no']) ? $data['reference_no'] : null,
+                        'white_items' => isset($data['white_items']) ? (empty($data['white_items']) ?  0 : $data['white_items']) : 0,
+                        'black_items' => isset($data['black_items']) ? (empty($data['black_items']) ? 0 : $data['black_items']) : 0,
+                        'unit_actual_price' => isset($data['unit_actual_price']) ? (empty($data['unit_actual_price']) ? 0 : $data['unit_actual_price']) : 0,
+                        'unit_sale_price' => isset($data['unit_sale_price']) ? (empty($data['unit_sale_price']) ? 0 : $data['unit_sale_price'] ) : 0,
+                        'total_qty' => ( isset($data['white_items']) ? (empty($data['white_items']) ?  0 : $data['white_items']) : 0) + (isset($data['black_items']) ? (empty($data['black_items']) ? 0 : $data['black_items']) : 0),
+                        'product_id' => $legacy_article_id->legacyArticleId,
                     ]);
                     $record_save = true;
                 }
