@@ -27,17 +27,24 @@ class ArticlesController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $articless = Article::select('id','legacyArticleId','articleNumber','mfrId','additionalDescription','assemblyGroupNodeId')->get();
-            $articles = [];
-            foreach ($articless as $article) {
-                $manufacturer = Manufacturer::where('manuId',$article->mfrId)->first();
-                $section = AssemblyGroupNode::where('assemblyGroupNodeId',$article->assemblyGroupNodeId)->first();
-                $article['manufacturer'] = $manufacturer ? $manufacturer->manuName : 'N/A';
-                $article['section'] = $section ? $section->assemblyGroupName : 'N/A';
-                array_push($articles,$article);
-            }
+            $articles = Article::select('id','legacyArticleId','articleNumber','mfrId','additionalDescription','assemblyGroupNodeId')->with(['assemblyGroup', 'manufacturer']);
+            // $articles = [];
+            // foreach ($articless as $article) {
+            //     // $manufacturer = Manufacturer::where('manuId',$article->mfrId)->first();
+            //     $section = AssemblyGroupNode::where('assemblyGroupNodeId',$article->assemblyGroupNodeId)->first();
+            //     // $article['manufacturer'] = $manufacturer ? $manufacturer->manuName : 'N/A';
+            //     $article['section'] = $section ? $section->assemblyGroupName : 'N/A';
+            //     array_push($articles,$article);
+            // }
             return DataTables::of($articles)
                 ->addIndexColumn()
+                ->addColumn('manufacturer', function ($row) {
+                    return isset($row->manufacturer->manuName) ? $row->manufacturer->manuName : "N/A";
+                    
+                })
+                ->addColumn('section', function ($row) {
+                    return isset($row->assemblyGroup->assemblyGroupName) ? $row->assemblyGroup->assemblyGroupName : "N/A";
+                })
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="row">
                                 <div class="col-md-2 mr-1">
@@ -56,7 +63,7 @@ class ArticlesController extends Controller
                          ';
                     return $btn;
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['action','section', 'manufacturer'])
                 ->make(true);
         }
 

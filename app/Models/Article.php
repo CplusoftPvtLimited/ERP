@@ -52,4 +52,14 @@ class Article extends Model
         return $this->hasMany(Ambrand::class,'brandId','dataSupplierId');
     }
 
+    public function manufacturer()
+    {
+        return $this->belongsTo(Manufacturer::class, 'mfrId', 'manuId');
+    }
+
+    public function assemblyGroup()
+    {
+        return $this->belongsTo(AssemblyGroupNode::class, 'assemblyGroupNodeId', 'assemblyGroupNodeId');
+    }
+
 }
