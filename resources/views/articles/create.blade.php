@@ -18,10 +18,10 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <h4>{{ trans('file.Add Section') }}</h4>
+                                    <h4>{{ trans('file.Add Product') }}</h4>
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="{{ route('section.index') }}" class="btn btn-primary float-right">Back</a>
+                                    <a href="{{ route('article.index') }}" class="btn btn-primary float-right">Back</a>
                                 </div>
                             </div>
                         </div>
@@ -42,7 +42,7 @@
                                     </ul>
                                 </div>
                             @endif
-                            <form action="{{ route('section.store') }}" method="post" enctype="multipart/form-data">
+                            <form action="{{ route('article.store') }}" method="post" enctype="multipart/form-data">
                                 @csrf
                                 <div class="row">
                                     <div class="col-12">
@@ -50,57 +50,73 @@
                                         <div class="row">
                                             <div class="col-4">
                                                 <div class="form-group">
-                                                    <h6>Section Name</h6>
-                                                    <input type="text" min="0" name="assemblyGroupName" class="form-control" required
-                                                        value="{{ old('assemblyGroupName') }}">
-                                                </div>
-                                            </div>
-                                            <div class="col-4">
-                                                <div class="form-group">
-                                                    <h6>Has Childs</h6>
-                                                    <select name="hasChilds" id="" class="form-control">
-                                                        <option value="0">0</option>
-                                                        <option value="1">1</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-4">
-                                                <div class="form-group">
-                                                    <h6>Short Cut ID</h6>
-                                                    <input type="number" name="shortCutId" class="form-control" required
-                                                        value="{{ old('shortCutId') }}">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-4">
-                                                <h6>Select Language</h6>
-                                                <select name="lang" id="" class="form-control">
-                                                    @foreach ($languages as $lang)
-                                                        <option value="{{ $lang->lang }}">{{ $lang->languageName }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="col-4">
-                                                <div class="form-group">
-                                                    <h6>Select Engine</h6>
-                                                    <select name="request__linkingTargetId" id="" class="form-control">
-                                                        @foreach ($engines as $engine)
-                                                            <option value="{{ $engine->linkageTargetId }}">{{ $engine->linkageTargetType }}</option>
+                                                    <h6>Manufacturers</h6>
+                                                    <select name="mfrId" id="" class="form-control">
+                                                        @foreach ($manufacturers as $manufacturer)
+                                                            <option value="{{ $manufacturer->manuId }}">
+                                                                {{ $manufacturer->manuName }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="col-4">
                                                 <div class="form-group">
-                                                    <h6>Parent Section</h6>
-                                                    <input type="number" min="0" name="parentNodeId" class="form-control" required
-                                                        value="{{ old('parentNodeId') }}">
+                                                    <h6>Manufacturers</h6>
+                                                    <select name="dataSupplierId" id="" class="form-control">
+                                                        @foreach ($suppliers as $supplier)
+                                                            <option value="{{ $supplier->brandId }}">
+                                                                {{ $supplier->brandName }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="form-group">
+                                                    <h6>Sections</h6>
+                                                    <select name="assemblyGroupNodeId" id="" class="form-control">
+                                                        @foreach ($sections as $section)
+                                                            <option value="{{ $section->assemblyGroupNodeId }}">
+                                                                {{ $section->assemblyGroupName }}</option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>
-                                        
-                                        
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <h6>Product Number</h6>
+                                                <input type="number" name="articleNumber" class="form-control" required>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="form-group">
+                                                    <h6>Quantity per Package</h6>
+                                                    <input type="number" name="quantityPerPackage" class="form-control"
+                                                        required>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="form-group">
+                                                    <h6>Quantity/Package/Package</h6>
+                                                    <input type="number" name="quantityPerPartPerPackage"
+                                                        class="form-control" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <h6>Additional Description</h6>
+                                                <textarea name="additionalDescription" id="" cols="10" rows="10" class="form-control"></textarea>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="form-group">
+                                                    <h6>Generic Product Description</h6>
+                                                    <textarea name="genericArticleDescription" id="" cols="10" rows="10" class="form-control"></textarea>
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+
+
                                         <div class="d-flex flex-row-reverse">
                                             <button type="submit" class="btn btn-primary" style="width:100px">Save</button>
                                         </div>

@@ -9,6 +9,7 @@ class Article extends Model
 {
     use HasFactory;
     protected $table = "articles";
+    protected $guarded = [];
 
     public function articleCriteria(){
         return $this->hasOne(ArticleCriteria::class);

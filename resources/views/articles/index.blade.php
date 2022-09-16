@@ -148,7 +148,7 @@
                 if (result.isConfirmed) {
                         $.ajax({
                             method: "post",
-                            url: "{{ url('section/delete') }}",
+                            url: "{{ url('article/delete') }}",
                             data: {
                                 id: id
                             },

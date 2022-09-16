@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ambrand;
 use App\Models\Article;
 use App\Models\AssemblyGroupNode;
 use App\Models\Manufacturer;
+use App\Repositories\Interfaces\ArticleInterface;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
@@ -16,6 +18,12 @@ class ArticlesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    private $article;
+
+    public function __construct(ArticleInterface $articleInterface)
+    {
+        $this->article = $articleInterface;
+    }
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -62,7 +70,11 @@ class ArticlesController extends Controller
      */
     public function create()
     {
-        //
+        $suppliers = Ambrand::all();
+        $sections = AssemblyGroupNode::all();
+        $manufacturers = Manufacturer::all();
+
+        return view('articles.create',compact('suppliers','sections','manufacturers'));
     }
 
     /**
@@ -73,7 +85,12 @@ class ArticlesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $item = $this->article->store($request);
+        if($item == true){
+            return redirect()->route('article.index')->withSuccess(__('Product Added Successfully.'));
+        }else{
+            return redirect()->back()->withError(__('Some thing went wrong'));
+        }
     }
 
     /**
@@ -95,7 +112,12 @@ class ArticlesController extends Controller
      */
     public function edit($id)
     {
-        //
+        $suppliers = Ambrand::all();
+        $sections = AssemblyGroupNode::all();
+        $manufacturers = Manufacturer::all();
+        $article = Article::find($id);
+
+        return view('articles.edit',compact('suppliers','sections','manufacturers','article'));
     }
 
     /**
@@ -107,7 +129,12 @@ class ArticlesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $item = $this->article->update($request,$id);
+        if($item == true){
+            return redirect()->route('article.index')->withSuccess(__('Product Updated Successfully.'));
+        }else{
+            return redirect()->back()->withError(__('Some thing went wrong'));
+        }
     }
 
     /**
@@ -116,8 +143,13 @@ class ArticlesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function delete(Request $request)
     {
-        //
+        $item = $this->article->delete($request);
+        if($item == true){
+            return redirect()->route('article.index')->withSuccess(__('Product Deleted Successfully.'));
+        }else{
+            return redirect()->back()->withError(__('Some thing went wrong'));
+        }
     }
 }

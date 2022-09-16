@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\ArticlesController;
 use App\Http\Controllers\AssemblyGroupNodesController;
 use App\Http\Controllers\LinkageTargetsController;
 use App\Http\Controllers\ManufacturerController;
@@ -55,6 +56,8 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::post('section/delete', [AssemblyGroupNodesController::class,'delete']);
 
 	Route::resource('article', 'ArticlesController');
+	Route::post('article/delete', [ArticlesController::class,'delete']);
+
 
 
 

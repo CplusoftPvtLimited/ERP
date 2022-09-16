@@ -22,5 +22,6 @@ class VerifyCsrfToken extends Middleware
         "/model/delete",
         "/engine/delete",
         "/section/delete",
+        '/article/delete'
     ];
 }

@@ -9,7 +9,7 @@ return [
 	'Add Engine' => 'Add Engine',
 	'Sections' => 'Sections',
 	'Add Section' => 'Add Section',
-	'Articles' => 'Articles',
+	'Products' => 'Products',
 	'Add Product' => 'Add Product',
 	'Submitted Forms' => 'Submitted Forms',
 	'View Form' => 'View Form',
