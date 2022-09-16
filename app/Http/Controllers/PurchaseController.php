@@ -82,7 +82,7 @@ class PurchaseController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $all_purchase = Purchase::where('user_id',Auth::user()->id)->orderBy('id', 'desc')->get();
+            $all_purchase = Purchase::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->get();
             return Datatables::of($all_purchase)
                 ->addIndexColumn('id')
                 ->addColumn('supplier', function ($row) {
@@ -109,27 +109,30 @@ class PurchaseController extends Controller
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="row">
-                         <div class="col-md-4">
-                         <a href="deletePurchase/' . $row['id'] . '"> <button
-                         class="btn btn-danger btn-sm " style="" type="button"
+                         <div class="col-md-3">
+                         <a> <button
+                         class="btn btn-danger btn-sm" onclick = "deletePurchase(' . $row["id"] . ')" style="" type="button"
                          data-original-title="btn btn-danger btn-sm"
-                         title=""><i class="fa fa-trash"></i></button></a>
-         
+                         title="Delete"><i class="fa fa-trash"></i></button></a>
                          </div>
-                         <div class="col-md-4">
+                         
+                         <div class="col-md-3">
                          <a href="editPurchase/' . $row["id"] . '"> <button
                                      class="btn btn-primary btn-sm " type="button"
                                      data-original-title="btn btn-danger btn-xs"
                                      title=""><i class="fa fa-edit"></i></button></a>
                          </div>
-                         <div class="col-md-4">
+
+                         <div class="col-md-3">
                          <a href="viewPurchase/' . $row["id"] . '"> <button
                                      class="btn btn-success btn-sm " type="button"
                                      data-original-title="btn btn-success btn-xs"
                                      title=""><i class="fa fa-eye"></i></button></a>
                          </div>
+                         <div class="col-md-3"> </div> 
                      </div>
                      ';
+
                     return $btn;
                 })
                 ->rawColumns(['action', 'supplier', 'due_amount'])->make(true);
@@ -438,7 +441,7 @@ class PurchaseController extends Controller
         ]);
 
         $purchase = $this->purchaseRepository->store($request);
-        if($purchase == "submit_purchase_not_allowed"){
+        if ($purchase == "submit_purchase_not_allowed") {
             toastr()->info('Please enter the black and white items greater than "0"');
             return redirect('purchases');
         }
@@ -550,9 +553,10 @@ class PurchaseController extends Controller
         }
     }
 
-    public function pdfDownload(){
+    public function pdfDownload()
+    {
 
-        $purchases = Purchase::where('user_id',Auth::user()->id)->get();
+        $purchases = Purchase::where('user_id', Auth::user()->id)->get();
         $all_data = [];
         if (count($purchases) > 0) {
             foreach ($purchases as $purchase_get) {
@@ -580,13 +584,13 @@ class PurchaseController extends Controller
                     'purchase' => $purchase_get,
                     'purchase_products' => $purchase_products
                 ];
-                array_push($all_data,$purchase);
+                array_push($all_data, $purchase);
             }
 
             $pdf = PDF::loadView('purchase.purchase_pdf', compact('all_data'));
             // dd($pdf);
             return $pdf->download('product_purchases.pdf');
-        }else{
+        } else {
             toastr()->info('Data not found');
             return back();
         }

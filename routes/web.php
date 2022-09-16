@@ -242,24 +242,21 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('deletePurchase/{purchase_id}','PurchaseController@deleteParentPurchase')->name('delete_parent_purchase'); // delete a parent purchase
     ////////////////Purchase END ////////////////////////
    
-
 	/////////////// Product Controller /////////////////
 	Route::resource('products',ProductController::class);
 	Route::get('product/editPurchaseByProduct/{product_id}','ProductController@editProduct');
-	Route::get('product/viewPurchase/{product_id}','ProductController@viewProduct');
-
+	Route::get('product/viewProduct/{product_id}','ProductController@viewProduct');
     /////////////////// Product end /////////////////////
 
-	//////////////// Stock management //////////////////
+	///////////////// Stock management ///////////////////
 	Route::resource('stockManagement','StockManagementController');
-
+	Route::get('product/deleteStock/{stock_id}','StockManagementController@destroy');
+	Route::post('/import/csv/', 'StockManagementController@importCsv')->name('stock.import');
+    /////////////////// Stock end //////////////////////
+	
 	Route::get('product/list','ProductController@index')->name('products.index'); // view a purchase
 	Route::get('exportPurchases','PurchaseController@exportPurchases')->name('exportPurchases'); // Export Purchase
 	Route::get('pdfDownload','PurchaseController@pdfDownload')->name('purchasesPdfDownload'); //  Purchases pdf download
-
-
-
-
 
 
 
@@ -269,10 +266,6 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('get_section_parts', 'PurchaseController@getSectionParts')->name('get_section_parts');// get all articles
 	Route::get('get_brands_by_section_part', 'PurchaseController@getBrandsBySectionPart')->name('get_brands_by_section_part'); // get all suppliers against an article
 	Route::get('show_section_parts_in_table', 'PurchaseController@showSectionParts')->name('show_section_parts_in_table'); 
-
-
-
-
 
 
 

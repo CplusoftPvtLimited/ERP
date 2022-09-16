@@ -52,7 +52,9 @@ class ProductController extends Controller
             $get_product = StockManagement::where('id',$id)->with(['purchaseProduct'=>function($query){
                  $query->with(['purchase']);
             }])->first();
-            dd($get_product);
+            // dd($get_product);
+            return view('stock.view', compact('get_product'));
+            
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -69,12 +71,12 @@ class ProductController extends Controller
                     ->addColumn('action', function ($row) {
                         $btn = '<div class="row">
                              <div class="col-md-4">
-                             <a href="deletePurchase/' . $row['id'] . '"> <button
-                             class="btn btn-danger btn-sm " style="" type="button"
+                             <a> <button
+                             class="btn btn-danger btn-sm " onclick= "deleteStock('. $row["id"] .')" style="" type="button"
                              data-original-title="btn btn-danger btn-sm"
                              title=""><i class="fa fa-trash"></i></button></a>
                              </div>
-
+                             
                              <div class="col-md-4">
                              <a href="editPurchaseByProduct/' . $row["id"] . '"> <button
                                          class="btn btn-primary btn-sm " type="button"
@@ -83,12 +85,11 @@ class ProductController extends Controller
                              </div>
 
                              <div class="col-md-4">
-                             <a href="viewPurchase/' . $row["id"] . '"> <button
+                             <a href="viewProduct/' . $row["id"] . '"> <button
                                          class="btn btn-success btn-sm " type="button"
                                          data-original-title="btn btn-success btn-xs"
                                          title=""><i class="fa fa-eye"></i></button></a>
                              </div>
-
                          </div>
                          ';
                         return $btn;

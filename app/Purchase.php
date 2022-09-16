@@ -3,7 +3,9 @@
 namespace App;
 
 use App\Models\Ambrand;
+use App\Models\Manufacturer;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -24,7 +26,6 @@ class Purchase extends Model
     	return $this->belongsTo(Ambrand::class,'supplier_id','brandId');
     }
     
-
     public function warehouse()
     {
     	return $this->belongsTo('App\Warehouse');
@@ -34,4 +35,5 @@ class Purchase extends Model
     {
         return  $this->hasMany(ProductPurchase::class,'purchase_id','id');
     }
+    
 }
