@@ -191,10 +191,14 @@ class PurchaseRepository implements PurchaseInterface
                 $product_purchase->update([
                     'status' => $request->status
                 ]);
+                // $product_purchase->status = $request->status;
+                // $product_purchase->save();
+                // dd($product_purchase);
                 $purchase = Purchase::find($product_purchase->purchase_id);
                 // dd($purchase);
                 StockManagement::create([
                     'product_id' => $product_purchase->legacy_article_id,
+                    'purchase_product_id' => $product_purchase->id,
                     'reference_no' => $product_purchase->reference_no,
                     'retailer_id' => $purchase->user_id,
                     'white_items' => $product_purchase->white_item_qty,
@@ -204,11 +208,13 @@ class PurchaseRepository implements PurchaseInterface
                     'total_qty' => $product_purchase->qty,
                 ]);
                 DB::commit();
+                // dd($pro)
                 return true;
             }
             return false;
-        } catch (\Throwable $th) {
+        } catch (\Exception $th) {
             DB::rollBack();
+            // dd($th->getMessage());
             return $th->getMessage();
         }
     }
@@ -217,11 +223,14 @@ class PurchaseRepository implements PurchaseInterface
     public function deletePurchaseProduct($purchase_id, $id)
     {
         $product_purchase = ProductPurchase::find($id);
+        
         if ($product_purchase) {
+            // $product_stock = $product_purchase->productsStock;
             $purchase = Purchase::find($purchase_id);
             $purchase->total_qty = $purchase->total_qty - ($product_purchase->white_item_qty + $product_purchase->black_item_qty);
             $purchase->grand_total = $purchase->grand_total - $product_purchase->actual_price;
             $purchase->save();
+            
             $product_purchase->delete();
             $product_purchases = ProductPurchase::where('purchase_id', $purchase_id)->get();
 
