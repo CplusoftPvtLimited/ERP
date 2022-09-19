@@ -21,8 +21,13 @@ use Illuminate\Support\Facades\Mail;
 class UserController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
+        if($request->ajax())
+        {
+            $user :: User::where('is_deleted', false)->orderBy('id','desc')->join('roles')->get();
+            dd($user);
+        }
         $role = Role::find(Auth::user()->role_id);
         if($role->hasPermissionTo('users-index')){
             $permissions = Role::findByName($role->name)->permissions;

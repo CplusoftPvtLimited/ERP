@@ -1,5 +1,7 @@
 <?php 
 return [
+	'Add Retailer'=> 'Add Retailer',
+	'Retailers'=> 'Retailers',
 	'Manufacturer' => 'Manufacturer',
 	'Add Manufacturer' => 'Add Manufacturer',
 	'Edit Manufacturer' => 'Edit Manufacturer',

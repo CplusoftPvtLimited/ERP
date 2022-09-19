@@ -29,7 +29,6 @@
                     <th>{{trans('file.Phone Number')}}</th>
                     <th>{{trans('file.Role')}}</th>
                     <th>{{trans('file.Status')}}</th>
-
                     <th class="not-exported">{{trans('file.action')}}</th>
                 </tr>
             </thead>
