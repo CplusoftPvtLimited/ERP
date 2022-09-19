@@ -2,6 +2,7 @@
 return [
 	'Add Retailer'=> 'Add Retailer',
 	'Retailers'=> 'Retailers',
+	'Edit Retailer'=> 'Edit Retailer',
 	'Manufacturer' => 'Manufacturer',
 	'Add Manufacturer' => 'Add Manufacturer',
 	'Edit Manufacturer' => 'Edit Manufacturer',

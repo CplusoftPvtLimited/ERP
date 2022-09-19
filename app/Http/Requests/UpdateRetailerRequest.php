@@ -28,31 +28,25 @@ class UpdateRetailerRequest extends FormRequest
             'name' => [
                 'required',
                 'max:255',
-                    Rule::unique('users')->ignore($this->retailer->id)->where(function ($query) {
-                    return $query->where('is_deleted', false);
-                }),
+                    Rule::unique('users')->ignore($this->retailer->id)->where('is_deleted', false),
             ],
             'email' => [
                 'required',
                 'email',
                 'max:255',
-                    Rule::unique('users')->ignore($this->retailer->id)->where(function ($query) {
-                    return $query->where('is_deleted', false);
-                }),
+                Rule::unique('users')->ignore($this->retailer->id)->where('is_deleted', false),
+
             ],
             'phone' => [
                 'required',
                 'max:255',
-                    Rule::unique('users')->ignore($this->retailer->id)->where(function ($query) {
-                    return $query->where('is_deleted', false);
-                }),
+                Rule::unique('users')->ignore($this->retailer->id)->where('is_deleted', false),
+
             ],
             'shop_name' => [
                 'required',
                 'max:255',
-                    Rule::unique('users')->ignore($this->retailer->id)->where(function ($query) {
-                    return $query->where('is_deleted', false);
-                }),
+                Rule::unique('users')->ignore($this->retailer->id)->where('is_deleted', false),
             ],
         ];
     }
