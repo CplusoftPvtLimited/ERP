@@ -82,6 +82,8 @@ class PurchaseRepository implements PurchaseInterface
                 $product_purchase->status = $request->statuss[$i];
                 $product_purchase->supplier_id = $request->supplier_id;
                 $product_purchase->total_cost = $request->total_price[$i];
+                $product_purchase->linkage_target_type = $request->linkage_target_type[$i];
+                $product_purchase->linkage_target_sub_type = $request->linkage_target_sub_type[$i];
 
                 $date = date("Y-m-d", strtotime($request->datee[$i]));
                 $product_purchase->date = $date;
@@ -90,15 +92,15 @@ class PurchaseRepository implements PurchaseInterface
 
                 if ($request->statuss[$i] == "received") {
                     StockManagement::create([
-                        'product_id' => $product_purchase->legacy_article_id,
-                        'purchase_product_id' => $product_purchase->id,
-                        'reference_no' => $product_purchase->reference_no,
-                        'retailer_id' => $purchase->user_id,
-                        'white_items' => $product_purchase->white_item_qty,
-                        'black_items' => $product_purchase->black_item_qty,
-                        'unit_actual_price' => $product_purchase->actual_price,
-                        'unit_sale_price' => $product_purchase->sell_price,
-                        'total_qty' => $product_purchase->qty,
+                        'product_id' => isset($product_purchase->legacy_article_id) ? $product_purchase->legacy_article_id : 0,
+                        'purchase_product_id' => isset($product_purchase->id) ? $product_purchase->id: 0,
+                        'reference_no' => isset($product_purchase->reference_no) ? $product_purchase->reference_no : 0,
+                        'retailer_id' => isset($purchase->user_id) ? $purchase->user_id : null,
+                        'white_items' => isset($product_purchase->white_item_qty) ? $product_purchase->white_item_qty : null,
+                        'black_items' => isset($product_purchase->black_item_qty) ? $product_purchase->black_item_qty : null,
+                        'unit_actual_price' => isset($product_purchase->actual_price) ? $product_purchase->actual_price : null,
+                        'unit_sale_price' => isset($product_purchase->sell_price) ? $product_purchase->sell_price : null,
+                        'total_qty' => isset($product_purchase->qty) ? $product_purchase->qty : null,
                     ]);
                 }
             }
@@ -301,6 +303,8 @@ class PurchaseRepository implements PurchaseInterface
                     $purchase_data['Black Item'] = $lims_purchase_data->black_item_qty;
                     $purchase_data['Total Cost'] = $lims_purchase_data->total_cost;
                     $purchase_data['Engine Detail'] = $lims_purchase_data->engine_details;
+                    $purchase_data['Engine Type'] = $lims_purchase_data->linkage_target_type;
+                    $purchase_data['Engine Sub-Type'] = $lims_purchase_data->linkage_target_sub_type;
 
                     array_push($all_data, $purchase_data);
                 }
@@ -338,7 +342,7 @@ class PurchaseRepository implements PurchaseInterface
                         $lims_purchase_data['section'] = isset($section) ? $section->assemblyGroupName : '';
                         $lims_purchase_data['section_part'] = isset($section_part) ? $section_part->articleNumber : '';
                         $lims_purchase_data['supplier'] = isset($supplier) ? $supplier->brandName : '';
-
+                        
                         array_push($purchase_products, $lims_purchase_data);
                     }
                     $purchase = [

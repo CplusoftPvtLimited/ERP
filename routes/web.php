@@ -259,13 +259,16 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('pdfDownload','PurchaseController@pdfDownload')->name('purchasesPdfDownload'); //  Purchases pdf download
 
 
-
+	///////////////// Purchase Article management ///////////////////
+	Route::get('get_manufacturers_by_engine_type', 'PurchaseController@getManufacturersByEngineType')->name('get_manufacturers_by_engine_type');
 	Route::get('get_models_by_manufacturer', 'PurchaseController@getModelsByManufacturer')->name('get_models_by_manufacturer');
 	Route::get('get_engines_by_model', 'PurchaseController@getEnginesByModel')->name('get_engines_by_model');
 	Route::get('get_sections_by_engine', 'PurchaseController@getSectionsByEngine')->name('get_sections_by_engine');
 	Route::get('get_section_parts', 'PurchaseController@getSectionParts')->name('get_section_parts');// get all articles
 	Route::get('get_brands_by_section_part', 'PurchaseController@getBrandsBySectionPart')->name('get_brands_by_section_part'); // get all suppliers against an article
 	Route::get('show_section_parts_in_table', 'PurchaseController@showSectionParts')->name('show_section_parts_in_table'); 
+    ///////////////////  end //////////////////////
+
 
 
 

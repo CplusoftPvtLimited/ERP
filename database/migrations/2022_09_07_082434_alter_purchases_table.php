@@ -22,6 +22,7 @@ class AlterPurchasesTable extends Migration
                $table->string('engine_details')->nullable();
                $table->integer('eng_linkage_target_id')->nullable();
                $table->integer('assembly_group_node_id')->nullable();
+               
 
                $table->index('legacy_article_id');
                $table->index('manufacture_id');

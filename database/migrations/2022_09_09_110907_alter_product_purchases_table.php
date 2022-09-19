@@ -25,6 +25,8 @@ class AlterProductPurchasesTable extends Migration
                $table->integer('assembly_group_node_id')->nullable();
                $table->integer('black_item_qty')->nullable();
                $table->integer('white_item_qty')->nullable();
+               $table->enum('linkage_target_type',['P','O'])->nullable();
+               $table->enum('linkage_target_sub_type',['V','L','B','C','T','M','A','K'])->nullable();
 
                $table->index('legacy_article_id');
                $table->index('manufacture_id');

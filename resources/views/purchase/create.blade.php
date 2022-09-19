@@ -24,23 +24,33 @@
                                             <input type="text" id="product_purchase_date" name="created_at" class="form-control date" placeholder="Choose date"/>
                                         </div>
                                     </div>
-                                    <!-- <div class="col-md-4">
+                                    <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>{{trans('file.Warehouse')}} *</label>
-                                            <select required name="warehouse_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select warehouse...">
-                                                @foreach($lims_warehouse_list as $warehouse)
-                                                <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
-                                                @endforeach
+                                            <label>Engine Type</label>
+                                            <select name="linkageTargetType" id="linkageTarget" class="selectpicker form-control">
+
+                                                <option>Select Type</option>
+                                                <option value="P">Passenger</option>
+                                                <option value="O">Commercial Vehicle and Tractor</option>
                                             </select>
                                         </div>
-                                    </div> -->
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Engine Sub-Type</label>
+                                            <select name="subLinkageTargetType" data-href="{{ route('get_manufacturers_by_engine_type') }}" id="subLinkageTarget" class="selectpicker form-control">
+                                                <option value="-2">Select One</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>{{trans('file.Manufacturers')}}</label>
-                                            <select name="manufacture_id" id="manufacture_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select Manufacturer..." data-href="{{ route('get_models_by_manufacturer') }}">
-                                                @foreach($manufacturers as $manufacturer)
-                                                <option value="{{$manufacturer->manuId}}">{{ $manufacturer->manuName }}</option>
-                                                @endforeach
+                                            <select name="manufacture_id" id="manufacturer_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select Manufacturer..." data-href="{{ route('get_models_by_manufacturer') }}">
+                                                
                                             </select>
                                         </div>
                                     </div>
@@ -53,8 +63,6 @@
                                             </select>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="engine_id">{{ __('Select Engine') }}</label>
@@ -64,6 +72,9 @@
                                             </select>
                                         </div>
                                     </div>
+                                </div>
+                                    
+                                <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="section_id">{{ __('Select Section') }}</label>
@@ -82,10 +93,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                </div>
-                                    
-                                <div class="row">
-                                <div class="col-md-4">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>{{trans('file.Supplier')}}</label>
                                             <select name="supplier_id" id="supplier_id"  data-href="#" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select supplier...">
@@ -93,6 +101,8 @@
                                             </select>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>{{trans('file.Purchase Status')}}</label>
@@ -115,13 +125,6 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <!-- <div class="col-md-12 mt-3">
-                                        <label>{{trans('file.Select Product')}}</label>
-                                        <div class="search-box input-group">
-                                            <button class="btn btn-secondary"><i class="fa fa-barcode"></i></button>
-                                            <input type="text" name="product_code_name" id="lims_productcodeSearch" placeholder="Please type product code and select..." class="form-control" />
-                                        </div>
-                                    </div> -->
                                 </div>
                                 <div class="row">
                                     <div class="col-md-10"></div>
@@ -820,15 +823,102 @@
  });
 
 
- $(document).on('change', '#manufacture_id', function() {
-    let manufacture_id = $(this).val();
+ // select engine type---unique
+
+ $('#linkageTarget').on('change', function() {
+                    var val = this.value;
+                    
+                    if(val == "P"){
+                        $('#subLinkageTarget').empty();
+                        $('#subLinkageTarget').append(`<option value="V">
+                                Passenger Car
+                                  </option><option value="L">
+                                       LCV
+                                  </option><option value="B">
+                                        Motorcycle
+                                  </option>`);
+                                  $('.selectpicker').selectpicker('refresh');
+                    }else if(val == "O"){
+                        $('#subLinkageTarget').empty();
+                        $('#subLinkageTarget').append(`<option value="C">
+                            Commercial Vehicle
+                                  </option><option value="T">
+                                       Tractor
+                                  </option><option value="M">
+                                       Engine
+                                  </option><option value="A">
+                                       Axle
+                                  </option><option value="K">
+                                    CV Body Type
+                                  </option>`);
+                                  $('.selectpicker').selectpicker('refresh');
+                    }else{
+                        $('#subLinkageTarget').empty();
+                        $('.selectpicker').selectpicker('refresh');
+                    }
+                    $('#manufacturer_id').html('<option value="">Select One</option>');
+                    $('#manufacturer_id').selectpicker("refresh");
+                    $('#section_id').html('<option value="">Select One</option>');
+                    $('#section_id').selectpicker("refresh");
+                    $('#section_part_id').html('<option value="">Select One</option>');
+                    $('#section_part_id').selectpicker("refresh");
+                    $('#engine_id').html('<option value="">Select One</option>');
+                    $('#engine_id').selectpicker("refresh");
+                    $('#supplier_id').html('<option value="">Select One</option>');
+                    $('#supplier_id').selectpicker("refresh");
+                    
+                });
+
+// get manufacturers
+
+$(document).on('change', '#subLinkageTarget', function() {
+    
+    let engine_sub_type = $(this).val();
     // alert(manufacture_id)
     let url = $(this).attr('data-href');
-    getModels(url, manufacture_id);
+    getManufacturer(url, engine_sub_type);
 });
 
-function getModels(url, manufacture_id) {
-    $.get(url + '?manufacture_id=' + manufacture_id, function(data) {
+function getManufacturer(url,engine_sub_type) {
+    $.get(url + '?engine_sub_type=' + engine_sub_type , function(data) {
+        // $('#model_id').html(`<option value="">Select Model</option>`);
+        $('#section_id').html('<option value="">Select One</option>');
+        $('#section_id').selectpicker("refresh");
+        $('#section_part_id').html('<option value="">Select One</option>');
+        $('#section_part_id').selectpicker("refresh");
+        $('#engine_id').html('<option value="">Select One</option>');
+        $('#engine_id').selectpicker("refresh");
+        $('#supplier_id').html('<option value="">Select One</option>');
+        $('#supplier_id').selectpicker("refresh");
+        // $('#manufacturer_id').html('<option value="">Select One</option>');
+        // $('#manufacturer_id').selectpicker("refresh");
+
+        let response = data.data;
+        console.log(response)
+        let view_html = `<option value="">Select One</option>`;
+        $.each(response, function(key, value) {
+            view_html += `<option value="${value.manuId}">${value.manuName}</option>`;
+        });
+        console.log(data, view_html);
+        $('#manufacturer_id').html(view_html);
+        // $("#model_id").val(4);
+        $("#manufacturer_id").selectpicker("refresh");
+        
+        
+    })
+}
+
+                //get models==================
+ $(document).on('change', '#manufacturer_id', function() {
+    let manufacturer_id = $(this).val();
+    // alert(manufacture_id)
+    let engine_sub_type = $('#subLinkageTarget :selected').val();
+    let url = $(this).attr('data-href');
+    getModels(url, manufacturer_id, engine_sub_type);
+});
+
+function getModels(url, manufacturer_id, engine_sub_type) {
+    $.get(url + '?manufacturer_id=' + manufacturer_id + '&engine_sub_type=' + engine_sub_type, function(data) {
         // $('#model_id').html(`<option value="">Select Model</option>`);
         $('#section_id').html('<option value="">Select One</option>');
         $('#section_id').selectpicker("refresh");
@@ -857,11 +947,12 @@ function getModels(url, manufacture_id) {
 $(document).on('change', '#model_id', function() {
     let model_id = $(this).val();
     let url = $(this).attr('data-href');
-    getEngines(url, model_id);
+    let engine_sub_type = $('#subLinkageTarget :selected').val();
+    getEngines(url, model_id, engine_sub_type);
 });
 
-function getEngines(url, model_id) {
-    $.get(url + '?model_id=' + model_id, function(data) {
+function getEngines(url, model_id, engine_sub_type) {
+    $.get(url + '?model_id=' + model_id + '&engine_sub_type=' + engine_sub_type, function(data) {
         $('#section_id').html('<option value="">Select One</option>');
         $('#section_id').selectpicker("refresh");
         $('#section_part_id').html('<option value="">Select One</option>');
@@ -886,11 +977,12 @@ function getEngines(url, model_id) {
 $(document).on('change', '#engine_id', function() {
     let engine_id = $(this).val();
     let url = $(this).attr('data-href');
-    getSections(url, engine_id);
+    let engine_sub_type = $('#subLinkageTarget :selected').val();
+    getSections(url, engine_id, engine_sub_type);
 });
 
-function getSections(url, engine_id) {
-    $.get(url + '?engine_id=' + engine_id, function(data) {
+function getSections(url, engine_id, engine_sub_type) {
+    $.get(url + '?engine_id=' + engine_id + '&engine_sub_type='+ engine_sub_type, function(data) {
         
         $('#section_part_id').html('<option value="">Select One</option>');
         $('#section_part_id').selectpicker("refresh");
@@ -916,14 +1008,13 @@ function getSections(url, engine_id) {
 $(document).on('change', '#section_id', function() {
     let section_id = $(this).val();
     let url = $(this).attr('data-href');
-    getSectionParts(url, section_id);
+    let engine_sub_type = $('#subLinkageTarget :selected').val();
+    getSectionParts(url, section_id, engine_sub_type);
 });
 
-function getSectionParts(url, section_id) {
-    $.get(url + '?section_id=' + section_id, function(data) {
-        // $('#section_part_id').html('<option value="" selected>Select One</option>');
-        // $('#section_part_id').selectpicker("refresh");
-        
+function getSectionParts(url, section_id, engine_sub_type) {
+    $.get(url + '?section_id=' + section_id + '&engine_sub_type='+engine_sub_type, function(data) {
+       
         $('#supplier_id').html('<option value="">Select One</option>');
         $('#supplier_id').selectpicker("refresh");
         let response = data.data;
@@ -968,7 +1059,9 @@ var total_amount = $('#total-amount');
 // console.log(len)
 $("#save-btn").click(function(){
     var id = $('#section_part_id').val();
-    var manufacturer_id = $('#manufacture_id').find(":selected").val();
+    var engine_type = $('#linkageTarget').find(":selected").val();
+    var engine_sub_type = $('#subLinkageTarget').find(":selected").val();
+    var manufacturer_id = $('#manufacturer_id').find(":selected").val();
     var model_id = $('#model_id').find(":selected").val();
     var engine_id = $('#engine_id').find(":selected").val();
     var section_id = $('#section_id').find(":selected").val();
@@ -977,7 +1070,7 @@ $("#save-btn").click(function(){
     var status = $('#status').find(":selected").val();
     var date = $('#product_purchase_date').val();
     
-    checkIfExists(manufacturer_id,model_id,engine_id,section_id,section_part_id,supplier_id,status,date);
+    checkIfExists(engine_type,engine_sub_type,manufacturer_id,model_id,engine_id,section_id,section_part_id,supplier_id,status,date);
 
 
     // alert(manufacturer_id);exit();
@@ -986,6 +1079,8 @@ $("#save-btn").click(function(){
         url : "{{ url('show_section_parts_in_table') }}",
         data : {
             id:id,
+            engine_type : engine_type,
+            engine_sub_type : engine_sub_type,
             manufacturer_id:manufacturer_id,
             model_id:model_id,
             engine_id:engine_id,
@@ -1003,6 +1098,8 @@ $("#save-btn").click(function(){
             var length = document.getElementById("myTable").rows.length;
             var html = '';
             html += '<input type="hidden" name="manufacturer_id[]" value="'+data.manufacturer_id+'">';
+            html += '<input type="hidden" name="linkage_target_type[]" value="'+data.linkage_target_type+'">';
+            html += '<input type="hidden" name="linkage_target_sub_type[]" value="'+data.linkage_target_sub_type+'">';
             html += '<input type="hidden" name="modell_id[]" value="'+data.model_id+'">';
             html += '<input type="hidden" name="enginee_id[]" value="'+data.engine_id+'">';
             html += '<input type="hidden" name="sectionn_id[]" value="'+data.section_id+'">';
@@ -1076,7 +1173,26 @@ $("#save-btn").click(function(){
     });
 });
 
-function checkIfExists(manufacturer_id,model_id,engine_id,section_id,section_part_id,supplier_id,status,date){
+function checkIfExists(engine_type,engine_sub_type,manufacturer_id,model_id,engine_id,section_id,section_part_id,supplier_id,status,date){
+    if(!engine_type){
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please select an Engine Type',
+            
+        });
+        exit();
+    }
+
+    if(!engine_sub_type){
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please select an Engine Type',
+            
+        });
+        exit();
+    }
     if(!manufacturer_id){
         Swal.fire({
             icon: 'error',

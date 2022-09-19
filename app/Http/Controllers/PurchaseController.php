@@ -1341,21 +1341,32 @@ class PurchaseController extends Controller
         }
     }
 
+    public function getManufacturersByEngineType(Request $request)
+    {
+        try {
+            $manufacturers = Manufacturer::where('linkingTargetType', $request->engine_sub_type)->get();
+            // dd($manufacturers);
+            return response()->json([
+                'data' => $manufacturers
+            ], 200);
+            
+
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
     public function getModelsByManufacturer(Request $request)
     {
         try {
-            $manufacturer = Manufacturer::where('manuId', $request->manufacture_id)->first();
-            // if($manufacturer){
-            $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacture_id)->get();
-            // dd($request->manufacture_id);
+            
+            $models = ModelSeries::select('modelId', 'modelname')->
+            where('manuId', $request->manufacturer_id)
+            ->where('linkingTargetType',$request->engine_sub_type)->get();
+            // dd($models);
             return response()->json([
                 'data' => $models
             ], 200);
-            // }else{
-            //     return response()->json([
-            //         'data' => null
-            //     ],200);
-            // }
+          
 
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -1366,7 +1377,8 @@ class PurchaseController extends Controller
     {
         try {
             $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
-                ->where('vehicleModelSeriesId', $request->model_id)->get();
+                ->where('vehicleModelSeriesId', $request->model_id)
+                ->where('linkageTargetType',$request->engine_sub_type)->get();
             // dd($models);
             return response()->json([
                 'data' => $engines
@@ -1380,7 +1392,8 @@ class PurchaseController extends Controller
     {
         try {
             $sections = AssemblyGroupNode::select('assemblyGroupNodeId', 'assemblyGroupName')
-                ->where('request__linkingTargetId', $request->engine_id)->get();
+                ->where('request__linkingTargetId', $request->engine_id)
+                ->where('request__linkingTargetType',$request->engine_sub_type)->get();
             // dd($models);
             return response()->json([
                 'data' => $sections
@@ -1393,9 +1406,11 @@ class PurchaseController extends Controller
     public function getSectionParts(Request $request)
     {
         try {
-            $section_parts = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')
-                ->where('assemblyGroupNodeId', $request->section_id)->get();
-            // dd($models);
+            $section_parts = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')->whereHas('articleVehicleTree' ,function($query) use ($request){
+                $query->where('linkingTargetType',$request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
+            })->get();
+
+            // dd($section_parts);
             return response()->json([
                 'data' => $section_parts
             ], 200);
@@ -1430,6 +1445,8 @@ class PurchaseController extends Controller
         return response()->json([
             'data' => $product,
             'supplier' => Ambrand::where('brandId', $product->dataSupplierId)->first(),
+            'linkage_target_type' => $request->engine_type, // engine_type
+            'linkage_target_sub_type' => $request->engine_sub_type, //
             'manufacturer_id' => $request->manufacturer_id,
             'model_id' => $request->model_id,
             'engine_id' => $request->engine_id,
