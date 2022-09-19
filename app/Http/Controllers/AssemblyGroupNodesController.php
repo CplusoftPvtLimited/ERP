@@ -27,8 +27,7 @@ class AssemblyGroupNodesController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $sections = AssemblyGroupNode::all();
-            return DataTables::of($sections)
+            return DataTables::of(AssemblyGroupNode::orderBy('id', 'desc'))
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="row">
@@ -49,7 +48,7 @@ class AssemblyGroupNodesController extends Controller
                     return $btn;
                 })
                 ->rawColumns(['action'])
-                ->make(true);
+                ->toJson();
         }
 
         return view('assembly_group_nodes.index');
@@ -63,7 +62,7 @@ class AssemblyGroupNodesController extends Controller
     public function create()
     {
         $languages = Language::all();
-        $engines = LinkageTarget::all();
+        $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')->get();
         return view('assembly_group_nodes.create',compact('languages','engines'));
     }
 

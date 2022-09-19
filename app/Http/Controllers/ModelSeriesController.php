@@ -9,6 +9,7 @@ use App\Models\Manufacturer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 
 class ModelSeriesController extends Controller
@@ -74,7 +75,7 @@ class ModelSeriesController extends Controller
         DB::beginTransaction();
         try {
             $request->validate([
-                'modelname' => 'required',
+                'modelname' => 'required|unique:modelseries,modelname,except,id',
                 'yearOfConstrFrom' => 'required|integer',
                 'yearOfConstrTo' => 'required|integer',
                 'manuId' => 'required',
@@ -89,11 +90,10 @@ class ModelSeriesController extends Controller
             }
             $modelSeries = ModelSeries::create($data);
             DB::commit();
-
             return redirect()->route('modelseries.index')->with('create_message', 'Model created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('modelseries.index')->with('error', $e->getMessage());
+            return redirect()->route('modelseries.create')->with('error', $e->getMessage());
         }
     }
 

@@ -86,7 +86,7 @@
                                                     <h6>Select Engine</h6>
                                                     <select name="request__linkingTargetId" id="" class="form-control">
                                                         @foreach ($engines as $engine)
-                                                            <option value="{{ $engine->linkageTargetId }}">{{ $engine->linkageTargetType }}</option>
+                                                            <option value="{{ $engine->linkageTargetId }}">{{ $engine->description . " ( " . $engine->beginYearMonth . " - " . $engine->endYearMonth . " )" }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>

@@ -38,19 +38,27 @@
                                 <div class="col-12">
                                     <div class="other_data"></div>
                                     <div class="row">
-                                        <div class="col-6">
+                                        <div class="col-4">
                                             <div class="form-group">
                                                 <strong>Manufacturer Name: *</strong>
                                                 <input type="text" name="manuName" class="form-control" required value="{{old('manuName')}}">
                                             </div>
                                         </div>
-                                        <div class="col-6">
+                                        <div class="col-4">
                                             <div class="form-group">
                                                 <strong>Linkage Target Type: *</strong>
-                                                <select name="linkingTargetType" id="" class="form-control" required>
+                                                <select id="linkageTarget" class="selectpicker form-control" required>
                                                     <option value="" selected disabled>--Select One--</option>
-                                                    <option value="P">P</option>
-                                                    <option value="O">O</option>
+                                                    <option value="P">Passenger + Motorcycle + LCV</option>
+                                                    <option value="O">Commercial Vehicle + Tractor</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <strong>Sub-Linkage Target Type</strong>
+                                                <select name="linkingTargetType" id="subLinkageTarget" class="selectpicker form-control" required>
+                                                    <option value="">Select One</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -69,5 +77,32 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 </section>
+<script>
+    $('#linkageTarget').on('change', function() {
+        var val = this.value;
+        
+        if (val == "P") {
+            $('#subLinkageTarget').empty();
+            $('#subLinkageTarget').append(`
+            <option value="V">Passenger Car</option>
+            <option value="L">LCV</option>
+            <option value="B">Motorcycle</option>`);
+            $('.selectpicker').selectpicker('refresh');
+        } else if(val == "O") {
+            $('#subLinkageTarget').empty();
+            $('#subLinkageTarget').append(`
+            <option value="C">Commercial Vehicle</option>
+            <option value="T">Tractor</option>
+            <option value="M">Engine</option>
+            <option value="A">Axle</option>
+            <option value="K">CV Body Type</option>`);
+            $('.selectpicker').selectpicker('refresh');
+        } else {
+            $('#subLinkageTarget').empty();
+            $('.selectpicker').selectpicker('refresh');
+        }
+        
+    });
+</script>
 @endsection
 

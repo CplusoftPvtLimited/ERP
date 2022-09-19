@@ -18,11 +18,46 @@ class LinkageTargetsController extends Controller
      */
 
     private $engineRepository;
+    private $linkage_target_type;
 
     public function __construct(LinkageTargetInterface $engineInterface)
     {
         $this->engineRepository = $engineInterface;
+        $this->linkage_target_type = [
+            'P' => [
+                'V' => 'Passenger Car', 
+                'L' => 'LCV', 
+                'B' => 'Motorcycle'
+            ], 
+            'O' => [
+                'C' => 'Commercial Vehicle', 
+                'T' => 'Tractor', 
+                'M' => 'Engine', 
+                'A' => 'Axle',
+                'K' => 'CV Body Type'
+            ]
+        ];
     }
+
+
+    protected function checkLinkageTargetType($manufacturer_linkageType)
+    {
+        foreach ($this->linkage_target_type as $key => $type) {
+            foreach ($type as $key_val => $sub_type) {
+                if ($manufacturer_linkageType == $key_val) {
+                    return [
+                        'sub_target_type' => $key_val,
+                        'target_type' => $key,
+                        'types' => $type,
+                    ];
+                    break;
+                }
+            }
+        }
+        
+    }
+
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -103,7 +138,11 @@ class LinkageTargetsController extends Controller
     {
         $engine = LinkageTarget::find($id);
         $manufacturers = Manufacturer::all();
-        return view('linkage_targets.edit',compact('engine','manufacturers'));
+        $data = $this->checkLinkageTargetType($engine->subLinkageTargetType);
+        $sub_target_type = $data['sub_target_type'];
+        $target_type = $data['target_type'];
+        $types = $data['types'];
+        return view('linkage_targets.edit', compact('engine','manufacturers', 'sub_target_type', 'target_type', 'types'));
     }
 
     /**
@@ -117,10 +156,10 @@ class LinkageTargetsController extends Controller
     {
         $engine = $this->engineRepository->update($request,$id);
         if($engine == true){
-            return redirect()->route('engine.index')->with('create_message', 'Engine Update successfully');
+            return redirect()->route('engine.edit')->with('create_message', 'Engine Update successfully');
         }else{
             // dd($engine->getMessage());
-            return redirect()->route('engine.index')->with('error', $engine);
+            return redirect()->route('engine.edit')->with('error', $engine);
         }
     }
 

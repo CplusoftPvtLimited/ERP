@@ -110,7 +110,7 @@
                                             </div>
                                             <div class="col-4">
                                                 <div class="form-group">
-                                                    <h6>Linkage Target Type</h6>
+                                                    <h6>Manufacturer</h6>
                                                     <select name="mfrId" id="" class="selectpicker form-control">
                                                         @foreach ($manufacturers as $manufacturer)
                                                             <option value="{{ $manufacturer->manuId }}">{{ $manufacturer->manuName }}</option>
@@ -126,8 +126,8 @@
                                                     <select name="linkageTargetType" id="linkageTarget" class="selectpicker form-control">
 
                                                         <option>Select Type</option>
-                                                        <option value="P">P</option>
-                                                        <option value="O">O</option>
+                                                        <option value="P">Passenger + Motorcycle + LCV</option>
+                                                        <option value="O">Commercial Vehicle + Tractor</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -215,31 +215,23 @@
                 $('#linkageTarget').on('change', function() {
                     var val = this.value;
                     
-                    if(val == "P"){
+                    if (val == "P") {
                         $('#subLinkageTarget').empty();
-                        $('#subLinkageTarget').append(`<option value="V">
-                                       V
-                                  </option><option value="L">
-                                       L
-                                  </option><option value="B">
-                                       B
-                                  </option>`);
-                                  $('.selectpicker').selectpicker('refresh');
-                    }else if(val == "O"){
+                        $('#subLinkageTarget').append(`
+                        <option value="V">Passenger Car</option>
+                        <option value="L">LCV</option>
+                        <option value="B">Motorcycle</option>`);
+                        $('.selectpicker').selectpicker('refresh');
+                    } else if(val == "O") {
                         $('#subLinkageTarget').empty();
-                        $('#subLinkageTarget').append(`<option value="C">
-                                       C
-                                  </option><option value="T">
-                                       T
-                                  </option><option value="M">
-                                       M
-                                  </option><option value="A">
-                                       A
-                                  </option><option value="K">
-                                       K
-                                  </option>`);
-                                  $('.selectpicker').selectpicker('refresh');
-                    }else{
+                        $('#subLinkageTarget').append(`
+                        <option value="C">Commercial Vehicle</option>
+                        <option value="T">Tractor</option>
+                        <option value="M">Engine</option>
+                        <option value="A">Axle</option>
+                        <option value="K">CV Body Type</option>`);
+                        $('.selectpicker').selectpicker('refresh');
+                    } else {
                         $('#subLinkageTarget').empty();
                         $('.selectpicker').selectpicker('refresh');
                     }

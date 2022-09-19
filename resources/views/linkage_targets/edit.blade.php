@@ -127,8 +127,8 @@
                                                     <select name="linkageTargetType" id="linkageTarget" class="selectpicker form-control">
 
                                                         <option>Select Type</option>
-                                                        <option value="P" {{ $engine->linkageTargetType == "P" ? 'selected' : '' }}>P</option>
-                                                        <option value="O" {{ $engine->linkageTargetType == "O" ? 'selected' : '' }}>O</option>
+                                                        <option value="P" {{($target_type == 'P') ? 'selected' : ''}}>Passenger + Motorcycle + LCV</option>
+                                                        <option value="O" {{($target_type == 'O') ? 'selected' : ''}}>Commercial Vehicle + Tractor</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -137,11 +137,12 @@
                                                     <h6>Sub-Linkage Target Type</h6>
                                                     <select name="subLinkageTargetType" id="subLinkageTarget" class="selectpicker form-control">
                                                         <option value="-2">Select One</option>
-                                                        <option value="{{ $engine->subLinkageTargetType }}" selected>{{ $engine->subLinkageTargetType }} (selected)</option>
+                                                        @foreach ($types as $key => $item)
+                                                            <option value="{{$key}}" {{($key == $sub_target_type) ? 'selected' : ''}}>{{$item}}</option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
                                             </div>
-                                            
                                         </div>
                                         <div class="row">
                                             <div class="col-12">
@@ -168,34 +169,27 @@
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
             <script>
-                $('#linkageTarget').on('change', function() {
+                 $('#linkageTarget').on('change', function() {
+                    console.log("here");
                     var val = this.value;
                     
-                    if(val == "P"){
+                    if (val == "P") {
                         $('#subLinkageTarget').empty();
-                        $('#subLinkageTarget').append(`<option value="V">
-                                       V
-                                  </option><option value="L">
-                                       L
-                                  </option><option value="B">
-                                       B
-                                  </option>`);
-                                  $('.selectpicker').selectpicker('refresh');
-                    }else if(val == "O"){
+                        $('#subLinkageTarget').append(`
+                        <option value="V">Passenger Car</option>
+                        <option value="L">LCV</option>
+                        <option value="B">Motorcycle</option>`);
+                        $('.selectpicker').selectpicker('refresh');
+                    } else if(val == "O") {
                         $('#subLinkageTarget').empty();
-                        $('#subLinkageTarget').append(`<option value="C">
-                                       C
-                                  </option><option value="T">
-                                       T
-                                  </option><option value="M">
-                                       M
-                                  </option><option value="A">
-                                       A
-                                  </option><option value="K">
-                                       K
-                                  </option>`);
-                                  $('.selectpicker').selectpicker('refresh');
-                    }else{
+                        $('#subLinkageTarget').append(`
+                        <option value="C">Commercial Vehicle</option>
+                        <option value="T">Tractor</option>
+                        <option value="M">Engine</option>
+                        <option value="A">Axle</option>
+                        <option value="K">CV Body Type</option>`);
+                        $('.selectpicker').selectpicker('refresh');
+                    } else {
                         $('#subLinkageTarget').empty();
                         $('.selectpicker').selectpicker('refresh');
                     }

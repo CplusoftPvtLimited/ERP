@@ -17,20 +17,64 @@ class ManufacturerController extends Controller
      * @return \Illuminate\Http\Response
      */
     private $manufacturer;
+    private $linkage_target_type;
 
     public function __construct(ManufacturerInterface $manufacturer)
     {
         $this->manufacturer = $manufacturer;
+        $this->linkage_target_type = [
+            'P' => [
+                'V' => 'Passenger Car', 
+                'L' => 'LCV', 
+                'B' => 'Motorcycle'
+            ], 
+            'O' => [
+                'C' => 'Commercial Vehicle', 
+                'T' => 'Tractor', 
+                'M' => 'Engine', 
+                'A' => 'Axle',
+                'K' => 'CV Body Type'
+            ]
+        ];
     }
+
+    protected function getLinkageTargetTypeName($linkageType)
+    {
+        foreach ($this->linkage_target_type as $key => $type) {
+                foreach ($type as $key_val => $sub_type) {
+                    if ($linkageType== $key_val) {
+                        return $sub_type . ' (' .$key_val . ')';
+                    }
+                }
+            }
+        }
+
+    protected function checkLinkageTargetType($manufacturer_linkageType)
+    {
+        foreach ($this->linkage_target_type as $key => $type) {
+            foreach ($type as $key_val => $sub_type) {
+                if ($manufacturer_linkageType== $key_val) {
+                    return [
+                        'sub_target_type' => $key_val,
+                        'target_type' => $key,
+                        'types' => $type,
+                    ];
+                    break;
+                }
+            }
+        }
+        
+    }
+
     public function index(Request $request)
     {
-        // $manufacturers= $this->manufacturer->index();
-        // return view ('manufacturer.index', compact('manufacturers'));
         if ($request->ajax()) {
-            $manufacturers = Manufacturer::orderBy('id','desc')->get();
-            return DataTables::of($manufacturers)
+            return DataTables::of(Manufacturer::orderBy('id','desc'))
                     ->addIndexColumn()
-                    ->addColumn('action', function($row){
+                    ->addColumn('linkingTargetType', function($row) {
+                        return $this->getLinkageTargetTypeName($row->linkingTargetType);
+                    })
+                    ->addColumn('action', function($row) {
                         $btn = '<div class="row">
                             <div class="col-md-2 mr-1">
                                 <a href="manufacturer/' . $row["id"].'/edit"> <button
@@ -45,7 +89,7 @@ class ManufacturerController extends Controller
                      ';
                             return $btn;
                     })
-                    ->rawColumns(['action'])
+                    ->rawColumns(['action', 'linkingTargetType'])
                     ->make(true);
         }
       
@@ -100,7 +144,15 @@ class ManufacturerController extends Controller
     {
         try {
             $manufacturer = Manufacturer::findOrFail($id);
-            return view('manufacturer.edit',compact('manufacturer'));
+            if(empty($manufacturer)) {
+                return redirect(route('manufacturer.edit'))->withError('Manufacturer not found');
+            }
+            $data = $this->checkLinkageTargetType($manufacturer->linkingTargetType);
+
+            $sub_target_type = $data['sub_target_type'];
+            $target_type = $data['target_type'];
+            $types = $data['types'];
+            return view('manufacturer.edit',compact('manufacturer', 'sub_target_type', 'target_type', 'types'));
         } catch (\Exception $e) {
             return redirect(route('manufacturer.index'))->withError($e->getMessage());
         }

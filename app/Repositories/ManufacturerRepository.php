@@ -24,20 +24,22 @@ class ManufacturerRepository implements ManufacturerInterface
             return $e->getMessage();
         }
     }
+
     public function update($data, $item)
     {
-        $input = $data->except('_token');
-        DB::beginTransaction();
         try {
-                $data = $item->update($input);
-                DB::commit();
-                return $item;
+            $input = $data->except('_token');
+            DB::beginTransaction();
+            $data = $item->update($input);
+            DB::commit();
+            return $item;
             
         } catch (\Exception $e) {
             DB::rollBack();
             return $e->getMessage();
         }
     }
+    
     public function delete($item)
     {
         try {
