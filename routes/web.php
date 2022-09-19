@@ -16,6 +16,9 @@ use App\Http\Controllers\AssemblyGroupNodesController;
 use App\Http\Controllers\LinkageTargetsController;
 use App\Http\Controllers\ManufacturerController;
 use App\Http\Controllers\ModelSeriesController;
+use App\Http\Controllers\AmBrandController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\FormController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -43,8 +46,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('/submitted_form_show/{user_id}/{noti_id}','FormController@showSubmittedForm');
 	Route::get('showSubmitForm',[FormController::class,'showSubmitForm'])->name('showSubmitForm');
 	Route::resource('manufacturer', 'ManufacturerController');
-	Route::get('editManufacturer/{id}',[ManufacturerController::class,'editManufacturer']);
-	Route::get('deleteManufacturer/{id}',[ManufacturerController::class,'delete']);
+	Route::post('deleteManufacturer',[ManufacturerController::class,'delete']);
 	Route::resource('modelseries', 'ModelSeriesController');
 	Route::post('model/delete', [ModelSeriesController::class,'delete']);
 
@@ -57,6 +59,12 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 
 	Route::resource('article', 'ArticlesController');
 	Route::post('article/delete', [ArticlesController::class,'delete']);
+	Route::resource('suppliers', 'AmBrandController');
+	Route::post('deleteSupplier',[AmBrandController::class,'delete']);
+	Route::post('deleteRole',[RoleController::class,'delete']);
+	Route::post('deleteForm',[FormController::class,'delete']);
+
+
 
 
 

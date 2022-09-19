@@ -3,7 +3,7 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '6fd214ae38ecd898de3e2da40315a480f5ff3209',
+        'reference' => '1f2b0bcabd9de2382b8364c37a3eb8097a48e5cf',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -176,12 +176,14 @@
             'dev_requirement' => true,
         ),
         'fzaninotto/faker' => array(
-            'pretty_version' => 'v1.9.2',
-            'version' => '1.9.2.0',
-            'reference' => '848d8125239d7dbf8ab25cb7f054f1a630e68c2e',
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => '5ffe7db6c80f441f150fc88008d64e64af66634b',
             'type' => 'library',
             'install_path' => __DIR__ . '/../fzaninotto/faker',
-            'aliases' => array(),
+            'aliases' => array(
+                0 => '1.9.x-dev',
+            ),
             'dev_requirement' => true,
         ),
         'gladcodes/keygen' => array(
@@ -460,7 +462,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '6fd214ae38ecd898de3e2da40315a480f5ff3209',
+            'reference' => '1f2b0bcabd9de2382b8364c37a3eb8097a48e5cf',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -892,8 +894,8 @@
         'psr/log-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0|2.0',
-                1 => '1.0.0 || 2.0.0 || 3.0.0',
+                0 => '1.0.0 || 2.0.0 || 3.0.0',
+                1 => '1.0|2.0',
             ),
         ),
         'psr/simple-cache' => array(

@@ -1164,14 +1164,16 @@ i.fa.fa-bars {
     margin-top: 10px;
 }
 
-div#model-data-table_filter {
-    width: 100%;
-}
-
 .card.model-card{
 	padding: 10px;
 }
 
 .card.model-heading{
 	margin-top: 3px;
+}
+div#model-data-table_filter{
+	width: 100% !important;
+}
+div#data-table_filter{
+	width: 100% !important;
 }

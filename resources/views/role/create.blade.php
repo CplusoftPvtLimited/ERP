@@ -1,68 +1,72 @@
-@extends('layout.main') @section('content')
-
-@if($errors->has('name'))
-<div class="alert alert-danger alert-dismissible text-center">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ $errors->first('name') }}</div>
+@extends('layout.main')
+@section('css')
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+@endsection
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@10.10.1/dist/sweetalert2.min.css'>
+    <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.all.min.js"></script>
+@section('content')
+@if(session()->has('create_message'))
+    <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('create_message') }}</div>
 @endif
-@if(session()->has('message'))
-  <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('message') }}</div>
+@if(session()->has('edit_message'))
+    <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('edit_message') }}</div>
+@endif
+@if(session()->has('import_message'))
+    <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('import_message') }}</div>
 @endif
 @if(session()->has('not_permitted'))
-  <div class="alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('not_permitted') }}</div>
+    <div class="alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('not_permitted') }}</div>
 @endif
+
 
 <section>
     <div class="container-fluid">
-        <a href="#" data-toggle="modal" data-target="#createModal" class="btn btn-info"><i class="dripicons-plus"></i> {{trans('file.Add Role')}} </a>
-    </div>
-    <div class="table-responsive">
-        <table id="role-table" class="table table-hover">
-            <thead>
-                <tr>
-                    <th class="not-exported"></th>
-                    <th>{{trans('file.name')}}</th>
-                    <th>{{trans('file.Description')}}</th>
-                    <th class="not-exported">{{trans('file.action')}}</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($lims_role_all as $key=>$role)
-                <tr>
-                    <td>{{$key}}</td>
-                    <td>{{ $role->name }}</td>
-                    <td>{{ $role->description }}</td>
-                    <td>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{trans('file.action')}}
-                                <span class="caret"></span>
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
-                                <li>
-                                    <button type="button" data-id="{{$role->id}}" class="open-EditroleDialog btn btn-link" data-toggle="modal" data-target="#editModal"><i class="dripicons-document-edit"></i> {{trans('file.edit')}}
-                                </button>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="{{ route('role.permission', ['id' => $role->id]) }}" class="btn btn-link"><i class="dripicons-lock-open"></i> {{trans('file.Change Permission')}}</a>
-                                </li>
-                                @if($role->id > 2 && $role->id != 5)
-                                {{ Form::open(['route' => ['role.destroy', $role->id], 'method' => 'DELETE'] ) }}
-                                <li>
-                                    <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="dripicons-trash"></i> {{trans('file.delete')}}</button>
-                                </li>
-                                {{ Form::close() }}
+        <div class="row">
+            <div class="col-12" >
+                <div class="card">
+                    <div class="card-body">
+                        <div class="container">
+                            <div class="d-flex flex-row-reverse mb-3 mr-4">
+                            <a href="#" data-toggle="modal" data-target="#createModal" class="btn btn-info"><i class="dripicons-plus"></i> {{trans('file.Add Role')}} </a>
+                            </div>
+                            <div class="table-responsive">
+                                @if(session()->has('message')) 
+                                    <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('message') }}</div>
                                 @endif
-                            </ul>
+                                @if ($message = Session::get('success'))
+                                    <div class="alert alert-success"><p>{{ $message }}</p></div>
+                                @endif
+                                @if ($message = Session::get('error'))
+                                    <div class="alert alert-danger"><p>{{ $message }}</p></div>
+                                @endif
+                                <table id="data-table" class="table" style="width: 100% !important">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
-
 <div id="createModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
     <div role="document" class="modal-dialog">
         <div class="modal-content">
@@ -119,22 +123,66 @@
 		  </div>
 	</div>
 </div>
-
-@endsection
-
-@push('scripts')
 <script type="text/javascript">
+        $(document).ready(function () {
+            console.log('here');
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+                $('#data-table').DataTable({
+                    "processing" : true,
+                    "serverside" : true,
+                    ajax: "{{ route('role.index') }}",
+                    columns: [
+                        {data: 'id', name: 'id'},
+                        {"data": "name",  name: 'name'},
+                        {"data": "description",  name: 'description'},
+                        {
+                            "data": 'action',
+                            name: 'action',
+                            orderable: false,
+                            searchable: false
+                        }
+                    ],
+                });
+           });
+    </script>
+    <script>
+        function deleteRole(id){
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                        $.ajax({
+                            method: "post",
+                            url: "{{ url('/deleteRole') }}",
+                            data: {
+                                id: id
+                            },
+                            success: function(data) {
+                                location.reload();
+                            }
+
+                        });
+
+                    
+                }
+            });
+        }
+    </script>
+    <script type="text/javascript">
 
     $("ul#setting").siblings('a').attr('aria-expanded','true');
     $("ul#setting").addClass("show");
     $("ul#setting #role-menu").addClass("active");
-
-	 function confirmDelete() {
-        if (confirm("Are you sure want to delete?")) {
-            return true;
-        }
-        return false;
-    }
 
     $(document).ready(function() {
     $(document).on('click', '.open-EditroleDialog', function() {
@@ -154,73 +202,7 @@
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
-    $('#role-table').DataTable( {
-        "order": [],
-        'language': {
-            'lengthMenu': '_MENU_ {{trans("file.records per page")}}',
-             "info":      '<small>{{trans("file.Showing")}} _START_ - _END_ (_TOTAL_)</small>',
-            "search":  '{{trans("file.Search")}}',
-            'paginate': {
-                    'previous': '<i class="dripicons-chevron-left"></i>',
-                    'next': '<i class="dripicons-chevron-right"></i>'
-            }
-        },
-        'columnDefs': [
-            {
-                "orderable": false,
-                'targets': [0, 3]
-            },
-            {
-                'render': function(data, type, row, meta){
-                    if(type === 'display'){
-                        data = '<div class="checkbox"><input type="checkbox" class="dt-checkboxes"><label></label></div>';
-                    }
-
-                   return data;
-                },
-                'checkboxes': {
-                   'selectRow': true,
-                   'selectAllRender': '<div class="checkbox"><input type="checkbox" class="dt-checkboxes"><label></label></div>'
-                },
-                'targets': [0]
-            }
-        ],
-        'select': { style: 'multi',  selector: 'td:first-child'},
-        'lengthMenu': [[10, 25, 50, -1], [10, 25, 50, "All"]],
-        dom: '<"row"lfB>rtip',
-        buttons: [
-            {
-                extend: 'pdf',
-                text: '<i title="export to pdf" class="fa fa-file-pdf-o"></i>',
-                exportOptions: {
-                    columns: ':visible:Not(.not-exported)',
-                    rows: ':visible'
-                },
-            },
-            {
-                extend: 'csv',
-                text: '<i title="export to csv" class="fa fa-file-text-o"></i>',
-                exportOptions: {
-                    columns: ':visible:Not(.not-exported)',
-                    rows: ':visible'
-                },
-            },
-            {
-                extend: 'print',
-                text: '<i title="print" class="fa fa-print"></i>',
-                exportOptions: {
-                    columns: ':visible:Not(.not-exported)',
-                    rows: ':visible'
-                },
-            },
-            {
-                extend: 'colvis',
-                text: '<i title="column visibility" class="fa fa-eye"></i>',
-                columns: ':gt(0)'
-            },
-        ],
-    } );
-});
-</script>
-@endpush
+    });
+    </script>
+    
+@endsection

@@ -56,7 +56,7 @@
                                         </div>
                                     </div>
                                     <div class="d-flex flex-row-reverse">
-                                            <button type="submit" class="btn btn-primary" style="width:100px">Save</button>
+                                        <button type="submit" class="btn btn-primary" style="width:100px">Save</button>
                                     </div>
                                 </div>
                             </div>

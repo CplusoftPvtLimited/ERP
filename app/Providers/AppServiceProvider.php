@@ -7,13 +7,15 @@ use App\Repositories\AssemblyGroupNodesRepository;
 use App\Repositories\Interfaces\ArticleInterface;
 use App\Repositories\Interfaces\AssemblyGroupNodeInterface;
 use App\Repositories\Interfaces\LinkageTargetInterface;
+use App\Repositories\AmBrandRepository;
+use App\Repositories\Interfaces\AmBrandInterface;
 use App\Repositories\Interfaces\ManufacturerInterface;
 use App\Repositories\LinkageTargetRepository;
 use App\Repositories\ManufacturerRepository;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
@@ -35,6 +37,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(LinkageTargetInterface::class,LinkageTargetRepository::class);
         $this->app->bind(AssemblyGroupNodeInterface::class,AssemblyGroupNodesRepository::class);
         $this->app->bind(ArticleInterface::class,ArticleRepository::class);
+        $this->app->bind(AmBrandInterface::class,AmBrandRepository::class);
+
         
     }
 

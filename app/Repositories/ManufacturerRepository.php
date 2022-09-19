@@ -21,7 +21,7 @@ class ManufacturerRepository implements ManufacturerInterface
             return $manufacturer;
         } catch (\Exception $e) {
             DB::rollBack();
-            return $e;
+            return $e->getMessage();
         }
     }
     public function update($data, $item)
@@ -29,24 +29,23 @@ class ManufacturerRepository implements ManufacturerInterface
         $input = $data->except('_token');
         DB::beginTransaction();
         try {
-                $item->update($input);
+                $data = $item->update($input);
                 DB::commit();
                 return $item;
             
         } catch (\Exception $e) {
             DB::rollBack();
-            return $e;
+            return $e->getMessage();
         }
     }
     public function delete($item)
     {
         try {
-            $item->delete();
-            $message ="Manufacturer Deleted";
-            return $message;
+            $data = $item->delete();
+            return $data;
         } catch (\Exception $e) {
             DB::rollBack();
-            return $e;
+            return $e->getMessage();
         }
     }
 }

@@ -27,22 +27,19 @@ class ManufacturerController extends Controller
         // $manufacturers= $this->manufacturer->index();
         // return view ('manufacturer.index', compact('manufacturers'));
         if ($request->ajax()) {
-        $manufacturers = Manufacturer::orderBy('id','desc')->get();
+            $manufacturers = Manufacturer::orderBy('id','desc')->get();
             return DataTables::of($manufacturers)
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
                         $btn = '<div class="row">
                             <div class="col-md-2 mr-1">
-                                <a href="editManufacturer/' . $row["id"].'"> <button
+                                <a href="manufacturer/' . $row["id"].'/edit"> <button
                                 class="btn btn-primary btn-sm " type="button"
                                 data-original-title="btn btn-danger btn-xs"
                                 title=""><i class="fa fa-edit"></i></button></a>
                             </div>
                             <div class="col-md-2">
-                                <a href="deleteManufacturer/' . $row['id'].'"> <button
-                                class="btn btn-danger btn-sm " style="" type="button"
-                                data-original-title="btn btn-danger btn-sm"
-                                title=""><i class="fa fa-trash"></i></button></a>
+                            <button class="btn btn-danger btn-sm" onclick="deleteManufacturer(\''.$row["id"].'\')"><i class="fa fa-trash"></i></button>
                             </div>
                         </div>
                      ';
@@ -75,10 +72,10 @@ class ManufacturerController extends Controller
     public function store(StoreManufacturerRequest $request)
     {
         $item = $this->manufacturer->store($request);
-        if($item == true){
+        if(is_object($item)){
             return redirect()->route('manufacturer.index')->withSuccess(__('Manufacturer Added Successfully.'));
         }else{
-            return redirect()->back()->withError(__('Some thing went wrong'));
+            return redirect()->back()->withError($item);
         }
     }
 
@@ -99,9 +96,14 @@ class ManufacturerController extends Controller
      * @param  \App\Models\Manufacturer  $manufacturer
      * @return \Illuminate\Http\Response
      */
-    public function edit(Manufacturer $manufacturer)
+    public function edit($id)
     {
-        return view('manufacturer.edit',compact('manufacturer'));
+        try {
+            $manufacturer = Manufacturer::findOrFail($id);
+            return view('manufacturer.edit',compact('manufacturer'));
+        } catch (\Exception $e) {
+            return redirect(route('manufacturer.index'))->withError($e->getMessage());
+        }
     }
 
     /**
@@ -114,10 +116,10 @@ class ManufacturerController extends Controller
     public function update(UpdateManufacturerRequest $request, Manufacturer $manufacturer)
     {
         $item = $this->manufacturer->update($request,$manufacturer);
-        if($item == true){
+        if(is_object($item)){
             return redirect()->route('manufacturer.index')->withSuccess(__('Manufacturer Updated Successfully.'));
         }else{
-            return redirect()->back()->withError(__('Some thing went wrong'));
+            return redirect()->back()->withError($item);
         }
     }
 
@@ -133,25 +135,16 @@ class ManufacturerController extends Controller
         // return redirect()->back()->withMessage($message);
     }
 
-    public function editManufacturer($id)
+    public function delete(Request $request)
     {
-        try {
-            $manufacturer = Manufacturer::findOrFail($id);
-            return view('manufacturer.edit',compact('manufacturer'));
-        } catch (\Exception $e) {
-            return $e;
-        }
-    }
-    public function delete($id)
-    {
-            $manufacturer = Manufacturer::find($id);
-            if($manufacturer)
+            $manufacturer = Manufacturer::findOrFail($request->id);
+            $item = $this->manufacturer->delete($manufacturer);
+            if($item == true)
             {
-                $message = $this->manufacturer->delete($manufacturer);
                 return redirect()->back()->withSuccess(__('Manufacturer Deleted Successfully.'));
-
             }else{
-                return redirect()->back()->withError(__('Manufacturer does not exist'));
+                return redirect()->back()->withError($item);
             }
-    }
+     }
 }
+        

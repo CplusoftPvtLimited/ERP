@@ -9,20 +9,41 @@ use Auth;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Yajra\DataTables\DataTables;
+
 
 class RoleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        if(Auth::user()->role_id <= 2) {
-            $lims_role_all = Roles::where('is_active', true)->get();
-            return view('role.create', compact('lims_role_all'));
-        }
-        else
-            return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+            if ($request->ajax()) {
+                $roles = Roles::where('is_active', true)->get();
+                return DataTables::of($roles)
+                        ->addIndexColumn()
+                        ->addColumn('action', function($row){
+                            $btn = '<div class="row">
+                                <div class="col-md-2">
+                                    <button type="button" data-id="'.$row["id"].'" class="open-EditroleDialog btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal"><i class="fa fa-edit"></i></button>
+                                </div>
+                                <div class="col-md-2">
+                                <a href="role/permission/' . $row["id"].'"> <button
+                                    class="btn btn-secondary btn-sm " type="button"
+                                    data-original-title="btn btn-danger btn-xs"
+                                    title=""><i class="fa fa-question"></i></button></a>
+                                </div>
+                                <div class="col-md-2">
+                                <button class="btn btn-danger btn-sm" onclick="deleteRole(\''.$row["id"].'\')"><i class="fa fa-trash"></i></button>
+                                </div>
+                            </div>
+                        ';
+                                return $btn;
+                        })
+                        ->rawColumns(['action'])
+                        ->make(true);
+            }        
+            return view('role.create');
     }
 
-    
     public function create()
     {
         
@@ -1072,4 +1093,15 @@ class RoleController extends Controller
         $lims_role_data->save();
         return redirect('role')->with('not_permitted', 'Data deleted successfully');
     }
+    public function delete(Request $request)
+    {
+            $role = Role::findOrFail($request->id);
+            $item = $role->delete();
+            if($item == true)
+            {
+                return redirect()->back()->withSuccess(__('Manufacturer Deleted Successfully.'));
+            }else{
+                return redirect()->back()->withError($item);
+            }
+     }
 }
