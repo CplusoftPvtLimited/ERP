@@ -17,14 +17,14 @@ class CreateStockManagementsTable extends Migration
 
             $table->id();
             $table->bigInteger('product_id');
-            $table->bigInteger('purchase_product_id');
+            $table->bigInteger('purchase_product_id')->nullable();
             $table->bigInteger('retailer_id');
             $table->string('reference_no');
-            $table->string('white_items');
-            $table->string('black_items');
-            $table->string('unit_actual_price');
-            $table->string('unit_sale_price');
-            $table->string('total_qty');
+            $table->string('white_items')->nullable();
+            $table->string('black_items')->nullable();
+            $table->string('unit_actual_price')->nullable();
+            $table->string('unit_sale_price')->nullable();
+            $table->string('total_qty')->nullable();
             // $table->foreign('purchase_product_id')->references('id')->on('product_purchases')->cascadeOnDelete();
             // $table->foreign('retailer_id')->references('id')->on('users');
             $table->softDeletes();

@@ -1032,9 +1032,8 @@
                     </li>
                     @endif
                     <li>
-                    <a href="{{ route('logout') }}"
-                        onclick="event.preventDefault();
-                                        document.getElementById('logout-form').submit();"><i class="dripicons-power"></i>
+                    <a href="{{ route('user_logout') }}"
+                        ><i class="dripicons-power"></i>
                         {{trans('file.logout')}}
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

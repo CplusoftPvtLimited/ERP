@@ -70,21 +70,21 @@ class ProductController extends Controller
                     ->addIndexColumn('id')
                     ->addColumn('action', function ($row) {
                         $btn = '<div class="row">
-                             <div class="col-md-4">
+                             <div class="col-sm-3">
                              <a> <button
                              class="btn btn-danger btn-sm " onclick= "deleteStock('. $row["id"] .')" style="" type="button"
                              data-original-title="btn btn-danger btn-sm"
                              title=""><i class="fa fa-trash"></i></button></a>
                              </div>
                              
-                             <div class="col-md-4">
+                             <div class="col-sm-3">
                              <a href="editPurchaseByProduct/' . $row["id"] . '"> <button
                                          class="btn btn-primary btn-sm " type="button"
                                          data-original-title="btn btn-danger btn-xs"
                                          title=""><i class="fa fa-edit"></i></button></a>
                              </div>
 
-                             <div class="col-md-4">
+                             <div class="col-sm-3">
                              <a href="viewProduct/' . $row["id"] . '"> <button
                                          class="btn btn-success btn-sm " type="button"
                                          data-original-title="btn btn-success btn-xs"
@@ -93,7 +93,8 @@ class ProductController extends Controller
                          </div>
                          ';
                         return $btn;
-                    })->make(true);
+                    })
+                    ->rawColumns(['action'])->make(true);
             }
             return view('product.product_index');
         } catch (\Throwable $th) {

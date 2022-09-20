@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\ProductPurchase;
+use App\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,5 +20,10 @@ class StockManagement extends Model
     public function purchaseProduct() :BelongsTo
     {
         return $this->belongsTo(ProductPurchase::class,'purchase_product_id','id');
+    }
+
+    public function retailer() :BelongsTo
+    {
+        return $this->belongsTo(User::class,'retailer_id','id');
     }
 }

@@ -9,28 +9,28 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header d-flex align-items-center">
-                            <h4>{{ trans('file.Purchase') }}</h4>
+                            <h4><b>{{ trans('file.Purchase') }}</b></h4>
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <label for="">Date</label>
-                                    <input type="text" class="form-control" value="{{ $purchase->date }}" readonly>
+                                <div class="col-md-4">
+                                    <label for=""><b>Date</b></label>
+                                    <p>{{ $purchase->date }}</p>
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="">Total Items</label>
-                                    <input type="text" class="form-control" value="{{ $purchase->item }}" readonly>
+                                <div class="col-md-4">
+                                    <label for=""><b>Total Items</b></label>
+                                    <p>{{ $purchase->item }}</p>
+                                    
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label for="">Total Quantity</label>
-                                    <input type="text" class="form-control" value="{{ $purchase->total_qty }}" readonly>
+                                <div class="col-md-4">
+                                    <label for=""><b>Total Quantity</b></label>
+                                    <p>{{ $purchase->total_qty }}</p>
+                                    
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="">Grand Total</label>
-                                    <input type="text" class="form-control" value="{{ $purchase->grand_total }}"
-                                        readonly>
+                                <div class="col-md-4">
+                                    <label for=""><b>Grand Total</b></label>
+                                    <p>{{ $purchase->grand_total }}</p>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -38,7 +38,7 @@
 
                     <div class="card">
                         <div class="card-header d-flex align-items-center">
-                            <h4>{{ trans('file.Purchase Products') }}</h4>
+                            <h4><b>{{ trans('file.Purchase Products') }}</b></h4>
                         </div>
                         <table class="table" id="purchase-table">
                             <thead>

@@ -31,6 +31,7 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::post('do-register',[RetailerRegisterController::class,'create'])->name('do-register');
 	Route::post('do-login',[RetailerLoginController::class,'login'])->name('do-login');
 
+	Route::get('/get_logout','UserController@userLogout')->name('user_logout');
 
 
 

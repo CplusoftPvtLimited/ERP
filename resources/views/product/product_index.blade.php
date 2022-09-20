@@ -42,37 +42,62 @@
                     <div class="card-body">
                         <div class="container">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-8">
                                     <h4>All Products Stock</h4>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="d-flex flex-row-reverse mb-3">
                                         <div class="row">
-                                            <div class="col-md-5" style="">
-                                                <a class="p-1" href=""><button class="btn btn-info">Export</button></a>
-                                            </div>
-                                            <div class="col-md-7">
-                                                <form action="{{ route('stock.import') }}" method="POST"
-                                                    enctype="multipart/form-data">
-                                                    @csrf
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <button class="btn btn-primary">CSV Import</button>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <input type="file" name="file" class="form-control">
+                                            
+                                            <div class="col-md-12">
+                                                <a class="p-3"><button class="btn btn-primary" data-toggle="modal"
+                                                        data-target="#exampleModal">Import</button></a>
+                                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">Upload
+                                                                    Products
+                                                                </h5>
+                                                                <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form action="{{ route('stock.import') }}" method="POST"
+                                                                    enctype="multipart/form-data">
+                                                                    @csrf
+                                                                    <div class="row">
+                                                                        
+                                                                        <div class="col-md-5">
+                                                                            <input type="file" name="file">
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <button class="btn btn-primary">CSV
+                                                                                Import</button>
+                                                                        </div>
+                                                                    </div>
+                                                                    {{-- <a class="p-1" href=""><button class="btn btn-primary">CSV Import</button></a> --}}
+                                                                </form>
+
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-dismiss="modal">Close</button>
+                                                                
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    {{-- <a class="p-1" href=""><button class="btn btn-primary">CSV Import</button></a> --}}
-                                                </form>
-                                                {{-- <a class="p-1" href=""><button class="btn btn-success">Add</button></a> --}}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                           
-                           
+
+
                             <div class="product-table">
                                 @if ($message = Session::get('success'))
                                     <div class="alert alert-success">
@@ -89,7 +114,7 @@
                                         <tr>
                                             {{-- <th>#</th> --}}
                                             <th>Product Id</th>
-                                            <th>Retailer Id</th>
+                                            {{-- <th>Retailer</th> --}}
                                             <th>Refrence No</th>
                                             <th>White Items</th>
                                             <th>Black Items</th>
@@ -128,10 +153,10 @@
                         "data": "product_id",
                         name: 'product_id'
                     },
-                    {
-                        "data": "retailer_id",
-                        name: 'retailer_id'
-                    },
+                    // {
+                    //     "data": "retailer",
+                    //     name: 'retailer'
+                    // },
                     {
                         "data": "reference_no",
                         name: 'reference_no'

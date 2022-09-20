@@ -82,8 +82,8 @@ class PurchaseController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $all_purchase = Purchase::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->get();
-            return Datatables::of($all_purchase)
+            // $all_purchase = ->get();
+            return Datatables::of(Purchase::where('user_id', Auth::user()->id)->orderBy('id', 'desc'))
                 ->addIndexColumn('id')
                 ->addColumn('supplier', function ($row) {
                     return $row->brand->brandName;
