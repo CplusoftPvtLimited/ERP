@@ -27,7 +27,10 @@ class ArticlesController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $articles = Article::select('id','legacyArticleId','articleNumber','mfrId','additionalDescription','assemblyGroupNodeId')->with(['assemblyGroup', 'manufacturer']);
+            $articles = Article::select('id','legacyArticleId','articleNumber','mfrId','additionalDescription','assemblyGroupNodeId')
+            ->with(['assemblyGroup' => function($query){
+                $query->select('assemblyGroupNodeId','assemblyGroupName')->get();
+            }, 'manufacturer']);
             // $articles = [];
             // foreach ($articless as $article) {
             //     // $manufacturer = Manufacturer::where('manuId',$article->mfrId)->first();

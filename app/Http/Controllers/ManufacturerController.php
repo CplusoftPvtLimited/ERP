@@ -149,9 +149,10 @@ class ManufacturerController extends Controller
             }
             $data = $this->checkLinkageTargetType($manufacturer->linkingTargetType);
 
-            $sub_target_type = $data['sub_target_type'];
-            $target_type = $data['target_type'];
-            $types = $data['types'];
+            
+            $sub_target_type = isset($data) ? $data['sub_target_type'] : [];
+            $target_type = isset($data) ? $data['target_type'] : [];
+            $types = isset($data) ? $data['types'] : [];
             return view('manufacturer.edit',compact('manufacturer', 'sub_target_type', 'target_type', 'types'));
         } catch (\Exception $e) {
             return redirect(route('manufacturer.index'))->withError($e->getMessage());

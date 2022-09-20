@@ -9,6 +9,9 @@
                 aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('not_permitted') }}
         </div>
     @endif
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/bootstrap.tagsinput/0.8.0/bootstrap-tagsinput.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap.tagsinput/0.8.0/bootstrap-tagsinput.css">
 
     <section>
         <div class="container-fluid">
@@ -51,32 +54,31 @@
                                             <div class="col-4">
                                                 <div class="form-group">
                                                     <h6>Model Name:</h6>
-                                                    <input type="text" name="modelname" class="form-control" required
-                                                        value="{{ old('modelname') }}">
+                                                    <input type="text" name="tags" placeholder="" class="form-control" data-role="tagsinput"/>
                                                 </div>
                                             </div>
                                             <div class="col-4">
                                                 <div class="form-group">
                                                     <h6>Year of Construction From:</h6>
-                                                    <select class="js-example-placeholder-multiple col-sm-12 form-control" name="yearOfConstrFrom">
+                                                    <select class="selectpicker form-control"
+                                                        name="yearOfConstrFrom" id="fromYear">
                                                         <option value="-2">Select Year</option>
-                                                        @foreach(range( $latest_year, $earliest_year ) as $i)
-                                                        <option value="{{ $i }}">{{ $i }}</option>
+                                                        @foreach (range($latest_year, $earliest_year) as $i)
+                                                            <option value="{{ $i }}">{{ $i }}</option>
                                                         @endforeach
-                        
+
                                                     </select>
-                                                    
+
                                                 </div>
                                             </div>
                                             <div class="col-4">
                                                 <div class="form-group">
                                                     <h6>Year of Construction To:</h6>
-                                                    <select class="js-example-placeholder-multiple col-sm-12 form-control" name="yearOfConstrTo">
+                                                    <select class="selectpicker form-control"
+                                                        name="yearOfConstrTo" id="toYear">
                                                         <option value="-2">Select Year</option>
-                                                        @foreach(range( $latest_year, $earliest_year ) as $i)
-                                                        <option value="{{ $i }}">{{ $i }}</option>
-                                                        @endforeach
-                        
+
+
                                                     </select>
                                                 </div>
                                             </div>
@@ -94,20 +96,22 @@
                                             </div>
                                             <div class="col-4">
                                                 <div class="form-group">
-                                                    <h6>Linkage Target Type:</h6>
-                                                    <select name="linkingTargetType" id="" class="form-control"
-                                                        required>
-                                                        <option value="" selected disabled>--Select One--</option>
-                                                        <option value="P">P</option>
-                                                        <option value="V">V</option>
-                                                        <option value="L">L</option>
-                                                        <option value="B">B</option>
-                                                        <option value="C">C</option>
-                                                        <option value="T">T</option>
-                                                        <option value="M">M</option>
-                                                        <option value="A">A</option>
-                                                        <option value="K">K</option>
-                                                        <option value="O">O</option>
+                                                    <h6>Engine Type</h6>
+                                                    <select name="" id="linkageTarget"
+                                                        class="selectpicker form-control">
+
+                                                        <option>Select Type</option>
+                                                        <option value="P">Passenger + Motorcycle + LCV</option>
+                                                        <option value="O">Commercial Vehicle + Tractor</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="form-group">
+                                                    <h6>Engine Sub-Type</h6>
+                                                    <select name="linkingTargetType" id="subLinkageTarget"
+                                                        class="selectpicker form-control">
+                                                        <option value="-2">Select One</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -127,5 +131,62 @@
         </div>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+        <script>
+            
+            $('#fromYear').on('change', function() {
+                var year = this.value;
+                
+                    // var startYear = 
+                    var currentYear = new Date().getFullYear(), years = [];
+                    year = year || 1980;  
+                    $('#toYear').empty();
+                    while ( year <= currentYear ) {
+                        //console.log(year)
+                        $('#toYear').append(`
+                        
+                        <option value="`+ year +`">`+year +`</option>`);
+                        year++;
+                        
+                    }   
+                    $('.selectpicker').selectpicker('refresh');
+                    
+    //                 startYear = startYear || 1980;  
+    // while ( startYear <= currentYear ) {
+    //     years.push(startYear++);
+    // }   
+                
+                    
+            });
+            $('#linkageTarget').on('change', function() {
+                var val = this.value;
+
+                if (val == "P") {
+                    $('#subLinkageTarget').empty();
+                    $('#subLinkageTarget').append(`
+                        <option value="V">Passenger Car</option>
+                        <option value="L">LCV</option>
+                        <option value="B">Motorcycle</option>`);
+                    $('.selectpicker').selectpicker('refresh');
+                } else if (val == "O") {
+                    $('#subLinkageTarget').empty();
+                    $('#subLinkageTarget').append(`
+                        <option value="C">Commercial Vehicle</option>
+                        <option value="T">Tractor</option>
+                        <option value="M">Engine</option>
+                        <option value="A">Axle</option>
+                        <option value="K">CV Body Type</option>`);
+                    $('.selectpicker').selectpicker('refresh');
+                } else {
+                    $('#subLinkageTarget').empty();
+                    $('.selectpicker').selectpicker('refresh');
+                }
+
+            });
+
+            // $(".tm-input").tagsManager();
+            // $('input').tagEditor();
+
+        </script>
     </section>
 @endsection

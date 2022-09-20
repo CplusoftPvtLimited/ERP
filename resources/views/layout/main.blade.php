@@ -126,13 +126,14 @@
                 <li id="modelseries-list-menu" class="{{ $route == 'engine.index' ? 'active' : '' }}"><a href="{{route('engine.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Engines')}}</a></li>
                 <li id="modelseries-list-menu" class="{{ $route == 'section.index' ? 'active' : '' }}"><a href="{{route('section.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Sections')}}</a></li>
                 <li id="modelseries-list-menu" class="{{ $route == 'article.index' ? 'active' : '' }}"><a href="{{route('article.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Products')}}</a></li>
+                <li id="maufacturer-list-menu" class="{{ $route == 'manufacturer.index' ? 'active' : '' }}"><a href="{{route('manufacturer.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Manufacturer')}}</a></li>
+            <li id="modelseries-list-menu" class="{{ $route == 'modelseries.index' ? 'active' : '' }}"><a href="{{route('modelseries.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Model')}}</a></li>
+            <li id="suppliers-list-menu" class="{{ $route == 'suppliers.index' ? 'active' : '' }}"><a href="{{route('suppliers.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Suppliers')}}</a></li>
             </ul>
             </li>
             @endif
             
-            <li id="maufacturer-list-menu" class="{{ $route == 'manufacturer.index' ? 'active' : '' }}"><a href="{{route('manufacturer.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Manufacturer')}}</a></li>
-            <li id="modelseries-list-menu" class="{{ $route == 'modelseries.index' ? 'active' : '' }}"><a href="{{route('modelseries.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Model')}}</a></li>
-            <li id="suppliers-list-menu" class="{{ $route == 'suppliers.index' ? 'active' : '' }}"><a href="{{route('suppliers.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Suppliers')}}</a></li>
+            
             <li id="form-list-menu" class="{{ $route == 'form.index' ? 'active' : '' }}"><a href="{{route('form.index')}}"><i class="dripicons-list"></i>{{trans('file.Forms')}}</a></li>
 
             <?php
@@ -1013,9 +1014,8 @@
                     <a href="{{route('user.profile', ['id' => Auth::id()])}}"><i class="dripicons-user"></i> {{trans('file.profile')}}</a>
                     </li>
                     <li style="background-color: #F7F7F7">
-                    <a href="{{ route('logout') }}"
-                        onclick="event.preventDefault();
-                                        document.getElementById('logout-form').submit();"><i class="dripicons-power"></i>
+                    <a href="{{ route('user_logout') }}"
+                        ><i class="dripicons-power"></i>
                         {{trans('file.logout')}}
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -1471,6 +1471,7 @@
     <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.min.js"></script>
     @endif
     @stack('scripts')
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tagmanager/3.0.2/tagmanager.min.js"></script>
     <script>
         if ('serviceWorker' in navigator ) {
             window.addEventListener('load', function() {

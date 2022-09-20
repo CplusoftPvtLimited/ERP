@@ -72,25 +72,53 @@ class ModelSeriesController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         DB::beginTransaction();
         try {
             $request->validate([
-                'modelname' => 'required|unique:modelseries,modelname,except,id',
+                // 'tags' => 'required',
                 'yearOfConstrFrom' => 'required|integer',
                 'yearOfConstrTo' => 'required|integer',
                 'manuId' => 'required',
                 'linkingTargetType' => 'required',
             ]);
-            $data = $request->all();
-            $max_model_id = ModelSeries::max('modelId');
-            if (!empty($max_model_id)) {
-                $data['modelId'] = $max_model_id + 1;
-            } else {
-                $data['modelId'] = 1;
+            $data = $request->except(['tags','_token']);
+           
+            if(!empty($request->tags) && str_contains($request->tags,",")){
+                $model_names = explode(',',$request->tags);
+                if (count($model_names) > 0) {
+                    foreach($model_names as $name){
+                        $data['modelname'] = $name;
+                        $max_model_id = ModelSeries::max('modelId');
+                        if (!empty($max_model_id)) {
+                            $data['modelId'] = $max_model_id + 1;
+                        } else {
+                            $data['modelId'] = 1;
+                        }
+                        ModelSeries::create($data);
+                    }
+
+                    DB::commit();
+                    return redirect()->route('modelseries.index')->with('create_message', 'Model created successfully');
+                }
+            }else if(!empty($request->tags) && !str_contains($request->tags,",")){
+                $data['modelname'] = $request->tags;
+                $max_model_id = ModelSeries::max('modelId');
+                if (!empty($max_model_id)) {
+                    $data['modelId'] = $max_model_id + 1;
+                } else {
+                    $data['modelId'] = 1;
+                }
+                ModelSeries::create($data);
+                DB::commit();
+                return redirect()->route('modelseries.index')->with('create_message', 'Model created successfully');
+            }else{
+                return redirect()->route('modelseries.create')->with('error', "Please select model name");
             }
-            $modelSeries = ModelSeries::create($data);
-            DB::commit();
-            return redirect()->route('modelseries.index')->with('create_message', 'Model created successfully');
+            
+            
+            
+            
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('modelseries.create')->with('error', $e->getMessage());

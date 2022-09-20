@@ -77,6 +77,8 @@ class AssemblyGroupNodesController extends Controller
         $engine = $this->sectionRepository->store($request);
         if($engine == true){
             return redirect()->route('section.index')->with('create_message', 'Section created successfully');
+        }else if($engine == "notfound"){
+            return redirect()->route('section.index')->with('error', "Please enter section name");
         }else{
             // dd($engine->getMessage());
             return redirect()->route('section.index')->with('error', $engine->getMessage());

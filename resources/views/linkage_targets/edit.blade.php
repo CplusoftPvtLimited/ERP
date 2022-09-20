@@ -111,7 +111,7 @@
                                             </div>
                                             <div class="col-4">
                                                 <div class="form-group">
-                                                    <h6>Linkage Target Type</h6>
+                                                    <h6>Manufacturers</h6>
                                                     <select name="mfrId" id="" class="selectpicker form-control">
                                                         @foreach ($manufacturers as $manufacturer)
                                                             <option value="{{ $manufacturer->manuId }}" {{ $engine->mfrId == $manufacturer->manuId ? 'selected' : '' }}>{{ $manufacturer->manuName }}</option>
@@ -137,9 +137,13 @@
                                                     <h6>Sub-Linkage Target Type</h6>
                                                     <select name="subLinkageTargetType" id="subLinkageTarget" class="selectpicker form-control">
                                                         <option value="-2">Select One</option>
+                                                        @if(count($types) > 0)
                                                         @foreach ($types as $key => $item)
                                                             <option value="{{$key}}" {{($key == $sub_target_type) ? 'selected' : ''}}>{{$item}}</option>
                                                         @endforeach
+                                                        @else
+                                                            <option value="">Nothing Selected</option>
+                                                        @endif
                                                     </select>
                                                 </div>
                                             </div>

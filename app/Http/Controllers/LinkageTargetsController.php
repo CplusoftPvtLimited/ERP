@@ -131,7 +131,7 @@ class LinkageTargetsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int 
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -139,9 +139,10 @@ class LinkageTargetsController extends Controller
         $engine = LinkageTarget::find($id);
         $manufacturers = Manufacturer::all();
         $data = $this->checkLinkageTargetType($engine->subLinkageTargetType);
-        $sub_target_type = $data['sub_target_type'];
-        $target_type = $data['target_type'];
-        $types = $data['types'];
+        
+        $sub_target_type = isset($data) ? $data['sub_target_type'] : [];
+        $target_type = isset($data) ? $data['target_type'] : [];
+        $types = isset($data) ? $data['types'] :[];
         return view('linkage_targets.edit', compact('engine','manufacturers', 'sub_target_type', 'target_type', 'types'));
     }
 
@@ -156,10 +157,10 @@ class LinkageTargetsController extends Controller
     {
         $engine = $this->engineRepository->update($request,$id);
         if($engine == true){
-            return redirect()->route('engine.edit')->with('create_message', 'Engine Update successfully');
+            return redirect()->route('engine.edit',$id)->with('create_message', 'Engine Update successfully');
         }else{
             // dd($engine->getMessage());
-            return redirect()->route('engine.edit')->with('error', $engine);
+            return redirect()->route('engine.edit',$id)->with('error', $engine);
         }
     }
 
