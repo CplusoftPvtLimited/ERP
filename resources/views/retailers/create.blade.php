@@ -1,4 +1,6 @@
-@extends('layout.main') @section('content')
+@extends('layout.main')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
+@section('content')
 @if(session()->has('message'))
   <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('message') }}</div>
 @endif
@@ -6,7 +8,7 @@
   <div class="alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('not_permitted') }}</div>
 @endif
 
-<section>
+<section >
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
@@ -38,27 +40,27 @@
                                 <div class="col-12">
                                     <div class="other_data"></div>
                                     <div class="row">
-                                        <div class="col-6">
+                                        <div class="col-4">
                                             <div class="form-group">
                                                 <strong>Name: *</strong>
                                                 <input type="text" name="name" class="form-control" required value="{{old('name')}}">
                                             </div>
                                         </div>
-                                        <div class="col-6">
+                                        <div class="col-4">
                                             <div class="form-group">
                                                 <strong>Email: *</strong>
                                                 <input type="email" name="email" class="form-control" required value="{{old('email')}}">
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
+                                        <div class="col-4">
                                             <div class="form-group">
                                                 <strong>Shop Name: *</strong>
                                                 <input type="text" name="shop_name" class="form-control" required value="{{old('shop_name')}}">
                                             </div>
                                         </div>
-                                        <div class="col-6">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">
                                             <div class="form-group">
                                                 <strong>Phone Number: *</strong>
                                                 <input type="number" name="phone" class="form-control" required value="{{old('phone')}}">

@@ -129,9 +129,6 @@
             </ul>
             </li>
             @endif
-            
-            <li id="maufacturer-list-menu" class="{{ $route == 'manufacturer.index' ? 'active' : '' }}"><a href="{{route('manufacturer.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Manufacturer')}}</a></li>
-            <li id="modelseries-list-menu" class="{{ $route == 'modelseries.index' ? 'active' : '' }}"><a href="{{route('modelseries.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Model')}}</a></li>
             <li id="suppliers-list-menu" class="{{ $route == 'suppliers.index' ? 'active' : '' }}"><a href="{{route('suppliers.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Suppliers')}}</a></li>
             <li id="retailers-list-menu" class="{{ $route == 'retailers.index' ? 'active' : '' }}"><a href="{{route('retailers.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Retailers')}}</a></li>
             <li id="form-list-menu" class="{{ $route == 'form.index' ? 'active' : '' }}"><a href="{{route('form.index')}}"><i class="dripicons-list"></i>{{trans('file.Forms')}}</a></li>

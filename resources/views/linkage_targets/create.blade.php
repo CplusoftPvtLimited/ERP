@@ -1,4 +1,6 @@
-@extends('layout.main') @section('content')
+@extends('layout.main')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
+@section('content')
     @if (session()->has('message'))
         <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close"
                 data-dismiss="alert" aria-label="Close"><span
@@ -110,7 +112,7 @@
                                             </div>
                                             <div class="col-4">
                                                 <div class="form-group">
-                                                    <h6>Linkage Target Type</h6>
+                                                    <h6>Manufacturer</h6>
                                                     <select name="mfrId" id="" class="selectpicker form-control">
                                                         @foreach ($manufacturers as $manufacturer)
                                                             <option value="{{ $manufacturer->manuId }}">{{ $manufacturer->manuName }}</option>
@@ -120,6 +122,16 @@
                                             </div>
                                         </div>
                                         <div class="row">
+                                        <div class="col-4">
+                                                <div class="form-group">
+                                                    <h6>Model</h6>
+                                                    <select name="vehicleModelSeriesId" id="" class="selectpicker form-control">
+                                                        @foreach ($models as $model)
+                                                            <option value="{{ $model->modelId }}">{{ $model->modelname }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
                                             <div class="col-4">
                                                 <div class="form-group">
                                                     <h6>Linkage Target Type</h6>
@@ -152,8 +164,6 @@
                                         <input type="hidden" name="mfrShortName" value="0">
                                         <input type="hidden" name="beginYearMonth" value="0000">
                                         <input type="hidden" name="endYearMonth" value="0000">
-                                        <input type="hidden" name="vehicleModelSeriesId" value="0">
-                                        <input type="hidden" name="vehicleModelSeriesName" value="0">
                                         <input type="hidden" name="rmiTypeId" value="0">
                                         <input type="hidden" name="imageURL50" value="0">
                                         <input type="hidden" name="imageURL100" value="0">
