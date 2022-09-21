@@ -198,17 +198,29 @@ class PurchaseRepository implements PurchaseInterface
                 // dd($product_purchase);
                 $purchase = Purchase::find($product_purchase->purchase_id);
                 // dd($purchase);
-                StockManagement::create([
-                    'product_id' => $product_purchase->legacy_article_id,
-                    'purchase_product_id' => $product_purchase->id,
-                    'reference_no' => $product_purchase->reference_no,
-                    'retailer_id' => $purchase->user_id,
-                    'white_items' => $product_purchase->white_item_qty,
-                    'black_items' => $product_purchase->black_item_qty,
-                    'unit_actual_price' => $product_purchase->actual_price,
-                    'unit_sale_price' => $product_purchase->sell_price,
-                    'total_qty' => $product_purchase->qty,
-                ]);
+                $stock = StockManagement::where('retailer_id', auth()->user()->id)->where('reference_no', $product_purchase->reference_no)->first();
+                if (!empty($stock)) {
+                    $stock->update([
+                        'white_items' => ($stock->white_items + $product_purchase->white_item_qty),
+                        'black_items' => ($stock->black_items + $product_purchase->black_item_qty),
+                        'unit_actual_price' => $product_purchase->actual_price,
+                        'unit_sale_price' => $product_purchase->sell_price,
+                        'total_qty' => ( $stock->total_qty + $product_purchase->qty),
+                    ]);
+                } else {
+                    StockManagement::create([
+                        'product_id' => $product_purchase->legacy_article_id,
+                        'purchase_product_id' => $product_purchase->id,
+                        'reference_no' => $product_purchase->reference_no,
+                        'retailer_id' => $purchase->user_id,
+                        'white_items' => $product_purchase->white_item_qty,
+                        'black_items' => $product_purchase->black_item_qty,
+                        'unit_actual_price' => $product_purchase->actual_price,
+                        'unit_sale_price' => $product_purchase->sell_price,
+                        'total_qty' => $product_purchase->qty,
+                    ]);
+                }
+                
                 DB::commit();
                 // dd($pro)
                 return true;
