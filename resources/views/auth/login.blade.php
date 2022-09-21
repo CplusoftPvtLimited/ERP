@@ -22,7 +22,7 @@
     <div class="page login-page" >
       <div class="container" >
         <div class="form-outer text-center d-flex align-items-center" >
-          <div class="form-inner" style="background-color: transparent !important;">
+          <div class="form-inner" style="">
             <div class="logo">
                 @if($general_setting->site_logo)
                 <img src="{{url('logo', $general_setting->site_logo)}}" width="150">

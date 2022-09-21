@@ -9,13 +9,14 @@ use App\Biller;
 use App\Warehouse;
 use App\CustomerGroup;
 use App\Customer;
-use Auth;
+// use Auth;
 use Hash;
 use Keygen;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Mail\UserNotification;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
