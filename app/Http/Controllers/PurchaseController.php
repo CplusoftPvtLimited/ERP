@@ -109,27 +109,27 @@ class PurchaseController extends Controller
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="row">
-                         <div class="col-md-3">
+                         <div class="col-sm-3">
                          <a> <button
                          class="btn btn-danger btn-sm" onclick = "deletePurchase(' . $row["id"] . ')" style="" type="button"
                          data-original-title="btn btn-danger btn-sm"
                          title="Delete"><i class="fa fa-trash"></i></button></a>
                          </div>
                          
-                         <div class="col-md-3">
+                         <div class="col-sm-3">
                          <a href="editPurchase/' . $row["id"] . '"> <button
                                      class="btn btn-primary btn-sm " type="button"
                                      data-original-title="btn btn-danger btn-xs"
                                      title=""><i class="fa fa-edit"></i></button></a>
                          </div>
 
-                         <div class="col-md-3">
+                         <div class="col-sm-3">
                          <a href="viewPurchase/' . $row["id"] . '"> <button
                                      class="btn btn-success btn-sm " type="button"
                                      data-original-title="btn btn-success btn-xs"
                                      title=""><i class="fa fa-eye"></i></button></a>
                          </div>
-                         <div class="col-md-3"> </div> 
+                         
                      </div>
                      ';
 
