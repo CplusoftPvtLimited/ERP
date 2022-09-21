@@ -65,29 +65,33 @@
                                                                     <span aria-hidden="true">&times;</span>
                                                                 </button>
                                                             </div>
-                                                            <div class="modal-body">
-                                                                <form action="{{ route('stock.import') }}" method="POST"
+                                                            <form action="{{ route('stock.import') }}" method="POST"
                                                                     enctype="multipart/form-data">
+                                                            <div class="modal-body">
+                                                                
                                                                     @csrf
                                                                     <div class="row">
                                                                         
                                                                         <div class="col-md-5">
-                                                                            <input type="file" name="file">
+                                                                            <input type="file" name="file"  required>
                                                                         </div>
-                                                                        <div class="col-md-3">
+                                                                        {{-- <div class="col-md-3">
                                                                             <button class="btn btn-primary">CSV
                                                                                 Import</button>
-                                                                        </div>
+                                                                        </div> --}}
                                                                     </div>
                                                                     {{-- <a class="p-1" href=""><button class="btn btn-primary">CSV Import</button></a> --}}
-                                                                </form>
 
                                                             </div>
                                                             <div class="modal-footer">
+                                                                <button type="submit" class="btn btn-primary"
+                                                                    >Upload</button>
                                                                 <button type="button" class="btn btn-secondary"
                                                                     data-dismiss="modal">Close</button>
+                                                                    
                                                                 
                                                             </div>
+                                                        </form>
                                                         </div>
                                                     </div>
                                                 </div>

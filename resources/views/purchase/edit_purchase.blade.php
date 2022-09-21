@@ -98,11 +98,11 @@
                                     </td>
                                     <td>
                                         <div class="row">
-                                            <div class="col-md-6">
+                                            <div class="col-sm-4">
                                                 <button type="button" class="btn btn-info btn-sm" data-toggle="modal"
                                                 data-target="#viewPurchaseProduct_{{ $product->id }}"><i class="fa fa-eye"></i></button>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-sm-4">
                                                 <a href="{{ route('delete_purchase',[$purchase->id,$product->id]) }}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
                                             </div>
                                         </div>
@@ -124,44 +124,36 @@
                                                 <div class="modal-body">
                                                     <div class="row">
                                                         <div class="col-md-4">
-                                                            <label for="">Purchase Status</label>
-                                                            <input type="text" class="form-control"
-                                                                value="{{ $product->status }}" readonly>
+                                                            <label for="" class="view-edit-purchase">Purchase Status</label>
+                                                            <input type="text" class="form-control view-edit-purchase-input" value="{{ $product->status }}" readonly>
                                                         </div>
                                                         <div class="col-md-4">
-                                                            <label for="">Total Quantity</label>
-                                                            <input type="text" class="form-control"
-                                                                value="{{ $product->white_item_qty + $product->black_item_qty }}"
-                                                                readonly>
+                                                            <label for="" class="view-edit-purchase">Total Quantity</label>
+                                                            <input type="text" class="form-control view-edit-purchase-input" value="{{ $product->white_item_qty +  $product->black_item_qty}}" readonly>
                                                         </div>
                                                         <div class="col-md-4">
-                                                            <label for="">Black Quantity</label>
-                                                            <input type="text" class="form-control"
-                                                                value="{{ $product->black_item_qty }}" readonly>
+                                                            <label for="" class="view-edit-purchase">Black Quantity</label>
+                                                            <input type="text" class="form-control view-edit-purchase-input" value="{{ $product->black_item_qty }}" readonly>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-4">
-                                                            <label for="">White Quantity</label>
-                                                            <input type="text" class="form-control"
-                                                                value="{{ $product->white_item_qty }}" readonly>
+                                                            <label for="" class="view-edit-purchase">White Quantity</label>
+                                                            <input type="text" class="form-control view-edit-purchase-input" value="{{ $product->white_item_qty }}" readonly>
                                                         </div>
                                                         <div class="col-md-4">
-                                                            <label for="">Purchase Price</label>
-                                                            <input type="text" class="form-control"
-                                                                value="{{ $product->actual_price }}" readonly>
+                                                            <label for="" class="view-edit-purchase">Purchase Price</label>
+                                                            <input type="text" class="form-control view-edit-purchase-input" value="{{ $product->actual_price}}" readonly>
                                                         </div>
                                                         <div class="col-md-4">
-                                                            <label for="">Sale Price</label>
-                                                            <input type="text" class="form-control"
-                                                                value="{{ $product->sell_price }}" readonly>
+                                                            <label for="" class="view-edit-purchase">Sale Price</label>
+                                                            <input type="text" class="form-control view-edit-purchase-input" value="{{ $product->sell_price }}" readonly>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-4">
-                                                            <label for="">Engine Details</label>
-                                                            <input type="text" class="form-control"
-                                                                value="{{ $product->engine_details }}" readonly>
+                                                            <label for="" class="view-edit-purchase">Engine Details</label>
+                                                            <input type="text" class="form-control view-edit-purchase-input" value="{{ $product->engine_details }}" readonly>
                                                         </div>
                                                         
                                                     </div>

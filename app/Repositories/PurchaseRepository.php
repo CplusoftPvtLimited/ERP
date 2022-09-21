@@ -280,7 +280,7 @@ class PurchaseRepository implements PurchaseInterface
     public function exportPurchases()
     {
 
-        $purchase_with_products = Purchase::with(['productPurchases'])->get();
+        $purchase_with_products = Purchase::with(['productPurchases'])->where('user_id',auth()->user()->id)->get();
         // dd($purchase_with_products);
         $all_data = [];
         if (count($purchase_with_products) > 0) {

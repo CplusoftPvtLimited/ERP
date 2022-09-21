@@ -10,28 +10,28 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header d-flex align-items-center">
-                            <h4>{{ trans('file.Purchase') }}</h4>
+                            <h4><b>{{ trans('file.Purchase') }}</b></h4>
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <label for="">Date</label>
-                                    <input type="text" class="form-control" value="{{ $purchase->date }}" readonly>
+                                <div class="col-md-4">
+                                    <label for=""><b>Date</b></label>
+                                    <p>{{ $purchase->date }}</p>
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="">Total Items</label>
-                                    <input type="text" class="form-control" value="{{ $purchase->item }}" readonly>
+                                <div class="col-md-4">
+                                    <label for=""><b>Total Items</b></label>
+                                    <p>{{ $purchase->item }}</p>
+                                    
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label for="">Total Quantity</label>
-                                    <input type="text" class="form-control" value="{{ $purchase->total_qty }}" readonly>
+                                <div class="col-md-4">
+                                    <label for=""><b>Total Quantity</b></label>
+                                    <p>{{ $purchase->total_qty }}</p>
+                                    
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="">Grand Total</label>
-                                    <input type="text" class="form-control" value="{{ $purchase->grand_total }}"
-                                        readonly>
+                                <div class="col-md-4">
+                                    <label for=""><b>Grand Total</b></label>
+                                    <p>{{ $purchase->grand_total }}</p>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -39,7 +39,7 @@
 
                     <div class="card">
                         <div class="card-header d-flex align-items-center">
-                            <h4>{{ trans('file.Purchase Products') }}</h4>
+                            <h4><b>{{ trans('file.Purchase Products') }}</b></h4>
                         </div>
                         <table class="table" id="purchase-table">
                             <thead>
@@ -82,36 +82,36 @@
                                                 <div class="modal-body">
                                                     <div class="row">
                                                         <div class="col-md-4">
-                                                            <label for="">Purchase Status</label>
-                                                            <input type="text" class="form-control" value="{{ $product->status }}" readonly>
+                                                            <label for="" class="view-edit-purchase">Purchase Status</label>
+                                                            <input type="text" class="form-control view-edit-purchase-input" value="{{ $product->status }}" readonly>
                                                         </div>
                                                         <div class="col-md-4">
-                                                            <label for="">Total Quantity</label>
-                                                            <input type="text" class="form-control" value="{{ $product->white_item_qty +  $product->black_item_qty}}" readonly>
+                                                            <label for="" class="view-edit-purchase">Total Quantity</label>
+                                                            <input type="text" class="form-control view-edit-purchase-input" value="{{ $product->white_item_qty +  $product->black_item_qty}}" readonly>
                                                         </div>
                                                         <div class="col-md-4">
-                                                            <label for="">Black Quantity</label>
-                                                            <input type="text" class="form-control" value="{{ $product->black_item_qty }}" readonly>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-4">
-                                                            <label for="">White Quantity</label>
-                                                            <input type="text" class="form-control" value="{{ $product->white_item_qty }}" readonly>
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <label for="">Purchase Price</label>
-                                                            <input type="text" class="form-control" value="{{ $product->actual_price}}" readonly>
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <label for="">Sale Price</label>
-                                                            <input type="text" class="form-control" value="{{ $product->sell_price }}" readonly>
+                                                            <label for="" class="view-edit-purchase">Black Quantity</label>
+                                                            <input type="text" class="form-control view-edit-purchase-input" value="{{ $product->black_item_qty }}" readonly>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-4">
-                                                            <label for="">Engine Details</label>
-                                                            <input type="text" class="form-control" value="{{ $product->engine_details }}" readonly>
+                                                            <label for="" class="view-edit-purchase">White Quantity</label>
+                                                            <input type="text" class="form-control view-edit-purchase-input" value="{{ $product->white_item_qty }}" readonly>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <label for="" class="view-edit-purchase">Purchase Price</label>
+                                                            <input type="text" class="form-control view-edit-purchase-input" value="{{ $product->actual_price}}" readonly>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <label for="" class="view-edit-purchase">Sale Price</label>
+                                                            <input type="text" class="form-control view-edit-purchase-input" value="{{ $product->sell_price }}" readonly>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <label for="" class="view-edit-purchase">Engine Details</label>
+                                                            <input type="text" class="form-control view-edit-purchase-input" value="{{ $product->engine_details }}" readonly>
                                                         </div>
                                                         
                                                     </div>

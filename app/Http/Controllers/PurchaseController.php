@@ -550,6 +550,7 @@ class PurchaseController extends Controller
             return response()->stream($callback, 200, $headers);
         } else {
             toastr()->info('Purchases not found');
+            return back();
         }
     }
 
