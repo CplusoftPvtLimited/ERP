@@ -126,8 +126,6 @@
                 <li id="modelseries-list-menu" class="{{ $route == 'engine.index' ? 'active' : '' }}"><a href="{{route('engine.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Engines')}}</a></li>
                 <li id="modelseries-list-menu" class="{{ $route == 'section.index' ? 'active' : '' }}"><a href="{{route('section.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Sections')}}</a></li>
                 <li id="modelseries-list-menu" class="{{ $route == 'article.index' ? 'active' : '' }}"><a href="{{route('article.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Products')}}</a></li>
-                <li id="maufacturer-list-menu" class="{{ $route == 'manufacturer.index' ? 'active' : '' }}"><a href="{{route('manufacturer.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Manufacturer')}}</a></li>
-            <li id="modelseries-list-menu" class="{{ $route == 'modelseries.index' ? 'active' : '' }}"><a href="{{route('modelseries.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Model')}}</a></li>
             <li id="suppliers-list-menu" class="{{ $route == 'suppliers.index' ? 'active' : '' }}"><a href="{{route('suppliers.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Suppliers')}}</a></li>
             </ul>
             </li>
