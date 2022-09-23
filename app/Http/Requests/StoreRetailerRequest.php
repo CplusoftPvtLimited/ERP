@@ -29,23 +29,23 @@ class StoreRetailerRequest extends FormRequest
             'name' => [
                 'required',
                 'max:255',
-                Rule::unique('users')->where('is_deleted', false),
+                Rule::unique('users')->where('deleted_at', NULL),
             ],
             'email' => [
                 'required',
                 'email',
                 'max:255',
-                Rule::unique('users')->where('is_deleted', false),
+                Rule::unique('users')->where('deleted_at', NULL),
             ],
             'phone' => [
                 'required',
                 'max:255',
-                Rule::unique('users')->where('is_deleted', false),
+                Rule::unique('users')->where('deleted_at', NULL),
             ],
             'shop_name' => [
                 'required',
                 'max:255',
-                Rule::unique('users')->where('is_deleted', false),
+                Rule::unique('users')->where('deleted_at', NULL),
             ],
         ];
     }

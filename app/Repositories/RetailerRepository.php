@@ -59,10 +59,9 @@ class RetailerRepository implements RetailerInterface
     {
         $is_active = 0;
         $input['is_active'] = $is_active;
-        $is_deleted = 1;
-        $input['is_deleted'] = $is_deleted;
         try {
-            $data = $item->update($input);
+            $item->update($input);
+            $data = $item->delete();
             return $data;
         } catch (\Exception $e) {
             DB::rollBack();

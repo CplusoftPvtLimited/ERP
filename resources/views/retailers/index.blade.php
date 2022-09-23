@@ -85,7 +85,7 @@
                     "serverside" : true,
                     ajax: "{{ route('retailers.index') }}",
                     columns: [
-                        {data: 'id', name: 'id'},
+                        {"data": 'id', name: 'id'},
                         {"data": "name",  name: 'name'},
                         {"data": "email",  name: 'email'},
                         {"data": "shop_name",  name: 'shop_name'},

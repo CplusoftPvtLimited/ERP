@@ -26,7 +26,7 @@ class RetailerController extends Controller
     {
         if($request->ajax())
         {
-            $retailers = Retailer::where('role_id',15)->where('is_deleted', false)->get();
+            $retailers = Retailer::where('role_id',15)->get();
             return DataTables::of($retailers)
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
