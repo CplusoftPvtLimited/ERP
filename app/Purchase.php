@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\AfterMarkitSupplier;
 use App\Models\Ambrand;
 use App\Models\Manufacturer;
 use Illuminate\Database\Eloquent\Model;
@@ -34,6 +35,11 @@ class Purchase extends Model
     public function productPurchases() :HasMany
     {
         return  $this->hasMany(ProductPurchase::class,'purchase_id','id');
+    }
+
+    public function afterMarkitSupplier() :BelongsTo
+    {
+        return $this->belongsTo(AfterMarkitSupplier::class,'supplier_id','id');
     }
     
 }

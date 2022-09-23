@@ -50,6 +50,7 @@
                                     <th>Model</th>
                                     <th>Section</th>
                                     <th>Brand</th>
+                                    <th>Supplier</th>
                                     <th>Purchase Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -63,6 +64,7 @@
                                     <td>{{ $product->manufacturer }}</td>
                                     <td>{{ $product->model }}</td>
                                     <td>{{ $product->section }}</td>
+                                    <td>{{ $product->brand }}</td>
                                     <td>{{ $product->supplier }}</td>
                                     <td>
                                             <input type="hidden" name="" value="{{ $product->id }}">

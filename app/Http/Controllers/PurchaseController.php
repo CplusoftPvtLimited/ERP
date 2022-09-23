@@ -24,6 +24,7 @@ use App\Models\Article;
 use App\Models\Ambrand;
 use DB;
 use App\GeneralSetting;
+use App\Models\AfterMarkitSupplier;
 use Stripe\Stripe;
 use Auth;
 use App\User;
@@ -33,6 +34,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
 use App\Repositories\Interfaces\PurchaseInterface;
+use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Auth as FacadesAuth;
 use PDF;
 use Illuminate\Support\Facades\Log;
@@ -86,7 +88,7 @@ class PurchaseController extends Controller
             return Datatables::of(Purchase::where('user_id', Auth::user()->id)->orderBy('id', 'desc'))
                 ->addIndexColumn('id')
                 ->addColumn('supplier', function ($row) {
-                    return $row->brand->brandName;
+                    return isset($row->afterMarkitSupplier->name) ? $row->afterMarkitSupplier->name : null;
                 })
                 ->addColumn('due_amount', function ($row) {
                     $due_amount = $row->grand_total - $row->paid_amount;
@@ -135,7 +137,7 @@ class PurchaseController extends Controller
 
                     return $btn;
                 })
-                ->rawColumns(['action', 'supplier', 'due_amount'])->make(true);
+                ->rawColumns(['supplier', 'due_amount', 'purchase_status', 'action'])->make(true);
         }
 
         return view('purchase.purchases_product_index');
@@ -341,7 +343,8 @@ class PurchaseController extends Controller
             $lims_product_list_with_variant = $this->productWithVariant();
             $manufacturers = Manufacturer::all();
             // dd($manufacturers);
-            return view('purchase.create', compact('lims_supplier_list', 'lims_warehouse_list', 'lims_tax_list', 'lims_product_list_without_variant', 'lims_product_list_with_variant', 'manufacturers'));
+            $suppliers = AfterMarkitSupplier::select('id', 'name')->where('retailer_id', auth()->user()->id)->get();
+            return view('purchase.create', compact('lims_supplier_list', 'lims_warehouse_list', 'lims_tax_list', 'lims_product_list_without_variant', 'lims_product_list_with_variant', 'manufacturers', 'suppliers'));
         } else
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
     }
@@ -425,9 +428,9 @@ class PurchaseController extends Controller
     public function store(Request $request)
     {
         Log::debug($request->all());
-        $request->validate([
-            'black_qty.*' => 'required',
-            'white_qty.*' => 'required',
+
+        $this->validate($request, [
+            'item_qty.*' => 'required',
             'sale_price.*' => 'required',
             'purchase_price.*' => 'required',
             'modell_id.*' => 'required',
@@ -437,12 +440,13 @@ class PurchaseController extends Controller
             'manufacturer_id.*' => 'required',
             'statuss.*' => 'required',
             'datee.*' => 'required',
-
+            'purchase_additional_cost' => 'nullable|min:0',
+            'additional_cost.*' => 'nullable|min:0',
         ]);
 
         $purchase = $this->purchaseRepository->store($request);
         if ($purchase == "submit_purchase_not_allowed") {
-            toastr()->info('Please enter the black and white items greater than "0"');
+            toastr()->info('Please enter the item quantity');
             return redirect('purchases');
         }
         if ($purchase == "true") {
@@ -1350,8 +1354,6 @@ class PurchaseController extends Controller
             return response()->json([
                 'data' => $manufacturers
             ], 200);
-            
-
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -1359,16 +1361,13 @@ class PurchaseController extends Controller
     public function getModelsByManufacturer(Request $request)
     {
         try {
-            
-            $models = ModelSeries::select('modelId', 'modelname')->
-            where('manuId', $request->manufacturer_id)
-            ->where('linkingTargetType',$request->engine_sub_type)->get();
+
+            $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                ->where('linkingTargetType', $request->engine_sub_type)->get();
             // dd($models);
             return response()->json([
                 'data' => $models
             ], 200);
-          
-
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -1379,7 +1378,7 @@ class PurchaseController extends Controller
         try {
             $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
                 ->where('vehicleModelSeriesId', $request->model_id)
-                ->where('subLinkageTargetType',$request->engine_sub_type)->get();
+                ->where('subLinkageTargetType', $request->engine_sub_type)->get();
             // dd($models);
             return response()->json([
                 'data' => $engines
@@ -1394,7 +1393,7 @@ class PurchaseController extends Controller
         try {
             $sections = AssemblyGroupNode::select('assemblyGroupNodeId', 'assemblyGroupName')
                 ->where('request__linkingTargetId', $request->engine_id)
-                ->where('request__linkingTargetType',$request->engine_sub_type)->get();
+                ->where('request__linkingTargetType', $request->engine_sub_type)->get();
             // dd($models);
             return response()->json([
                 'data' => $sections
@@ -1407,8 +1406,8 @@ class PurchaseController extends Controller
     public function getSectionParts(Request $request)
     {
         try {
-            $section_parts = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')->whereHas('articleVehicleTree' ,function($query) use ($request){
-                $query->where('linkingTargetType',$request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
+            $section_parts = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')->whereHas('articleVehicleTree', function ($query) use ($request) {
+                $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
             })->get();
 
             // dd($section_parts);
@@ -1445,7 +1444,7 @@ class PurchaseController extends Controller
         // dd($product);
         return response()->json([
             'data' => $product,
-            'supplier' => Ambrand::where('brandId', $product->dataSupplierId)->first(),
+            'supplier' => $request->supplier_id,
             'linkage_target_type' => $request->engine_type, // engine_type
             'linkage_target_sub_type' => $request->engine_sub_type, //
             'manufacturer_id' => $request->manufacturer_id,
@@ -1455,8 +1454,7 @@ class PurchaseController extends Controller
             'section_part_id' => $section_part_id[1],
             'status' => $request->status,
             'date' => $request->date,
-
-
+            'cash_type' => $request->cash_type,
         ]);
     }
 }

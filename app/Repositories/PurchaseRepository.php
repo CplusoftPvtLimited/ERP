@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\AfterMarkitSupplier;
 use App\Models\Ambrand;
 use App\Purchase;
 use App\ProductPurchase;
@@ -19,34 +20,36 @@ class PurchaseRepository implements PurchaseInterface
 {
     public function store($request)
     {
+        // dd($request->all());
         DB::beginTransaction();
         try {
 
-            $count_black = $count_white = 0;
-            for ($i = 0; $i < count($request->black_qty); $i++) {
-                $count_black += $request->black_qty[$i];
-                $count_white += $request->white_qty[$i];
+            $count_item = 0;
+            for ($i = 0; $i < count($request->item_qty); $i++) {
+                $count_item += $request->item_qty[$i];
             }
-            if ($count_black == 0 && $count_white == 0) {
+            if ($count_item == 0) {
                 return "submit_purchase_not_allowed";
             }
 
             $purchase = new Purchase();
             $total_qty = 0;
             $total_amount = 0;
-            for ($i = 0; $i < count($request->black_qty); $i++) {
-                $total_qty = $total_qty + ($request->black_qty[$i] + $request->white_qty[$i]);
-            }
-            for ($i = 0; $i < count($request->purchase_price); $i++) {
-                $total_amount = $total_amount + ($request->purchase_price[$i]);
+            // for ($i = 0; $i < count($request->item_qty); $i++) {
+            //     $total_qty = $total_qty + ($request->black_qty[$i] + $request->white_qty[$i]);
+            // }
+            for ($i = 0; $i < count($request->total_price); $i++) {
+                $total_amount = $total_amount + $request->total_price[$i];
             }
 
             $purchase->user_id = auth()->user()->id;
-            $purchase->item = count($request->black_qty);
-            $purchase->total_qty = $total_qty;
+            $purchase->item = count($request->item_qty);
+            $purchase->total_qty = $count_item;
             $purchase->total_cost = $total_amount;
             $purchase->grand_total = $total_amount;
             $purchase->supplier_id = $request->supplier_id;
+            $purchase->cash_type = $request->cash_type;
+            $purchase->additional_cost = $request->purchase_additional_cost;
             $purchase->status = 0;
 
             $purchase->date = date('Y-m-d');
@@ -59,19 +62,18 @@ class PurchaseRepository implements PurchaseInterface
                 $purchase->save();
             }
 
-            for ($i = 0; $i < count($request->black_qty); $i++) {
+            for ($i = 0; $i < count($request->item_qty); $i++) {
                 $product_purchase = new ProductPurchase();
                 $artcle = Article::where('legacyArticleId', $request->sectionn_part_id[$i])->first();
                 $linkage = LinkageTarget::where('linkageTargetId', $request->enginee_id[$i])->first();
-                if ($request->black_qty[$i] <= 0 && $request->white_qty[$i] <= 0) {
+                if ($request->item_qty[$i] <= 0) {
                     continue;
                 }
                 $product_purchase->purchase_id = $purchase->id;
                 $product_purchase->reference_no = $artcle->articleNumber;
                 $product_purchase->engine_details = $linkage->description;
                 $product_purchase->product_id = $request->sectionn_part_id[$i];
-                $product_purchase->black_item_qty = $request->black_qty[$i];
-                $product_purchase->white_item_qty = $request->white_qty[$i];
+                $product_purchase->qty = $request->item_qty[$i];
                 $product_purchase->actual_price = $request->purchase_price[$i];
                 $product_purchase->sell_price = $request->sale_price[$i];
                 $product_purchase->manufacture_id = $request->manufacturer_id[$i];
@@ -84,20 +86,23 @@ class PurchaseRepository implements PurchaseInterface
                 $product_purchase->total_cost = $request->total_price[$i];
                 $product_purchase->linkage_target_type = $request->linkage_target_type[$i];
                 $product_purchase->linkage_target_sub_type = $request->linkage_target_sub_type[$i];
+                $product_purchase->additional_cost = $request->additional_cost[$i];
+                $product_purchase->cash_type = $request->cash_type;
 
                 $date = date("Y-m-d", strtotime($request->datee[$i]));
                 $product_purchase->date = $date;
-                $product_purchase->qty = $request->black_qty[$i] + $request->white_qty[$i];
+               
                 $product_purchase->save();
 
                 if ($request->statuss[$i] == "received") {
+                    $cash_type = $product_purchase->cash_type;
                     StockManagement::create([
                         'product_id' => isset($product_purchase->legacy_article_id) ? $product_purchase->legacy_article_id : 0,
                         'purchase_product_id' => isset($product_purchase->id) ? $product_purchase->id: 0,
                         'reference_no' => isset($product_purchase->reference_no) ? $product_purchase->reference_no : 0,
                         'retailer_id' => isset($purchase->user_id) ? $purchase->user_id : null,
-                        'white_items' => isset($product_purchase->white_item_qty) ? $product_purchase->white_item_qty : null,
-                        'black_items' => isset($product_purchase->black_item_qty) ? $product_purchase->black_item_qty : null,
+                        'white_items' => ($cash_type == "white") ? $product_purchase->qty : null, 
+                        'black_items' => ($cash_type == "black") ? $product_purchase->qty : null, 
                         'unit_actual_price' => isset($product_purchase->actual_price) ? $product_purchase->actual_price : null,
                         'unit_sale_price' => isset($product_purchase->sell_price) ? $product_purchase->sell_price : null,
                         'total_qty' => isset($product_purchase->qty) ? $product_purchase->qty : null,
@@ -108,6 +113,7 @@ class PurchaseRepository implements PurchaseInterface
             DB::commit();
             return "true";
         } catch (\Exception $e) {
+            dd($e->getMessage());
             DB::rollback();
             return $e->getMessage();
         }
@@ -151,24 +157,28 @@ class PurchaseRepository implements PurchaseInterface
     public function edit($id)
     {
         $purchase_get = Purchase::find($id);
-
-        if ($purchase_get) {
+        // dd($purchase_get);
+        if (!empty($purchase_get)) {
             $purchase_products = [];
             $purchases_products = ProductPurchase::where('purchase_id', $purchase_get->id)->get();
+            // dd($purchases_products);
             foreach ($purchases_products as $lims_purchase_data) {
                 $manufacturer = Manufacturer::where('manuId', $lims_purchase_data->manufacture_id)->first();
                 $model = ModelSeries::where('modelId', $lims_purchase_data->model_id)->first();
                 $engine = LinkageTarget::where('linkageTargetId', $lims_purchase_data->eng_linkage_target_id)->first();
                 $section = AssemblyGroupNode::where('assemblyGroupNodeId', $lims_purchase_data->assembly_group_node_id)->first();
                 $section_part = Article::where('legacyArticleId', $lims_purchase_data->legacy_article_id)->first();
-                $supplier = Ambrand::where('BrandId', $lims_purchase_data->supplier_id)->first();
+    
+                $brand = Ambrand::where('BrandId',$section_part ? $section_part->dataSupplierId : 0)->first();
+                $supplier = AfterMarkitSupplier::where('id', $lims_purchase_data->supplier_id)->first();
 
                 $lims_purchase_data['manufacturer'] = isset($manufacturer) ? $manufacturer->manuName : '';
                 $lims_purchase_data['model'] = isset($model) ? $model->modelname : '';
                 $lims_purchase_data['engine'] = isset($engine) ? $engine->description : '';
                 $lims_purchase_data['section'] = isset($section) ? $section->assemblyGroupName : '';
                 $lims_purchase_data['section_part'] = isset($section_part) ? $section_part->articleNumber : '';
-                $lims_purchase_data['supplier'] = isset($supplier) ? $supplier->brandName : '';
+                $lims_purchase_data['brand'] = isset($brand) ? $brand->brandName : '';
+                $lims_purchase_data['supplier'] = isset($supplier) ? $supplier->name : '';
 
                 array_push($purchase_products, $lims_purchase_data);
             }
@@ -176,6 +186,7 @@ class PurchaseRepository implements PurchaseInterface
                 'purchase' => $purchase_get,
                 'purchase_products' => $purchase_products
             ];
+            // dd($purchase);
             return $purchase;
         } else {
             return "null";

@@ -224,7 +224,8 @@
             {{-- <li id="sale-list-menu" class="{{ $route == 'assembly_group_nodes.index' ? 'active' : '' }}"><a href="{{route('assembly_group_nodes.index')}}"><i class="dripicons-list"></i> {{trans('file.Sections')}}</a></li> --}}
             
            
-            {{-- <li id="supplier-list-menu" class="{{ $route == 'supplier.get' ? 'active' : '' }}"><a href="{{route('supplier.get')}}"><i class="dripicons-user-group"></i> {{trans('file.Suppliers')}}</a></li> --}}
+            <li id="supplier-list-menu" class="{{ $route == 'supplier.create' ? 'active' : '' }}"><a href="{{route('supplier.create')}}"><i class="dripicons-user-group"></i> {{trans('file.Suppliers')}}</a></li>
+
             
             {{-- <li id="makes-list-menu" class="{{ $route == 'allmake.get' ? 'active' : '' }}"><a href="{{route('allmake.get')}}"><i class="dripicons-wallet"></i> {{trans('file.All Makes')}}</a></li> --}}
             

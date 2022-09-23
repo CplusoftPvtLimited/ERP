@@ -2,6 +2,11 @@
 return [
 
 	'Sections' => 'Sections',
+	'Additional Cost' => 'Additional Cost',
+	'Shop Name' => 'Shop Name',
+	'Black Cash' => 'Black Cash',
+	'White Cash' => 'White Cash',
+	'Cash Type' => 'Cash Type',
 	'Section Parts' => 'Section Parts',
 	'Brand Languages' => 'Brand Languages',
 	'Manufacturers' => 'Manufacturers',
@@ -9,6 +14,7 @@ return [
 	'Black Items' => 'Black Items',
 	'White Items' => 'White Items',
 	'Purchase Price' => 'Purchase Price',
+	'Quantity' => 'Quantity',
 	'Sale Price' => 'Sale Price',
 	'Total Quantity' => 'Total Quantity',
 	'Total Cost' => 'Total Cost',

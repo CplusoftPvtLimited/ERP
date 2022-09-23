@@ -416,6 +416,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 
 	Route::get('products', [ProductController::class, 'getProducts'])->name('product.get');
 	Route::get('suppliers', [SupplierController::class, 'getSuppliers'])->name('supplier.get');
+	Route::get('supplier/create', [SupplierController::class, 'create'])->name('supplier.create');
 	Route::get('allMakes', [MakeController::class, 'getAllMakes'])->name('allmake.get');
 
 });
