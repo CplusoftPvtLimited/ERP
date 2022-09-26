@@ -14,6 +14,11 @@
         input[type=number] {
             -moz-appearance: textfield;
         }
+        table {
+            /* display: block; */
+            overflow-x: auto;
+            white-space: nowrap;
+        }
     </style>
     <section class="forms">
         <div class="container-fluid">
@@ -197,9 +202,9 @@
                                         <div class="col-md-12">
                                             <h5>{{ trans('file.Order Table') }} *</h5>
                                             <div class="table-responsive mt-3">
-                                                <table id="myTable" class="table table-hover order-list">
+                                                <table id="myTable" class="table table-hover order-list table-responsive">
                                                     <thead>
-                                                        
+
                                                     </thead>
                                                     <tbody>
 
@@ -256,6 +261,15 @@
 @push('scripts')
     <script type="text/javascript">
         // select engine type---unique
+        // $('#myTable').DataTable( {
+        //     "processing": true,
+        //     "searching" : true,
+        // });
+        // $(document).ready(function() {
+        // $('#myTable').DataTable({
+        //     scrollX: true,
+        // });
+        // });
 
         $('#linkageTarget').on('change', function() {
             var val = this.value;
@@ -539,6 +553,10 @@
 
                 success: function(data) {
                     // alert(data);
+                    // $('#myTable').DataTable( {
+                    //     "processing": true,
+                    //     "searching" : true,
+                    // });
                     var tableBody = $("table tbody");
                     var tableHead = $("table thead");
                     var tableHeadRow = $("table thead tr");
@@ -546,7 +564,8 @@
 
                     var white_cash_head = "";
                     var black_cash_head = "";
-                    white_cash_head += `<tr id="white_head">
+
+                    white_cash_head += `<tr id="">
                         <th>{{ trans('file.name') }}</th>
                         <th>{{ trans('file.Quantity') }}</th>
                         <th>{{ trans('file.Purchase Price') }}</th>
@@ -554,12 +573,14 @@
                         <th>{{ trans('file.Discount') }}</th>
                         <th>{{ trans('file.Additional Cost Without VAT') }}</th>
                         <th>{{ trans('file.Additional Cost With VAT') }}</th>
-                        <th>{{ trans('file.VAT %') }}</th>
+                        <th style="width:200px">{{ trans('file.VAT %') }}</th>
                         <th>{{ trans('file.Profit Margin') }}</th>
-                        <th>{{ trans('file.Total Cost') }}</th>
+                        <th>{{ trans('file.Total Excluding Vat') }}</th>
+                        <th>{{ trans('file.Actual Cost Per Product') }}</th>
                         <th><i class="dripicons-trash"></i></th>
                     </tr>`;
-                    black_cash_head += `<tr id="black_head">
+
+                    black_cash_head += `<tr id="">
                         <th>{{ trans('file.name') }}</th>
                         <th>{{ trans('file.Quantity') }}</th>
                         <th>{{ trans('file.Purchase Price') }}</th>
@@ -567,10 +588,11 @@
                         <th>{{ trans('file.Discount') }}</th>
                         <th>{{ trans('file.Additional Cost Without VAT') }}</th>
                         <th>{{ trans('file.Profit Margin') }}</th>
-                        <th>{{ trans('file.Total Cost') }}</th>
+                        <th>{{ trans('file.Total Excluding Vat') }}</th>
+                        <th>{{ trans('file.Actual Cost Per Product') }}</th>
                         <th><i class="dripicons-trash"></i></th>
                     </tr>`;
-                   
+
                     var length = document.getElementById("myTable").rows.length;
 
                     var html = '';
@@ -595,6 +617,7 @@
                             article_ids_array.push(this.id)
                         }
                     })
+
                     if (supplier_ids_array.length > 0) {
                         supplier_ids_array.forEach(checkSupplier);
 
@@ -604,7 +627,6 @@
                                     icon: 'error',
                                     title: 'Oops...',
                                     text: 'You have already selected a supplier , you are not to allowed to change the supplier during one purchase',
-
                                 });
                                 exit();
                             }
@@ -612,12 +634,11 @@
                     } else {
                         supplier_ids_array.push(data.supplier);
                     }
-                    console.log(selected_cash_type.length)
                     if (selected_cash_type.length > 0) {
                         selected_cash_type.forEach(checkCashType);
 
                         function checkCashType(element, index, data) {
-                            console.log(element,index,data,)
+                            console.log(element, index, data, )
                             if (element != cashType) {
                                 Swal.fire({
                                     icon: 'error',
@@ -627,15 +648,14 @@
                                 exit();
                             }
                         }
-                        
+
                     } else {
                         selected_cash_type.push(cashType);
-                        
+
                     }
-                    console.log("hyyyyyyyyyyyyyyyyyyyy---"+tableHeadRow.length)
-                    if(data.cash_type == "white"  && tableHeadRow.length <= 0){
+                    if (data.cash_type == "white" && tableHeadRow.length <= 0) {
                         tableHead.append(white_cash_head);
-                    }else if(data.cash_type == "black" && tableHeadRow.length <= 0){
+                    } else if (data.cash_type == "black" && tableHeadRow.length <= 0) {
                         tableHead.append(black_cash_head);
                     }
 
@@ -644,31 +664,62 @@
                         '</td>';
 
                     markup +=
-                        '<td><input type="number" class="form-control" onkeyup="alterQty(' +
+                        '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterQty(' +
                         data.data.legacyArticleId + ')" id="item_qty' + data.data
                         .legacyArticleId +
                         '" value="1" min="1" name="item_qty[]" required></td>';
 
                     markup +=
-                        '<td><input type="number" class="form-control" onkeyup="alterQty(' +
+                        '<td><input style="width:100px" type="number" class="form-control" onkeyup="alterQty(' +
                         data.data.legacyArticleId +
                         ')" value="1" min="1" step="any" id="purchase_price_' +
                         data.data.legacyArticleId +
                         '" name="purchase_price[]" required></td>';
+
                     markup +=
-                        '<td><input type="number" class="form-control"  id="sale_price_' +
+                        '<td><input style="width:100px" type="number" class="form-control"  id="sale_price_' +
                         data.data.legacyArticleId +
                         '" name="sale_price[]" readonly></td>';
+
                     markup +=
-                        '<td><input type="number" class="form-control" onkeyup="alterQty(' +
+                        '<td><input type="number" class="form-control" value="0" min="1" step="any" id="discount_' +
                         data.data.legacyArticleId +
-                        ')" value="0" min="0" step="any" id="additional_cost_' +
-                        data.data.legacyArticleId +
-                        '" name="additional_cost[]"></td>';
+                        '" name="discount[]"></td>';
+
                     markup +=
-                        '<td><input type="number" class="form-control" value="0" min="0"   id="total_cost_' +
+                        '<td><input type="number" class="form-control" value="0" min="1" step="any"  onkeyup="alterQty(' +
+                        data.data.legacyArticleId + ')" id="additional_cost_without_vat_' + data.data
+                        .legacyArticleId +
+                        '" name="additional_cost_without_vat[]"></td>';
+                    if (data.cash_type == "white") {
+                        markup +=
+                            '<td><input type="number" class="form-control" value="0" min="1" step="any" id="additional_cost_with_vat_' +
+                            data.data.legacyArticleId +
+                            '" name="additional_cost_with_vat[]"></td>';
+                    }
+
+                    if (data.cash_type == "white") {
+                        markup +=
+                            '<td><input style="width:100px" type="number" class="form-control" value="0" min="1" step="any" id="vat_' +
+                            data.data.legacyArticleId +
+                            '" name="vat[]" required></td>';
+                    }
+
+                    markup +=
+                        '<td><input type="number" style="width:100px" class="form-control" value="0" min="1" step="any"   onkeyup="alterQty(' +
+                        data.data.legacyArticleId + ')" id="profit_margin_' + data.data
+                        .legacyArticleId +
+                        '" name="profit_margin[]" required></td>';
+
+
+                    markup +=
+                        '<td><input style="width:100px" type="number" class="form-control" value="0" min="0"   id="total_excluding_vat_' +
                         data.data.legacyArticleId +
-                        '" name="total_price[]" readonly></td>';
+                        '" name="total_excluding_vat[]" readonly></td>';
+                    markup +=
+                        '<td><input type="number" style="width:100px" class="form-control" value="0" min="0"   id="actual_cost_per_product_' +
+                        data.data.legacyArticleId +
+                        '" name="actual_cost_per_product[]" readonly></td>';
 
                     markup += '<td><i id="article_delete_' +
                         data.data.legacyArticleId + '" onclick="deleteArticle(' + data.data
@@ -684,7 +735,8 @@
                             if (this.id != '') {
                                 article_ids_array.push(this.id)
                             }
-                        })
+                        });
+
                     } else {
                         if (!article_ids_array.includes("article_" + data.data.legacyArticleId)) {
                             tableBody.append(markup);
@@ -697,7 +749,6 @@
                         }
                     }
                     if ($('#myTable tr').length <= 1) {
-                        console.log($('#myTable tr').length)
                         selected_cash_type = [];
                     }
                     all_product_ids.push(data.data.legacyArticleId);
@@ -810,19 +861,32 @@
         let w_qty = 0;
         let b_qty = 0;
         var id_array = [];
+        var total_quantity_of_all_row_products = 0;
 
         function alterQty(id) {
             item_qty = parseInt($("#item_qty" + id).val());
             var purchasePrice = parseFloat($("#purchase_price_" + id).val());
-            var additionalPrice = parseFloat($("#additional_cost_" + id).val());
+            var additional_cost_without_vat = parseFloat($("#additional_cost_without_vat_" + id).val());
             var entireAditionalCost = $("#purchase_additional_cost").val();
 
-            var totalCost = (item_qty * purchasePrice) + additionalPrice;
-            $("#total_cost_" + id).val(totalCost);
+            var total_cost_without_vat = (purchasePrice * item_qty) + additional_cost_without_vat;
+            $("#total_excluding_vat_" + id).val(total_cost_without_vat);
 
-            var sale_price = purchasePrice + additionalPrice + (entireAditionalCost / item_qty);
-            $("#sale_price_" + id).val(sale_price);
+            if (all_product_ids.length > 0) {
+                all_product_ids.forEach(getActualProductCost);
 
+                function getActualProductCost(id, index) {
+                    total_quantity_of_all_row_products += parseInt($("#item_qty" + id).val());
+                }
+
+                var actual_cost_per_product = (total_cost_without_vat / item_qty) + (entireAditionalCost /
+                    total_quantity_of_all_row_products);
+            }
+
+            $('#actual_cost_per_product_' + id).val(actual_cost_per_product);
+            var sale_price_per_product = actual_cost_per_product * (1 + parseFloat($('#profit_margin_' + id).val()));
+            $('#sale_price_' + id).val(parseFloat(sale_price_per_product));
+            total_quantity_of_all_row_products = 0;
         }
 
         function calculateSalePrice() {
@@ -833,19 +897,38 @@
                 function getSalePrice(id, index) {
                     item_qty = parseInt($("#item_qty" + id).val());
                     var purchasePrice = parseFloat($("#purchase_price_" + id).val());
-                    var additionalPrice = parseFloat($("#additional_cost_" + id).val());
-                    var totalCost = (item_qty * purchasePrice) + additionalPrice;
-                    $("#total_cost_" + id).val(totalCost);
-                    var sale_price = purchasePrice + additionalPrice + (entireAditionalCost / item_qty);
-                    $("#sale_price_" + id).val(sale_price);
+                    var additional_cost_without_vat = parseFloat($("#additional_cost_without_vat_" + id).val());
+                    var entireAditionalCost = $("#purchase_additional_cost").val();
+                    
+
+                    var total_cost_without_vat = (purchasePrice * item_qty) + additional_cost_without_vat;
+                    $("#total_excluding_vat_" + id).val(total_cost_without_vat);
+
+
+                    total_quantity_of_all_row_products += parseInt($("#item_qty" + id).val());
+
+                    var actual_cost_per_product = (total_cost_without_vat / item_qty) + (entireAditionalCost / total_quantity_of_all_row_products);
+
+                    $('#actual_cost_per_product_' + id).val(actual_cost_per_product);
+                    var sale_price_per_product = actual_cost_per_product * (1 + parseFloat($('#profit_margin_' + id)
+                        .val()));
+
+                        console.log(item_qty,"111111111111");
+                    console.log(purchasePrice,"2222222222222222");
+                    console.log(additional_cost_without_vat,"333333333333");
+                    console.log(entireAditionalCost,"44444444444");
+                    console.log(total_quantity_of_all_row_products,"5555555555");
+                    console.log(actual_cost_per_product,"666666666666");
+                    $('#sale_price_' + id).val(parseFloat(sale_price_per_product));
                 }
+                total_quantity_of_all_row_products = 0;
             }
         }
 
         function deleteArticle(id) {
             $('#article_' + id).remove();
             article_ids_array = [];
-            if ($('#myTable tr').length == 1) {
+            if ($('#myTable tr').length == 0) {
                 selected_cash_type = [];
             }
         }
