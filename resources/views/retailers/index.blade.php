@@ -53,7 +53,6 @@
                                 <table id="data-table" class="table" style="width: 100% !important">
                                     <thead>
                                         <tr>
-                                            <th>#</th>
                                             <th>User Name</th>
                                             <th>Email</th>
                                             <th>Shop Name</th>
@@ -85,7 +84,6 @@
                     "serverside" : true,
                     ajax: "{{ route('retailers.index') }}",
                     columns: [
-                        {"data": 'id', name: 'id'},
                         {"data": "name",  name: 'name'},
                         {"data": "email",  name: 'email'},
                         {"data": "shop_name",  name: 'shop_name'},

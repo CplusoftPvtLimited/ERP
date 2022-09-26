@@ -923,6 +923,7 @@
                 <ul class="right-sidebar"  id="notify">
                 <li style="background-color: #F7F7F7" id="role-menu"><a href="{{route('role.index')}}">{{trans('file.Role Permission')}}</a></li>
                 <li style="background-color: #F7F7F7" id="general-mail-setting-menu"><a href="{{route('setting.generalmail')}}">{{trans('file.General Mail Setting')}}</a></li>
+                <li style="background-color: #F7F7F7" id="tax-menu"><a href="{{route('tax.index')}}">{{trans('file.Tax')}}</a></li>
                 </ul>
             </li>
             <li class="nav-item">
