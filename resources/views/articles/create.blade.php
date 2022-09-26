@@ -13,9 +13,12 @@
     <section>
         <div class="container-fluid">
             <div class="row">
-                <div class="col-3">
-                    <div class="card">
-                        <div class="card-body">
+                <div class="col-12">
+                <div class="card p-0">
+                <div class="row">
+                <div class="col-3" style="margin: 0px; padding:0px;">
+                    <div class="card" style="margin: 0px; padding:0px;">
+                        <div class="card-body" style="margin: 0px;">
                             <div class="tab article-tabs">
                                 <button class="tablinks nav-link" onclick="switchTab(event, 'Articles')" id="defaultOpen">Articles</button>
                                 <button class="tablinks nav-link" onclick="switchTab(event, 'ArticleCrteria')">Article Criteria</button>
@@ -36,8 +39,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-9">
-                    <div class="card tabcontent"  id="Articles">
+                <div class="col-9" style="margin: 0px; padding:0px;">
+                    <div class="card tabcontent"  id="Articles" style="margin: 0px; height:100%;">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-6">
@@ -48,7 +51,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body" style="margin: 0px;">
                             @if (Session::has('error'))
                                 <p class="bg-danger text-white p-2 rounded">{{ Session::get('error') }}</p>
                             @endif
@@ -148,7 +151,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="card tabcontent" id="ArticleCrteria">
+                    <div class="card tabcontent" id="ArticleCrteria" style="margin: 0px; height:100%;">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-6">
@@ -259,7 +262,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="card tabcontent" id="ArticleCrosses">
+                    <div class="card tabcontent" id="ArticleCrosses" style="margin: 0px; height:100%;">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-6">
@@ -370,7 +373,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="card tabcontent" id="ArticleDocs">
+                    <div class="card tabcontent" id="ArticleDocs" style="margin: 0px; height:100%;">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-6">
@@ -481,7 +484,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="card tabcontent" id="ArticleEan">
+                    <div class="card tabcontent" id="ArticleEan" style="margin: 0px; height:100%;">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-6">
@@ -592,7 +595,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="card tabcontent" id="ArticleLinks">
+                    <div class="card tabcontent" id="ArticleLinks" style="margin: 0px; height:100%;">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-6">
@@ -703,7 +706,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="card tabcontent" id="ArticleMain">
+                    <div class="card tabcontent" id="ArticleMain" style="margin: 0px; height:100%;">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-6">
@@ -814,7 +817,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="card tabcontent" id="ArticlePdfs">
+                    <div class="card tabcontent" id="ArticlePdfs" style="margin: 0px; height:100%;">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-6">
@@ -925,7 +928,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="card tabcontent" id="ArticleVT">
+                    <div class="card tabcontent" id="ArticleVT" style="margin: 0px; height:100%;">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-6">
@@ -1036,7 +1039,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="card tabcontent" id="ArticleText">
+                    <div class="card tabcontent" id="ArticleText" style="margin: 0px; height:100%;">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-6">
@@ -1147,7 +1150,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="card tabcontent" id="ArticleGeneric">
+                    <div class="card tabcontent" id="ArticleGeneric" style="margin: 0px; height:100%;">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-6">
@@ -1258,7 +1261,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="card tabcontent" id="ArticleGGroup">
+                    <div class="card tabcontent" id="ArticleGGroup" style="margin: 0px; height:100%;">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-6">
@@ -1369,7 +1372,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="card tabcontent" id="ArticleNew">
+                    <div class="card tabcontent" id="ArticleNew" style="margin: 0px; height:100%;">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-6">
@@ -1480,7 +1483,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="card tabcontent" id="ArticleRBy">
+                    <div class="card tabcontent" id="ArticleRBy" style="margin: 0px; height:100%;">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-6">
@@ -1591,7 +1594,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="card tabcontent" id="ArticleReplaces">
+                    <div class="card tabcontent" id="ArticleReplaces" style="margin: 0px; height:100%;">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-6">
@@ -1703,6 +1706,9 @@
                         </div>
                     </div>
                 </div>
+                </div>
+            </div>
+            </div>
             </div>
         </div>
         </div>
