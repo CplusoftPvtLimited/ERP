@@ -5,15 +5,15 @@
     @endif
     <style>
         input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
 
-/* Firefox */
-input[type=number] {
-  -moz-appearance: textfield;
-}
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
     </style>
     <section class="forms">
         <div class="container-fluid">
@@ -25,7 +25,6 @@ input[type=number] {
                         </div>
 
                         <div class="card-body">
-                            {{-- <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p> --}}
                             {!! Form::open(['route' => 'purchases.store', 'method' => 'post', 'files' => true, 'id' => 'purchase-form']) !!}
                             <div class="row">
                                 <div class="col-md-12">
@@ -110,27 +109,35 @@ input[type=number] {
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="section_part_id">{{ __('Select Section Part') }}</label>
-                                                <select name="section_part_id" id="section_part_id" data-href=""
+                                                <select name="section_part_id" id="section_part_id"
+                                                    data-href="{{ route('get_brands_by_section_part') }}"
                                                     class="form-control" required>
-
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label>{{ trans('file.Supplier') }}</label>
+                                                <label for="brand">{{ __('Select brand') }}</label>
+                                                <select name="brand_id" id="brand_id" data-href="" class="form-control"
+                                                    required>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>{{ trans('file.After Markit Supplier') }}</label>
                                                 <select name="supplier_id" id="supplier_id" data-href="#"
                                                     class="selectpicker form-control" data-live-search="true"
                                                     data-live-search-style="begins" title="Select supplier...">
                                                     @foreach ($suppliers as $supplier)
                                                         <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
                                                     @endforeach
-
                                                 </select>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.Cash Type') }}</label>
@@ -145,12 +152,12 @@ input[type=number] {
                                                 <label>{{ trans('file.Purchase Status') }}</label>
                                                 <select name="status" id="status" class="form-control">
                                                     <option value="received">{{ trans('file.Recieved') }}</option>
-                                                    {{-- <option value="2">{{trans('file.Partial')}}</option>
-                                                <option value="3">{{trans('file.Pending')}}</option> --}}
                                                     <option value="ordered">{{ trans('file.Ordered') }}</option>
                                                 </select>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="row">
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.Attach Document') }}</label> <i
@@ -164,14 +171,13 @@ input[type=number] {
                                                 @endif
                                             </div>
                                         </div>
+                                        <div class="col-md-4">
+                                            <label>{{ trans('file.Additional Cost') }}</label>
+                                            <input type="number" name="purchase_additional_cost" value="0"
+                                                id="purchase_additional_cost" onkeyup="calculateSalePrice()"
+                                                class="form-control" min="0" max="100000000">
+                                        </div>
                                     </div>
-                                    <div class="row">
-                                       <div class="col-md-4">
-                                        <label>{{ trans('file.Additional Cost') }}</label>
-                                           <input type="number" name="purchase_additional_cost" value="0" id="purchase_additional_cost"  onkeyup="calculateSalePrice()" class="form-control" min="0" max="100000000">
-                                       </div>
-                                    </div>
-
                                     <div class="row">
                                         <div class="col-md-10"></div>
                                         <div class="col-md-1">
@@ -193,28 +199,11 @@ input[type=number] {
                                             <div class="table-responsive mt-3">
                                                 <table id="myTable" class="table table-hover order-list">
                                                     <thead>
-                                                        <tr>
-                                                            <th>{{ trans('file.name') }}</th>
-                                                            <th>{{ trans('file.Quantity') }}</th>
-                                                            <th>{{ trans('file.Purchase Price') }}</th>
-                                                            <th>{{ trans('file.Sale Price') }}</th>
-                                                            <th>{{ trans('file.Additional Cost') }}</th>
-                                                            <th>{{ trans('file.Total Cost') }}</th>
-                                                            <th><i class="dripicons-trash"></i></th>
-                                                        </tr>
+                                                        
                                                     </thead>
                                                     <tbody>
+
                                                     </tbody>
-                                                    <!-- <tfoot class="tfoot active">
-                                                                    <tr>
-                                                                        <th colspan="">{{ trans('file.Total Quantity') }}</th>
-                                                                        <th id="total-quantity">0</th>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th colspan="">{{ trans('file.Total') }}</th>
-                                                                        <th id="total-amount">0</th>
-                                                                    </tr>
-                                                                </tfoot> -->
                                                 </table>
                                             </div>
                                         </div>
@@ -254,44 +243,6 @@ input[type=number] {
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- <div class="row mt-3">
-                                                    <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <label>{{ trans('file.Order Tax') }}</label>
-                                                            <select class="form-control" name="order_tax_rate">
-                                                                <option value="0">{{ trans('file.No Tax') }}</option>
-                                                                @foreach ($lims_tax_list as $tax)
-    <option value="{{ $tax->rate }}">{{ $tax->name }}</option>
-    @endforeach
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <label>
-                                                                <strong>{{ trans('file.Discount') }}</strong>
-                                                            </label>
-                                                            <input type="number" name="order_discount" class="form-control" step="any" />
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <label>
-                                                                <strong>{{ trans('file.Shipping Cost') }}</strong>
-                                                            </label>
-                                                            <input type="number" name="shipping_cost" class="form-control" step="any" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <label>{{ trans('file.Note') }}</label>
-                                                            <textarea rows="5" class="form-control" name="note"></textarea>
-                                                        </div>
-                                                    </div>
-                                                </div> -->
-
                                 </div>
                             </div>
                             {!! Form::close() !!}
@@ -300,605 +251,10 @@ input[type=number] {
                 </div>
             </div>
         </div>
-
-        <div id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
-            class="modal fade text-left">
-            <div role="document" class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 id="modal-header" class="modal-title"></h5>
-                        <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span
-                                aria-hidden="true"><i class="dripicons-cross"></i></span></button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="row modal-element">
-                                <div class="col-md-4 form-group">
-                                    <label>{{ trans('file.Quantity') }}</label>
-                                    <input type="number" name="edit_qty" class="form-control" step="any">
-                                </div>
-                                <div class="col-md-4 form-group">
-                                    <label>{{ trans('file.Unit Discount') }}</label>
-                                    <input type="number" name="edit_discount" class="form-control" step="any">
-                                </div>
-                                <div class="col-md-4 form-group">
-                                    <label>{{ trans('file.Unit Cost') }}</label>
-                                    <input type="number" name="edit_unit_cost" class="form-control" step="any">
-                                </div>
-                                <?php
-                                $tax_name_all[] = 'No Tax';
-                                $tax_rate_all[] = 0;
-                                foreach ($lims_tax_list as $tax) {
-                                    $tax_name_all[] = $tax->name;
-                                    $tax_rate_all[] = $tax->rate;
-                                }
-                                ?>
-                                <div class="col-md-4 form-group">
-                                    <label>{{ trans('file.Tax Rate') }}</label>
-                                    <select name="edit_tax_rate" class="form-control selectpicker">
-                                        @foreach ($tax_name_all as $key => $name)
-                                            <option value="{{ $key }}">{{ $name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-4 form-group">
-                                    <label>{{ trans('file.Product Unit') }}</label>
-                                    <select name="edit_unit" class="form-control selectpicker">
-                                    </select>
-                                </div>
-                            </div>
-                            <button type="button" name="update_btn"
-                                class="btn btn-primary">{{ trans('file.update') }}</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
     </section>
 @endsection
 @push('scripts')
     <script type="text/javascript">
-        // $("ul#purchase").siblings('a').attr('aria-expanded', 'true');
-        // $("ul#purchase").addClass("show");
-        // $("ul#purchase #purchase-create-menu").addClass("active");
-
-        // // array data depend on warehouse
-        // var product_code = [];
-        // var product_name = [];
-        // var product_qty = [];
-
-        // array data with selection
-        // var product_cost = [];
-        // var product_discount = [];
-        // var tax_rate = [];
-        // var tax_name = [];
-        // var tax_method = [];
-        // var unit_name = [];
-        // var unit_operator = [];
-        // var unit_operation_value = [];
-        // var is_imei = [];
-
-        // temporary array
-        // var temp_unit_name = [];
-        // var temp_unit_operator = [];
-        // var temp_unit_operation_value = [];
-
-        // var rowindex;
-        // var customer_group_rate;
-        // var row_product_cost;
-
-        // $('.selectpicker').selectpicker({
-        //     style: 'btn-link',
-        // });
-
-        // $('[data-toggle="tooltip"]').tooltip();
-
-        // $('select[name="status"]').on('change', function() {
-        //     if ($('select[name="status"]').val() == 2) {
-        //         $(".recieved-product-qty").removeClass("d-none");
-        //         $(".qty").each(function() {
-        //             rowindex = $(this).closest('tr').index();
-        //             $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.recieved').val(
-        //                 $(this).val());
-        //         });
-
-        //     } else if (($('select[name="status"]').val() == 3) || ($('select[name="status"]').val() == 4)) {
-        //         $(".recieved-product-qty").addClass("d-none");
-        //         $(".recieved").each(function() {
-        //             $(this).val(0);
-        //         });
-        //     } else {
-        //         $(".recieved-product-qty").addClass("d-none");
-        //         $(".qty").each(function() {
-        //             rowindex = $(this).closest('tr').index();
-        //             $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.recieved').val(
-        //                 $(this).val());
-        //         });
-        //     }
-        // });
-
-        // <?php $productArray = []; ?>
-        // var lims_product_code = [
-        //     @foreach ($lims_product_list_without_variant as $product)
-        //         <?php
-        //         $productArray[] = htmlspecialchars($product->code . ' (' . $product->name . ')');
-        //         ?>
-        //     @endforeach
-        //     @foreach ($lims_product_list_with_variant as $product)
-        //         <?php
-        //         $productArray[] = htmlspecialchars($product->item_code . ' (' . $product->name . ')');
-        //         ?>
-        //     @endforeach
-        //     <?php
-        //     echo '"' . implode('","', $productArray) . '"';
-        //     ?>
-        // ];
-
-        // var lims_productcodeSearch = $('#lims_productcodeSearch');
-
-        // lims_productcodeSearch.autocomplete({
-        //     source: function(request, response) {
-        //         var matcher = new RegExp(".?" + $.ui.autocomplete.escapeRegex(request.term), "i");
-        //         response($.grep(lims_product_code, function(item) {
-        //             return matcher.test(item);
-        //         }));
-        //     },
-        //     response: function(event, ui) {
-        //         if (ui.content.length == 1) {
-        //             var data = ui.content[0].value;
-        //             $(this).autocomplete("close");
-        //             productSearch(data);
-        //         };
-        //     },
-        //     select: function(event, ui) {
-        //         var data = ui.item.value;
-        //         productSearch(data);
-        //     }
-        // });
-
-        // $('body').on('focus', ".expired-date", function() {
-        //     $(this).datepicker({
-        //         format: "yyyy-mm-dd",
-        //         startDate: "<?php echo date('Y-m-d', strtotime('+ 1 days')); ?>",
-        //         autoclose: true,
-        //         todayHighlight: true
-        //     });
-        // });
-
-
-
-        //Change quantity
-        // $("#myTable").on('input', '.qty', function() {
-        //     rowindex = $(this).closest('tr').index();
-        //     if ($(this).val() < 1 && $(this).val() != '') {
-        //         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ') .qty').val(1);
-        //         alert("Quantity can't be less than 1");
-        //     }
-        //     checkQuantity($(this).val(), true);
-        // });
-
-
-        //Delete product
-        // $("table.order-list tbody").on("click", ".ibtnDel", function(event) {
-        //     rowindex = $(this).closest('tr').index();
-        //     product_cost.splice(rowindex, 1);
-        //     product_discount.splice(rowindex, 1);
-        //     tax_rate.splice(rowindex, 1);
-        //     tax_name.splice(rowindex, 1);
-        //     tax_method.splice(rowindex, 1);
-        //     unit_name.splice(rowindex, 1);
-        //     unit_operator.splice(rowindex, 1);
-        //     unit_operation_value.splice(rowindex, 1);
-        //     // console.log(product_cost);
-        //     $(this).closest("tr").remove();
-        //     calculateTotal();
-        // });
-
-        //Edit product
-        // $("table.order-list").on("click", ".edit-product", function() {
-        //     rowindex = $(this).closest('tr').index();
-        //     $(".imei-section").remove();
-        //     if (is_imei[rowindex]) {
-        //         var imeiNumbers = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find(
-        //             '.imei-number').val();
-
-        //         htmlText =
-        //             '<div class="col-md-12 form-group imei-section"><label>IMEI or Serial Numbers</label><input type="text" name="imei_numbers" value="' +
-        //             imeiNumbers +
-        //             '" class="form-control imei_number" placeholder="Type imei or serial numbers and separate them by comma. Example:1001,2001" step="any"></div>';
-        //         $("#editModal .modal-element").append(htmlText);
-        //     }
-
-        //     var row_product_name = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find(
-        //         'td:nth-child(1)').text();
-        //     var row_product_code = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find(
-        //         'td:nth-child(2)').text();
-        //     $('#modal-header').text(row_product_name + '(' + row_product_code + ')');
-
-        //     var qty = $(this).closest('tr').find('.qty').val();
-        //     $('input[name="edit_qty"]').val(qty);
-
-        //     $('input[name="edit_discount"]').val(parseFloat(product_discount[rowindex]).toFixed(2));
-
-        //     unitConversion();
-        //     $('input[name="edit_unit_cost"]').val(row_product_cost.toFixed(2));
-
-        //     var tax_name_all = <?php echo json_encode($tax_name_all); ?>;
-        //     var pos = tax_name_all.indexOf(tax_name[rowindex]);
-        //     $('select[name="edit_tax_rate"]').val(pos);
-
-        //     temp_unit_name = (unit_name[rowindex]).split(',');
-        //     temp_unit_name.pop();
-        //     temp_unit_operator = (unit_operator[rowindex]).split(',');
-        //     temp_unit_operator.pop();
-        //     temp_unit_operation_value = (unit_operation_value[rowindex]).split(',');
-        //     temp_unit_operation_value.pop();
-        //     $('select[name="edit_unit"]').empty();
-        //     $.each(temp_unit_name, function(key, value) {
-        //         $('select[name="edit_unit"]').append('<option value="' + key + '">' + value + '</option>');
-        //     });
-        //     $('.selectpicker').selectpicker('refresh');
-        // });
-
-        //Update product
-        // $('button[name="update_btn"]').on("click", function() {
-
-        //     if (is_imei[rowindex]) {
-        //         var imeiNumbers = $("#editModal input[name=imei_numbers]").val();
-        //         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.imei-number').val(
-        //             imeiNumbers);
-        //     }
-
-        //     var edit_discount = $('input[name="edit_discount"]').val();
-        //     var edit_qty = $('input[name="edit_qty"]').val();
-        //     var edit_unit_cost = $('input[name="edit_unit_cost"]').val();
-
-        //     if (parseFloat(edit_discount) > parseFloat(edit_unit_cost)) {
-        //         alert('Invalid Discount Input!');
-        //         return;
-        //     }
-
-        //     if (edit_qty < 1) {
-        //         $('input[name="edit_qty"]').val(1);
-        //         edit_qty = 1;
-        //         alert("Quantity can't be less than 1");
-        //     }
-
-        //     var row_unit_operator = unit_operator[rowindex].slice(0, unit_operator[rowindex].indexOf(","));
-        //     var row_unit_operation_value = unit_operation_value[rowindex].slice(0, unit_operation_value[rowindex]
-        //         .indexOf(","));
-        //     row_unit_operation_value = parseFloat(row_unit_operation_value);
-        //     var tax_rate_all = <?php echo json_encode($tax_rate_all); ?>;
-
-
-        //     tax_rate[rowindex] = parseFloat(tax_rate_all[$('select[name="edit_tax_rate"]').val()]);
-        //     tax_name[rowindex] = $('select[name="edit_tax_rate"] option:selected').text();
-
-
-        //     if (row_unit_operator == '*') {
-        //         product_cost[rowindex] = $('input[name="edit_unit_cost"]').val() / row_unit_operation_value;
-        //     } else {
-        //         product_cost[rowindex] = $('input[name="edit_unit_cost"]').val() * row_unit_operation_value;
-        //     }
-
-        //     product_discount[rowindex] = $('input[name="edit_discount"]').val();
-        //     var position = $('select[name="edit_unit"]').val();
-        //     var temp_operator = temp_unit_operator[position];
-        //     var temp_operation_value = temp_unit_operation_value[position];
-        //     $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.purchase-unit').val(
-        //         temp_unit_name[position]);
-        //     temp_unit_name.splice(position, 1);
-        //     temp_unit_operator.splice(position, 1);
-        //     temp_unit_operation_value.splice(position, 1);
-
-        //     temp_unit_name.unshift($('select[name="edit_unit"] option:selected').text());
-        //     temp_unit_operator.unshift(temp_operator);
-        //     temp_unit_operation_value.unshift(temp_operation_value);
-
-        //     unit_name[rowindex] = temp_unit_name.toString() + ',';
-        //     unit_operator[rowindex] = temp_unit_operator.toString() + ',';
-        //     unit_operation_value[rowindex] = temp_unit_operation_value.toString() + ',';
-        //     checkQuantity(edit_qty, false);
-        // });
-
-        // function productSearch(data) {
-        //     $.ajax({
-        //         type: 'GET',
-        //         url: 'lims_product_search',
-        //         data: {
-        //             data: data
-        //         },
-        //         success: function(data) {
-        //             var flag = 1;
-        //             $(".product-code").each(function(i) {
-        //                 if ($(this).val() == data[1]) {
-        //                     rowindex = i;
-        //                     var qty = parseFloat($('table.order-list tbody tr:nth-child(' + (rowindex +
-        //                         1) + ') .qty').val()) + 1;
-        //                     $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ') .qty').val(
-        //                         qty);
-        //                     $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ') .recieved')
-        //                         .val(qty);
-        //                     calculateRowProductData(qty);
-        //                     flag = 0;
-        //                 }
-        //             });
-        //             $("input[name='product_code_name']").val('');
-        //             if (flag) {
-        //                 var newRow = $("<tr>");
-        //                 var cols = '';
-        //                 temp_unit_name = (data[6]).split(',');
-        //                 cols += '<td>' + data[0] +
-        //                     '<button type="button" class="edit-product btn btn-link" data-toggle="modal" data-target="#editModal"> <i class="dripicons-document-edit"></i></button></td>';
-        //                 cols += '<td>' + data[1] + '</td>';
-        //                 cols +=
-        //                     '<td><input type="number" class="form-control qty" name="qty[]" value="1" step="any" required/></td>';
-        //                 if ($('select[name="status"]').val() == 1)
-        //                     cols +=
-        //                     '<td class="recieved-product-qty d-none"><input type="number" class="form-control recieved" name="recieved[]" value="1" step="any"/></td>';
-        //                 else if ($('select[name="status"]').val() == 2)
-        //                     cols +=
-        //                     '<td class="recieved-product-qty"><input type="number" class="form-control recieved" name="recieved[]" value="1" step="any"/></td>';
-        //                 else
-        //                     cols +=
-        //                     '<td class="recieved-product-qty d-none"><input type="number" class="form-control recieved" name="recieved[]" value="0" step="any"/></td>';
-        //                 if (data[10]) {
-        //                     cols +=
-        //                         '<td><input type="text" class="form-control batch-no" name="batch_no[]" required/></td>';
-        //                     cols +=
-        //                         '<td><input type="text" class="form-control expired-date" name="expired_date[]" required/></td>';
-        //                 } else {
-        //                     cols +=
-        //                         '<td><input type="text" class="form-control batch-no" name="batch_no[]" disabled/></td>';
-        //                     cols +=
-        //                         '<td><input type="text" class="form-control expired-date" name="expired_date[]" disabled/></td>';
-        //                 }
-
-        //                 cols += '<td class="net_unit_cost"></td>';
-        //                 cols += '<td class="discount">0.00</td>';
-        //                 cols += '<td class="tax"></td>';
-        //                 cols += '<td class="sub-total"></td>';
-        //                 cols +=
-        //                     '<td><button type="button" class="ibtnDel btn btn-md btn-danger">{{ trans('file.delete') }}</button></td>';
-        //                 cols += '<input type="hidden" class="product-code" name="product_code[]" value="' +
-        //                     data[1] + '"/>';
-        //                 cols += '<input type="hidden" class="product-id" name="product_id[]" value="' + data[
-        //                     9] + '"/>';
-        //                 cols += '<input type="hidden" class="purchase-unit" name="purchase_unit[]" value="' +
-        //                     temp_unit_name[0] + '"/>';
-        //                 cols += '<input type="hidden" class="net_unit_cost" name="net_unit_cost[]" />';
-        //                 cols += '<input type="hidden" class="discount-value" name="discount[]" />';
-        //                 cols += '<input type="hidden" class="tax-rate" name="tax_rate[]" value="' + data[3] +
-        //                     '"/>';
-        //                 cols += '<input type="hidden" class="tax-value" name="tax[]" />';
-        //                 cols += '<input type="hidden" class="subtotal-value" name="subtotal[]" />';
-        //                 cols += '<input type="hidden" class="imei-number" name="imei_number[]" />';
-
-        //                 newRow.append(cols);
-        //                 $("table.order-list tbody").prepend(newRow);
-
-        //                 rowindex = newRow.index();
-        //                 product_cost.splice(rowindex, 0, parseFloat(data[2]));
-        //                 product_discount.splice(rowindex, 0, '0.00');
-        //                 tax_rate.splice(rowindex, 0, parseFloat(data[3]));
-        //                 tax_name.splice(rowindex, 0, data[4]);
-        //                 tax_method.splice(rowindex, 0, data[5]);
-        //                 unit_name.splice(rowindex, 0, data[6]);
-        //                 unit_operator.splice(rowindex, 0, data[7]);
-        //                 unit_operation_value.splice(rowindex, 0, data[8]);
-        //                 is_imei.splice(rowindex, 0, data[11]);
-        //                 calculateRowProductData(1);
-        //                 if (data[11]) {
-        //                     $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find(
-        //                         '.edit-product').click();
-        //                 }
-        //             }
-
-        //         }
-        //     });
-        // }
-
-        // function checkQuantity(purchase_qty, flag) {
-        //     var row_product_code = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('td:nth-child(2)')
-        //         .text();
-        //     var pos = product_code.indexOf(row_product_code);
-        //     var operator = unit_operator[rowindex].split(',');
-        //     var operation_value = unit_operation_value[rowindex].split(',');
-        //     if (operator[0] == '*')
-        //         total_qty = purchase_qty * operation_value[0];
-        //     else if (operator[0] == '/')
-        //         total_qty = purchase_qty / operation_value[0];
-
-        //     $('#editModal').modal('hide');
-        //     $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.qty').val(purchase_qty);
-        //     var status = $('select[name="status"]').val();
-        //     if (status == '1' || status == '2')
-        //         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.recieved').val(purchase_qty);
-        //     calculateRowProductData(purchase_qty);
-        // }
-
-        // function calculateRowProductData(quantity) {
-        //     unitConversion();
-        //     $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.discount').text((product_discount[
-        //         rowindex] * quantity).toFixed(2));
-        //     $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.discount-value').val((product_discount[
-        //         rowindex] * quantity).toFixed(2));
-        //     $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.tax-rate').val(tax_rate[rowindex]
-        //         .toFixed(2));
-
-        //     if (tax_method[rowindex] == 1) {
-        //         var net_unit_cost = row_product_cost - product_discount[rowindex];
-        //         var tax = net_unit_cost * quantity * (tax_rate[rowindex] / 100);
-        //         var sub_total = (net_unit_cost * quantity) + tax;
-
-        //         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.net_unit_cost').text(net_unit_cost
-        //             .toFixed(2));
-        //         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.net_unit_cost').val(net_unit_cost
-        //             .toFixed(2));
-        //         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.tax').text(tax.toFixed(2));
-        //         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.tax-value').val(tax.toFixed(2));
-        //         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.sub-total').text(sub_total.toFixed(
-        //             2));
-        //         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.subtotal-value').val(sub_total
-        //             .toFixed(2));
-        //     } else {
-        //         var sub_total_unit = row_product_cost - product_discount[rowindex];
-        //         var net_unit_cost = (100 / (100 + tax_rate[rowindex])) * sub_total_unit;
-        //         var tax = (sub_total_unit - net_unit_cost) * quantity;
-        //         var sub_total = sub_total_unit * quantity;
-
-        //         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.net_unit_cost').text(net_unit_cost
-        //             .toFixed(2));
-        //         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.net_unit_cost').val(net_unit_cost
-        //             .toFixed(2));
-        //         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.tax').text(tax.toFixed(2));
-        //         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.tax-value').val(tax.toFixed(2));
-        //         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.sub-total').text(sub_total.toFixed(
-        //             2));
-        //         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.subtotal-value').val(sub_total
-        //             .toFixed(2));
-        //     }
-
-        //     calculateTotal();
-        // }
-
-        // function unitConversion() {
-        //     var row_unit_operator = unit_operator[rowindex].slice(0, unit_operator[rowindex].indexOf(","));
-        //     var row_unit_operation_value = unit_operation_value[rowindex].slice(0, unit_operation_value[rowindex].indexOf(
-        //         ","));
-        //     row_unit_operation_value = parseFloat(row_unit_operation_value);
-        //     if (row_unit_operator == '*') {
-        //         row_product_cost = product_cost[rowindex] * row_unit_operation_value;
-        //     } else {
-        //         row_product_cost = product_cost[rowindex] / row_unit_operation_value;
-        //     }
-        // }
-
-        // function calculateTotal() {
-        //     //Sum of quantity
-        //     var total_qty = 0;
-        //     $(".qty").each(function() {
-
-        //         if ($(this).val() == '') {
-        //             total_qty += 0;
-        //         } else {
-        //             total_qty += parseFloat($(this).val());
-        //         }
-        //     });
-        //     $("#total-qty").text(total_qty);
-        //     $('input[name="total_qty"]').val(total_qty);
-
-        //     //Sum of discount
-        //     var total_discount = 0;
-        //     $(".discount").each(function() {
-        //         total_discount += parseFloat($(this).text());
-        //     });
-        //     $("#total-discount").text(total_discount.toFixed(2));
-        //     $('input[name="total_discount"]').val(total_discount.toFixed(2));
-
-        //     //Sum of tax
-        //     var total_tax = 0;
-        //     $(".tax").each(function() {
-        //         total_tax += parseFloat($(this).text());
-        //     });
-        //     $("#total-tax").text(total_tax.toFixed(2));
-        //     $('input[name="total_tax"]').val(total_tax.toFixed(2));
-
-        //     //Sum of subtotal
-        //     var total = 0;
-        //     $(".sub-total").each(function() {
-        //         total += parseFloat($(this).text());
-        //     });
-        //     $("#total").text(total.toFixed(2));
-        //     $('input[name="total_cost"]').val(total.toFixed(2));
-
-        //     calculateGrandTotal();
-        // }
-
-        // function calculateGrandTotal() {
-
-        //     var item = $('table.order-list tbody tr:last').index();
-
-        //     var total_qty = parseFloat($('#total-qty').text());
-        //     var subtotal = parseFloat($('#total').text());
-        //     var order_tax = parseFloat($('select[name="order_tax_rate"]').val());
-        //     var order_discount = parseFloat($('input[name="order_discount"]').val());
-        //     var shipping_cost = parseFloat($('input[name="shipping_cost"]').val());
-
-        //     if (!order_discount)
-        //         order_discount = 0.00;
-        //     if (!shipping_cost)
-        //         shipping_cost = 0.00;
-
-        //     item = ++item + '(' + total_qty + ')';
-        //     order_tax = (subtotal - order_discount) * (order_tax / 100);
-        //     var grand_total = (subtotal + order_tax + shipping_cost) - order_discount;
-
-        //     $('#item').text(item);
-        //     $('input[name="item"]').val($('table.order-list tbody tr:last').index() + 1);
-        //     $('#subtotal').text(subtotal.toFixed(2));
-        //     $('#order_tax').text(order_tax.toFixed(2));
-        //     $('input[name="order_tax"]').val(order_tax.toFixed(2));
-        //     $('#order_discount').text(order_discount.toFixed(2));
-        //     $('#shipping_cost').text(shipping_cost.toFixed(2));
-        //     $('#grand_total').text(grand_total.toFixed(2));
-        //     $('input[name="grand_total"]').val(grand_total.toFixed(2));
-        // }
-
-        // $('input[name="order_discount"]').on("input", function() {
-        //     calculateGrandTotal();
-        // });
-
-        // $('input[name="shipping_cost"]').on("input", function() {
-        //     calculateGrandTotal();
-        // });
-
-        // $('select[name="order_tax_rate"]').on("change", function() {
-        //     calculateGrandTotal();
-        // });
-
-        // $(window).keydown(function(e) {
-        //     if (e.which == 13) {
-        //         var $targ = $(e.target);
-        //         if (!$targ.is("textarea") && !$targ.is(":button,:submit")) {
-        //             var focusNext = false;
-        //             $(this).find(":input:visible:not([disabled],[readonly]), a").each(function() {
-        //                 if (this === e.target) {
-        //                     focusNext = true;
-        //                 } else if (focusNext) {
-        //                     $(this).focus();
-        //                     return false;
-        //                 }
-        //             });
-        //             return false;
-        //         }
-        //     }
-        // });
-
-        // $('#purchase-form').on('submit', function(e) {
-        //     var rownumber = $('table.order-list tbody tr:last').index();
-        //     if (rownumber < 0) {
-        //         alert("Please insert product to order table!")
-        //         e.preventDefault();
-        //     } else if ($('select[name="status"]').val() != 1) {
-        //         flag = 0;
-        //         $(".qty").each(function() {
-        //             rowindex = $(this).closest('tr').index();
-        //             quantity = $(this).val();
-        //             recieved = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find(
-        //                 '.recieved').val();
-
-        //             if (quantity != recieved) {
-        //                 flag = 1;
-        //                 return false;
-        //             }
-        //         });
-
-        //     } else
-        //         $(".batch-no, .expired-date").prop('disabled', false);
-        // });
-
-
         // select engine type---unique
 
         $('#linkageTarget').on('change', function() {
@@ -945,7 +301,6 @@ input[type=number] {
         });
 
         // get manufacturers
-
         $(document).on('change', '#subLinkageTarget', function() {
 
             let engine_sub_type = $(this).val();
@@ -1016,7 +371,7 @@ input[type=number] {
             })
         }
 
-
+        ////// get engines==================
         $(document).on('change', '#model_id', function() {
             let model_id = $(this).val();
             let url = $(this).attr('data-href');
@@ -1046,7 +401,7 @@ input[type=number] {
             })
         }
 
-
+        ///// get sections==================
         $(document).on('change', '#engine_id', function() {
             let engine_id = $(this).val();
             let url = $(this).attr('data-href');
@@ -1072,6 +427,7 @@ input[type=number] {
             })
         }
 
+        ///// get section parts============
         $(document).on('change', '#section_id', function() {
             let section_id = $(this).val();
             let url = $(this).attr('data-href');
@@ -1095,6 +451,28 @@ input[type=number] {
             })
         }
 
+        ///// get brands by section parts======
+        $(document).on('change', '#section_part_id', function() {
+            let section_part_id = $(this).val();
+            let url = $(this).attr('data-href');
+            getBrands(url, section_part_id);
+        });
+
+        function getBrands(url, section_part_id) {
+            $.get(url + '?section_part_id=' + section_part_id, function(data) {
+                let response = data.data;
+                let view_html = `<option value="">Select One</option>`;
+                $.each(response, function(key, value) {
+                    view_html += `<option value="${value.brandId}">${value.brandName}</option>`;
+                });
+                console.log(data, view_html);
+                $('#brand_id').html(view_html);
+                $("#brand_id").val(4);
+                $("#brand_id").selectpicker("refresh");
+            })
+        }
+
+
         $("#product_purchase_date").on('change', function() {
             var selectedDate = this.value;
             var currentDate = new Date();
@@ -1102,7 +480,6 @@ input[type=number] {
             var dd = String(today.getDate()).padStart(2, '0');
             var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
             var yyyy = today.getFullYear();
-
             today = dd + '-' + mm + '-' + yyyy;
             if (selectedDate > today) {
                 Swal.fire({
@@ -1116,19 +493,15 @@ input[type=number] {
             }
         });
 
-
-        var supplier_ids_array = [];
-        var article_ids_array = [];
+        //// global veriables that we were use in the save functionality ///
+        var supplier_ids_array = [],
+            article_ids_array = [],
+            selected_cash_type = [],
+            all_product_ids = [];
+        // var article_ids_array = [];
         var total_quantity = $('#total-quantity');
         var total_amount = $('#total-amount');
-        var selected_cash_type = [];
-
-
-        // var tableBody = $("table tbody");
-        // // var len = tableBody.attr('tr');
-        // console.log(len)
-        var all_product_ids =[];
-
+        // var all_product_ids = [];
         $("#save-btn").click(function() {
             var id = $('#section_part_id').val();
             var engine_type = $('#linkageTarget').find(":selected").val();
@@ -1142,13 +515,10 @@ input[type=number] {
             var status = $('#status').find(":selected").val();
             var date = $('#product_purchase_date').val();
             var cashType = $('#cash_type').find(":selected").val();
-            // var additional_cost = $('#additional_cost').val();
 
             checkIfExists(engine_type, engine_sub_type, manufacturer_id, model_id, engine_id, section_id,
                 section_part_id, supplier_id, status, date, cashType);
 
-            // console.log(cash_type);
-            // alert(manufacturer_id);exit();
             $.ajax({
                 method: "GET",
                 url: "{{ url('show_section_parts_in_table') }}",
@@ -1170,9 +540,39 @@ input[type=number] {
                 success: function(data) {
                     // alert(data);
                     var tableBody = $("table tbody");
+                    var tableHead = $("table thead");
+                    var tableHeadRow = $("table thead tr");
                     var other_data_div = $('#other_data');
 
+                    var white_cash_head = "";
+                    var black_cash_head = "";
+                    white_cash_head += `<tr id="white_head">
+                        <th>{{ trans('file.name') }}</th>
+                        <th>{{ trans('file.Quantity') }}</th>
+                        <th>{{ trans('file.Purchase Price') }}</th>
+                        <th>{{ trans('file.Sale Price') }}</th>
+                        <th>{{ trans('file.Discount') }}</th>
+                        <th>{{ trans('file.Additional Cost Without VAT') }}</th>
+                        <th>{{ trans('file.Additional Cost With VAT') }}</th>
+                        <th>{{ trans('file.VAT %') }}</th>
+                        <th>{{ trans('file.Profit Margin') }}</th>
+                        <th>{{ trans('file.Total Cost') }}</th>
+                        <th><i class="dripicons-trash"></i></th>
+                    </tr>`;
+                    black_cash_head += `<tr id="black_head">
+                        <th>{{ trans('file.name') }}</th>
+                        <th>{{ trans('file.Quantity') }}</th>
+                        <th>{{ trans('file.Purchase Price') }}</th>
+                        <th>{{ trans('file.Sale Price') }}</th>
+                        <th>{{ trans('file.Discount') }}</th>
+                        <th>{{ trans('file.Additional Cost Without VAT') }}</th>
+                        <th>{{ trans('file.Profit Margin') }}</th>
+                        <th>{{ trans('file.Total Cost') }}</th>
+                        <th><i class="dripicons-trash"></i></th>
+                    </tr>`;
+                   
                     var length = document.getElementById("myTable").rows.length;
+
                     var html = '';
                     html += '<input type="hidden" name="manufacturer_id[]" value="' + data
                         .manufacturer_id + '">';
@@ -1195,7 +595,6 @@ input[type=number] {
                             article_ids_array.push(this.id)
                         }
                     })
-
                     if (supplier_ids_array.length > 0) {
                         supplier_ids_array.forEach(checkSupplier);
 
@@ -1213,15 +612,12 @@ input[type=number] {
                     } else {
                         supplier_ids_array.push(data.supplier);
                     }
-                    // console.log("data and selected type of cash",selected_cash_type,data);
-                    // console.log("here",selected_cash_type);
-                    // console.log(selected_cash_type, data , cash_type);
-
+                    console.log(selected_cash_type.length)
                     if (selected_cash_type.length > 0) {
                         selected_cash_type.forEach(checkCashType);
 
                         function checkCashType(element, index, data) {
-                            // console.log(element, data.cash_type , element == cash_type);
+                            console.log(element,index,data,)
                             if (element != cashType) {
                                 Swal.fire({
                                     icon: 'error',
@@ -1231,39 +627,32 @@ input[type=number] {
                                 exit();
                             }
                         }
+                        
                     } else {
                         selected_cash_type.push(cashType);
+                        
                     }
-
-
-                    // if (cash_type.length > 0) {
-                    //     cach((index, data) => if (cash_type != data.cash_type) {
-                    //             Swal.fire({
-                    //                 icon: 'error',
-                    //                 title: 'Oops...',
-                    //                 text: 'you can not able to change the cash type for a purchase once you selected',
-                    //             });
-                    //             exit();
-                    //         });
-                    // }else{
-                    //     cash_type.push(data.cash_type);
-                    // }
-
-                    // console.log(article_ids_array)
+                    console.log("hyyyyyyyyyyyyyyyyyyyy---"+tableHeadRow.length)
+                    if(data.cash_type == "white"  && tableHeadRow.length <= 0){
+                        tableHead.append(white_cash_head);
+                    }else if(data.cash_type == "black" && tableHeadRow.length <= 0){
+                        tableHead.append(black_cash_head);
+                    }
 
                     markup = '<tr id="article_' + data.data.legacyArticleId + '"><td>' + data.data
                         .genericArticleDescription + '-' + data.data.articleNumber +
                         '</td>';
-             
-                    markup += 
-                           '<td><input type="number" class="form-control" onkeyup="alterQty(' +
-                            data.data.legacyArticleId + ')" id="item_qty' + data.data
-                            .legacyArticleId +
-                            '" value="1" min="1" name="item_qty[]" required></td>';
-                    
+
                     markup +=
                         '<td><input type="number" class="form-control" onkeyup="alterQty(' +
-                            data.data.legacyArticleId + ')" value="1" min="1" step="any" id="purchase_price_' +
+                        data.data.legacyArticleId + ')" id="item_qty' + data.data
+                        .legacyArticleId +
+                        '" value="1" min="1" name="item_qty[]" required></td>';
+
+                    markup +=
+                        '<td><input type="number" class="form-control" onkeyup="alterQty(' +
+                        data.data.legacyArticleId +
+                        ')" value="1" min="1" step="any" id="purchase_price_' +
                         data.data.legacyArticleId +
                         '" name="purchase_price[]" required></td>';
                     markup +=
@@ -1271,16 +660,17 @@ input[type=number] {
                         data.data.legacyArticleId +
                         '" name="sale_price[]" readonly></td>';
                     markup +=
-                         '<td><input type="number" class="form-control" onkeyup="alterQty(' +
-                            data.data.legacyArticleId + ')" value="0" min="0" step="any" id="additional_cost_' + 
-                            data.data.legacyArticleId + 
-                            '" name="additional_cost[]"></td>';
+                        '<td><input type="number" class="form-control" onkeyup="alterQty(' +
+                        data.data.legacyArticleId +
+                        ')" value="0" min="0" step="any" id="additional_cost_' +
+                        data.data.legacyArticleId +
+                        '" name="additional_cost[]"></td>';
                     markup +=
-                        '<td><input type="number" class="form-control" value="0" min="0"   id="total_cost_' + 
-                            data.data.legacyArticleId + 
-                            '" name="total_price[]" readonly></td>';
-                        
-                    markup +=    '<td><i id="article_delete_' +
+                        '<td><input type="number" class="form-control" value="0" min="0"   id="total_cost_' +
+                        data.data.legacyArticleId +
+                        '" name="total_price[]" readonly></td>';
+
+                    markup += '<td><i id="article_delete_' +
                         data.data.legacyArticleId + '" onclick="deleteArticle(' + data.data
                         .legacyArticleId +
                         ')" class="fa fa-trash"></i></td>';
@@ -1306,8 +696,9 @@ input[type=number] {
                             })
                         }
                     }
-                    if ($('#myTable tr').length > 1) {
-                             selected_cash_type = [];
+                    if ($('#myTable tr').length <= 1) {
+                        console.log($('#myTable tr').length)
+                        selected_cash_type = [];
                     }
                     all_product_ids.push(data.data.legacyArticleId);
                 }
@@ -1421,7 +812,6 @@ input[type=number] {
         var id_array = [];
 
         function alterQty(id) {
-        
             item_qty = parseInt($("#item_qty" + id).val());
             var purchasePrice = parseFloat($("#purchase_price_" + id).val());
             var additionalPrice = parseFloat($("#additional_cost_" + id).val());
@@ -1430,45 +820,36 @@ input[type=number] {
             var totalCost = (item_qty * purchasePrice) + additionalPrice;
             $("#total_cost_" + id).val(totalCost);
 
-            var sale_price = purchasePrice + additionalPrice + (entireAditionalCost/item_qty);
+            var sale_price = purchasePrice + additionalPrice + (entireAditionalCost / item_qty);
             $("#sale_price_" + id).val(sale_price);
 
         }
-       
-            
+
         function calculateSalePrice() {
             if (all_product_ids.length > 0) {
                 var entireAditionalCost = parseFloat($("#purchase_additional_cost").val());
                 all_product_ids.forEach(getSalePrice);
 
-                function getSalePrice(id,index){
-                    
+                function getSalePrice(id, index) {
                     item_qty = parseInt($("#item_qty" + id).val());
                     var purchasePrice = parseFloat($("#purchase_price_" + id).val());
                     var additionalPrice = parseFloat($("#additional_cost_" + id).val());
-
                     var totalCost = (item_qty * purchasePrice) + additionalPrice;
                     $("#total_cost_" + id).val(totalCost);
-
-                    var sale_price = purchasePrice + additionalPrice + (entireAditionalCost/item_qty);
-                    console.log(id+"======"+sale_price)
+                    var sale_price = purchasePrice + additionalPrice + (entireAditionalCost / item_qty);
                     $("#sale_price_" + id).val(sale_price);
                 }
             }
         }
-        
 
         function deleteArticle(id) {
             $('#article_' + id).remove();
             article_ids_array = [];
-            // console.log($('#myTable tr').length);
             if ($('#myTable tr').length == 1) {
                 selected_cash_type = [];
             }
-            // console.log(cash_type);
         }
     </script>
-
 
     <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
 @endpush

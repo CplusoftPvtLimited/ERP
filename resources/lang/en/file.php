@@ -2,7 +2,8 @@
 return [
 
 	'Sections' => 'Sections',
-	'Additional Cost' => 'Additional Cost',
+	'Additional Cost Without VAT' => 'Additional Cost Without VAT',
+	'Additional Cost With VAT' => 'Additional Cost With VAT',
 	'Shop Name' => 'Shop Name',
 	'Black Cash' => 'Black Cash',
 	'White Cash' => 'White Cash',
@@ -10,6 +11,8 @@ return [
 	'Section Parts' => 'Section Parts',
 	'Brand Languages' => 'Brand Languages',
 	'Manufacturers' => 'Manufacturers',
+	'Profit Margin' => 'Profit Margin',
+	'VAT %' => 'VAT %',
 	'Save' => 'Save',
 	'Black Items' => 'Black Items',
 	'White Items' => 'White Items',
@@ -29,7 +32,7 @@ return [
 	'Sales Estimate List' => 'Sales Estimate List',
 	'Delivery Slips' => 'Delivery Slips',
 	'Un Paid'=> 'Un Paid',
-	'Suppliers' => 'Suppliers',
+	'After Markit Supplier' => 'After Markit Supplier',
 	'All Makes' => 'All Makes',
 	'Reference' => 'Reference',
 	'Customer' => 'Customer',
