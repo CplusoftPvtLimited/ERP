@@ -17,21 +17,21 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="tab article-tabs">
-                                <button class="tablinks" onclick="openCity(event, 'Articles')" id="defaultOpen">Articles</button>
-                                <button class="tablinks" onclick="openCity(event, 'ArticleCrteria')">Article Criteria</button>
-                                <button class="tablinks" onclick="openCity(event, 'ArticleCrosses')">Article Crosses</button>
-                                <button class="tablinks" onclick="openCity(event, 'ArticleDocs')">Article Docs</button>
-                                <button class="tablinks" onclick="openCity(event, 'ArticleEan')">Article Ean</button>
-                                <button class="tablinks" onclick="openCity(event, 'ArticleLinks')">Article Links</button>
-                                <button class="tablinks" onclick="openCity(event, 'ArticleMain')">Article Main</button>
-                                <button class="tablinks" onclick="openCity(event, 'ArticlePdfs')">Article Pdfs</button>
-                                <button class="tablinks" onclick="openCity(event, 'ArticleVT')">Article Vehicle Trees</button>
-                                <button class="tablinks" onclick="openCity(event, 'ArticleText')">Article Text</button>
-                                <button class="tablinks" onclick="openCity(event, 'ArticleGeneric')">Generic Articles</button>
-                                <button class="tablinks" onclick="openCity(event, 'ArticleGGroup')">Generic Article Groups</button>
-                                <button class="tablinks" onclick="openCity(event, 'ArticleNew')">New Articles</button>
-                                <button class="tablinks" onclick="openCity(event, 'ArticleRBy')">Replaced By Articles</button>
-                                <button class="tablinks" onclick="openCity(event, 'ArticleReplaces')">Replaces Articles</button>
+                                <button class="tablinks nav-link" onclick="switchTab(event, 'Articles')" id="defaultOpen">Articles</button>
+                                <button class="tablinks nav-link" onclick="switchTab(event, 'ArticleCrteria')">Article Criteria</button>
+                                <button class="tablinks nav-link" onclick="switchTab(event, 'ArticleCrosses')">Article Crosses</button>
+                                <button class="tablinks nav-link" onclick="switchTab(event, 'ArticleDocs')">Article Docs</button>
+                                <button class="tablinks nav-link" onclick="switchTab(event, 'ArticleEan')">Article Ean</button>
+                                <button class="tablinks nav-link" onclick="switchTab(event, 'ArticleLinks')">Article Links</button>
+                                <button class="tablinks nav-link" onclick="switchTab(event, 'ArticleMain')">Article Main</button>
+                                <button class="tablinks nav-link" onclick="switchTab(event, 'ArticlePdfs')">Article Pdfs</button>
+                                <button class="tablinks nav-link" onclick="switchTab(event, 'ArticleVT')">Article Vehicle Trees</button>
+                                <button class="tablinks nav-link" onclick="switchTab(event, 'ArticleText')">Article Text</button>
+                                <button class="tablinks nav-link" onclick="switchTab(event, 'ArticleGeneric')">Generic Articles</button>
+                                <button class="tablinks nav-link" onclick="switchTab(event, 'ArticleGGroup')">Generic Article Groups</button>
+                                <button class="tablinks nav-link" onclick="switchTab(event, 'ArticleNew')">New Articles</button>
+                                <button class="tablinks nav-link" onclick="switchTab(event, 'ArticleRBy')">Replaced By Articles</button>
+                                <button class="tablinks nav-link" onclick="switchTab(event, 'ArticleReplaces')">Replaces Articles</button>
                             </div>
                         </div>
                     </div>
@@ -1709,7 +1709,7 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
         <script>
-            function openCity(evt, cityName) {
+            function switchTab(evt, tabName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tabcontent");
             for (i = 0; i < tabcontent.length; i++) {
@@ -1719,7 +1719,7 @@
             for (i = 0; i < tablinks.length; i++) {
                 tablinks[i].className = tablinks[i].className.replace(" active", "");
             }
-                document.getElementById(cityName).style.display = "block";
+                document.getElementById(tabName).style.display = "block";
                 evt.currentTarget.className += " active";
             }
 
