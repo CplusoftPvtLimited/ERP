@@ -96,11 +96,33 @@ class ArticlesController extends Controller
     public function store(Request $request)
     {
         $item = $this->article->store($request);
-        if($item == true){
-            return redirect()->route('article.index')->withSuccess(__('Product Added Successfully.'));
-        }else{
-            return redirect()->back()->withError(__('Some thing went wrong'));
+        // dd($item);
+        if($request->has('ajax')){
+            if($item == true){
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'Data inserted successfully',
+                        'data' => $item,
+                    ]
+                );
+            }else{
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'Some thing went wrong'
+                    ]
+                );
+            }    
         }
+        else{
+            if(is_object($item)){
+                return redirect()->route('article.index')->withSuccess(__('Product Added Successfully.'));
+            }else{
+                return redirect()->back()->withError(__('Some thing went wrong'));
+            }
+        }
+        
     }
 
     /**

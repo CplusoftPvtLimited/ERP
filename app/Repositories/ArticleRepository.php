@@ -21,14 +21,26 @@ class ArticleRepository implements ArticleInterface
                 'articleNumber' => 'required|unique:articles',
                 
             ]);
-     
-            if ($validator->fails()) {
-                return redirect('article.index')
-                            ->withErrors($validator)
-                            ->withInput();
-            }   
-            $data = $request->except('_token');
-            // dd($data);
+            if($request->has('ajax'))
+            {
+                if ($validator->fails()) {
+                    return response()->json(
+                        [
+                            'message' => 'Article Number is Already Taken',
+                        ]
+                    );
+                }
+                $data = $request->except('_token','ajax');
+                // dd(1);
+            }else{
+                if ($validator->fails()) {
+                    return redirect('article.index')
+                                ->withErrors($validator)
+                                ->withInput();
+                }
+                $data = $request->except('_token');
+                // dd($data);
+            }
             $max_article_id = Article::max('legacyArticleId');
             // dd($max_engine_id);
             if (!empty($max_article_id)) {
@@ -37,14 +49,12 @@ class ArticleRepository implements ArticleInterface
                 $data['legacyArticleId'] = 1;
             }
             // dd($data);
-            Article::create($data);
-           
+            $item = Article::create($data);
             DB::commit();
-
-            return true;
+            return $item;
         } catch (\Exception $e) {
             DB::rollBack();
-            // dd($e->getMessage());
+            dd($e->getMessage());
             return $e->getMessage();
         }
     }
