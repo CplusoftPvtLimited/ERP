@@ -428,6 +428,7 @@ class PurchaseController extends Controller
     public function store(Request $request)
     {
         Log::debug($request->all());
+        // dd($request->all());
 
         $this->validate($request, [
             'item_qty.*' => 'required',
@@ -440,8 +441,14 @@ class PurchaseController extends Controller
             'manufacturer_id.*' => 'required',
             'statuss.*' => 'required',
             'datee.*' => 'required',
+            'brand_id.*' => 'required',
             'purchase_additional_cost' => 'nullable|min:0',
-            'additional_cost.*' => 'nullable|min:0',
+            'additional_cost_without_vat.*' => 'required|min:0',
+            'additional_cost_with_vat.*' => 'nullable|min:0',
+            'vat.*' => 'nullable|min:0',
+            'profit_margin.*' => 'nullable|min:0',
+            'total_excluding_vat.*' => 'required|min:0',
+            'actual_cost_per_product.*' => 'required|min:0',
         ]);
 
         $purchase = $this->purchaseRepository->store($request);
@@ -502,6 +509,24 @@ class PurchaseController extends Controller
         } catch (\Exception $e) {
             Log::debug($e->getMessage());
             return $e->getMessage();
+        }
+    }
+
+    public function updatePurchaseProductQuantity(Request $request){
+        Log::debug($request->all());
+        try {
+            $update_purchase_product_quantity = $this->purchaseRepository->updatePurchaseProductQuantity($request);
+            if ($update_purchase_product_quantity == "update") {
+                toastr()->success('Purchase Product Quantity Changed');
+                return response("true");
+            } else if($update_purchase_product_quantity == "purchase_no_found"){
+                toastr()->info('product not found');
+                return response('false');
+            }
+        } catch (\Exception $e) {
+            Log::debug($e->getMessage());
+            toastr()->error("Something went wrong");
+                return response("false");
         }
     }
 
@@ -1455,6 +1480,7 @@ class PurchaseController extends Controller
             'status' => $request->status,
             'date' => $request->date,
             'cash_type' => $request->cash_type,
+            'brand_id' => $request->brand_id,
         ]);
     }
 }

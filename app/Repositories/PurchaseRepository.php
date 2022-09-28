@@ -13,14 +13,16 @@ use App\Models\Manufacturer;
 use App\Models\StockManagement;
 use App\Models\ModelSeries;
 use App\Repositories\Interfaces\PurchaseInterface;
+use Exception;
 use PDF;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Sum;
+use PhpParser\Node\Stmt\Catch_;
 
 class PurchaseRepository implements PurchaseInterface
 {
     public function store($request)
     {
-        // dd($request->all());
         DB::beginTransaction();
         try {
 
@@ -38,8 +40,8 @@ class PurchaseRepository implements PurchaseInterface
             // for ($i = 0; $i < count($request->item_qty); $i++) {
             //     $total_qty = $total_qty + ($request->black_qty[$i] + $request->white_qty[$i]);
             // }
-            for ($i = 0; $i < count($request->total_price); $i++) {
-                $total_amount = $total_amount + $request->total_price[$i];
+            for ($i = 0; $i < count($request->actual_cost_per_product); $i++) {
+                $total_amount += $request->actual_cost_per_product[$i];
             }
 
             $purchase->user_id = auth()->user()->id;
@@ -83,11 +85,17 @@ class PurchaseRepository implements PurchaseInterface
                 $product_purchase->legacy_article_id = $request->sectionn_part_id[$i];
                 $product_purchase->status = $request->statuss[$i];
                 $product_purchase->supplier_id = $request->supplier_id;
-                $product_purchase->total_cost = $request->total_price[$i];
                 $product_purchase->linkage_target_type = $request->linkage_target_type[$i];
                 $product_purchase->linkage_target_sub_type = $request->linkage_target_sub_type[$i];
-                $product_purchase->additional_cost = $request->additional_cost[$i];
                 $product_purchase->cash_type = $request->cash_type;
+                $product_purchase->brand_id = $request->brand_id[$i];
+                $product_purchase->discount = $request->discount[$i];
+                $product_purchase->additional_cost_without_vat = $request->additional_cost_without_vat[$i];
+                $product_purchase->additional_cost_with_vat = $request->additional_cost_with_vat[$i];
+                $product_purchase->vat = $request->vat[$i];
+                $product_purchase->profit_margin = $request->profit_margin[$i];
+                $product_purchase->total_excluding_vat = $request->total_excluding_vat[$i];
+                $product_purchase->actual_cost_per_product = $request->actual_cost_per_product[$i];
 
                 $date = date("Y-m-d", strtotime($request->datee[$i]));
                 $product_purchase->date = $date;
@@ -96,29 +104,43 @@ class PurchaseRepository implements PurchaseInterface
 
                 if ($request->statuss[$i] == "received") {
                     $cash_type = $product_purchase->cash_type;
-                    StockManagement::create([
-                        'product_id' => isset($product_purchase->legacy_article_id) ? $product_purchase->legacy_article_id : 0,
-                        'purchase_product_id' => isset($product_purchase->id) ? $product_purchase->id: 0,
-                        'reference_no' => isset($product_purchase->reference_no) ? $product_purchase->reference_no : 0,
-                        'retailer_id' => isset($purchase->user_id) ? $purchase->user_id : null,
-                        'white_items' => ($cash_type == "white") ? $product_purchase->qty : null, 
-                        'black_items' => ($cash_type == "black") ? $product_purchase->qty : null, 
-                        'unit_actual_price' => isset($product_purchase->actual_price) ? $product_purchase->actual_price : null,
-                        'unit_sale_price' => isset($product_purchase->sell_price) ? $product_purchase->sell_price : null,
-                        'total_qty' => isset($product_purchase->qty) ? $product_purchase->qty : null,
-                    ]);
+
+                    self::createStock($purchase,$product_purchase,$cash_type);
+                    
                 }
             }
 
             DB::commit();
             return "true";
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            dd($e);
             DB::rollback();
             return $e->getMessage();
         }
     }
 
+    public static function createStock($purchase,$product_purchase,$cash_type){
+        
+        StockManagement::create([
+            'product_id' => isset($product_purchase->legacy_article_id) ? $product_purchase->legacy_article_id : null,
+            'purchase_product_id' => isset($product_purchase->id) ? $product_purchase->id: null,
+            'reference_no' => isset($product_purchase->reference_no) ? $product_purchase->reference_no : null,
+            'retailer_id' => isset($purchase->user_id) ? $purchase->user_id : null,
+            'white_items' => ($cash_type == "white") ? $product_purchase->qty : null, 
+            'black_items' => ($cash_type == "black") ? $product_purchase->qty : null, 
+            'unit_actual_price' => isset($product_purchase->actual_price) ? $product_purchase->actual_price : null,
+            'unit_sale_price' => isset($product_purchase->sell_price) ? $product_purchase->sell_price : null,
+            'total_qty' => isset($product_purchase->qty) ? $product_purchase->qty : null,
+            'discount' => isset($product_purchase->discount) ? $product_purchase->discount : null,
+            'additional_cost_without_vat' => isset($product_purchase->additional_cost_without_vat) ? $product_purchase->additional_cost_without_vat : null,
+            'additional_cost_with_vat' => isset($product_purchase->additional_cost_with_vat) ? $product_purchase->additional_cost_with_vat : null,
+            'vat' => isset($product_purchase->vat) ? $product_purchase->vat : null,
+            'profit_margin' => isset($product_purchase->profit_margin) ? $product_purchase->profit_margin : null,
+            'total_excluding_vat' => isset($product_purchase->total_excluding_vat) ? $product_purchase->total_excluding_vat : null,
+            'actual_cost_per_product' => isset($product_purchase->actual_cost_per_product) ? $product_purchase->actual_cost_per_product : null,
+        ]);
+
+    }
     public function view($id)
     {
         $purchase_get = Purchase::find($id);
@@ -201,21 +223,22 @@ class PurchaseRepository implements PurchaseInterface
             DB::beginTransaction();
             if (!empty($product_purchase)) {
 
-                $product_purchase->update([
-                    'status' => $request->status
-                ]);
+                
                 // $product_purchase->status = $request->status;
                 // $product_purchase->save();
                 // dd($product_purchase);
                 $purchase = Purchase::find($product_purchase->purchase_id);
-                // dd($purchase);
                 $stock = StockManagement::where('retailer_id', auth()->user()->id)->where('reference_no', $product_purchase->reference_no)->first();
+                // dd($purchase,$product_purchase,$stock);
+                $product_purchase->update([
+                    'status' => $request->status
+                ]);
                 if (!empty($stock)) {
                     $stock->update([
-                        'white_items' => ($stock->white_items + $product_purchase->white_item_qty),
-                        'black_items' => ($stock->black_items + $product_purchase->black_item_qty),
-                        'unit_actual_price' => $product_purchase->actual_price,
-                        'unit_sale_price' => $product_purchase->sell_price,
+                        'white_items' => (!empty($purchase->cash_type) && $purchase->cash_type == "white") ? $stock->white_items + $product_purchase->qty : $stock->white_items,
+                        'black_items' => (!empty($purchase->cash_type) && $purchase->cash_type == "black") ? $stock->black_items + $product_purchase->qty : $stock->black_items,
+                        'unit_actual_price' => !empty($product_purchase->actual_price) ? $product_purchase->actual_price : $stock->unit_actual_price,
+                        'unit_sale_price' => !empty($product_purchase->sell_price) ? $product_purchase->sell_price : $stock->unit_sale_price,
                         'total_qty' => ( $stock->total_qty + $product_purchase->qty),
                     ]);
                 } else {
@@ -224,25 +247,81 @@ class PurchaseRepository implements PurchaseInterface
                         'purchase_product_id' => $product_purchase->id,
                         'reference_no' => $product_purchase->reference_no,
                         'retailer_id' => $purchase->user_id,
-                        'white_items' => $product_purchase->white_item_qty,
-                        'black_items' => $product_purchase->black_item_qty,
-                        'unit_actual_price' => $product_purchase->actual_price,
-                        'unit_sale_price' => $product_purchase->sell_price,
+                        'white_items' => (!empty($purchase->cash_type) && $purchase->cash_type == "white") ? $product_purchase->qty : null,
+                        'black_items' => (!empty($purchase->cash_type) && $purchase->cash_type == "black") ? $product_purchase->qty : null,
+                        'unit_actual_price' => !empty($product_purchase->actual_price) ? $product_purchase->actual_price : null,
+                        'unit_sale_price' => !empty($product_purchase->sell_price) ? $product_purchase->sell_price : null,
                         'total_qty' => $product_purchase->qty,
+                        'discount' => isset($product_purchase->discount) ? $product_purchase->discount : null,
+                        'additional_cost_without_vat' => isset($product_purchase->additional_cost_without_vat) ? $product_purchase->additional_cost_without_vat : null,
+                        'additional_cost_with_vat' => isset($product_purchase->additional_cost_with_vat) ? $product_purchase->additional_cost_with_vat : null,
+                        'vat' => isset($product_purchase->vat) ? $product_purchase->vat : null,
+                        'profit_margin' => isset($product_purchase->profit_margin) ? $product_purchase->profit_margin : null,
+                        'total_excluding_vat' => isset($product_purchase->total_excluding_vat) ? $product_purchase->total_excluding_vat : null,
+                        'actual_cost_per_product' => isset($product_purchase->actual_cost_per_product) ? $product_purchase->actual_cost_per_product : null,
                     ]);
                 }
-                
                 DB::commit();
-                // dd($pro)
                 return true;
             }
             return false;
         } catch (\Exception $th) {
             DB::rollBack();
-            // dd($th->getMessage());
+            dd($th);
             return $th->getMessage();
         }
     }
+
+
+    public function updatePurchaseProductQuantity($request){
+        try {
+            $product_purchase = ProductPurchase::find($request->id);
+            DB::beginTransaction();
+            
+                $purchase = Purchase::where('id',$product_purchase->purchase_id)->with(['productPurchases'=>function($query) use ($product_purchase){
+                    $query->select(['qty','purchase_id','actual_cost_per_product'])->where('id','!=',$product_purchase->id);
+                }])->first();
+
+                if(!empty($purchase)){
+                    $sum = 0;
+                    $grand_total = 0;
+                    if(isset($purchase->productPurchases) && count($purchase->productPurchases) > 0){
+                        foreach ($purchase->productPurchases as $key => $item) {
+                            $sum += $item->qty;
+                            $grand_total += $item->actual_cost_per_product;
+                        }
+                    }
+                    $sum = $sum + $request->quantity;
+                    $total_without_vat = ($product_purchase->actual_price * $request->quantity) + $product_purchase->additional_cost_without_vat;
+                    $actual_price_per_product = ($total_without_vat / $request->quantity) + ($purchase->additional_cost / $sum);
+                    $sale_price = $actual_price_per_product * (1 + $product_purchase->profit_margin);
+
+                    $grand_total = $grand_total + round($actual_price_per_product,2);
+                    $product_purchase->qty = $request->quantity;
+                    $product_purchase->total_excluding_vat = round($total_without_vat,2);
+                    $product_purchase->actual_cost_per_product = round($actual_price_per_product,2);
+                    $product_purchase->sell_price = round($sale_price,2);
+                    $product_purchase->update();
+    
+                    $purchase->total_qty = $sum;
+                    $purchase->total_cost = round($grand_total,2);
+                    $purchase->grand_total = round($grand_total,2);
+                    $purchase->update();
+                    DB::commit();
+                    return "update";
+                }else{
+                    return "purchase_no_found";
+                }
+                
+              
+            }catch(Exception $e){
+                DB::rollBack();
+
+                return $e->getMessage();
+            }
+    }
+
+
 
 
     public function deletePurchaseProduct($purchase_id, $id)
