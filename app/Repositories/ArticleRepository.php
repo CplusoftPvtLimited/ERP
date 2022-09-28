@@ -12,20 +12,19 @@ use Illuminate\Support\Facades\Validator;
 
 class ArticleRepository implements ArticleInterface
 {
-    public function store($request){
-        
+    public function store($request)
+    {
+
         try {
-            // dd($request->all());
             DB::beginTransaction();
             $validator = Validator::make($request->all(), [
                 'mfrId' => 'required',
                 'assemblyGroupNodeId' => 'required',
                 'dataSupplierId' => 'required',
                 'articleNumber' => 'required|unique:articles',
-                
+
             ]);
-            if($request->has('ajax'))
-            {
+            if ($request->has('ajax')) {
                 if ($validator->fails()) {
                     return response()->json(
                         [
@@ -33,31 +32,25 @@ class ArticleRepository implements ArticleInterface
                         ]
                     );
                 }
-                $data = $request->except('_token','ajax');
-                // dd(1);
-            }else{
+                $data = $request->except('_token', 'ajax');
+            } else {
                 if ($validator->fails()) {
                     return redirect('article.index')
-                                ->withErrors($validator)
-                                ->withInput();
+                        ->withErrors($validator)
+                        ->withInput();
                 }
                 $data = $request->except('_token');
-                // dd($data);
             }
             $max_article_id = Article::max('legacyArticleId');
-            // dd($max_article_id);
             if (!empty($max_article_id)) {
                 $data['legacyArticleId'] = $max_article_id + 1;
             } else {
                 $data['legacyArticleId'] = 1;
             }
-            // dd($data['linkingTargetId']);
             $linkingTargetType = LinkageTarget::select('linkageTargetType')->where('linkageTargetId', $data['linkingTargetId'])->first();
             $data['linkingTargetType'] = $linkingTargetType->linkageTargetType;
-            // dd($data);
-            $articleData = Arr::except($data,['modelSeries','linkingTargetId','linkingTargetType']);
-            // $avtData = Arr::except($data,['mfrId','modelSeries','dataSupplierId','articleNumber','quantityPerPackage','quantityPerPartPerPackage','additionalDescription','genericArticleDescription']);
-            // dd($avtData);
+            $articleData = Arr::except($data, ['modelSeries', 'linkingTargetId', 'linkingTargetType']);
+
             $item = Article::create($articleData);
             ArticleVehicleTree::create([
                 'linkingTargetId' => $data['linkingTargetId'],
@@ -74,18 +67,34 @@ class ArticleRepository implements ArticleInterface
         }
     }
 
-    public function update($request,$id){
-        
+    public function update($request, $id)
+    {
+        if ($request->has('ajax')) {
+            $data = $request->except('_token', 'avt_id', '_method', 'ajax');
+        } else {
+            $data = $request->except('_token', 'avt_id', '_method');
+        }
+        $linkingTargetType = LinkageTarget::select('linkageTargetType')->where('linkageTargetId', $data['linkingTargetId'])->first();
+        $data['linkingTargetType'] = $linkingTargetType->linkageTargetType;
+        $articleData = Arr::except($data, ['modelSeries', 'linkingTargetId', 'linkingTargetType']);
+        // dd($data);
         try {
+            $avt = ArticleVehicleTree::find($request->avt_id);
             DB::beginTransaction();
-            $article = Article::find($id);
-            // dd($data);
-            $article->update($request->all());
-
+            $item = $article = Article::find($id);
+            $article->update($articleData);
+            if ($avt) {
+                $avt->update([
+                    'linkingTargetId' => $data['linkingTargetId'],
+                    'assemblyGroupNodeId' => $data['assemblyGroupNodeId'],
+                    'linkingTargetType' => $data['linkingTargetType'],
+                ]);
+            }
             DB::commit();
-            return true;
+            return $item;
         } catch (\Exception $e) {
             DB::rollBack();
+            dd($e->getMessage());
             return $e->getMessage();
         }
     }
@@ -93,12 +102,13 @@ class ArticleRepository implements ArticleInterface
 
 
 
-    public function delete($request){
-        
+    public function delete($request)
+    {
+
         try {
             DB::beginTransaction();
             $article = Article::find($request->id);
-            
+
             $article->delete();
 
             DB::commit();

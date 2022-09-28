@@ -1,7 +1,7 @@
 <div class="card-header">
     <div class="row">
         <div class="col-md-6">
-            <h4>{{ trans('file.Add Article Links') }}</h4>
+            <h4>{{ trans('file.Edit Product Links') }}</h4>
         </div>
         <div class="col-md-6">
             <a href="{{ route('article.index') }}" class="btn btn-primary float-right">Back</a>
@@ -35,13 +35,13 @@
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Url *</h6>
-                            <input type="url" name="url" id="linkUrl" class="form-control" required>
+                            <input type="url" name="url" id="linkUrl" class="form-control" value="{{$art_link->url}}" required>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Article Id *</h6>
-                            <input type="text" name="legacyArticleId" id="links_articleId" class="form-control" readonly required>
+                            <input type="text" name="legacyArticleId" id="links_articleId" class="form-control" value="{{$art_link->legacyArticleId}}" readonly required>
                         </div>
                     </div>
                     <div class="col-4">
@@ -50,7 +50,7 @@
                             <select name="lang" id="linkLang" class="form-control">
                                 <option value="">--Select One--</option>
                                 @foreach ($languages as $language)
-                                <option value="{{ $language->lang }}">
+                                <option value="{{ $language->lang }}" {{$language->lang == $art_link->lang ? 'selected' : ""}}>
                                     {{ $language->lang }}
                                 </option>
                                 @endforeach
@@ -61,11 +61,11 @@
                 <div class="row">
                     <div class="col-4">
                         <h6>Description</h6>
-                        <textarea name="description" id="linkDescription" cols="10" rows="5 " class="form-control" ></textarea>
+                        <textarea name="description" id="linkDescription" cols="10" rows="5 " class="form-control" >{{$art_link->description}}</textarea>
                     </div>
                 </div>
                 <div class="d-flex flex-row-reverse">
-                    <button type="button" id="saveLink" class="btn btn-success" style="width:100px">Save</button>
+                    <button type="button" id="saveLink" class="btn btn-success" style="width:100px">Update</button>
 
                 </div>
             </div>
