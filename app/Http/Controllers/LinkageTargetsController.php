@@ -25,14 +25,14 @@ class LinkageTargetsController extends Controller
         $this->engineRepository = $engineInterface;
         $this->linkage_target_type = [
             'P' => [
-                'V' => 'Passenger Car', 
-                'L' => 'LCV', 
+                'V' => 'Passenger Car',
+                'L' => 'LCV',
                 'B' => 'Motorcycle'
-            ], 
+            ],
             'O' => [
-                'C' => 'Commercial Vehicle', 
-                'T' => 'Tractor', 
-                'M' => 'Engine', 
+                'C' => 'Commercial Vehicle',
+                'T' => 'Tractor',
+                'M' => 'Engine',
                 'A' => 'Axle',
                 'K' => 'CV Body Type'
             ]
@@ -54,14 +54,13 @@ class LinkageTargetsController extends Controller
                 }
             }
         }
-        
     }
 
 
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $engines = LinkageTarget::select('linkageTargetId','capacityCC','capacityLiters','code','kiloWattsFrom','kiloWattsTo','horsePowerTo','horsePowerFrom','engineType','id')->get();
+            $engines = LinkageTarget::select('linkageTargetId', 'capacityCC', 'capacityLiters', 'code', 'kiloWattsFrom', 'kiloWattsTo', 'horsePowerTo', 'horsePowerFrom', 'engineType', 'id')->get();
             return DataTables::of($engines)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
@@ -97,7 +96,7 @@ class LinkageTargetsController extends Controller
     public function create()
     {
         $manufacturers = Manufacturer::all();
-        return view('linkage_targets.create',compact('manufacturers'));
+        return view('linkage_targets.create', compact('manufacturers'));
     }
 
     /**
@@ -109,9 +108,9 @@ class LinkageTargetsController extends Controller
     public function store(Request $request)
     {
         $engine = $this->engineRepository->store($request);
-        if($engine == true){
+        if ($engine == true) {
             return redirect()->route('engine.index')->with('create_message', 'Engine created successfully');
-        }else{
+        } else {
             // dd($engine->getMessage());
             return redirect()->route('engine.index')->with('error', $engine->getMessage());
         }
@@ -139,11 +138,11 @@ class LinkageTargetsController extends Controller
         $engine = LinkageTarget::find($id);
         $manufacturers = Manufacturer::all();
         $data = $this->checkLinkageTargetType($engine->subLinkageTargetType);
-        
+
         $sub_target_type = isset($data) ? $data['sub_target_type'] : [];
         $target_type = isset($data) ? $data['target_type'] : [];
-        $types = isset($data) ? $data['types'] :[];
-        return view('linkage_targets.edit', compact('engine','manufacturers', 'sub_target_type', 'target_type', 'types'));
+        $types = isset($data) ? $data['types'] : [];
+        return view('linkage_targets.edit', compact('engine', 'manufacturers', 'sub_target_type', 'target_type', 'types'));
     }
 
     /**
@@ -155,12 +154,12 @@ class LinkageTargetsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $engine = $this->engineRepository->update($request,$id);
-        if($engine == true){
-            return redirect()->route('engine.edit',$id)->with('create_message', 'Engine Update successfully');
-        }else{
+        $engine = $this->engineRepository->update($request, $id);
+        if ($engine == true) {
+            return redirect()->route('engine.edit', $id)->with('create_message', 'Engine Update successfully');
+        } else {
             // dd($engine->getMessage());
-            return redirect()->route('engine.edit',$id)->with('error', $engine);
+            return redirect()->route('engine.edit', $id)->with('error', $engine);
         }
     }
 
@@ -173,11 +172,23 @@ class LinkageTargetsController extends Controller
     public function delete(Request $request)
     {
         $engine = $this->engineRepository->delete($request);
-        if($engine == true){
+        if ($engine == true) {
             return redirect()->route('engine.index')->with('create_message', 'Engine Deleted successfully');
-        }else{
+        } else {
             // dd($engine->getMessage());
             return redirect()->route('engine.index')->with('error', $engine);
+        }
+    }
+    public function getEnginesByModel(Request $request)
+    {
+        try {
+            $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                ->where('vehicleModelSeriesId', $request->model_id)->get();
+            return response()->json([
+                'data' => $engines
+            ], 200);
+        } catch (\Exception $e) {
+            return $e->getMessage();
         }
     }
 }

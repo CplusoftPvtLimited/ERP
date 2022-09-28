@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Ambrand;
 use App\Models\Article;
 use App\Models\AssemblyGroupNode;
+use App\Models\KeyValue;
+use App\Models\Language;
 use App\Models\Manufacturer;
 use App\Repositories\Interfaces\ArticleInterface;
 use Illuminate\Http\Request;
@@ -83,8 +85,10 @@ class ArticlesController extends Controller
         $suppliers = Ambrand::all();
         $sections = AssemblyGroupNode::all();
         $manufacturers = Manufacturer::all();
+        $keyValues = KeyValue::all();
+        $languages = Language::select('lang')->distinct()->get();
 
-        return view('articles.create',compact('suppliers','sections','manufacturers'));
+        return view('articles.create',compact('suppliers','sections','manufacturers','keyValues','languages'));
     }
 
     /**
@@ -116,10 +120,10 @@ class ArticlesController extends Controller
             }    
         }
         else{
-            if(is_object($item)){
+            if(isset($item->id)){
                 return redirect()->route('article.index')->withSuccess(__('Product Added Successfully.'));
             }else{
-                return redirect()->back()->withError(__('Some thing went wrong'));
+                return redirect()->back();
             }
         }
         
@@ -148,8 +152,10 @@ class ArticlesController extends Controller
         $sections = AssemblyGroupNode::all();
         $manufacturers = Manufacturer::all();
         $article = Article::find($id);
+        $keyValues = KeyValue::all();
+        dd($keyValues);
 
-        return view('articles.edit',compact('suppliers','sections','manufacturers','article'));
+        return view('articles.edit',compact('suppliers','sections','manufacturers','article','keyValues'));
     }
 
     /**

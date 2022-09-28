@@ -10,6 +10,7 @@ class ArticleVehicleTree extends Model
     use HasFactory;
 
     protected $table = "articlesvehicletrees";
+    protected $guarded = [];
 
     public function article() {
         return $this->belongsTo(Article::class, 'legacyArticleId', 'legacyArticleId');

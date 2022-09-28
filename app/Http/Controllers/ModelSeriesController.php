@@ -196,4 +196,13 @@ class ModelSeriesController extends Controller
             return redirect()->route('modelseries.index')->with('error', $e->getMessage());
         }
     }
+    public function getModelsByManufacturer(Request $request)
+    {
+        $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)->get();
+        return response()->json(
+            [
+                'data' => $models,
+            ],200
+        );
+    }
 }

@@ -3,7 +3,10 @@
 namespace App\Repositories;
 
 use App\Models\Article;
+use App\Models\ArticleVehicleTree;
+use App\Models\LinkageTarget;
 use App\Repositories\Interfaces\ArticleInterface;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -42,14 +45,26 @@ class ArticleRepository implements ArticleInterface
                 // dd($data);
             }
             $max_article_id = Article::max('legacyArticleId');
-            // dd($max_engine_id);
+            // dd($max_article_id);
             if (!empty($max_article_id)) {
                 $data['legacyArticleId'] = $max_article_id + 1;
             } else {
                 $data['legacyArticleId'] = 1;
             }
+            // dd($data['linkingTargetId']);
+            $linkingTargetType = LinkageTarget::select('linkageTargetType')->where('linkageTargetId', $data['linkingTargetId'])->first();
+            $data['linkingTargetType'] = $linkingTargetType->linkageTargetType;
             // dd($data);
-            $item = Article::create($data);
+            $articleData = Arr::except($data,['modelSeries','linkingTargetId','linkingTargetType']);
+            // $avtData = Arr::except($data,['mfrId','modelSeries','dataSupplierId','articleNumber','quantityPerPackage','quantityPerPartPerPackage','additionalDescription','genericArticleDescription']);
+            // dd($avtData);
+            $item = Article::create($articleData);
+            ArticleVehicleTree::create([
+                'linkingTargetId' => $data['linkingTargetId'],
+                'legacyArticleId' => $data['legacyArticleId'],
+                'assemblyGroupNodeId' => $data['assemblyGroupNodeId'],
+                'linkingTargetType' => $data['linkingTargetType'],
+            ]);
             DB::commit();
             return $item;
         } catch (\Exception $e) {

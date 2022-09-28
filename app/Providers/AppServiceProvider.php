@@ -8,7 +8,15 @@ use App\Repositories\Interfaces\ArticleInterface;
 use App\Repositories\Interfaces\AssemblyGroupNodeInterface;
 use App\Repositories\Interfaces\LinkageTargetInterface;
 use App\Repositories\AmBrandRepository;
+use App\Repositories\ArticleCriteriaRepository;
+use App\Repositories\ArticleCrossesRepository;
+use App\Repositories\ArticleEanRepository;
+use App\Repositories\ArticleLinksRepository;
 use App\Repositories\Interfaces\AmBrandInterface;
+use App\Repositories\Interfaces\ArticleCriteriaInterface;
+use App\Repositories\Interfaces\ArticleCrossesInterface;
+use App\Repositories\Interfaces\ArticleEanInterface;
+use App\Repositories\Interfaces\ArticleLinksInterface;
 use App\Repositories\Interfaces\ManufacturerInterface;
 use App\Repositories\LinkageTargetRepository;
 use App\Repositories\ManufacturerRepository;
@@ -38,6 +46,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(AssemblyGroupNodeInterface::class,AssemblyGroupNodesRepository::class);
         $this->app->bind(ArticleInterface::class,ArticleRepository::class);
         $this->app->bind(AmBrandInterface::class,AmBrandRepository::class);
+        $this->app->bind(ArticleCriteriaInterface::class,ArticleCriteriaRepository::class);
+        $this->app->bind(ArticleCrossesInterface::class,ArticleCrossesRepository::class);
+        $this->app->bind(ArticleEanInterface::class,ArticleEanRepository::class);
+        $this->app->bind(ArticleLinksInterface::class,ArticleLinksRepository::class);
+
+
 
         
     }

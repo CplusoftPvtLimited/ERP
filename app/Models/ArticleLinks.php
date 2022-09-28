@@ -10,5 +10,6 @@ class ArticleLinks extends Model
     use HasFactory;
 
     protected $table = "articlelinks";
+    protected $guarded = [];
 
 }

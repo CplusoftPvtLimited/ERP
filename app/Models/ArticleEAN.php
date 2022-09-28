@@ -10,5 +10,6 @@ class ArticleEAN extends Model
     use HasFactory;
 
     protected $table = "articleean";
+    protected $guarded = [];
 
 }

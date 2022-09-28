@@ -67,15 +67,20 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 
 
 
+	Route::resource('articleCriteria', 'ArticleCriteriaController');
+	Route::resource('articleCrosses', 'ArticleCrossesController');
+	Route::resource('articleEan', 'ArticleEanController');
+	Route::resource('articleLinks', 'ArticleLinksController');
 
 
 
+	Route::get('get_models_by_manufacturer',[ModelSeriesController::class, 'getModelsByManufacturer'])->name('get_models_by_manufacturer');
+	Route::get('get_engines_by_model',[LinkageTargetsController::class, 'getEnginesByModel'])->name('get_engines_by_model');
+	Route::get('get_sections_by_engine',[AssemblyGroupNodesController::class, 'getSectionsByEngine'])->name('get_sections_by_engine');
 
 
-
-
-	
 	Route::resource('form', 'FormController');
+
 	Route::get('/submitted/form', 'FormController@submittedForms')->name('submittedforms');
 	Route::get('/approved/form', 'FormController@approvedForms')->name('approvedforms');
 	Route::get('/rejected/form', 'FormController@rejectedForms')->name('rejectedforms');
