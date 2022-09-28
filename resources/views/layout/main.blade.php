@@ -220,19 +220,11 @@
             {{-- <ul id="" class="collapse list-unstyled ">
                 <li id=""><a href="{{route('products.index')}}">{{trans('file.Product List')}}</a></li>
             </ul> --}}
-
             {{-- <li id="sale-list-menu" class="{{ $route == 'assembly_group_nodes.index' ? 'active' : '' }}"><a href="{{route('assembly_group_nodes.index')}}"><i class="dripicons-list"></i> {{trans('file.Sections')}}</a></li> --}}
             
-           
             <li id="supplier-list-menu" class="{{ $route == 'supplier.create' ? 'active' : '' }}"><a href="{{route('supplier.create')}}"><i class="dripicons-user-group"></i> {{trans('file.Suppliers')}}</a></li>
 
-            
             {{-- <li id="makes-list-menu" class="{{ $route == 'allmake.get' ? 'active' : '' }}"><a href="{{route('allmake.get')}}"><i class="dripicons-wallet"></i> {{trans('file.All Makes')}}</a></li> --}}
-            
-            
-            
-            
-
 
             <?php
             $index_permission = DB::table('permissions')->where('name', 'expenses-index')->first();
@@ -272,7 +264,6 @@
                 <li id="quotation-list-menu"><a href="{{route('quotations.index')}}">{{trans('file.Estimate List')}}</a></li>
                 <li id=""><a href="{{route('preinvoices.index')}}">{{trans('file.Pre Invoice List')}}</a></li>
                 <li id=""><a href="{{route('invoices.index')}}">{{trans('file.Invoice List')}}</a></li>
-
             </ul>
             </li>
             @endif
@@ -304,14 +295,11 @@
 
             <?php
             $sale_return_index_permission = DB::table('permissions')->where('name', 'returns-index')->first();
-
             $sale_return_index_permission_active = DB::table('role_has_permissions')->where([
                     ['permission_id', $sale_return_index_permission->id],
                     ['role_id', $role->id]
                 ])->first();
-
             $purchase_return_index_permission = DB::table('permissions')->where('name', 'purchase-return-index')->first();
-
             $purchase_return_index_permission_active = DB::table('role_has_permissions')->where([
                         ['permission_id', $purchase_return_index_permission->id],
                         ['role_id', $role->id]
@@ -335,7 +323,6 @@
                     ['permission_id', $index_permission->id],
                     ['role_id', $role->id]
                 ])->first();
-
             $money_transfer_permission = DB::table('permissions')->where('name', 'money-transfer')->first();
             $money_transfer_permission_active = DB::table('role_has_permissions')->where([
                     ['permission_id', $money_transfer_permission->id],

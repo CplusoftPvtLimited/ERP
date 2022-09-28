@@ -16,7 +16,6 @@
                             <div class="row">
                                <span></span>
                             </div>
-                           
                             {!! Form::open(['route' => 'purchases.store', 'method' => 'post', 'files' => true, 'id' => 'purchase-form']) !!}
                             <div class="row">
                                 <div class="col-md-12">
@@ -60,6 +59,7 @@
                                                 </select>
                                             </div>
                                         </div>
+   
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.Attach Document') }}</label> <i
@@ -118,7 +118,7 @@
                                             <div id="Paris" class="tabcontent">
                                                 @include('purchase.purchase_by_article_number')
                                             </div>
-    
+
                                             <div id="Tokyo" class="tabcontent">
                                                 <h3>Tokyo</h3>
                                                 <p>Tokyo is the capital of Japan.</p>
@@ -139,7 +139,6 @@
                     </div>
                 </div>
             </div>
-           
         </div>
     </section>
 @endsection

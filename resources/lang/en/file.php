@@ -2,6 +2,7 @@
 return [
 
 	'Sections' => 'Sections',
+	'Suppliers' => 'Suppliers',
 	'Additional Cost Without VAT' => 'Additional Cost Without VAT',
 	'Additional Cost With VAT' => 'Additional Cost With VAT',
 	'Shop Name' => 'Shop Name',

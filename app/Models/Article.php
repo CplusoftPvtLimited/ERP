@@ -53,4 +53,8 @@ class Article extends Model
         return $this->hasMany(Ambrand::class,'brandId','dataSupplierId');
     }
 
+    public function section() { 
+        return $this->belongsTo(AssemblyGroupNode::class,'assemblyGroupNodeId', 'assemblyGroupNodeId');
+    }
+
 }

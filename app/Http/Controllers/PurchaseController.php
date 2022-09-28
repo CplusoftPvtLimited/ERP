@@ -1444,6 +1444,25 @@ class PurchaseController extends Controller
         }
     }
 
+    public function getArticles(Request $request)
+    {
+        try {
+            
+            $section_parts = Article::select('mfrId', 'assemblyGroupNodeId','legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')->whereHas('articleVehicleTree', function ($query) use ($request) {
+                $query->where('articleNumber', 'LIKE' , '%' . $request->name . '%');
+            })->with(['section' => function($query) {
+                $query->whereNotNull('request__linkingTargetType');
+                $query->select(['assemblyGroupNodeId', 'assemblyGroupName', 'request__linkingTargetId', 'request__linkingTargetType']);
+                $query->whereHas('linkageTarget');
+            }])->limit(10)->get();
+            return response()->json([
+                'data' => $section_parts
+            ], 200);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
     public function getBrandsBySectionPart(Request $request)
     {
         try {
