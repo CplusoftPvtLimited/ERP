@@ -10,9 +10,14 @@
                 <div class="col-md-12">
                     <div class="card p-0">
                         <div class="card-header">
-                            <h3>Add Purchases</h3> <span>(mandatory selections)</span>
+                            <h3>Add Purchases</h3>
                         </div>
                         <div class="card-body">
+                            <div class="row">
+                               <span></span>
+                            </div>
+                           
+                            {!! Form::open(['route' => 'purchases.store', 'method' => 'post', 'files' => true, 'id' => 'purchase-form']) !!}
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="row">
@@ -57,8 +62,8 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label>{{ trans('file.Attach Document') }}</label> <i class="dripicons-question"
-                                                    data-toggle="tooltip"
+                                                <label>{{ trans('file.Attach Document') }}</label> <i
+                                                    class="dripicons-question" data-toggle="tooltip"
                                                     title="Only jpg, jpeg, png, gif, pdf, csv, docx, xlsx and txt file is supported"></i>
                                                 <input type="file" name="document" class="form-control">
                                                 @if ($errors->has('extension'))
@@ -77,59 +82,71 @@
                                             </div>
                                         </div>
                                     </div>
+                                    {{-- <div class="row">
+                                        <div class="col-md-12 text-right">
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-primary purchase-save-btn"
+                                                        id="submit-btn">{{ trans('file.submit') }}</button>
+                                                </div>
+                                        </div>
+                                    </div> --}}
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card p-0">
-                        <div class="row">
-                            <div class="col-3" style="margin: 0px; padding:0px;">
-                                <div class="card" style="margin: 0px; padding:0px;">
-                                    <div class="card-body" style="margin: 0px;">
-                                        <div class="tab article-tabs">
-                                            <button class="tablinks" onclick="openCity(event, 'London')"
-                                                id="defaultOpen">General
-                                                Search</button>
-                                            <button class="tablinks" onclick="openCity(event, 'Paris')">By Product
-                                                Number</button>
-                                            <button class="tablinks" onclick="openCity(event, 'Tokyo')">By Chassis
-                                                Number</button>
+                            <div class="row">
+                                <div class="col-3" style="margin: 0px; padding:0px;">
+                                    <div class="card" style="margin: 0px; padding:0px;">
+                                        <div class="card-body" style="margin: 0px;">
+                                            <div class="tab article-tabs">
+                                                <button class="tablinks" onclick="openCity(event, 'London')"
+                                                    id="defaultOpen">General
+                                                    Search</button>
+                                                <button class="tablinks" onclick="openCity(event, 'Paris')">By Product
+                                                    Number</button>
+                                                <button class="tablinks" onclick="openCity(event, 'Tokyo')">By Chassis
+                                                    Number</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-9" style="margin: 0px; padding:0px;">
+                                    <div class="card" style="margin: 0px; padding:0px;">
+                                        <div class="card-body" style="margin: 0px;">
+                                            <div id="London" class="tabcontent">
+                                                @include('purchase.purchase_by_flow')
+                                            </div>
+    
+                                            <div id="Paris" class="tabcontent">
+                                                @include('purchase.purchase_by_article_number')
+                                            </div>
+    
+                                            <div id="Tokyo" class="tabcontent">
+                                                <h3>Tokyo</h3>
+                                                <p>Tokyo is the capital of Japan.</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-9" style="margin: 0px; padding:0px;">
-                                <div class="card" style="margin: 0px; padding:0px;">
-                                    <div class="card-body" style="margin: 0px;">
-                                        <div id="London" class="tabcontent">
-                                            @include('purchase.purchase_by_flow')
-                                        </div>
-
-                                        <div id="Paris" class="tabcontent">
-                                            {{-- @include('purchase.purchase_by_article_number') --}}
-                                        </div>
-
-                                        <div id="Tokyo" class="tabcontent">
-                                            <h3>Tokyo</h3>
-                                            <p>Tokyo is the capital of Japan.</p>
-                                        </div>
-                                    </div>
+                            @include('purchase.order-table')
+                            <div class="row" id="submit-button" style="display: none;">
+                                <div class="col-md-12 form-group text-right">
+                                    <button type="submit" class="btn btn-primary"
+                                       >{{ trans('file.submit') }}</button>
                                 </div>
                             </div>
+                            {!! Form::close() !!}
                         </div>
                     </div>
                 </div>
             </div>
+           
         </div>
     </section>
 @endsection
 @push('scripts')
     <script type="text/javascript">
         function openCity(evt, cityName) {
+            evt.preventDefault();
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tabcontent");
             for (i = 0; i < tabcontent.length; i++) {
@@ -141,6 +158,7 @@
             }
             document.getElementById(cityName).style.display = "block";
             evt.currentTarget.className += " active";
+            return 1;
         }
 
         // Get the element with id="defaultOpen" and click on it

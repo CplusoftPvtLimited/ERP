@@ -1,223 +1,106 @@
-<div class="card">
-    <div class="card-header d-flex align-items-center">
-        <h4><b>{{ trans('file.Add Purchase') }}</b></h4>
-    </div>
-
-    <div class="card-body">
-        {!! Form::open(['route' => 'purchases.store', 'method' => 'post', 'files' => true, 'id' => 'purchase-form']) !!}
+<div class="row">
+    <div class="col-md-12">
+        <div id="other_data"></div>
         <div class="row">
-            <div class="col-md-12">
-                <div id="other_data"></div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>{{ trans('file.Date') }}</label>
-                            <input type="text" id="product_purchase_date" name="created_at" class="form-control date"
-                                placeholder="Choose date" />
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Engine Type</label>
-                            <select name="linkageTargetType" id="linkageTarget" class="selectpicker form-control">
-
-                                <option>Select Type</option>
-                                <option value="P">Passenger</option>
-                                <option value="O">Commercial Vehicle and Tractor</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Engine Sub-Type</label>
-                            <select name="subLinkageTargetType"
-                                data-href="{{ route('get_manufacturers_by_engine_type') }}" id="subLinkageTarget"
-                                class="selectpicker form-control">
-                                <option value="-2">Select One</option>
-                            </select>
-                        </div>
-                    </div>
-
+            {{-- <div class="col-md-4">
+                <div class="form-group">
+                    <label>{{ trans('file.Date') }}</label>
+                    <input type="text" id="product_purchase_date" name="created_at" class="form-control date"
+                        placeholder="Choose date" />
                 </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>{{ trans('file.Manufacturers') }}</label>
-                            <select name="manufacture_id" id="manufacturer_id" class="selectpicker form-control"
-                                data-live-search="true" data-live-search-style="begins" title="Select Manufacturer..."
-                                data-href="{{ route('get_models_by_manufacturer') }}">
+            </div> --}}
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Engine Type</label>
+                    <select name="linkageTargetType" id="linkageTarget" class="selectpicker form-control">
 
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="model_id">{{ __('Select Model') }}</label>
-                            <select name="model_id" id="model_id" data-href="{{ route('get_engines_by_model') }}"
-                                class="form-control" required>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="engine_id">{{ __('Select Engine') }}</label>
-                            <select name="engine_id" id="engine_id" data-href="{{ route('get_sections_by_engine') }}"
-                                class="form-control" required>
-                            </select>
-                        </div>
-                    </div>
+                        <option>Select Type</option>
+                        <option value="P">Passenger</option>
+                        <option value="O">Commercial Vehicle and Tractor</option>
+                    </select>
                 </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Engine Sub-Type</label>
+                    <select name="subLinkageTargetType"
+                        data-href="{{ route('get_manufacturers_by_engine_type') }}" id="subLinkageTarget"
+                        class="selectpicker form-control">
+                        <option value="-2">Select One</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>{{ trans('file.Manufacturers') }}</label>
+                    <select name="manufacture_id" id="manufacturer_id" class="selectpicker form-control"
+                        data-live-search="true" data-live-search-style="begins" title="Select Manufacturer..."
+                        data-href="{{ route('get_models_by_manufacturer') }}">
 
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="section_id">{{ __('Select Section') }}</label>
-                            <select name="section_id" id="section_id" data-href="{{ route('get_section_parts') }}"
-                                class="form-control" required>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="section_part_id">{{ __('Select Section Part') }}</label>
-                            <select name="section_part_id" id="section_part_id"
-                                data-href="{{ route('get_brands_by_section_part') }}" class="form-control" required>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="brand">{{ __('Select brand') }}</label>
-                            <select name="brand_id" id="brand_id" data-href="" class="form-control" required>
-                            </select>
-                        </div>
-                    </div>
+                    </select>
+                </div>
+            </div>
 
+        </div>
+        <div class="row">
+            
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="model_id">{{ __('Select Model') }}</label>
+                    <select name="model_id" id="model_id" data-href="{{ route('get_engines_by_model') }}"
+                        class="form-control" required>
+                    </select>
                 </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>{{ trans('file.After Markit Supplier') }}</label>
-                            <select name="supplier_id" id="supplier_id" data-href="#" class="selectpicker form-control"
-                                data-live-search="true" data-live-search-style="begins" title="Select supplier...">
-                                @foreach ($suppliers as $supplier)
-                                    <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>{{ trans('file.Cash Type') }}</label>
-                            <select name="status" id="cash_type" class="form-control">
-                                <option value="white">{{ trans('file.White Cash') }}</option>
-                                <option value="black">{{ trans('file.Black Cash') }}</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>{{ trans('file.Purchase Status') }}</label>
-                            <select name="status" id="status" class="form-control">
-                                <option value="received">{{ trans('file.Recieved') }}</option>
-                                <option value="ordered">{{ trans('file.Ordered') }}</option>
-                            </select>
-                        </div>
-                    </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="engine_id">{{ __('Select Engine') }}</label>
+                    <select name="engine_id" id="engine_id" data-href="{{ route('get_sections_by_engine') }}"
+                        class="form-control" required>
+                    </select>
                 </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>{{ trans('file.Attach Document') }}</label> <i class="dripicons-question"
-                                data-toggle="tooltip"
-                                title="Only jpg, jpeg, png, gif, pdf, csv, docx, xlsx and txt file is supported"></i>
-                            <input type="file" name="document" class="form-control">
-                            @if ($errors->has('extension'))
-                                <span>
-                                    <strong>{{ $errors->first('extension') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>{{ trans('file.Additional Cost') }}</label>
-                            <input type="number" name="purchase_additional_cost" value="0"
-                                id="purchase_additional_cost" onkeyup="calculateSalePrice()" class="form-control"
-                                min="0" max="100000000">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-8"></div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <button type="button" class="btn btn-info purchase-save-btn"
-                                id="save-btn">{{ trans('file.Save') }}</button>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary purchase-save-btn"
-                                id="submit-btn">{{ trans('file.submit') }}</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mt-4">
-                    <div class="col-md-12">
-                        <h5>{{ trans('file.Order Table') }} *</h5>
-                        <div class="table-responsive mt-3">
-                            <table id="myTable" class="table table-hover order-list table-responsive">
-                                <thead>
-
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <input type="hidden" name="total_qty" />
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <input type="hidden" name="total_discount" />
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <input type="hidden" name="total_tax" />
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <input type="hidden" name="total_cost" />
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <input type="hidden" name="item" />
-                            <input type="hidden" name="order_tax" />
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <input type="hidden" name="grand_total" />
-                            <input type="hidden" name="paid_amount" value="0.00" />
-                            <input type="hidden" name="payment_status" value="1" />
-                        </div>
-                    </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="section_id">{{ __('Select Section') }}</label>
+                    <select name="section_id" id="section_id" data-href="{{ route('get_section_parts') }}"
+                        class="form-control" required>
+                    </select>
                 </div>
             </div>
         </div>
-        {!! Form::close() !!}
+
+        <div class="row">
+           
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="section_part_id">{{ __('Select Section Part') }}</label>
+                    <select name="section_part_id" id="section_part_id"
+                        data-href="{{ route('get_brands_by_section_part') }}" class="form-control" required>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="brand">{{ __('Select brand') }}</label>
+                    <select name="brand_id" id="brand_id" data-href="" class="form-control" required>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-right">
+                <div class="form-group">
+                    <button type="button" class="btn btn-info purchase-save-btn"
+                        id="save-btn">{{ trans('file.Save') }}</button>
+                </div>
+            </div>
+          
+        </div>
     </div>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.6.1.min.js"
     integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 <script>
@@ -509,6 +392,8 @@
                 //     "processing": true,
                 //     "searching" : true,
                 // });
+                $('#submit-button').css("display", "block");
+                $('#order-table-header').text(`{{ trans('file.Order Table') }} *`);
                 var tableBody = $("table tbody");
                 var tableHead = $("table thead");
                 var tableHeadRow = $("table thead tr");
