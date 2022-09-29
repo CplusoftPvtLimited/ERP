@@ -9,5 +9,6 @@ class ArticleCriteria extends Model
 {
     use HasFactory;
     protected $table = "articlecriteria";
+    protected $guarded = [];
 
 }

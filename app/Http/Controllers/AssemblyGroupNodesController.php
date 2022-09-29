@@ -27,8 +27,7 @@ class AssemblyGroupNodesController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $sections = AssemblyGroupNode::all();
-            return DataTables::of($sections)
+            return DataTables::of(AssemblyGroupNode::orderBy('id', 'desc'))
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="row">
@@ -49,7 +48,7 @@ class AssemblyGroupNodesController extends Controller
                     return $btn;
                 })
                 ->rawColumns(['action'])
-                ->make(true);
+                ->toJson();
         }
 
         return view('assembly_group_nodes.index');
@@ -63,8 +62,8 @@ class AssemblyGroupNodesController extends Controller
     public function create()
     {
         $languages = Language::all();
-        $engines = LinkageTarget::all();
-        return view('assembly_group_nodes.create',compact('languages','engines'));
+        $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')->get();
+        return view('assembly_group_nodes.create', compact('languages', 'engines'));
     }
 
     /**
@@ -76,9 +75,11 @@ class AssemblyGroupNodesController extends Controller
     public function store(Request $request)
     {
         $engine = $this->sectionRepository->store($request);
-        if($engine == true){
+        if ($engine == true) {
             return redirect()->route('section.index')->with('create_message', 'Section created successfully');
-        }else{
+        } else if ($engine == "notfound") {
+            return redirect()->route('section.index')->with('error', "Please enter section name");
+        } else {
             // dd($engine->getMessage());
             return redirect()->route('section.index')->with('error', $engine->getMessage());
         }
@@ -107,7 +108,7 @@ class AssemblyGroupNodesController extends Controller
 
         $languages = Language::all();
         $engines = LinkageTarget::all();
-        return view('assembly_group_nodes.edit',compact('languages','engines','section'));
+        return view('assembly_group_nodes.edit', compact('languages', 'engines', 'section'));
     }
 
     /**
@@ -119,10 +120,10 @@ class AssemblyGroupNodesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $engine = $this->sectionRepository->update($request,$id);
-        if($engine == true){
+        $engine = $this->sectionRepository->update($request, $id);
+        if ($engine == true) {
             return redirect()->route('section.index')->with('create_message', 'Section Updated successfully');
-        }else{
+        } else {
             // dd($engine->getMessage());
             return redirect()->route('section.index')->with('error', $engine->getMessage());
         }
@@ -137,11 +138,23 @@ class AssemblyGroupNodesController extends Controller
     public function delete(Request $request)
     {
         $engine = $this->sectionRepository->delete($request);
-        if($engine == true){
+        if ($engine == true) {
             return redirect()->route('section.index')->with('create_message', 'Section Deleted successfully');
-        }else{
+        } else {
             // dd($engine->getMessage());
             return redirect()->route('section.index')->with('error', $engine->getMessage());
+        }
+    }
+    public function getSectionsByEngine(Request $request)
+    {
+        try {
+            $sections = AssemblyGroupNode::select('assemblyGroupNodeId', 'assemblyGroupName')
+                ->where('request__linkingTargetId', $request->engine_id)->get();
+            return response()->json([
+                'data' => $sections
+            ], 200);
+        } catch (\Exception $e) {
+            return $e->getMessage();
         }
     }
 }

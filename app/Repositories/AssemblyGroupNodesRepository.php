@@ -20,7 +20,7 @@ class AssemblyGroupNodesRepository implements AssemblyGroupNodeInterface
             // dd($request->all());
             DB::beginTransaction();
             $validator = Validator::make($request->all(), [
-                'assemblyGroupName' => 'required',
+                // 'assemblyGroupName' => 'required',
                 'hasChilds' => 'required',
                 'shortCutId' => 'required',
                 'lang' => 'required',
@@ -32,25 +32,51 @@ class AssemblyGroupNodesRepository implements AssemblyGroupNodeInterface
                 return redirect('section.index')
                             ->withErrors($validator)
                             ->withInput();
-            }   
-            $data = $request->except('_token');
-            // dd($data);
-            $max_section_id = AssemblyGroupNode::max('assemblyGroupNodeId');
-            // dd($max_engine_id);
-            $engine = LinkageTarget::where('linkageTargetId',$request->request__linkingTargetId)->first();
-            // dd($manufacture_name);
-            if (!empty($max_section_id)) {
-                $data['assemblyGroupNodeId'] = $max_section_id + 1;
-            } else {
-                $data['assemblyGroupNodeId'] = 1;
-            }
-            $data['request__linkingTargetType'] = $engine->linkageTargetType;
-            // dd($data);
-            AssemblyGroupNode::create($data);
-           
-            DB::commit();
+            } 
+            
+            $data = $request->except(['_token','tags']);
+            if(!empty($request->tags) && str_contains($request->tags,",")){
+                $section_names = explode(',',$request->tags);
+                if(count($section_names) > 0){
+                    foreach($section_names as $name){
+                        $data['assemblyGroupName'] = $name;
+                        $max_section_id = AssemblyGroupNode::max('assemblyGroupNodeId');
+                        $engine = LinkageTarget::where('linkageTargetId',$request->request__linkingTargetId)->first();
+                        if (!empty($max_section_id)) {
+                            $data['assemblyGroupNodeId'] = $max_section_id + 1;
+                        } else {
+                            $data['assemblyGroupNodeId'] = 1;
+                        }
+                        $data['request__linkingTargetType'] = $engine->linkageTargetType;
+                        // dd($data);
+                        AssemblyGroupNode::create($data);
+                    }
+                }
+                DB::commit();
 
-            return true;
+                return true;
+            }else if(!empty($request->tags) && !str_contains($request->tags,",")){
+                $data['assemblyGroupName'] = $request->tags;
+                $max_section_id = AssemblyGroupNode::max('assemblyGroupNodeId');
+                $engine = LinkageTarget::where('linkageTargetId',$request->request__linkingTargetId)->first();
+                if (!empty($max_section_id)) {
+                    $data['assemblyGroupNodeId'] = $max_section_id + 1;
+                } else {
+                    $data['assemblyGroupNodeId'] = 1;
+                }
+                $data['request__linkingTargetType'] = $engine->linkageTargetType;
+                // dd($data);
+                AssemblyGroupNode::create($data);
+
+                DB::commit();
+
+                return true;
+            }else{
+                return "notfound";
+            }
+            
+           
+            
         } catch (\Exception $e) {
             DB::rollBack();
             // dd($e->getMessage());

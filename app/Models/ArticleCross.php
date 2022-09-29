@@ -9,5 +9,6 @@ class ArticleCross extends Model
 {
     use HasFactory;
     protected $table = "articlecrosses";
+    protected $guarded = [];
 
 }

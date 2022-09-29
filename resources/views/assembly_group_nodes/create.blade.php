@@ -11,7 +11,9 @@
                 aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('not_permitted') }}
         </div>
     @endif
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/bootstrap.tagsinput/0.8.0/bootstrap-tagsinput.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap.tagsinput/0.8.0/bootstrap-tagsinput.css">
     <section>
         <div class="container-fluid">
             <div class="row">
@@ -53,8 +55,9 @@
                                             <div class="col-4">
                                                 <div class="form-group">
                                                     <h6>Section Name</h6>
-                                                    <input type="text" min="0" name="assemblyGroupName" class="form-control" required
-                                                        value="{{ old('assemblyGroupName') }}">
+                                                    {{-- <input type="text" min="0" name="assemblyGroupName" class="form-control" required
+                                                        value="{{ old('assemblyGroupName') }}"> --}}
+                                                    <input type="text" name="tags" placeholder="" class="form-control" data-role="tagsinput"/>
                                                 </div>
                                             </div>
                                             <div class="col-4">
@@ -88,7 +91,7 @@
                                                     <h6>Select Engine</h6>
                                                     <select name="request__linkingTargetId" id="" class="form-control">
                                                         @foreach ($engines as $engine)
-                                                            <option value="{{ $engine->linkageTargetId }}">{{ $engine->linkageTargetType }}</option>
+                                                            <option value="{{ $engine->linkageTargetId }}">{{ $engine->description . " ( " . $engine->beginYearMonth . " - " . $engine->endYearMonth . " )" }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>

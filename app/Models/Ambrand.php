@@ -5,17 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Ambrand extends Model
+class AmBrand extends Model
 {
     use HasFactory;
-
     protected $table = "ambrand";
+    protected $fillable = [
+        'brandId',
+        'brandLogoID',
+        'brandName',
+        'lang',
+        'articleCountry'
+    ];
 
-    public function ambrandsaddress(){
-        return $this->hasOne(AmbrandAddress::class);
-    }
-
-    public function article(){
-        return $this->hasOne(Article::class, 'dataSupplierId', 'brandId');
-    }
 }

@@ -5,8 +5,17 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Ambrand;
 use App\Models\Article;
+use App\Models\ArticleCriteria;
+use App\Models\ArticleCross;
+use App\Models\ArticleEAN;
+use App\Models\ArticleLinks;
+use App\Models\ArticleVehicleTree;
 use App\Models\AssemblyGroupNode;
+use App\Models\KeyValue;
+use App\Models\Language;
+use App\Models\LinkageTarget;
 use App\Models\Manufacturer;
+use App\Models\ModelSeries;
 use App\Repositories\Interfaces\ArticleInterface;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -27,7 +36,10 @@ class ArticlesController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $articles = Article::select('id','legacyArticleId','articleNumber','mfrId','additionalDescription','assemblyGroupNodeId')->with(['assemblyGroup', 'manufacturer']);
+            $articles = Article::select('id', 'legacyArticleId', 'articleNumber', 'mfrId', 'additionalDescription', 'assemblyGroupNodeId')
+                ->with(['assemblyGroup' => function ($query) {
+                    $query->select('assemblyGroupNodeId', 'assemblyGroupName')->get();
+                }, 'manufacturer']);
             // $articles = [];
             // foreach ($articless as $article) {
             //     // $manufacturer = Manufacturer::where('manuId',$article->mfrId)->first();
@@ -40,7 +52,6 @@ class ArticlesController extends Controller
                 ->addIndexColumn()
                 ->addColumn('manufacturer', function ($row) {
                     return isset($row->manufacturer->manuName) ? $row->manufacturer->manuName : "N/A";
-                    
                 })
                 ->addColumn('section', function ($row) {
                     return isset($row->assemblyGroup->assemblyGroupName) ? $row->assemblyGroup->assemblyGroupName : "N/A";
@@ -63,7 +74,7 @@ class ArticlesController extends Controller
                          ';
                     return $btn;
                 })
-                ->rawColumns(['action','section', 'manufacturer'])
+                ->rawColumns(['action', 'section', 'manufacturer'])
                 ->make(true);
         }
 
@@ -80,8 +91,10 @@ class ArticlesController extends Controller
         $suppliers = Ambrand::all();
         $sections = AssemblyGroupNode::all();
         $manufacturers = Manufacturer::all();
+        $keyValues = KeyValue::all();
+        $languages = Language::select('lang')->distinct()->get();
 
-        return view('articles.create',compact('suppliers','sections','manufacturers'));
+        return view('articles.create', compact('suppliers', 'sections', 'manufacturers', 'keyValues', 'languages'));
     }
 
     /**
@@ -93,10 +106,30 @@ class ArticlesController extends Controller
     public function store(Request $request)
     {
         $item = $this->article->store($request);
-        if($item == true){
-            return redirect()->route('article.index')->withSuccess(__('Product Added Successfully.'));
-        }else{
-            return redirect()->back()->withError(__('Some thing went wrong'));
+        // dd($item);
+        if ($request->has('ajax')) {
+            if ($item == true) {
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'Data inserted successfully',
+                        'data' => $item,
+                    ]
+                );
+            } else {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'Some thing went wrong'
+                    ]
+                );
+            }
+        } else {
+            if (isset($item->id)) {
+                return redirect()->route('article.index')->withSuccess(__('Product Added Successfully.'));
+            } else {
+                return redirect()->back();
+            }
         }
     }
 
@@ -123,8 +156,18 @@ class ArticlesController extends Controller
         $sections = AssemblyGroupNode::all();
         $manufacturers = Manufacturer::all();
         $article = Article::find($id);
+        $avt = ArticleVehicleTree::where('legacyArticleId', $article->legacyArticleId)->first();
+        $engine = LinkageTarget::where('linkageTargetId', $avt->linkingTargetId)->first();
+        $model = ModelSeries::where('modelId', $engine->vehicleModelSeriesId)->first();
+        $section = AssemblyGroupNode::where('assemblyGroupNodeId', $article->assemblyGroupNodeId)->first();
+        $keyValues = KeyValue::all();
+        $languages = Language::select('lang')->distinct()->get();
+        $art_criteria = ArticleCriteria::where('legacyArticleId', $article->legacyArticleId)->first();
+        $art_crosses = ArticleCross::where('legacyArticleId', $article->legacyArticleId)->first();
+        $art_ean = ArticleEAN::where('legacyArticleId', $article->legacyArticleId)->first();
+        $art_link = ArticleLinks::where('legacyArticleId', $article->legacyArticleId)->first();
 
-        return view('articles.edit',compact('suppliers','sections','manufacturers','article'));
+        return view('articles.edit', compact('suppliers', 'sections', 'manufacturers', 'article', 'keyValues', 'languages', 'engine', 'model', 'section', 'art_criteria', 'art_crosses', 'art_ean', 'art_link', 'avt'));
     }
 
     /**
@@ -136,11 +179,31 @@ class ArticlesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $item = $this->article->update($request,$id);
-        if($item == true){
-            return redirect()->route('article.index')->withSuccess(__('Product Updated Successfully.'));
-        }else{
-            return redirect()->back()->withError(__('Some thing went wrong'));
+        $item = $this->article->update($request, $id);
+        // dd($item);
+        if ($request->has('ajax')) {
+            if (isset($item->id)) {
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'Data Updated successfully',
+                        'data' => $item,
+                    ]
+                );
+            } else {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'Some thing went wrong'
+                    ]
+                );
+            }
+        } else {
+            if (isset($item->id)) {
+                return redirect()->route('article.index')->withSuccess(__('Product Updated Successfully.'));
+            } else {
+                return redirect()->back();
+            }
         }
     }
 
@@ -153,9 +216,9 @@ class ArticlesController extends Controller
     public function delete(Request $request)
     {
         $item = $this->article->delete($request);
-        if($item == true){
+        if ($item == true) {
             return redirect()->route('article.index')->withSuccess(__('Product Deleted Successfully.'));
-        }else{
+        } else {
             return redirect()->back()->withError(__('Some thing went wrong'));
         }
     }

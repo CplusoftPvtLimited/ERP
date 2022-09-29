@@ -9,6 +9,7 @@ use App\Models\Manufacturer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 
 class ModelSeriesController extends Controller
@@ -71,29 +72,56 @@ class ModelSeriesController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         DB::beginTransaction();
         try {
             $request->validate([
-                'modelname' => 'required',
+                // 'tags' => 'required',
                 'yearOfConstrFrom' => 'required|integer',
                 'yearOfConstrTo' => 'required|integer',
                 'manuId' => 'required',
                 'linkingTargetType' => 'required',
             ]);
-            $data = $request->all();
-            $max_model_id = ModelSeries::max('modelId');
-            if (!empty($max_model_id)) {
-                $data['modelId'] = $max_model_id + 1;
-            } else {
-                $data['modelId'] = 1;
-            }
-            $modelSeries = ModelSeries::create($data);
-            DB::commit();
+            $data = $request->except(['tags','_token']);
+           
+            if(!empty($request->tags) && str_contains($request->tags,",")){
+                $model_names = explode(',',$request->tags);
+                if (count($model_names) > 0) {
+                    foreach($model_names as $name){
+                        $data['modelname'] = $name;
+                        $max_model_id = ModelSeries::max('modelId');
+                        if (!empty($max_model_id)) {
+                            $data['modelId'] = $max_model_id + 1;
+                        } else {
+                            $data['modelId'] = 1;
+                        }
+                        ModelSeries::create($data);
+                    }
 
-            return redirect()->route('modelseries.index')->with('create_message', 'Model created successfully');
+                    DB::commit();
+                    return redirect()->route('modelseries.index')->with('create_message', 'Model created successfully');
+                }
+            }else if(!empty($request->tags) && !str_contains($request->tags,",")){
+                $data['modelname'] = $request->tags;
+                $max_model_id = ModelSeries::max('modelId');
+                if (!empty($max_model_id)) {
+                    $data['modelId'] = $max_model_id + 1;
+                } else {
+                    $data['modelId'] = 1;
+                }
+                ModelSeries::create($data);
+                DB::commit();
+                return redirect()->route('modelseries.index')->with('create_message', 'Model created successfully');
+            }else{
+                return redirect()->route('modelseries.create')->with('error', "Please select model name");
+            }
+            
+            
+            
+            
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('modelseries.index')->with('error', $e->getMessage());
+            return redirect()->route('modelseries.create')->with('error', $e->getMessage());
         }
     }
 
@@ -167,5 +195,14 @@ class ModelSeriesController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('modelseries.index')->with('error', $e->getMessage());
         }
+    }
+    public function getModelsByManufacturer(Request $request)
+    {
+        $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)->get();
+        return response()->json(
+            [
+                'data' => $models,
+            ],200
+        );
     }
 }

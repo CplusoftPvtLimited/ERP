@@ -1178,3 +1178,83 @@ div#model-data-table_filter{
 div#data-table_filter{
 	width: 100% !important;
 }
+
+
+.bootstrap-tagsinput {
+	margin: 0;
+	width: 100%;
+	padding: 0.5rem 0.75rem 0;
+	font-size: 1rem;
+  line-height: 1.25;
+	transition: border-color 0.15s ease-in-out;
+	
+	
+    background-color: #fff;
+    border-color: #5cb3fd;
+	}
+	
+	.label-info {
+		display: inline-block;
+		background-color: #636c72;
+		padding: 0 .4em .15em;
+		border-radius: .25rem;
+		margin-bottom: 0.4em;
+	}
+	
+	input {
+		margin-bottom: 0.5em;
+	}
+
+
+.bootstrap-tagsinput .tag [data-role="remove"]:after {
+	content: '\00d7';
+}
+
+.label-info{
+	background-color: gray !important;
+	color: black !important;
+}
+
+/* Style the tab */
+.article-tabs {
+	float: left;
+	width: 100%;
+  }
+  
+  /* Style the buttons that are used to open the tab content */
+  .article-tabs button {
+	display: block;
+	background-color: inherit;
+	color: black;
+	padding: 10px;
+	width: 100%;
+	border: none;
+	outline: none;
+	text-align: left;
+	cursor: pointer;
+	transition: 0.3s;
+	border-radius: 1%;
+	margin: 10px 0px;
+  }
+  
+  /* Change background color of buttons on hover */
+  .article-tabs button:hover {
+	background-color: #ddd;
+	box-shadow: 0px 1px 7px 1px #b1a6ca;
+  }
+  
+  /* Create an active/current "tab button" class */
+  .article-tabs button.active {
+	background-color: #6244A6;
+	color: white;
+  }
+  
+  /* Style the tab content */
+  /* .tabcontent {
+	float: left;
+	padding: 0px 12px;
+	border: 1px solid #ccc;
+	width: 70%;
+	border-left: none;
+	height: 300px;
+  } */
