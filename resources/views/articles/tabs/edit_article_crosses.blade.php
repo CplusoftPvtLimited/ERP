@@ -140,18 +140,16 @@
                             var legacy_id = response.data.legacyArticleId;
                             var product_name = response.data;
                             if (legacy_id != null) {
-                                $('#ean_articleId').val(response.data.legacyArticleId)
-                                document.getElementById('ArticleCrosses').style.display = "none";
+                                document.getElementById('editArticleCrosses').style.display = "none";
                                 var tablinks = document.getElementsByClassName("tablinks");
                                 for (i = 0; i < tablinks.length; i++) {
-                                    if (tablinks[i].id != "eanTab") {
+                                    if (tablinks[i].id != "editeanTab") {
                                         tablinks[i].className = tablinks[i].className.replace(" active", "");
-                                        tablinks[i].disabled = true;
                                     }
                                 }
-                                var tablink = document.getElementById("eanTab");
+                                var tablink = document.getElementById("editeanTab");
                                 tablink.className = tablink.className += " active"
-                                document.getElementById('ArticleEan').style.display = "block";
+                                document.getElementById('editArticleEan').style.display = "block";
                             }
                         } else {
                             Swal.fire({

@@ -1,7 +1,9 @@
 <?php
+
 namespace App\Repositories\Interfaces;
 
-interface ArticleLinksInterface{
+interface ArticleLinksInterface
+{
     public function store($data);
-
+    public function update($request, $id);
 }

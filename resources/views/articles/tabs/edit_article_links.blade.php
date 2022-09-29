@@ -26,8 +26,9 @@
         </ul>
     </div>
     @endif
-    <form action="{{ route('articleLinks.store') }}" method="post"  id ="linksForm"enctype="multipart/form-data">
+    <form action="{{ route('articleLinks.update', $art_link->id) }}" method="post"  id ="linksForm"enctype="multipart/form-data">
         @csrf
+        @method('PUT')
         <div class="row">
             <div class="col-12">
                 <div class="other_data"></div>
@@ -65,7 +66,7 @@
                     </div>
                 </div>
                 <div class="d-flex flex-row-reverse">
-                    <button type="button" id="saveLink" class="btn btn-success" style="width:100px">Update</button>
+                    <button type="submit" id="saveLink" class="btn btn-success" style="width:100px">Update</button>
 
                 </div>
             </div>
@@ -74,30 +75,3 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    $(document).ready(function() {
-        $('#saveLink').on('click', function() {
-            var link_articleId = $('#links_articleId').val();
-            var url = $('#linkUrl').val();
-            if (link_articleId == "") {
-                Swal.fire({
-                    title: 'Error',
-                    text: "Please Add a Product First",
-                    icon: 'warning',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Ok'
-                });
-            } else if (url == "") {
-                Swal.fire({
-                    title: 'Error',
-                    text: "URL is Required",
-                    icon: 'warning',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Ok'
-                });
-            } else {
-                document.getElementById("linksForm").submit();
-            }
-        });
-    });
-</script>

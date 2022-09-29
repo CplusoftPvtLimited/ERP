@@ -26,8 +26,9 @@
         </ul>
     </div>
     @endif
-    <form action="{{ route('articleEan.store') }}" method="post" id="eanForm" enctype="multipart/form-data">
+    <form action="{{ route('articleEan.update', $art_ean->id) }}" method="post" id="eanForm" enctype="multipart/form-data">
         @csrf
+        @method('PUT')
         <div class="row">
             <div class="col-12">
                 <div class="other_data"></div>
@@ -46,7 +47,7 @@
                     </div>
                 </div>
                 <div class="d-flex flex-row-reverse">
-                    <button type="button" id="saveEan" class="btn btn-success" style="width:100px">Update</button>
+                    <button type="submit" id="saveEan" class="btn btn-success" style="width:100px">Update</button>
                     <button type="button" id="nextEan" class="btn btn-primary mr-2" style="width:100px">Next</button>
                 </div>
             </div>
@@ -57,42 +58,11 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function() {
-        $('#saveEan').on('click', function() {
-            var ean_articleId = $('#ean_articleId').val();
-            var eancode = $('#eancode').val();
-            if (ean_articleId == "") {
-                Swal.fire({
-                    title: 'Error',
-                    text: "Please Add a Product First",
-                    icon: 'warning',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Ok'
-                });
-            } else if (eancode == "") {
-                Swal.fire({
-                    title: 'Error',
-                    text: "Ean Code is Required",
-                    icon: 'warning',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Ok'
-                });
-            } else {
-                document.getElementById("eanForm").submit();
-            }
-        });
         $('#nextEan').on('click', function() {
             var legacyArticleId = $('#ean_articleId').val();
             var eancode = $('#eancode').val();
             var ajax = 1;
-            if (legacyArticleId == "") {
-                Swal.fire({
-                    title: 'Error',
-                    text: "Please Add a Product First",
-                    icon: 'warning',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Ok'
-                });
-            } else if (eancode == "") {
+            if (eancode == "") {
                 Swal.fire({
                     title: 'Error',
                     text: "Ean Code is Required",
@@ -102,8 +72,8 @@
                 });
             } else {
                 $.ajax({
-                    url: "{{route('articleEan.store')}}",
-                    type: "POST",
+                    url: "{{ route('articleEan.update', $art_ean->id) }}",
+                    type: "PUT",
                     data: {
                         legacyArticleId: legacyArticleId,
                         eancode: eancode,
@@ -122,18 +92,16 @@
                             var legacy_id = response.data.legacyArticleId;
                             var product_name = response.data;
                             if (legacy_id != null) {
-                                $('#links_articleId').val(response.data.legacyArticleId)
-                                document.getElementById('ArticleEan').style.display = "none";
+                                document.getElementById('editArticleEan').style.display = "none";
                                 var tablinks = document.getElementsByClassName("tablinks");
                                 for (i = 0; i < tablinks.length; i++) {
-                                    if (tablinks[i].id != "linkstab") {
+                                    if (tablinks[i].id != "editlinkstab") {
                                         tablinks[i].className = tablinks[i].className.replace(" active", "");
-                                        tablinks[i].disabled = true;
                                     }
                                 }
-                                var tablink = document.getElementById("linkstab");
+                                var tablink = document.getElementById("editlinkstab");
                                 tablink.className = tablink.className += " active"
-                                document.getElementById('ArticleLinks').style.display = "block";
+                                document.getElementById('editArticleLinks').style.display = "block";
                             }
                         } else {
                             Swal.fire({

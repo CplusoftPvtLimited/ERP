@@ -3,6 +3,10 @@
 namespace App\Repositories;
 
 use App\Models\Article;
+use App\Models\ArticleCriteria;
+use App\Models\ArticleCross;
+use App\Models\ArticleEAN;
+use App\Models\ArticleLinks;
 use App\Models\ArticleVehicleTree;
 use App\Models\LinkageTarget;
 use App\Repositories\Interfaces\ArticleInterface;
@@ -98,17 +102,29 @@ class ArticleRepository implements ArticleInterface
             return $e->getMessage();
         }
     }
-
-
-
-
     public function delete($request)
     {
 
         try {
             DB::beginTransaction();
             $article = Article::find($request->id);
+            $art_criteria = ArticleCriteria::where('legacyArticleId', $article->legacyArticleId)->first();
+            $art_crosses = ArticleCross::where('legacyArticleId', $article->legacyArticleId)->first();
+            $art_ean = ArticleEAN::where('legacyArticleId', $article->legacyArticleId)->first();
+            $art_link = ArticleLinks::where('legacyArticleId', $article->legacyArticleId)->first();
+            $avt = ArticleVehicleTree::where('legacyArticleId', $article->legacyArticleId)->first();
 
+
+            if ($art_criteria)
+                $art_criteria->delete();
+            if ($art_crosses)
+                $art_crosses->delete();
+            if ($art_ean)
+                $art_ean->delete();
+            if ($art_link)
+                $art_link->delete();
+            if ($avt)
+                $avt->delete();
             $article->delete();
 
             DB::commit();

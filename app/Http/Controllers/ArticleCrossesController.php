@@ -102,7 +102,7 @@ class ArticleCrossesController extends Controller
     public function update(Request $request, $id)
     {
         $item = $this->articleCrosses->update($request, $id);
-        dd($item);
+        // dd($item);
         if ($request->has('ajax')) {
             if (isset($item->id)) {
                 return response()->json(

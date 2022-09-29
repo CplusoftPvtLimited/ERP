@@ -12,7 +12,7 @@ class ArticleCrossesRepository implements ArticleCrossesInterface
     public function store($data)
     {
         $validator = Validator::make($data->all(), [
-            'oemNumber' => 'required|unique:articlecrosses|max:255',
+            'oemNumber' => 'required|unique:articlecrosses,oemNumber|max:255',
             'legacyArticleId' => 'required'
         ]);
         if ($data->has('ajax')) {
@@ -47,9 +47,8 @@ class ArticleCrossesRepository implements ArticleCrossesInterface
         // dump($request->all());
         // dd($id);
         $validator = Validator::make($request->all(), [
-            'oemNumber' => 'required|max:255|unique:articlecrosses'
+            'oemNumber' => 'required|max:255|unique:articlecrosses,oemNumber,' .$id,
         ]);
-        // dd($validator);
         if ($request->has('ajax')) {
             if ($validator->fails()) {
                 return response()->json(
@@ -61,7 +60,7 @@ class ArticleCrossesRepository implements ArticleCrossesInterface
             $data = $request->except('_token', '_method', 'ajax');
         } else {
             if ($validator->fails()) {
-                dd($validator);
+                // dd('klkk');
                 return redirect('article.index')
                     ->withErrors($validator)
                     ->withInput();
@@ -75,7 +74,7 @@ class ArticleCrossesRepository implements ArticleCrossesInterface
             return $item;
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
+            // dd($e);
             return $e->getMessage();
         }
     }
