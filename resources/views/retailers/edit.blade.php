@@ -9,13 +9,12 @@
 @endif
 
 <section>
-    
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex align-items-center">
-                        <h4>{{trans('file.Edit Supplier')}}</h4>
+                        <h4>{{trans('file.Edit Retailer')}}</h4>
                     </div>
                     <div class="card-body">
                         @if(Session::has('error'))
@@ -34,10 +33,7 @@
                                 </ul>
                             </div>
                         @endif
-                        @if(session()->has('message'))
-                            <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('message') }}</div>
-                        @endif
-                        <form action="{{ route('suppliers.update',$supplier->id) }}" method="post" enctype="multipart/form-data">
+                        <form action="{{ route('retailers.update', $retailer) }}" method="post" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="row">
@@ -46,28 +42,28 @@
                                     <div class="row">
                                         <div class="col-4">
                                             <div class="form-group">
-                                                <strong>Brand Name: *</strong>
-                                                <input type="text" name="brandName" class="form-control" required value="{{$supplier->brandName}}">
+                                                <strong>Name:</strong>
+                                                <input type="text" name="name" class="form-control" required value="{{$retailer->name}}">
                                             </div>
                                         </div>
                                         <div class="col-4">
                                             <div class="form-group">
-                                                <strong>Language: *</strong>
-                                                <select name="lang" id="" class="form-control" required>
-                                                    @foreach($languages as $language)
-                                                    <option value="{{$language->languageCode}}" {{($language->languageCode == $supplier->lang) ? 'selected' : ''}}>{{$language->languageName}} ({{$language->languageCode}})</option>
-                                                    @endforeach
-                                                </select>
+                                                <strong>Email:</strong>
+                                                <input type="email" name="email" class="form-control" required value="{{$retailer->email}}">
                                             </div>
                                         </div>
                                         <div class="col-4">
                                             <div class="form-group">
-                                                <strong>Article Country: *</strong>
-                                                <select name="articleCountry" id="" class="form-control" required>
-                                                    @foreach($countries as $country)
-                                                    <option value="{{$country->countryCode}}" {{($country->countryCode == $supplier->articleCountry) ? 'selected' : ''}}>{{$country->countryName}} ({{$country->countryCode}})</option>
-                                                    @endforeach
-                                                </select>
+                                                <strong>Shop Name:</strong>
+                                                <input type="text" name="shop_name" class="form-control" required value="{{$retailer->shop_name}}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <strong>Phone Number:</strong>
+                                                <input type="number" name="phone" class="form-control" required value="{{$retailer->phone}}">
                                             </div>
                                         </div>
                                     </div>

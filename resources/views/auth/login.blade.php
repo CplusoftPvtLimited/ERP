@@ -22,12 +22,12 @@
     <div class="page login-page" >
       <div class="container" >
         <div class="form-outer text-center d-flex align-items-center" >
-          <div class="form-inner" style="">
+          <div class="form-inner">
             <div class="logo">
                 @if($general_setting->site_logo)
-                <img src="{{url('logo', $general_setting->site_logo)}}" width="150">
+                <img src="{{url('logo', $general_setting->site_logo)}}" width="110">
                 @else
-                <img src="{{url('logo', $general_setting->site_logo)}}" width="150">
+                <img src="{{url('logo', $general_setting->site_logo)}}" width="110">
                 @endif
             </div>
             @if(session()->has('delete_message'))

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\LinkageTarget;
 use App\Models\Manufacturer;
+use App\Models\ModelSeries;
 use App\Repositories\Interfaces\LinkageTargetInterface;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -96,7 +97,8 @@ class LinkageTargetsController extends Controller
     public function create()
     {
         $manufacturers = Manufacturer::all();
-        return view('linkage_targets.create', compact('manufacturers'));
+        $models =  ModelSeries::all();
+        return view('linkage_targets.create',compact('manufacturers','models'));
     }
 
     /**

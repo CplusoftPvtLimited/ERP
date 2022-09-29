@@ -19,6 +19,7 @@ use App\Http\Controllers\ModelSeriesController;
 use App\Http\Controllers\AmBrandController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\FormController;
+use App\Http\Controllers\RetailerController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -64,6 +65,11 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::post('deleteSupplier',[AmBrandController::class,'delete']);
 	Route::post('deleteRole',[RoleController::class,'delete']);
 	Route::post('deleteForm',[FormController::class,'delete']);
+
+	Route::resource('retailers', 'RetailerController');
+	Route::post('deleteRetailer',[RetailerController::class,'delete']);
+
+
 
 
 

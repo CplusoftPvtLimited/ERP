@@ -7,6 +7,7 @@ use App\Repositories\AssemblyGroupNodesRepository;
 use App\Repositories\Interfaces\ArticleInterface;
 use App\Repositories\Interfaces\AssemblyGroupNodeInterface;
 use App\Repositories\Interfaces\LinkageTargetInterface;
+use App\Repositories\Interfaces\RetailerInterface;
 use App\Repositories\AmBrandRepository;
 use App\Repositories\ArticleCriteriaRepository;
 use App\Repositories\ArticleCrossesRepository;
@@ -20,6 +21,7 @@ use App\Repositories\Interfaces\ArticleLinksInterface;
 use App\Repositories\Interfaces\ManufacturerInterface;
 use App\Repositories\LinkageTargetRepository;
 use App\Repositories\ManufacturerRepository;
+use App\Repositories\RetailerRepository;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -51,6 +53,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ArticleEanInterface::class,ArticleEanRepository::class);
         $this->app->bind(ArticleLinksInterface::class,ArticleLinksRepository::class);
 
+        $this->app->bind(RetailerInterface::class,RetailerRepository::class);
 
 
         

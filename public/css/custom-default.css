@@ -556,6 +556,7 @@ section {
 
 .side-navbar .brand-big {
     line-height: 60px;
+	margin-top: 12px;
 }
 
 .side-navbar .brand-big i {
