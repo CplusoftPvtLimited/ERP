@@ -43,20 +43,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(ManufacturerInterface::class,ManufacturerRepository::class);
-        $this->app->bind(LinkageTargetInterface::class,LinkageTargetRepository::class);
-        $this->app->bind(AssemblyGroupNodeInterface::class,AssemblyGroupNodesRepository::class);
-        $this->app->bind(ArticleInterface::class,ArticleRepository::class);
-        $this->app->bind(AmBrandInterface::class,AmBrandRepository::class);
-        $this->app->bind(ArticleCriteriaInterface::class,ArticleCriteriaRepository::class);
-        $this->app->bind(ArticleCrossesInterface::class,ArticleCrossesRepository::class);
-        $this->app->bind(ArticleEanInterface::class,ArticleEanRepository::class);
-        $this->app->bind(ArticleLinksInterface::class,ArticleLinksRepository::class);
+        $this->app->bind(ManufacturerInterface::class, ManufacturerRepository::class);
+        $this->app->bind(LinkageTargetInterface::class, LinkageTargetRepository::class);
+        $this->app->bind(AssemblyGroupNodeInterface::class, AssemblyGroupNodesRepository::class);
+        $this->app->bind(ArticleInterface::class, ArticleRepository::class);
+        $this->app->bind(AmBrandInterface::class, AmBrandRepository::class);
+        $this->app->bind(ArticleCriteriaInterface::class, ArticleCriteriaRepository::class);
+        $this->app->bind(ArticleCrossesInterface::class, ArticleCrossesRepository::class);
+        $this->app->bind(ArticleEanInterface::class, ArticleEanRepository::class);
+        $this->app->bind(ArticleLinksInterface::class, ArticleLinksRepository::class);
 
-        $this->app->bind(RetailerInterface::class,RetailerRepository::class);
-
-
-        
+        $this->app->bind(RetailerInterface::class, RetailerRepository::class);
     }
 
     public function boot()
@@ -65,17 +62,15 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }*/
         //setting language
-        if(isset($_COOKIE['language'])) {
+        if (isset($_COOKIE['language'])) {
             \App::setLocale($_COOKIE['language']);
-        } 
-        else {
+        } else {
             \App::setLocale('en');
         }
         //setting theme
-        if(isset($_COOKIE['theme'])) {
+        if (isset($_COOKIE['theme'])) {
             View::share('theme', $_COOKIE['theme']);
-        }
-        else {
+        } else {
             View::share('theme', 'light');;
         }
         //get general setting value        
@@ -84,7 +79,7 @@ class AppServiceProvider extends ServiceProvider
         View::share('general_setting', $general_setting);
         View::share('currency', $currency);
         config(['staff_access' => $general_setting->staff_access, 'date_format' => $general_setting->date_format, 'currency' => $currency->code, 'currency_position' => $general_setting->currency_position]);
-        
+
         $alert_product = DB::table('products')->where('is_active', true)->whereColumn('alert_quantity', '>', 'qty')->count();
         View::share('alert_product', $alert_product);
         Schema::defaultStringLength(191);

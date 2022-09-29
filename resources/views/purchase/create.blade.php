@@ -1,6 +1,6 @@
 @extends('layout.main') @section('content')
 @if(session()->has('not_permitted'))
-  <div class="alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('not_permitted') }}</div>
+<div class="alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('not_permitted') }}</div>
 @endif
 <section class="forms">
     <div class="container-fluid">
@@ -19,7 +19,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>{{trans('file.Date')}}</label>
-                                            <input type="text" name="created_at" class="form-control date" placeholder="Choose date"/>
+                                            <input type="text" name="created_at" class="form-control date" placeholder="Choose date" />
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -56,11 +56,11 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>{{trans('file.Attach Document')}}</label> <i class="dripicons-question" data-toggle="tooltip" title="Only jpg, jpeg, png, gif, pdf, csv, docx, xlsx and txt file is supported"></i>
-                                            <input type="file" name="document" class="form-control" >
+                                            <input type="file" name="document" class="form-control">
                                             @if($errors->has('extension'))
-                                                <span>
-                                                   <strong>{{ $errors->first('extension') }}</strong>
-                                                </span>
+                                            <span>
+                                                <strong>{{ $errors->first('extension') }}</strong>
+                                            </span>
                                             @endif
                                         </div>
                                     </div>
@@ -238,12 +238,12 @@
                                 <input type="number" name="edit_unit_cost" class="form-control" step="any">
                             </div>
                             <?php
-                                $tax_name_all[] = 'No Tax';
-                                $tax_rate_all[] = 0;
-                                foreach($lims_tax_list as $tax) {
-                                    $tax_name_all[] = $tax->name;
-                                    $tax_rate_all[] = $tax->rate;
-                                }
+                            $tax_name_all[] = 'No Tax';
+                            $tax_rate_all[] = 0;
+                            foreach ($lims_tax_list as $tax) {
+                                $tax_name_all[] = $tax->name;
+                                $tax_rate_all[] = $tax->rate;
+                            }
                             ?>
                             <div class="col-md-4 form-group">
                                 <label>{{trans('file.Tax Rate')}}</label>
@@ -270,8 +270,7 @@
 @endsection
 @push('scripts')
 <script type="text/javascript">
-
-    $("ul#purchase").siblings('a').attr('aria-expanded','true');
+    $("ul#purchase").siblings('a').attr('aria-expanded', 'true');
     $("ul#purchase").addClass("show");
     $("ul#purchase #purchase-create-menu").addClass("active");
 
@@ -307,21 +306,19 @@
     $('[data-toggle="tooltip"]').tooltip();
 
     $('select[name="status"]').on('change', function() {
-        if($('select[name="status"]').val() == 2){
+        if ($('select[name="status"]').val() == 2) {
             $(".recieved-product-qty").removeClass("d-none");
             $(".qty").each(function() {
                 rowindex = $(this).closest('tr').index();
                 $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.recieved').val($(this).val());
             });
 
-        }
-        else if(($('select[name="status"]').val() == 3) || ($('select[name="status"]').val() == 4)){
+        } else if (($('select[name="status"]').val() == 3) || ($('select[name="status"]').val() == 4)) {
             $(".recieved-product-qty").addClass("d-none");
             $(".recieved").each(function() {
                 $(this).val(0);
             });
-        }
-        else {
+        } else {
             $(".recieved-product-qty").addClass("d-none");
             $(".qty").each(function() {
                 rowindex = $(this).closest('tr').index();
@@ -333,43 +330,43 @@
     <?php $productArray = []; ?>
     var lims_product_code = [
         @foreach($lims_product_list_without_variant as $product)
-            <?php
-                $productArray[] = htmlspecialchars($product->code . ' (' . $product->name . ')');
-            ?>
+        <?php
+        $productArray[] = htmlspecialchars($product->code . ' (' . $product->name . ')');
+        ?>
         @endforeach
         @foreach($lims_product_list_with_variant as $product)
-            <?php
-                $productArray[] = htmlspecialchars($product->item_code . ' (' . $product->name . ')');
-            ?>
+        <?php
+        $productArray[] = htmlspecialchars($product->item_code . ' (' . $product->name . ')');
+        ?>
         @endforeach
-            <?php
-            echo  '"'.implode('","', $productArray).'"';
-            ?>
+        <?php
+        echo  '"' . implode('","', $productArray) . '"';
+        ?>
     ];
 
     var lims_productcodeSearch = $('#lims_productcodeSearch');
 
     lims_productcodeSearch.autocomplete({
-    source: function(request, response) {
-        var matcher = new RegExp(".?" + $.ui.autocomplete.escapeRegex(request.term), "i");
-        response($.grep(lims_product_code, function(item) {
-            return matcher.test(item);
-        }));
-    },
-    response: function(event, ui) {
-        if (ui.content.length == 1) {
-            var data = ui.content[0].value;
-            $(this).autocomplete( "close" );
+        source: function(request, response) {
+            var matcher = new RegExp(".?" + $.ui.autocomplete.escapeRegex(request.term), "i");
+            response($.grep(lims_product_code, function(item) {
+                return matcher.test(item);
+            }));
+        },
+        response: function(event, ui) {
+            if (ui.content.length == 1) {
+                var data = ui.content[0].value;
+                $(this).autocomplete("close");
+                productSearch(data);
+            };
+        },
+        select: function(event, ui) {
+            var data = ui.item.value;
             productSearch(data);
-        };
-    },
-    select: function(event, ui) {
-        var data = ui.item.value;
-        productSearch(data);
-    }
- });
+        }
+    });
 
-    $('body').on('focus',".expired-date", function() {
+    $('body').on('focus', ".expired-date", function() {
         $(this).datepicker({
             format: "yyyy-mm-dd",
             startDate: "<?php echo date("Y-m-d", strtotime('+ 1 days')) ?>",
@@ -383,9 +380,9 @@
     //Change quantity
     $("#myTable").on('input', '.qty', function() {
         rowindex = $(this).closest('tr').index();
-        if($(this).val() < 1 && $(this).val() != '') {
-        $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ') .qty').val(1);
-        alert("Quantity can't be less than 1");
+        if ($(this).val() < 1 && $(this).val() != '') {
+            $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ') .qty').val(1);
+            alert("Quantity can't be less than 1");
         }
         checkQuantity($(this).val(), true);
     });
@@ -409,48 +406,48 @@
 
     //Edit product
     $("table.order-list").on("click", ".edit-product", function() {
-    rowindex = $(this).closest('tr').index();
-    $(".imei-section").remove();
-    if(is_imei[rowindex]) {
-        var imeiNumbers = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.imei-number').val();
+        rowindex = $(this).closest('tr').index();
+        $(".imei-section").remove();
+        if (is_imei[rowindex]) {
+            var imeiNumbers = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.imei-number').val();
 
-        htmlText = '<div class="col-md-12 form-group imei-section"><label>IMEI or Serial Numbers</label><input type="text" name="imei_numbers" value="'+imeiNumbers+'" class="form-control imei_number" placeholder="Type imei or serial numbers and separate them by comma. Example:1001,2001" step="any"></div>';
-        $("#editModal .modal-element").append(htmlText);
-    }
+            htmlText = '<div class="col-md-12 form-group imei-section"><label>IMEI or Serial Numbers</label><input type="text" name="imei_numbers" value="' + imeiNumbers + '" class="form-control imei_number" placeholder="Type imei or serial numbers and separate them by comma. Example:1001,2001" step="any"></div>';
+            $("#editModal .modal-element").append(htmlText);
+        }
 
-    var row_product_name = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('td:nth-child(1)').text();
-    var row_product_code = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('td:nth-child(2)').text();
-    $('#modal-header').text(row_product_name + '(' + row_product_code + ')');
+        var row_product_name = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('td:nth-child(1)').text();
+        var row_product_code = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('td:nth-child(2)').text();
+        $('#modal-header').text(row_product_name + '(' + row_product_code + ')');
 
-    var qty = $(this).closest('tr').find('.qty').val();
-    $('input[name="edit_qty"]').val(qty);
+        var qty = $(this).closest('tr').find('.qty').val();
+        $('input[name="edit_qty"]').val(qty);
 
-    $('input[name="edit_discount"]').val(parseFloat(product_discount[rowindex]).toFixed(2));
+        $('input[name="edit_discount"]').val(parseFloat(product_discount[rowindex]).toFixed(2));
 
-    unitConversion();
-    $('input[name="edit_unit_cost"]').val(row_product_cost.toFixed(2));
+        unitConversion();
+        $('input[name="edit_unit_cost"]').val(row_product_cost.toFixed(2));
 
-    var tax_name_all = <?php echo json_encode($tax_name_all) ?>;
-    var pos = tax_name_all.indexOf(tax_name[rowindex]);
-    $('select[name="edit_tax_rate"]').val(pos);
+        var tax_name_all = <?php echo json_encode($tax_name_all) ?>;
+        var pos = tax_name_all.indexOf(tax_name[rowindex]);
+        $('select[name="edit_tax_rate"]').val(pos);
 
-    temp_unit_name = (unit_name[rowindex]).split(',');
-    temp_unit_name.pop();
-    temp_unit_operator = (unit_operator[rowindex]).split(',');
-    temp_unit_operator.pop();
-    temp_unit_operation_value = (unit_operation_value[rowindex]).split(',');
-    temp_unit_operation_value.pop();
-    $('select[name="edit_unit"]').empty();
-    $.each(temp_unit_name, function(key, value) {
-        $('select[name="edit_unit"]').append('<option value="' + key + '">' + value + '</option>');
+        temp_unit_name = (unit_name[rowindex]).split(',');
+        temp_unit_name.pop();
+        temp_unit_operator = (unit_operator[rowindex]).split(',');
+        temp_unit_operator.pop();
+        temp_unit_operation_value = (unit_operation_value[rowindex]).split(',');
+        temp_unit_operation_value.pop();
+        $('select[name="edit_unit"]').empty();
+        $.each(temp_unit_name, function(key, value) {
+            $('select[name="edit_unit"]').append('<option value="' + key + '">' + value + '</option>');
+        });
+        $('.selectpicker').selectpicker('refresh');
     });
-    $('.selectpicker').selectpicker('refresh');
- });
 
     //Update product
     $('button[name="update_btn"]').on("click", function() {
 
-        if(is_imei[rowindex]) {
+        if (is_imei[rowindex]) {
             var imeiNumbers = $("#editModal input[name=imei_numbers]").val();
             $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.imei-number').val(imeiNumbers);
         }
@@ -464,7 +461,7 @@
             return;
         }
 
-        if(edit_qty < 1) {
+        if (edit_qty < 1) {
             $('input[name="edit_qty"]').val(1);
             edit_qty = 1;
             alert("Quantity can't be less than 1");
@@ -525,24 +522,23 @@
                     }
                 });
                 $("input[name='product_code_name']").val('');
-                if(flag){
+                if (flag) {
                     var newRow = $("<tr>");
                     var cols = '';
                     temp_unit_name = (data[6]).split(',');
                     cols += '<td>' + data[0] + '<button type="button" class="edit-product btn btn-link" data-toggle="modal" data-target="#editModal"> <i class="dripicons-document-edit"></i></button></td>';
                     cols += '<td>' + data[1] + '</td>';
                     cols += '<td><input type="number" class="form-control qty" name="qty[]" value="1" step="any" required/></td>';
-                    if($('select[name="status"]').val() == 1)
+                    if ($('select[name="status"]').val() == 1)
                         cols += '<td class="recieved-product-qty d-none"><input type="number" class="form-control recieved" name="recieved[]" value="1" step="any"/></td>';
-                    else if($('select[name="status"]').val() == 2)
+                    else if ($('select[name="status"]').val() == 2)
                         cols += '<td class="recieved-product-qty"><input type="number" class="form-control recieved" name="recieved[]" value="1" step="any"/></td>';
                     else
                         cols += '<td class="recieved-product-qty d-none"><input type="number" class="form-control recieved" name="recieved[]" value="0" step="any"/></td>';
-                    if(data[10]) {
+                    if (data[10]) {
                         cols += '<td><input type="text" class="form-control batch-no" name="batch_no[]" required/></td>';
                         cols += '<td><input type="text" class="form-control expired-date" name="expired_date[]" required/></td>';
-                    }
-                    else {
+                    } else {
                         cols += '<td><input type="text" class="form-control batch-no" name="batch_no[]" disabled/></td>';
                         cols += '<td><input type="text" class="form-control expired-date" name="expired_date[]" disabled/></td>';
                     }
@@ -566,17 +562,17 @@
                     $("table.order-list tbody").prepend(newRow);
 
                     rowindex = newRow.index();
-                    product_cost.splice(rowindex,0, parseFloat(data[2]));
-                    product_discount.splice(rowindex,0, '0.00');
-                    tax_rate.splice(rowindex,0, parseFloat(data[3]));
-                    tax_name.splice(rowindex,0, data[4]);
-                    tax_method.splice(rowindex,0, data[5]);
-                    unit_name.splice(rowindex,0, data[6]);
-                    unit_operator.splice(rowindex,0, data[7]);
-                    unit_operation_value.splice(rowindex,0, data[8]);
+                    product_cost.splice(rowindex, 0, parseFloat(data[2]));
+                    product_discount.splice(rowindex, 0, '0.00');
+                    tax_rate.splice(rowindex, 0, parseFloat(data[3]));
+                    tax_name.splice(rowindex, 0, data[4]);
+                    tax_method.splice(rowindex, 0, data[5]);
+                    unit_name.splice(rowindex, 0, data[6]);
+                    unit_operator.splice(rowindex, 0, data[7]);
+                    unit_operation_value.splice(rowindex, 0, data[8]);
                     is_imei.splice(rowindex, 0, data[11]);
                     calculateRowProductData(1);
-                    if(data[11]) {
+                    if (data[11]) {
                         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.edit-product').click();
                     }
                 }
@@ -590,15 +586,15 @@
         var pos = product_code.indexOf(row_product_code);
         var operator = unit_operator[rowindex].split(',');
         var operation_value = unit_operation_value[rowindex].split(',');
-        if(operator[0] == '*')
+        if (operator[0] == '*')
             total_qty = purchase_qty * operation_value[0];
-        else if(operator[0] == '/')
+        else if (operator[0] == '/')
             total_qty = purchase_qty / operation_value[0];
 
         $('#editModal').modal('hide');
         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.qty').val(purchase_qty);
         var status = $('select[name="status"]').val();
-        if(status == '1' || status == '2' )
+        if (status == '1' || status == '2')
             $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.recieved').val(purchase_qty);
         calculateRowProductData(purchase_qty);
     }
@@ -731,16 +727,15 @@
         calculateGrandTotal();
     });
 
-    $(window).keydown(function(e){
+    $(window).keydown(function(e) {
         if (e.which == 13) {
             var $targ = $(e.target);
             if (!$targ.is("textarea") && !$targ.is(":button,:submit")) {
                 var focusNext = false;
-                $(this).find(":input:visible:not([disabled],[readonly]), a").each(function(){
+                $(this).find(":input:visible:not([disabled],[readonly]), a").each(function() {
                     if (this === e.target) {
                         focusNext = true;
-                    }
-                    else if (focusNext){
+                    } else if (focusNext) {
                         $(this).focus();
                         return false;
                     }
@@ -750,36 +745,31 @@
         }
     });
 
-    $('#purchase-form').on('submit',function(e){
-    var rownumber = $('table.order-list tbody tr:last').index();
-    if (rownumber < 0) {
-        alert("Please insert product to order table!")
-        e.preventDefault();
-    }
-
-    else if($('select[name="status"]').val() != 1)
-    {
-        flag = 0;
-        $(".qty").each(function() {
-            rowindex = $(this).closest('tr').index();
-            quantity =  $(this).val();
-            recieved = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.recieved').val();
-
-            if(quantity != recieved){
-                flag = 1;
-                return false;
-            }
-        });
-        if(!flag){
-            alert('Quantity and Recieved value is same! Please Change Purchase Status or Recieved value');
+    $('#purchase-form').on('submit', function(e) {
+        var rownumber = $('table.order-list tbody tr:last').index();
+        if (rownumber < 0) {
+            alert("Please insert product to order table!")
             e.preventDefault();
-        }
-        else
+        } else if ($('select[name="status"]').val() != 1) {
+            flag = 0;
+            $(".qty").each(function() {
+                rowindex = $(this).closest('tr').index();
+                quantity = $(this).val();
+                recieved = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.recieved').val();
+
+                if (quantity != recieved) {
+                    flag = 1;
+                    return false;
+                }
+            });
+            if (!flag) {
+                alert('Quantity and Recieved value is same! Please Change Purchase Status or Recieved value');
+                e.preventDefault();
+            } else
+                $(".batch-no, .expired-date").prop('disabled', false);
+        } else
             $(".batch-no, .expired-date").prop('disabled', false);
-    }
-    else
-        $(".batch-no, .expired-date").prop('disabled', false);
- });
+    });
 </script>
 
 <script type="text/javascript" src="https://js.stripe.com/v3/"></script>

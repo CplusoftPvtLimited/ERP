@@ -98,7 +98,7 @@ class LinkageTargetsController extends Controller
     {
         $manufacturers = Manufacturer::all();
         $models =  ModelSeries::all();
-        return view('linkage_targets.create',compact('manufacturers','models'));
+        return view('linkage_targets.create', compact('manufacturers', 'models'));
     }
 
     /**
