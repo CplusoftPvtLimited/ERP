@@ -64,4 +64,33 @@ class ArticleCriteriaRepository implements ArticleCriteriaInterface
             return $e->getMessage();
         }
     }
+    public function update($request, $id)
+    {
+        if ($request->has('ajax')) {
+            $data = $request->except('_token', '_method', 'ajax');
+        } else {
+            $data = $request->except('_token', '_method');
+        }
+        try {
+            if(! $request->has('isMandatory'))
+            {
+                $data['isMandatory'] = 0;
+            }
+            if(! $request->has('isInterval'))
+            {
+                $data['isInterval'] = 0;
+            }
+            if(! $request->has('immediateDisplay'))
+            {
+                $data['immediateDisplay'] = 0;
+            }
+            $item = ArticleCriteria::find($id);
+            $item->update($data);
+            DB::commit();
+            return $item;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
+    }
 }

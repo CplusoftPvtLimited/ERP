@@ -101,7 +101,32 @@ class ArticleCriteriaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $item = $this->articleCriteria->update($request, $id);
+        // dd($item);
+        if ($request->has('ajax')) {
+            if (isset($item->id)) {
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'Data Updated successfully',
+                        'data' => $item,
+                    ]
+                );
+            } else {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'Some thing went wrong'
+                    ]
+                );
+            }
+        } else {
+            if (isset($item->id)) {
+                return redirect()->route('article.index')->withSuccess(__('Data Updated Successfully.'));
+            } else {
+                return redirect()->back();
+            }
+        }
     }
 
     /**

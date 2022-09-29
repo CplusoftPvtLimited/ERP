@@ -26,8 +26,9 @@
         </ul>
     </div>
     @endif
-    <form action="{{ route('articleCrosses.store') }}" method="post" id="crossesForm" enctype="multipart/form-data">
+    <form action="{{ route('articleCrosses.update', $art_crosses->id) }}" method="post" id="crossesForm" enctype="multipart/form-data">
         @csrf
+        @method('PUT')
         <div class="row">
             <div class="col-12">
                 <div class="other_data"></div>
@@ -80,7 +81,7 @@
                     </div>
                 </div>
                 <div class="d-flex flex-row-reverse">
-                    <button type="button" class="btn btn-success" id="saveCrosses" style="width:100px">Update</button>
+                    <button type="submit" class="btn btn-success" id="saveCrosses" style="width:100px">Update</button>
                     <button type="button" class="btn btn-primary mr-2" style="width:100px" id="nxtCrosses">Next</button>
                 </div>
             </div>
@@ -91,20 +92,6 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function() {
-        $('#saveCrosses').on('click', function() {
-            var crosses_articleId = $('#crosses_articleId').val();
-            if (crosses_articleId == "") {
-                Swal.fire({
-                    title: 'Error',
-                    text: "Please Add a Product First",
-                    icon: 'warning',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Ok'
-                });
-            } else {
-                document.getElementById("crossesForm").submit();
-            }
-        });
         $('#nxtCrosses').on('click', function() {
             var legacyArticleId = $('#crosses_articleId').val();
             var oemNumber = $('#crossesOemNumber').val();
@@ -130,8 +117,8 @@
                 });
             } else {
                 $.ajax({
-                    url: "{{route('articleCrosses.store')}}",
-                    type: "POST",
+                    url: "{{ route('articleCrosses.update', $art_crosses->id) }}",
+                    type: "PUT",
                     data: {
                         legacyArticleId: legacyArticleId,
                         oemNumber: oemNumber,
