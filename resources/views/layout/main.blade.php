@@ -994,50 +994,23 @@
                                 @elseif($noti->noti_type == "formsubmission" && $noti->read_at != NULL)
                                 <li style="background-color: #F7F7F7"><a href="{{url('submitted_form_show',[$noti->id,$noti->data['sender_id']])}}">{{Str::limit($noti->data['message'], 30)}}</a></li>
                                 @endif
+                                @endforeach
+                            </ul>
+                        </li>
 
-                                <li class="nav-item">
-                                    <a rel="nofollow" data-toggle="tooltip" title="{{__('Settings')}}" class="nav-link dropdown-item"><i class="dripicons-gear"></i>
-                                    </a>
-                                    <ul class="right-sidebar" id="notify">
-                                        <li style="background-color: #F7F7F7" id="role-menu"><a href="{{route('role.index')}}">{{trans('file.Role Permission')}}</a></li>
-                                        <li style="background-color: #F7F7F7" id="general-mail-setting-menu"><a href="{{route('setting.generalmail')}}">{{trans('file.General Mail Setting')}}</a></li>
-                                    </ul>
+                        <li class="nav-item">
+                            <a rel="nofollow" title="{{trans('file.language')}}" data-toggle="tooltip" class="nav-link dropdown-item"><i class="dripicons-web"></i></a>
+                            <ul class="right-sidebar">
+                                <li style="background-color: #F7F7F7">
+                                    <a href="{{ url('language_switch/en') }}" class="btn btn-link"> English</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a rel="nofollow" data-toggle="tooltip" title="{{__('Notifications')}}" class="nav-link dropdown-item"><i class="dripicons-bell"></i><span class="badge badge-danger notification-number">{{ count(\Auth::user()->unreadNotifications) > 0 ?  count(\Auth::user()->unreadNotifications) : '' }}</span>
-                                    </a>
-                                    @php $user_notifications = auth()->user()->notifications()->get(); @endphp
-                                    <ul class="right-sidebar" style="margin-top:;" id="notify">
-                                        @foreach($user_notifications as $noti)
-                                        @if($noti->noti_type == "registration" && $noti->read_at == NULL)
-                                        <li style="background-color: lightgrey"><a href="{{url('user_show',[$noti->id,$noti->data['sender_id']])}}">{{Str::limit($noti->data['message'], 30)}}</a></li>
-
-                                        @elseif($noti->noti_type == "formsubmission" && $noti->read_at == NULL)
-                                        <li style="background-color: lightgrey"><a href="{{url('submitted_form_show',[$noti->id,$noti->data['sender_id']])}}">{{Str::limit($noti->data['message'], 30)}}</a></li>
-
-                                        @elseif($noti->noti_type == "registration" && $noti->read_at != NULL )
-                                        <li style="background-color: #F7F7F7"><a href="{{url('user_show',[$noti->id,$noti->data['sender_id']])}}">{{Str::limit($noti->data['message'], 30)}}</a></li>
-
-                                        @elseif($noti->noti_type == "formsubmission" && $noti->read_at != NULL)
-                                        <li style="background-color: #F7F7F7"><a href="{{url('submitted_form_show',[$noti->id,$noti->data['sender_id']])}}">{{Str::limit($noti->data['message'], 30)}}</a></li>
-                                        @endif
-                                        @endforeach
-                                    </ul>
+                                <!-- <li> -->
+                                <!-- <a href="{{ url('language_switch/es') }}" class="btn btn-link"> Español</a> -->
+                                <!-- </li> -->
+                                <li style="background-color: #F7F7F7">
+                                    <a href="{{ url('language_switch/ar') }}" class="btn btn-link"> عربى</a>
                                 </li>
-
-                                <li class="nav-item">
-                                    <a rel="nofollow" title="{{trans('file.language')}}" data-toggle="tooltip" class="nav-link dropdown-item"><i class="dripicons-web"></i></a>
-                                    <ul class="right-sidebar">
-                                        <li style="background-color: #F7F7F7">
-                                            <a href="{{ url('language_switch/en') }}" class="btn btn-link"> English</a>
-                                        </li>
-                                        <!-- <li> -->
-                                        <!-- <a href="{{ url('language_switch/es') }}" class="btn btn-link"> Español</a> -->
-                                        <!-- </li> -->
-                                        <li style="background-color: #F7F7F7">
-                                            <a href="{{ url('language_switch/ar') }}" class="btn btn-link"> عربى</a>
-                                        </li>
-                                        <!-- <li>
+                                <!-- <li>
                         <a href="{{ url('language_switch/s_chinese') }}" class="btn btn-link">中国人</a>
                         </li>
                         <li>
@@ -1079,51 +1052,51 @@
                         <li>
                         <a href="{{ url('language_switch/lao') }}" class="btn btn-link"> Lao</a>
                         </li> -->
-                                    </ul>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a rel="nofollow" data-toggle="tooltip" class="nav-link dropdown-item"><i class="dripicons-user"></i> <span>{{ucfirst(Auth::user()->name)}}</span> <i class="fa fa-angle-down"></i>
+                            </a>
+                            <ul class="right-sidebar" id="notify">
+                                <li style="background-color: #F7F7F7">
+                                    <a href="{{route('user.profile', ['id' => Auth::id()])}}"><i class="dripicons-user"></i> {{trans('file.profile')}}</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a rel="nofollow" data-toggle="tooltip" class="nav-link dropdown-item"><i class="dripicons-user"></i> <span>{{ucfirst(Auth::user()->name)}}</span> <i class="fa fa-angle-down"></i>
+                                <li style="background-color: #F7F7F7">
+                                    <a href="{{ route('user_logout') }}"><i class="dripicons-power"></i>
+                                        {{trans('file.logout')}}
                                     </a>
-                                    <ul class="right-sidebar" id="notify">
-                                        <li style="background-color: #F7F7F7">
-                                            <a href="{{route('user.profile', ['id' => Auth::id()])}}"><i class="dripicons-user"></i> {{trans('file.profile')}}</a>
-                                        </li>
-                                        <li style="background-color: #F7F7F7">
-                                            <a href="{{ route('user_logout') }}"><i class="dripicons-power"></i>
-                                                {{trans('file.logout')}}
-                                            </a>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                                @csrf
-                                            </form>
-                                        </li>
-                                    </ul>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
                                 </li>
-                                <!-- <li class="nav-item">
+                            </ul>
+                        </li>
+                        <!-- <li class="nav-item">
                 <a rel="nofollow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-item"><i class="dripicons-user"></i> <span>{{ucfirst(Auth::user()->name)}}</span> <i class="fa fa-angle-down"></i>
                 </a>
                 <ul class="right-sidebar">
                     <li style="background-color: #F7F7F7">
                     <a href="{{route('user.profile', ['id' => Auth::id()])}}"><i class="dripicons-user"></i> {{trans('file.profile')}}</a>
                     </li> -->
-                                @if($general_setting_permission_active)
-                                <!-- <li>
+                        @if($general_setting_permission_active)
+                        <!-- <li>
                     <a href="{{route('setting.general')}}"><i class="dripicons-gear"></i> {{trans('file.settings')}}</a>
                     </li> -->
-                                @endif
-                                <!-- <li>
+                        @endif
+                        <!-- <li>
                     <a href="{{url('my-transactions/'.date('Y').'/'.date('m'))}}"><i class="dripicons-swap"></i> {{trans('file.My Transaction')}}</a>
                     </li> -->
-                                @if(Auth::user()->role_id != 5)
-                                <!-- <li>
+                        @if(Auth::user()->role_id != 5)
+                        <!-- <li>
                     <a href="{{url('holidays/my-holiday/'.date('Y').'/'.date('m'))}}"><i class="dripicons-vibrate"></i> {{trans('file.My Holiday')}}</a>
                     </li> -->
-                                @endif
-                                @if($empty_database_permission_active)
-                                <!-- <li>
+                        @endif
+                        @if($empty_database_permission_active)
+                        <!-- <li>
                     <a onclick="return confirm('Are you sure want to delete? If you do this all of your data will be lost.')" href="{{route('setting.emptyDatabase')}}"><i class="dripicons-stack"></i> {{trans('file.Empty Database')}}</a>
                     </li> -->
-                                @endif
-                                <!-- <li style="background-color: #F7F7F7">
+                        @endif
+                        <!-- <li style="background-color: #F7F7F7">
                     <a href="{{ route('logout') }}"
                         onclick="event.preventDefault();
                                         document.getElementById('logout-form').submit();"><i class="dripicons-power"></i>
@@ -1135,7 +1108,7 @@
                     </li>
                 </ul>
             </li> -->
-                            </ul>
+                </ul>
             </nav>
 
         </header>
@@ -1748,14 +1721,6 @@
                 notificationsCount = parseInt(count) + parseInt(1);
                 $('span.notification-number').html(notificationsCount);
             }
-
-
-
-            // console.log(newNotificationHtml)
-
-
-
-
         });
     </script>
 </body>

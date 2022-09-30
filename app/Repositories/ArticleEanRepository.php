@@ -27,7 +27,7 @@ class ArticleEanRepository implements ArticleEanInterface
             $input = $data->except('_token', 'ajax');
         } else {
             if ($validator->fails()) {
-                dd($validator);
+                // dd($validator);
                 return redirect('article.index')
                     ->withErrors($validator)
                     ->withInput();

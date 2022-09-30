@@ -146,6 +146,8 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::post('tax/deletebyselection', 'TaxController@deleteBySelection');
 	Route::get('tax/lims_tax_search', 'TaxController@limsTaxSearch')->name('tax.search');
 	Route::resource('tax', 'TaxController');
+	Route::post('deleteTax',[TaxController::class,'delete']);
+
 
 	//Route::get('products/getbarcode', 'ProductController@getBarcode');
 	Route::post('products/product-data', 'ProductController@productData');

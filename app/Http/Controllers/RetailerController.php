@@ -16,6 +16,8 @@ class RetailerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    private $val = 0;
+
     private $retailer;
 
     public function __construct(RetailerInterface $retailer)
@@ -24,29 +26,31 @@ class RetailerController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->ajax())
-        {
-            $retailers = Retailer::where('role_id',15)->get();
+        if ($request->ajax()) {
+            $retailers = Retailer::where('role_id', 15)->get();
             return DataTables::of($retailers)
-                    ->addIndexColumn()
-                    ->addColumn('action', function($row){
-                        $btn = '<div class="row">
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $btn = '<div class="row">
                             <div class="col-md-2 mr-1">
-                                <a href="retailers/' . $row["id"].'/edit"> <button
+                                <a href="retailers/' . $row["id"] . '/edit"> <button
                                 class="btn btn-primary btn-sm " type="button"
                                 data-original-title="btn btn-danger btn-xs"
                                 title=""><i class="fa fa-edit"></i></button></a>
                             </div>
                             <div class="col-md-2">
-                                <button class="btn btn-danger btn-sm" onclick="deleteRetailer(\''.$row["id"].'\')"><i class="fa fa-trash"></i></button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteRetailer(\'' . $row["id"] . '\')"><i class="fa fa-trash"></i></button>
                             </div>
                         </div>
                      ';
-                            return $btn;
-                    })
-                    ->rawColumns(['action'])
-                    ->make(true);
-
+                    return $btn;
+                })
+                ->addColumn('index', function ($row) {
+                    $value = ++$this->val;
+                    return $value;
+                })
+                ->rawColumns(['action','index'])
+                ->make(true);
         }
         return view('retailers.index');
     }
@@ -58,7 +62,7 @@ class RetailerController extends Controller
      */
     public function create()
     {
-        return view ('retailers.create');
+        return view('retailers.create');
     }
 
     /**
@@ -70,9 +74,9 @@ class RetailerController extends Controller
     public function store(StoreRetailerRequest $request)
     {
         $item = $this->retailer->store($request);
-        if(is_object($item)){
+        if (is_object($item)) {
             return redirect()->route('retailers.index')->withSuccess(__('Retailer Added Successfully.'));
-        }else{
+        } else {
             return redirect()->back()->withError($item);
         }
     }
@@ -97,7 +101,7 @@ class RetailerController extends Controller
     public function edit(Retailer $retailer)
     {
         // dd($retailer);
-        return view('retailers.edit',compact('retailer'));
+        return view('retailers.edit', compact('retailer'));
     }
 
     /**
@@ -109,10 +113,10 @@ class RetailerController extends Controller
      */
     public function update(UpdateRetailerRequest $request, Retailer $retailer)
     {
-        $item = $this->retailer->update($request,$retailer);
-        if(is_object($item)){
+        $item = $this->retailer->update($request, $retailer);
+        if (is_object($item)) {
             return redirect()->route('retailers.index')->withSuccess(__('Retailer Updated Successfully.'));
-        }else{
+        } else {
             return redirect()->back()->withError($item);
         }
     }
@@ -129,13 +133,12 @@ class RetailerController extends Controller
     }
     public function delete(Request $request)
     {
-            $retailer = Retailer::findOrFail($request->id);
-            $item = $this->retailer->delete($retailer);
-            if($item == true)
-            {
-                return redirect()->back()->withSuccess(__('Data Deleted Successfully.'));
-            }else{
-                return redirect()->back()->withError($item);
-            }
-     }
+        $retailer = Retailer::findOrFail($request->id);
+        $item = $this->retailer->delete($retailer);
+        if ($item == true) {
+            return redirect()->back()->withSuccess(__('Data Deleted Successfully.'));
+        } else {
+            return redirect()->back()->withError($item);
+        }
+    }
 }

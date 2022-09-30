@@ -84,7 +84,7 @@
                     "serverside" : true,
                     ajax: "{{ route('manufacturer.index') }}",
                     columns: [
-                        {data: 'id', name: 'id'},
+                        {data: 'index', name: 'index'},
                         {"data": "manuId",  name: 'manuId'},
                         {"data": "manuName",  name: 'manuName'},
                         {"data": "linkingTargetType",  name: 'linkingTargetType'},

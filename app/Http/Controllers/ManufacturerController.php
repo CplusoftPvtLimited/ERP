@@ -16,6 +16,7 @@ class ManufacturerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    private $val = 0;
     private $manufacturer;
     private $linkage_target_type;
 
@@ -89,7 +90,12 @@ class ManufacturerController extends Controller
                      ';
                             return $btn;
                     })
-                    ->rawColumns(['action', 'linkingTargetType'])
+                    ->addColumn('index', function ($row) {
+                        $value = ++$this->val;
+                        return $value;
+                    })
+                    ->rawColumns(['action','index'])
+                    ->rawColumns(['action', 'linkingTargetType','index'])
                     ->make(true);
         }
       

@@ -8,35 +8,61 @@ use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Auth;
+use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\DataTables;
 
 class TaxController extends Controller
 {
-    public function index()
+    private $val = 0;
+    public function index(Request $request)
     {
-        $role = Role::find(Auth::user()->role_id);
-        if($role->hasPermissionTo('tax')) {
-            $lims_tax_all = Tax::where('is_active', true)->get();
-            return view('tax.create', compact('lims_tax_all'));
+        if ($request->ajax()) {
+            $tax = Tax::all();
+            return DataTables::of($tax)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $btn = '<div class="row">
+                            <div class="col-md-2 mr-1">
+                                <button type="button" data-id="'.$row["id"].'" class="open-EdittaxDialog btn btn-link btn-primary btn-sm" data-toggle="modal" data-target="#editModal"><i class="fa fa-edit"></i>
+                                </button>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-danger btn-sm" onclick="deleteTax(\'' . $row["id"] . '\')"><i class="fa fa-trash"></i></button>
+                            </div>
+                        </div>
+                     ';
+                    return $btn;
+                })
+                ->addColumn('index', function ($row) {
+                    $value = ++$this->val;
+                    return $value;
+                })
+                ->rawColumns(['action', 'index'])
+                ->make(true);
         }
-        else
-            return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+        return view('tax.create');
     }
 
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'name' => [
                 'max:255',
-                    Rule::unique('taxes')->where(function ($query) {
+                Rule::unique('taxes')->where(function ($query) {
                     return $query->where('is_active', 1);
                 }),
             ],
 
             'rate' => 'numeric|min:0|max:100',
+            'type' => 'required|unique:taxes,type'
 
         ]);
+        if ($validator->fails()) {
+            return redirect('tax')
+                ->withErrors($validator)
+                ->withInput();
+        }
         $input = $request->all();
-        $input['is_active'] = true;
         Tax::create($input);
         return redirect('tax')->with('message', 'Data inserted successfully');
     }
@@ -46,7 +72,7 @@ class TaxController extends Controller
         $lims_tax_name = $_GET['lims_taxNameSearch'];
         $lims_tax_all = tax::where('name', $lims_tax_name)->paginate(5);
         $lims_tax_list = tax::all();
-        return view('tax.create', compact('lims_tax_all','lims_tax_list'));
+        return view('tax.create', compact('lims_tax_all', 'lims_tax_list'));
     }
 
     public function edit($id)
@@ -75,39 +101,38 @@ class TaxController extends Controller
     }
 
     public function importTax(Request $request)
-    {  
+    {
         //get file
-        $upload=$request->file('file');
+        $upload = $request->file('file');
         $ext = pathinfo($upload->getClientOriginalName(), PATHINFO_EXTENSION);
-        if($ext != 'csv')
+        if ($ext != 'csv')
             return redirect()->back()->with('not_permitted', 'Please upload a CSV file');
         $filename =  $upload->getClientOriginalName();
-        $filePath=$upload->getRealPath();
+        $filePath = $upload->getRealPath();
         //open and read
-        $file=fopen($filePath, 'r');
-        $header= fgetcsv($file);
-        $escapedHeader=[];
+        $file = fopen($filePath, 'r');
+        $header = fgetcsv($file);
+        $escapedHeader = [];
         //validate
         foreach ($header as $key => $value) {
-            $lheader=strtolower($value);
-            $escapedItem=preg_replace('/[^a-z]/', '', $lheader);
+            $lheader = strtolower($value);
+            $escapedItem = preg_replace('/[^a-z]/', '', $lheader);
             array_push($escapedHeader, $escapedItem);
         }
         //looping through othe columns
-        while($columns=fgetcsv($file))
-        {
-            if($columns[0]=="")
+        while ($columns = fgetcsv($file)) {
+            if ($columns[0] == "")
                 continue;
             foreach ($columns as $key => $value) {
-                $value=preg_replace('/\D/','',$value);
+                $value = preg_replace('/\D/', '', $value);
             }
-           $data= array_combine($escapedHeader, $columns);
+            $data = array_combine($escapedHeader, $columns);
 
-           $tax = Tax::firstOrNew(['name' => $data['name'], 'is_active' => true ]);
-           $tax->name = $data['name'];
-           $tax->rate = $data['rate'];
-           $tax->is_active = true;
-           $tax->save();
+            $tax = Tax::firstOrNew(['name' => $data['name'], 'is_active' => true]);
+            $tax->name = $data['name'];
+            $tax->rate = $data['rate'];
+            $tax->is_active = true;
+            $tax->save();
         }
         return redirect('tax')->with('message', 'Tax imported successfully');
     }
