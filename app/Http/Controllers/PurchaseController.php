@@ -1444,24 +1444,21 @@ class PurchaseController extends Controller
         }
     }
 
-    public function getArticles(Request $request)
+    public function articlesByReferenceNo(Request $request)
     {
-        try {
+        try { 
             
-            $section_parts = Article::select('mfrId', 'assemblyGroupNodeId','legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')->whereHas('articleVehicleTree', function ($query) use ($request) {
-                $query->where('articleNumber', 'LIKE' , '%' . $request->name . '%');
-            })->with(['section' => function($query) {
-                $query->whereNotNull('request__linkingTargetType');
-                $query->select(['assemblyGroupNodeId', 'assemblyGroupName', 'request__linkingTargetId', 'request__linkingTargetType']);
-                $query->whereHas('linkageTarget');
-            }])->limit(10)->get();
+            $articles = Article::where('articleNumber','LIKE' , '%' . $request->name . '%')->get();
+            // dd($articles);
             return response()->json([
-                'data' => $section_parts
+                'data' => $articles
             ], 200);
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
+
+    
 
     public function getBrandsBySectionPart(Request $request)
     {
@@ -1501,5 +1498,54 @@ class PurchaseController extends Controller
             'cash_type' => $request->cash_type,
             'brand_id' => $request->brand_id,
         ]);
+    }
+
+    public function getArticleInfo(Request $request)
+    {
+        try {
+            
+            $section_part = Article::select('mfrId', 'assemblyGroupNodeId','legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')->whereHas('articleVehicleTree', function ($query) use ($request) {
+                $query->where('articleNumber', 'LIKE' , '%' . $request->name . '%');
+            })->with(['section' => function($query) {
+                $query->whereNotNull('request__linkingTargetType');
+                $query->select(['assemblyGroupNodeId', 'assemblyGroupName', 'request__linkingTargetId', 'request__linkingTargetType']);
+                $query->whereHas('linkageTarget');
+            }])->first();
+            
+            if(empty($section_part->section)){
+                return response()->json([
+                    'data' => 0,
+                    "message" => "section not available for this product"
+                ]);
+            }
+
+            $model = ModelSeries::where('manuId',$section_part->mfrId)->first();
+            $p_type = ['V','L','B'];
+            $o_type = ['M','A','K','C','T'];
+            $type = "";
+            if(in_array($section_part->section->request__linkingTargetType,$p_type)){
+                $type = "P";
+            }else{
+                $type = "O";
+            }
+            
+            return response()->json([
+                'data' => $section_part,
+                'supplier' => $request->supplier_id,
+                'linkage_target_type' => $type, // engine_type
+                'linkage_target_sub_type' => $section_part->section->request__linkingTargetType, //
+                'manufacturer_id' => $section_part->mfrId,
+                'model_id' => $model->modelId,
+                'engine_id' => $section_part->section->request__linkingTargetId,
+                'section_id' => $request->section_id,
+                'status' => $request->status,
+                'date' => $request->date,
+                'cash_type' => $request->cash_type,
+                'brand_id' => $section_part->dataSupplierId,
+            ], 200);
+
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 }

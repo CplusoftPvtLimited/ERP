@@ -23,6 +23,7 @@ class PurchaseRepository implements PurchaseInterface
 {
     public function store($request)
     {
+        dd($request->all());
         DB::beginTransaction();
         try {
             $count_item = 0;

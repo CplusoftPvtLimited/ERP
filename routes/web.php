@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\MakeController;
 use App\Http\Controllers\StockManagementController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -200,8 +201,12 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('invoice/change/status/{id}/{val}', 'SaleController@changeInvoiceStatus')->name('sales.changeInvoiceStatus');
 
 	// Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
-
+    ///////////////////// sale controllers ////////////////////////
 	Route::resource('sales', 'SaleController');
+	Route::get('sale/new/create', 'SaleController@newCreate')->name('sales.newCreate');
+	Route::get('get_section_parts_in_table', 'SaleController@showSectionParts')->name('get_section_parts_in_table'); 
+
+    /////////////////////////// end /////////////////////////////
 
 	Route::get('delivery', 'DeliveryController@index')->name('delivery.index');
 	Route::get('delivery/product_delivery/{id}','DeliveryController@productDeliveryData');
@@ -271,8 +276,10 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('get_section_parts', 'PurchaseController@getSectionParts')->name('get_section_parts');// get all articles
 	Route::get('get_brands_by_section_part', 'PurchaseController@getBrandsBySectionPart')->name('get_brands_by_section_part'); // get all suppliers against an article
 	Route::get('show_section_parts_in_table', 'PurchaseController@showSectionParts')->name('show_section_parts_in_table'); 
+	Route::get('getArticleInfo', 'PurchaseController@getArticleInfo')->name('article.info.get');
+	Route::get('articlesByReferenceNo', 'PurchaseController@articlesByReferenceNo')->name('article.reference');
     ///////////////////  end //////////////////////
-	Route::get('articles', 'PurchaseController@getArticles')->name('article.get');
+
 
 
 

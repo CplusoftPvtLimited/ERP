@@ -180,8 +180,8 @@
             ])->first();
             ?>
             @if($sale_index_permission_active || $gift_card_permission_active || $coupon_permission_active || $delivery_permission_active)
-            {{-- <li><a href="#sale" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-cart"></i><span>{{trans('file.Sale')}}</span></a> --}}
-            {{-- <ul id="sale" class="collapse list-unstyled "> --}}
+            <li><a href="#sale" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-cart"></i><span>{{trans('file.Sale')}}</span></a>
+            <ul id="sale" class="collapse list-unstyled ">
                 {{-- @if($sale_index_permission_active) --}}
                 <!-- <li id="sale-list-menu"><a href="{{route('sales.index')}}">{{trans('file.Sale List')}}</a></li> -->
                 {{-- @if($sale_add_permission_active) --}}
@@ -190,9 +190,9 @@
                 <!-- <li id="sale-import-menu"><a href="{{url('sales/sale_by_csv')}}">{{trans('file.Import Sale By CSV')}}</a></li> -->
                 {{-- @endif --}}
                 {{-- @endif --}}
-                {{-- <li id="sale-list-menu"><a href="{{route('sales.index')}}">{{trans('file.Estimate List')}}</a></li> --}}
-                {{-- <li id="invoices-list-menu"><a href="{{route('sales.salesInvoices')}}">{{trans('file.Invoice List')}}</a></li> --}}
-                {{-- <li id="pre-invoices-list-menu"><a href="">{{trans('file.Delivery Slips')}}</a></li> --}}
+                <li id="sale-list-menu"><a href="{{route('sales.index')}}">{{trans('file.Estimate List')}}</a></li>
+                <li id="invoices-list-menu"><a href="{{route('sales.salesInvoices')}}">{{trans('file.Invoice List')}}</a></li>
+                <li id="pre-invoices-list-menu"><a href="">{{trans('file.Delivery Slips')}}</a></li>
 
 
                 <?php
@@ -212,8 +212,8 @@
                 @if($delivery_permission_active)
                 <!-- <li id="delivery-menu"><a href="{{route('delivery.index')}}">{{trans('file.Delivery List')}}</a></li> -->
                 @endif
-            {{-- </ul> --}}
-            {{-- </li> --}}
+            </ul>
+            </li>
             @endif
             <li id="" class="{{ $route == 'products.index' ? 'active' : '' }}"><a href="{{route('products.index')}}"><i class="dripicons-list"></i> {{trans('file.Products')}}</a></li>
             

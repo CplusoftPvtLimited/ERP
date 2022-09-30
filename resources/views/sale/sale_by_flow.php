@@ -340,7 +340,7 @@
         }
     });
 
-    //// global veriables that we were use in the save functionality ///
+    //// global variables that we were use in the save functionality ///
     var supplier_ids_array = [],
         article_ids_array = [],
         selected_cash_type = [],
@@ -358,18 +358,23 @@
         var engine_id = $('#engine_id').find(":selected").val();
         var section_id = $('#section_id').find(":selected").val();
         var section_part_id = $('#section_part_id').find(":selected").val();
-        var supplier_id = $('#supplier_id').find(":selected").val();
+        var customer_id = $('#customer_id').find(":selected").val();
         var status = $('#status').find(":selected").val();
         var date = $('#product_purchase_date').val();
         var cashType = $('#cash_type').find(":selected").val();
+        var orderTax = $('#order_tax_rate').find(":selected").val();
+        var orderDiscountType = $('#order_discount_type').find(":selected").val();
+        var order_discount_val = $('#order_discount_val').find(":selected").val();
+        var sale_note = $('#sale_note').find(":selected").val();
+        var staff_note = $('#staff_note').find(":selected").val();
         var brandId = $('#brand_id').find(":selected").val();
 
         checkIfExists(engine_type, engine_sub_type, manufacturer_id, model_id, engine_id, section_id,
-            section_part_id, supplier_id, status, date, cashType, brandId);
+            section_part_id, customer_id, status, date, cashType,brandId);
 
         $.ajax({
             method: "GET",
-            url: "{{ url('show_section_parts_in_table') }}",
+            url: "{{ url('get_section_parts_in_table') }}",
             data: {
                 id: id,
                 engine_type: engine_type,
@@ -379,14 +384,19 @@
                 engine_id: engine_id,
                 section_id: section_id,
                 section_part_id: section_part_id,
-                supplier_id: supplier_id,
-                brand_id: brandId,
+                customer_id: customer_id,
                 status: status,
                 date: date,
-                cash_type: cashType 
+                cash_type: cashType,
+                order_tax: orderTax,
+                orderDiscountType: orderDiscountType,
+                dis_value: dis_value,
+                sale_note: sale_note,
+                brand_id: brandId,
             },
 
             success: function(data) {
+                console.log(data);
                 // alert(data);
                 // $('#myTable').DataTable( {
                 //     "processing": true,
