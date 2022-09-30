@@ -106,6 +106,7 @@
                 }
             });
             $('#data-table').DataTable({
+                "order": [[ 1, "DESC" ]],
                 "processing": true,
                 "serverside": true,
                 ajax: "{{ route('purchases.index') }}",

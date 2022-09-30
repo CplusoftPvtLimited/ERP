@@ -85,7 +85,7 @@ class PurchaseController extends Controller
     {
         if ($request->ajax()) {
             // $all_purchase = ->get();
-            return Datatables::of(Purchase::where('user_id', Auth::user()->id)->orderBy('id', 'desc'))
+            return Datatables::of(Purchase::where('user_id', Auth::user()->id)->orderBy('id', 'DESC'))
                 ->addIndexColumn('id')
                 ->addColumn('supplier', function ($row) {
                     return isset($row->afterMarkitSupplier->name) ? $row->afterMarkitSupplier->name : null;
