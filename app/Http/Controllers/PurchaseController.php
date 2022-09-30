@@ -24,6 +24,7 @@ use App\Models\Article;
 use App\Models\Ambrand;
 use DB;
 use App\GeneralSetting;
+use App\Models\AfterMarkitSupplier;
 use Stripe\Stripe;
 use Auth;
 use App\User;
@@ -33,6 +34,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
 use App\Repositories\Interfaces\PurchaseInterface;
+use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Auth as FacadesAuth;
 use PDF;
 use Illuminate\Support\Facades\Log;
@@ -82,11 +84,11 @@ class PurchaseController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $all_purchase = Purchase::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->get();
-            return Datatables::of($all_purchase)
+            // $all_purchase = ->get();
+            return Datatables::of(Purchase::where('user_id', Auth::user()->id)->orderBy('id', 'DESC'))
                 ->addIndexColumn('id')
                 ->addColumn('supplier', function ($row) {
-                    return $row->brand->brandName;
+                    return isset($row->afterMarkitSupplier->name) ? $row->afterMarkitSupplier->name : null;
                 })
                 ->addColumn('due_amount', function ($row) {
                     $due_amount = $row->grand_total - $row->paid_amount;
@@ -109,33 +111,33 @@ class PurchaseController extends Controller
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="row">
-                         <div class="col-md-3">
+                         <div class="col-sm-3">
                          <a> <button
                          class="btn btn-danger btn-sm" onclick = "deletePurchase(' . $row["id"] . ')" style="" type="button"
                          data-original-title="btn btn-danger btn-sm"
                          title="Delete"><i class="fa fa-trash"></i></button></a>
                          </div>
                          
-                         <div class="col-md-3">
+                         <div class="col-sm-3">
                          <a href="editPurchase/' . $row["id"] . '"> <button
                                      class="btn btn-primary btn-sm " type="button"
                                      data-original-title="btn btn-danger btn-xs"
                                      title=""><i class="fa fa-edit"></i></button></a>
                          </div>
 
-                         <div class="col-md-3">
+                         <div class="col-sm-3">
                          <a href="viewPurchase/' . $row["id"] . '"> <button
                                      class="btn btn-success btn-sm " type="button"
                                      data-original-title="btn btn-success btn-xs"
                                      title=""><i class="fa fa-eye"></i></button></a>
                          </div>
-                         <div class="col-md-3"> </div> 
+                         
                      </div>
                      ';
 
                     return $btn;
                 })
-                ->rawColumns(['action', 'supplier', 'due_amount'])->make(true);
+                ->rawColumns(['supplier', 'due_amount', 'purchase_status', 'action'])->make(true);
         }
 
         return view('purchase.purchases_product_index');
@@ -341,7 +343,8 @@ class PurchaseController extends Controller
             $lims_product_list_with_variant = $this->productWithVariant();
             $manufacturers = Manufacturer::all();
             // dd($manufacturers);
-            return view('purchase.create', compact('lims_supplier_list', 'lims_warehouse_list', 'lims_tax_list', 'lims_product_list_without_variant', 'lims_product_list_with_variant', 'manufacturers'));
+            $suppliers = AfterMarkitSupplier::select('id', 'name')->where('retailer_id', auth()->user()->id)->get();
+            return view('purchase.create', compact('lims_supplier_list', 'lims_warehouse_list', 'lims_tax_list', 'lims_product_list_without_variant', 'lims_product_list_with_variant', 'manufacturers', 'suppliers'));
         } else
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
     }
@@ -425,9 +428,10 @@ class PurchaseController extends Controller
     public function store(Request $request)
     {
         Log::debug($request->all());
-        $request->validate([
-            'black_qty.*' => 'required',
-            'white_qty.*' => 'required',
+        // dd($request->all());
+
+        $this->validate($request, [
+            'item_qty.*' => 'required',
             'sale_price.*' => 'required',
             'purchase_price.*' => 'required',
             'modell_id.*' => 'required',
@@ -437,12 +441,19 @@ class PurchaseController extends Controller
             'manufacturer_id.*' => 'required',
             'statuss.*' => 'required',
             'datee.*' => 'required',
-
+            'brand_id.*' => 'required',
+            'purchase_additional_cost' => 'nullable|min:0',
+            'additional_cost_without_vat.*' => 'required|min:0',
+            'additional_cost_with_vat.*' => 'nullable|min:0',
+            'vat.*' => 'nullable|min:0',
+            'profit_margin.*' => 'nullable|min:0',
+            'total_excluding_vat.*' => 'required|min:0',
+            'actual_cost_per_product.*' => 'required|min:0',
         ]);
 
         $purchase = $this->purchaseRepository->store($request);
         if ($purchase == "submit_purchase_not_allowed") {
-            toastr()->info('Please enter the black and white items greater than "0"');
+            toastr()->info('Please enter the item quantity');
             return redirect('purchases');
         }
         if ($purchase == "true") {
@@ -501,6 +512,24 @@ class PurchaseController extends Controller
         }
     }
 
+    public function updatePurchaseProductQuantity(Request $request){
+        Log::debug($request->all());
+        try {
+            $update_purchase_product_quantity = $this->purchaseRepository->updatePurchaseProductQuantity($request);
+            if ($update_purchase_product_quantity == "update") {
+                toastr()->success('Purchase Product Quantity Changed');
+                return response("true");
+            } else if($update_purchase_product_quantity == "purchase_no_found"){
+                toastr()->info('product not found');
+                return response('false');
+            }
+        } catch (\Exception $e) {
+            Log::debug($e->getMessage());
+            toastr()->error("Something went wrong");
+                return response("false");
+        }
+    }
+
     public function deletePurchaseProduct($purchase_id, $id)
     {
         // dd($id);
@@ -550,6 +579,7 @@ class PurchaseController extends Controller
             return response()->stream($callback, 200, $headers);
         } else {
             toastr()->info('Purchases not found');
+            return back();
         }
     }
 
@@ -1341,22 +1371,28 @@ class PurchaseController extends Controller
         }
     }
 
+    public function getManufacturersByEngineType(Request $request)
+    {
+        try {
+            $manufacturers = Manufacturer::where('linkingTargetType', $request->engine_sub_type)->get();
+            // dd($manufacturers);
+            return response()->json([
+                'data' => $manufacturers
+            ], 200);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
     public function getModelsByManufacturer(Request $request)
     {
         try {
-            $manufacturer = Manufacturer::where('manuId', $request->manufacture_id)->first();
-            // if($manufacturer){
-            $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacture_id)->get();
-            // dd($request->manufacture_id);
+
+            $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                ->where('linkingTargetType', $request->engine_sub_type)->get();
+            // dd($models);
             return response()->json([
                 'data' => $models
             ], 200);
-            // }else{
-            //     return response()->json([
-            //         'data' => null
-            //     ],200);
-            // }
-
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -1366,7 +1402,8 @@ class PurchaseController extends Controller
     {
         try {
             $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
-                ->where('vehicleModelSeriesId', $request->model_id)->get();
+                ->where('vehicleModelSeriesId', $request->model_id)
+                ->where('subLinkageTargetType', $request->engine_sub_type)->get();
             // dd($models);
             return response()->json([
                 'data' => $engines
@@ -1380,7 +1417,8 @@ class PurchaseController extends Controller
     {
         try {
             $sections = AssemblyGroupNode::select('assemblyGroupNodeId', 'assemblyGroupName')
-                ->where('request__linkingTargetId', $request->engine_id)->get();
+                ->where('request__linkingTargetId', $request->engine_id)
+                ->where('request__linkingTargetType', $request->engine_sub_type)->get();
             // dd($models);
             return response()->json([
                 'data' => $sections
@@ -1393,9 +1431,11 @@ class PurchaseController extends Controller
     public function getSectionParts(Request $request)
     {
         try {
-            $section_parts = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')
-                ->where('assemblyGroupNodeId', $request->section_id)->get();
-            // dd($models);
+            $section_parts = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')->whereHas('articleVehicleTree', function ($query) use ($request) {
+                $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
+            })->get();
+
+            // dd($section_parts);
             return response()->json([
                 'data' => $section_parts
             ], 200);
@@ -1403,6 +1443,22 @@ class PurchaseController extends Controller
             return $e->getMessage();
         }
     }
+
+    public function articlesByReferenceNo(Request $request)
+    {
+        try { 
+            
+            $articles = Article::where('articleNumber','LIKE' , '%' . $request->name . '%')->get();
+            // dd($articles);
+            return response()->json([
+                'data' => $articles
+            ], 200);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    
 
     public function getBrandsBySectionPart(Request $request)
     {
@@ -1429,7 +1485,9 @@ class PurchaseController extends Controller
         // dd($product);
         return response()->json([
             'data' => $product,
-            'supplier' => Ambrand::where('brandId', $product->dataSupplierId)->first(),
+            'supplier' => $request->supplier_id,
+            'linkage_target_type' => $request->engine_type, // engine_type
+            'linkage_target_sub_type' => $request->engine_sub_type, //
             'manufacturer_id' => $request->manufacturer_id,
             'model_id' => $request->model_id,
             'engine_id' => $request->engine_id,
@@ -1437,8 +1495,57 @@ class PurchaseController extends Controller
             'section_part_id' => $section_part_id[1],
             'status' => $request->status,
             'date' => $request->date,
-
-
+            'cash_type' => $request->cash_type,
+            'brand_id' => $request->brand_id,
         ]);
+    }
+
+    public function getArticleInfo(Request $request)
+    {
+        try {
+            
+            $section_part = Article::select('mfrId', 'assemblyGroupNodeId','legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')->whereHas('articleVehicleTree', function ($query) use ($request) {
+                $query->where('articleNumber', 'LIKE' , '%' . $request->name . '%');
+            })->with(['section' => function($query) {
+                $query->whereNotNull('request__linkingTargetType');
+                $query->select(['assemblyGroupNodeId', 'assemblyGroupName', 'request__linkingTargetId', 'request__linkingTargetType']);
+                $query->whereHas('linkageTarget');
+            }])->first();
+            
+            if(empty($section_part->section)){
+                return response()->json([
+                    'data' => 0,
+                    "message" => "section not available for this product"
+                ]);
+            }
+
+            $model = ModelSeries::where('manuId',$section_part->mfrId)->first();
+            $p_type = ['V','L','B'];
+            $o_type = ['M','A','K','C','T'];
+            $type = "";
+            if(in_array($section_part->section->request__linkingTargetType,$p_type)){
+                $type = "P";
+            }else{
+                $type = "O";
+            }
+            
+            return response()->json([
+                'data' => $section_part,
+                'supplier' => $request->supplier_id,
+                'linkage_target_type' => $type, // engine_type
+                'linkage_target_sub_type' => $section_part->section->request__linkingTargetType, //
+                'manufacturer_id' => $section_part->mfrId,
+                'model_id' => $model->modelId,
+                'engine_id' => $section_part->section->request__linkingTargetId,
+                'section_id' => $request->section_id,
+                'status' => $request->status,
+                'date' => $request->date,
+                'cash_type' => $request->cash_type,
+                'brand_id' => $section_part->dataSupplierId,
+            ], 200);
+
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 }

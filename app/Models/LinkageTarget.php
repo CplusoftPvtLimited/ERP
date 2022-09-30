@@ -11,4 +11,7 @@ class LinkageTarget extends Model
 
     protected $table = "linkagetargets";
 
+    public function model() {
+        return $this->belongsTo(ModelSeries::class, 'vehicleModelSeriesId', 'modelId');
+    }
 }

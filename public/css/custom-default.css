@@ -1182,3 +1182,12 @@ header.container-fluid {
 i.fa.fa-bars {
     margin-top: 10px;
 }
+
+label.view-edit-purchase{
+	font-weight: bold;
+}
+
+.view-edit-purchase-input{
+	background: transparent !important;
+	border: none;
+}

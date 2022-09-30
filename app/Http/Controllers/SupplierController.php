@@ -9,6 +9,7 @@ use Auth;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Mail\UserNotification;
+use App\Models\AfterMarkitSupplier;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Ambrand;
 
@@ -30,57 +31,67 @@ class SupplierController extends Controller
     //         return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
     // }
 
-    // public function create()
-    // {
-    //     $role = Role::find(Auth::user()->role_id);
-    //     if($role->hasPermissionTo('suppliers-add')){
-    //         return view('supplier.create');
-    //     }
-    //     else
-    //         return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
-    // }
+    public function create()
+    {
+        $role = Role::find(Auth::user()->role_id);
+        if ($role->hasPermissionTo('suppliers-add')) {
+            return view('supplier.create');
+        } else
+            return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+    }
 
-    // public function store(Request $request)
-    // {
-    //     $this->validate($request, [
-    //         'company_name' => [
-    //             'max:255',
-    //                 Rule::unique('suppliers')->where(function ($query) {
-    //                 return $query->where('is_active', 1);
-    //             }),
-    //         ],
-    //         'email' => [
-    //             'max:255',
-    //                 Rule::unique('suppliers')->where(function ($query) {
-    //                 return $query->where('is_active', 1);
-    //             }),
-    //         ],
-    //         'image' => 'image|mimes:jpg,jpeg,png,gif|max:100000',
-    //     ]);
-        
-    //     $lims_supplier_data = $request->except('image');
-    //     $lims_supplier_data['is_active'] = true;
-    //     $image = $request->image;
-    //     if ($image) {
-    //         $ext = pathinfo($image->getClientOriginalName(), PATHINFO_EXTENSION);
-    //         $imageName = preg_replace('/[^a-zA-Z0-9]/', '', $request['company_name']);
-    //         $imageName = $imageName . '.' . $ext;
-    //         $image->move('public/images/supplier', $imageName);
-    //         $lims_supplier_data['image'] = $imageName;
-    //     }
-    //     Supplier::create($lims_supplier_data);
-    //     $message = 'Data inserted successfully';
-    //     try{
-    //         Mail::send( 'mail.supplier_create', $lims_supplier_data, function( $message ) use ($lims_supplier_data)
-    //         {
-    //             $message->to( $lims_supplier_data['email'] )->subject( 'New Supplier' );
-    //         });
-    //     }
-    //     catch(\Exception $e) {
-    //         $message = 'Data inserted successfully. Please setup your <a href="setting/mail_setting">mail setting</a> to send mail.';
-    //     }
-    //     return redirect('supplier')->with('message', $message);
-    // }
+    public function store(Request $request)
+    {
+        $this->validate($request, [
+            'shop_name' => [
+                'max:255',
+                Rule::unique('after_markit_suppliers')->where(function ($query) {
+                    return $query->where('is_active', 1);
+                }),
+            ],
+            'email' => [
+                'max:255',
+                Rule::unique('after_markit_suppliers')->where(function ($query) {
+                    return $query->where('is_active', 1);
+                }),
+            ],'phone' => [
+                'max:255',
+                Rule::unique('after_markit_suppliers')->where(function ($query) {
+                    return $query->where('is_active', 1);
+                }),
+            ],
+            'image' => 'image|mimes:jpg,jpeg,png,gif|max:100000',
+        ]);
+
+
+        try {
+            // Mail::send( 'mail.supplier_create', $lims_supplier_data, function( $message ) use ($lims_supplier_data)
+            // {
+            //     $message->to( $lims_supplier_data['email'] )->subject( 'New Supplier' );
+            // });
+            $lims_supplier_data = $request->except('image');
+            $lims_supplier_data['is_active'] = true;
+            $lims_supplier_data['retailer_id'] = auth()->user()->id;
+            $image = $request->image;
+            if ($image) {
+                $ext = pathinfo($image->getClientOriginalName(), PATHINFO_EXTENSION);
+                $imageName = preg_replace('/[^a-zA-Z0-9]/', '', $request['shop_name']);
+                $imageName = $imageName . '.' . $ext;
+                $image->move('public/images/supplier', $imageName);
+                $lims_supplier_data['image'] = $imageName;
+            }
+            AfterMarkitSupplier::create($lims_supplier_data);
+            // dd($create);
+            // $message ="";
+        } catch (\Exception $e) {
+            // dd($e->getMessage());
+            toastr()->error($e->getMessage());
+            return back();
+            // $message = 'Data inserted successfully. Please setup your <a href="setting/mail_setting">mail setting</a> to send mail.';
+        }
+        toastr()->success('supplier create successfully');
+        return redirect()->back();
+    }
 
     // public function edit($id)
     // {
@@ -206,8 +217,8 @@ class SupplierController extends Controller
     public function getSuppliers() // by afzal
     {
 
-        $suppliers = Ambrand::select('brandId','brandLogoID','brandName')->orderBy('brandName','ASC')->distinct()->paginate(100);
-        
+        $suppliers = Ambrand::select('brandId', 'brandLogoID', 'brandName')->orderBy('brandName', 'ASC')->distinct()->paginate(100);
+
         return view('supplier.get', compact('suppliers'));
     }
 }

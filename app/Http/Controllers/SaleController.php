@@ -49,10 +49,15 @@ use Auth;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Mail\UserNotification;
+use App\Models\AfterMarkitSupplier;
+use App\Models\Article;
+use App\Models\Manufacturer;
+use App\Supplier;
 use Illuminate\Support\Facades\Mail;
 use Srmklive\PayPal\Services\ExpressCheckout;
 use Srmklive\PayPal\Services\AdaptivePayments;
 use GeniusTS\HijriDate\Date;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Facades\Validator;
 
 class SaleController extends Controller
@@ -334,39 +339,96 @@ class SaleController extends Controller
         echo json_encode($json_data);
     }
 
-    public function create()
-    {
-        $role = Role::find(Auth::user()->role_id);
-        if($role->hasPermissionTo('sales-add')) {
-            $lims_customer_list = Customer::where('is_active', true)->get();
-            if(Auth::user()->role_id > 2 && Auth::user()->role_id != 10 && Auth::user()->role_id != 11) {
-                // dd('ithy');
-                $lims_warehouse_list = Warehouse::where([
-                    ['is_active', true],
-                    ['id', Auth::user()->warehouse_id]
-                ])->get();
-                $lims_biller_list = Biller::where([
-                    ['is_active', true],
-                    ['id', Auth::user()->biller_id]
-                ])->get();
-            }
-            else {
-                // dd('uthy ni ithy');
-
-                $lims_warehouse_list = Warehouse::where('is_active', true)->get();
-                $lims_biller_list = Biller::where('is_active', true)->get();
-            }
-
+    public function create(){
+        $role = Role::find(FacadesAuth::user()->role_id);
+        if ($role->hasPermissionTo('purchases-add')) {
+            $lims_supplier_list = Supplier::where('is_active', true)->get();
+            $lims_warehouse_list = Warehouse::where('is_active', true)->get();
             $lims_tax_list = Tax::where('is_active', true)->get();
-            $lims_pos_setting_data = PosSetting::latest()->first();
-            $lims_reward_point_setting_data = RewardPointSetting::latest()->first();
-            // dump($lims_biller_list);
-            // dd($lims_warehouse_list);
-            return view('sale.create',compact('lims_customer_list', 'lims_warehouse_list', 'lims_biller_list', 'lims_pos_setting_data', 'lims_tax_list', 'lims_reward_point_setting_data'));
-        }
-        else
+            $lims_product_list_without_variant = $this->productWithoutVariant();
+            $lims_product_list_with_variant = $this->productWithVariant();
+            $manufacturers = Manufacturer::all();
+            // dd($manufacturers);
+            $suppliers = AfterMarkitSupplier::select('id', 'name')->where('retailer_id', auth()->user()->id)->get();
+            return view('sale.create', compact('lims_supplier_list', 'lims_warehouse_list', 'lims_tax_list', 'lims_product_list_without_variant', 'lims_product_list_with_variant', 'manufacturers', 'suppliers'));
+        } else
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
     }
+
+    public function productWithoutVariant()
+    {
+        return Product::ActiveStandard()->select('id', 'name', 'code')
+            ->whereNull('is_variant')->get();
+    }
+
+    public function productWithVariant()
+    {
+        return Product::join('product_variants', 'products.id', 'product_variants.product_id')
+            ->ActiveStandard()
+            ->whereNotNull('is_variant')
+            ->select('products.id', 'products.name', 'product_variants.item_code')
+            ->orderBy('position')->get();
+    }
+
+    public function showSectionParts(Request $request)
+    {
+        // dd($request->all());
+        $id = explode('-', $request->id);
+        $section_part_id = explode('-', $request->section_part_id);
+
+        dd($id);
+        $product = Article::where('dataSupplierId', $id[0])->where('legacyArticleId', $id[1])->first();
+        // dd($product);
+        return response()->json([
+            'data' => $product,
+            'supplier' => $request->supplier_id,
+            'linkage_target_type' => $request->engine_type, // engine_type
+            'linkage_target_sub_type' => $request->engine_sub_type, //
+            'manufacturer_id' => $request->manufacturer_id,
+            'model_id' => $request->model_id,
+            'engine_id' => $request->engine_id,
+            'section_id' => $request->section_id,
+            'section_part_id' => $section_part_id[1],
+            'status' => $request->status,
+            'date' => $request->date,
+            'cash_type' => $request->cash_type,
+            'brand_id' => $request->brand_id,
+        ]);
+    }
+    
+    // public function create()
+    // {
+    //     $role = Role::find(Auth::user()->role_id);
+    //     if($role->hasPermissionTo('sales-add')) {
+    //         $lims_customer_list = Customer::where('is_active', true)->get();
+    //         if(Auth::user()->role_id > 2 && Auth::user()->role_id != 10 && Auth::user()->role_id != 11) {
+    //             // dd('ithy');
+    //             $lims_warehouse_list = Warehouse::where([
+    //                 ['is_active', true],
+    //                 ['id', Auth::user()->warehouse_id]
+    //             ])->get();
+    //             $lims_biller_list = Biller::where([
+    //                 ['is_active', true],
+    //                 ['id', Auth::user()->biller_id]
+    //             ])->get();
+    //         }
+    //         else {
+    //             // dd('uthy ni ithy');
+
+    //             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
+    //             $lims_biller_list = Biller::where('is_active', true)->get();
+    //         }
+
+    //         $lims_tax_list = Tax::where('is_active', true)->get();
+    //         $lims_pos_setting_data = PosSetting::latest()->first();
+    //         $lims_reward_point_setting_data = RewardPointSetting::latest()->first();
+    //         // dump($lims_biller_list);
+    //         // dd($lims_warehouse_list);
+    //         return view('sale.old_create',compact('lims_customer_list', 'lims_warehouse_list', 'lims_biller_list', 'lims_pos_setting_data', 'lims_tax_list', 'lims_reward_point_setting_data'));
+    //     }
+    //     else
+    //         return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+    // }
 
     public function store(Request $request)
     {

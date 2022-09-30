@@ -182,14 +182,14 @@
             @if($sale_index_permission_active || $gift_card_permission_active || $coupon_permission_active || $delivery_permission_active)
             <li><a href="#sale" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-cart"></i><span>{{trans('file.Sale')}}</span></a>
             <ul id="sale" class="collapse list-unstyled ">
-                @if($sale_index_permission_active)
+                {{-- @if($sale_index_permission_active) --}}
                 <!-- <li id="sale-list-menu"><a href="{{route('sales.index')}}">{{trans('file.Sale List')}}</a></li> -->
-                @if($sale_add_permission_active)
+                {{-- @if($sale_add_permission_active) --}}
                 <!-- <li><a href="{{route('sale.pos')}}">POS</a></li> -->
                 <!-- <li id="sale-create-menu"><a href="{{route('sales.create')}}">{{trans('file.Add Sale')}}</a></li> -->
                 <!-- <li id="sale-import-menu"><a href="{{url('sales/sale_by_csv')}}">{{trans('file.Import Sale By CSV')}}</a></li> -->
-                @endif
-                @endif
+                {{-- @endif --}}
+                {{-- @endif --}}
                 <li id="sale-list-menu"><a href="{{route('sales.index')}}">{{trans('file.Estimate List')}}</a></li>
                 <li id="invoices-list-menu"><a href="{{route('sales.salesInvoices')}}">{{trans('file.Invoice List')}}</a></li>
                 <li id="pre-invoices-list-menu"><a href="">{{trans('file.Delivery Slips')}}</a></li>
@@ -220,18 +220,12 @@
             {{-- <ul id="" class="collapse list-unstyled ">
                 <li id=""><a href="{{route('products.index')}}">{{trans('file.Product List')}}</a></li>
             </ul> --}}
+            {{-- <li id="sale-list-menu" class="{{ $route == 'assembly_group_nodes.index' ? 'active' : '' }}"><a href="{{route('assembly_group_nodes.index')}}"><i class="dripicons-list"></i> {{trans('file.Sections')}}</a></li> --}}
+            
+            <li id="supplier-list-menu" class="{{ $route == 'supplier.create' ? 'active' : '' }}"><a href="{{route('supplier.create')}}"><i class="dripicons-user-group"></i> {{trans('file.Suppliers')}}</a></li>
+            <li id="supplier-list-menu" class="{{ $route == 'cash.management' ? 'active' : '' }}"><a href="{{route('cash.management')}}"><i class="dripicons-user-group"></i> {{trans('file.Cash-Management')}}</a></li>
 
-            <li id="sale-list-menu" class="{{ $route == 'assembly_group_nodes.index' ? 'active' : '' }}"><a href="{{route('assembly_group_nodes.index')}}"><i class="dripicons-list"></i> {{trans('file.Sections')}}</a></li>
-            
-           
-            <li id="supplier-list-menu" class="{{ $route == 'supplier.get' ? 'active' : '' }}"><a href="{{route('supplier.get')}}"><i class="dripicons-user-group"></i> {{trans('file.Suppliers')}}</a></li>
-            
-            <li id="makes-list-menu" class="{{ $route == 'allmake.get' ? 'active' : '' }}"><a href="{{route('allmake.get')}}"><i class="dripicons-wallet"></i> {{trans('file.All Makes')}}</a></li>
-            
-            
-            
-            
-
+            {{-- <li id="makes-list-menu" class="{{ $route == 'allmake.get' ? 'active' : '' }}"><a href="{{route('allmake.get')}}"><i class="dripicons-wallet"></i> {{trans('file.All Makes')}}</a></li> --}}
 
             <?php
             $index_permission = DB::table('permissions')->where('name', 'expenses-index')->first();
@@ -271,7 +265,6 @@
                 <li id="quotation-list-menu"><a href="{{route('quotations.index')}}">{{trans('file.Estimate List')}}</a></li>
                 <li id=""><a href="{{route('preinvoices.index')}}">{{trans('file.Pre Invoice List')}}</a></li>
                 <li id=""><a href="{{route('invoices.index')}}">{{trans('file.Invoice List')}}</a></li>
-
             </ul>
             </li>
             @endif
@@ -303,14 +296,11 @@
 
             <?php
             $sale_return_index_permission = DB::table('permissions')->where('name', 'returns-index')->first();
-
             $sale_return_index_permission_active = DB::table('role_has_permissions')->where([
                     ['permission_id', $sale_return_index_permission->id],
                     ['role_id', $role->id]
                 ])->first();
-
             $purchase_return_index_permission = DB::table('permissions')->where('name', 'purchase-return-index')->first();
-
             $purchase_return_index_permission_active = DB::table('role_has_permissions')->where([
                         ['permission_id', $purchase_return_index_permission->id],
                         ['role_id', $role->id]
@@ -334,7 +324,6 @@
                     ['permission_id', $index_permission->id],
                     ['role_id', $role->id]
                 ])->first();
-
             $money_transfer_permission = DB::table('permissions')->where('name', 'money-transfer')->first();
             $money_transfer_permission_active = DB::table('role_has_permissions')->where([
                     ['permission_id', $money_transfer_permission->id],
@@ -1032,9 +1021,8 @@
                     </li>
                     @endif
                     <li>
-                    <a href="{{ route('logout') }}"
-                        onclick="event.preventDefault();
-                                        document.getElementById('logout-form').submit();"><i class="dripicons-power"></i>
+                    <a href="{{ route('user_logout') }}"
+                        ><i class="dripicons-power"></i>
                         {{trans('file.logout')}}
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

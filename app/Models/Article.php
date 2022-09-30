@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Article extends Model
 {
@@ -30,8 +31,9 @@ class Article extends Model
         return $this->hasOne(ArticleMain::class);
     }
 
-    public function articleVehicleTree(){
-        return $this->hasOne(ArticleVehicleTree::class);
+    public function articleVehicleTree():HasOne
+    {
+        return $this->hasOne(ArticleVehicleTree::class,'legacyArticleId','legacyArticleId');
     }
 
     public function articleText(){
@@ -49,6 +51,10 @@ class Article extends Model
 
     public function brands() : hasMany{
         return $this->hasMany(Ambrand::class,'brandId','dataSupplierId');
+    }
+
+    public function section() { 
+        return $this->belongsTo(AssemblyGroupNode::class,'assemblyGroupNodeId', 'assemblyGroupNodeId');
     }
 
 }

@@ -4,12 +4,14 @@ use App\Http\Controllers\AssemblyGroupNodeController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\RetailerRegisterController;
 use App\Http\Controllers\Auth\RetailerLoginController;
+use App\Http\Controllers\CashManagementController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\MakeController;
 use App\Http\Controllers\StockManagementController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +33,7 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::post('do-register',[RetailerRegisterController::class,'create'])->name('do-register');
 	Route::post('do-login',[RetailerLoginController::class,'login'])->name('do-login');
 
+	Route::get('/get_logout','UserController@userLogout')->name('user_logout');
 
 
 
@@ -199,8 +202,12 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('invoice/change/status/{id}/{val}', 'SaleController@changeInvoiceStatus')->name('sales.changeInvoiceStatus');
 
 	// Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
-
+    ///////////////////// sale controllers ////////////////////////
 	Route::resource('sales', 'SaleController');
+	Route::get('sale/new/create', 'SaleController@newCreate')->name('sales.newCreate');
+	Route::get('get_section_parts_in_table', 'SaleController@showSectionParts')->name('get_section_parts_in_table'); 
+
+    /////////////////////////// end /////////////////////////////
 
 	Route::get('delivery', 'DeliveryController@index')->name('delivery.index');
 	Route::get('delivery/product_delivery/{id}','DeliveryController@productDeliveryData');
@@ -240,7 +247,10 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('updatePurchaseProduct','PurchaseController@updatePurchase')->name('update_purchase'); // update a purchase
 	Route::get('deletePurchaseProduct/{purchase_id}/{id}','PurchaseController@deletePurchaseProduct')->name('delete_purchase'); // delete a purchase product
 	Route::get('deletePurchase/{purchase_id}','PurchaseController@deleteParentPurchase')->name('delete_parent_purchase'); // delete a parent purchase
-    ////////////////Purchase END ////////////////////////
+	Route::get('updatePurchaseProductQuantity','PurchaseController@updatePurchaseProductQuantity')->name('update_purchase_product_quantity'); // update a purchase
+    
+	
+	////////////////Purchase END ////////////////////////
    
 	/////////////// Product Controller /////////////////
 	Route::resource('products',ProductController::class);
@@ -259,13 +269,18 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('pdfDownload','PurchaseController@pdfDownload')->name('purchasesPdfDownload'); //  Purchases pdf download
 
 
-
+	///////////////// Purchase Article management ///////////////////
+	Route::get('get_manufacturers_by_engine_type', 'PurchaseController@getManufacturersByEngineType')->name('get_manufacturers_by_engine_type');
 	Route::get('get_models_by_manufacturer', 'PurchaseController@getModelsByManufacturer')->name('get_models_by_manufacturer');
 	Route::get('get_engines_by_model', 'PurchaseController@getEnginesByModel')->name('get_engines_by_model');
 	Route::get('get_sections_by_engine', 'PurchaseController@getSectionsByEngine')->name('get_sections_by_engine');
 	Route::get('get_section_parts', 'PurchaseController@getSectionParts')->name('get_section_parts');// get all articles
 	Route::get('get_brands_by_section_part', 'PurchaseController@getBrandsBySectionPart')->name('get_brands_by_section_part'); // get all suppliers against an article
 	Route::get('show_section_parts_in_table', 'PurchaseController@showSectionParts')->name('show_section_parts_in_table'); 
+	Route::get('getArticleInfo', 'PurchaseController@getArticleInfo')->name('article.info.get');
+	Route::get('articlesByReferenceNo', 'PurchaseController@articlesByReferenceNo')->name('article.reference');
+    ///////////////////  end //////////////////////
+
 
 
 
@@ -412,6 +427,9 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 
 	Route::get('products', [ProductController::class, 'getProducts'])->name('product.get');
 	Route::get('suppliers', [SupplierController::class, 'getSuppliers'])->name('supplier.get');
+	Route::get('supplier/create', [SupplierController::class, 'create'])->name('supplier.create');
+	Route::get('cash/management', [CashManagementController::class, 'index'])->name('cash.management');
+	Route::get('cash/management/cheque', [CashManagementController::class, 'cheque'])->name('cash.management.cheque');
 	Route::get('allMakes', [MakeController::class, 'getAllMakes'])->name('allmake.get');
 
 });
