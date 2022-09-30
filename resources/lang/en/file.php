@@ -1,5 +1,15 @@
 <?php 
 return [
+	'People List' => 'People List',
+	'Add Product Criteria' => 'Add Product Criteria',
+	'Add Product Crosses' => 'Add Product Crosses',
+	'Edit Product' => 'Edit Product',
+	'Edit Product Criteria' => 'Edit Product Criteria',
+	'Edit Product Crosses' => 'Edit Product Crosses',
+	'Edit Product Ean' => 'Edit Product Ean',
+	'Edit Product Links' => 'Edit Product Links',
+	'Add Product Links' => 'Add Product Links',
+	'Add Product Ean' => 'Add Product Ean',
 	'Add Article Crteria' => 'Add Article Crteria',
 	'Add Article Crosses' => 'Add Article Crosses',
 	'Add Article Docs' => 'Add Article Docs',
@@ -688,4 +698,3 @@ return [
 	"Switch Theme" => "Switch Theme",
 	"Documentation" => "Documentation",
 ];
-?>

@@ -471,7 +471,7 @@
                 <ul id="people" class="collapse list-unstyled ">
 
                     @if($user_index_permission_active)
-                    <li id="user-list-menu"><a href="{{route('user.index')}}">{{trans('file.Customer List')}}</a></li>
+                    <li id="user-list-menu"><a href="{{route('user.index')}}">{{trans('file.People List')}}</a></li>
                     <?php $user_add_permission_active = DB::table('permissions')
                         ->join('role_has_permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
                         ->where([

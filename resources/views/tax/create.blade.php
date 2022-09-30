@@ -104,7 +104,7 @@
                             {{Form::number('rate',null,array('required' => 'required', 'class' => 'form-control', 'step' => 'any'))}}
                         </div>
                         <div class="form-group">
-                            <label>{{trans('file.Type')}}(%) *</label>
+                            <label>{{trans('file.Type')}} *</label>
                             <select name="type" id="" class="form-control">
                                 <option value="1">Invoice Tax</option>
                                 <option value="2">Item Tax</option>
