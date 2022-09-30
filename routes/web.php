@@ -4,6 +4,7 @@ use App\Http\Controllers\AssemblyGroupNodeController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\RetailerRegisterController;
 use App\Http\Controllers\Auth\RetailerLoginController;
+use App\Http\Controllers\CashManagementController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
@@ -417,6 +418,8 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('products', [ProductController::class, 'getProducts'])->name('product.get');
 	Route::get('suppliers', [SupplierController::class, 'getSuppliers'])->name('supplier.get');
 	Route::get('supplier/create', [SupplierController::class, 'create'])->name('supplier.create');
+	Route::get('cash/management', [CashManagementController::class, 'index'])->name('cash.management');
+	Route::get('cash/management/cheque', [CashManagementController::class, 'cheque'])->name('cash.management.cheque');
 	Route::get('allMakes', [MakeController::class, 'getAllMakes'])->name('allmake.get');
 
 });
