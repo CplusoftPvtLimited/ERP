@@ -23,11 +23,8 @@ class TaxController extends Controller
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="row">
                             <div class="col-md-2 mr-1">
-                                <button type="button" data-id="'.$row["id"].'" class="open-EdittaxDialog btn btn-link btn-primary btn-sm" data-toggle="modal" data-target="#editModal"><i class="fa fa-edit"></i>
+                                <button type="button" data-id="'.$row["id"].'" class="open-EdittaxDialog btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal"><i class="fa fa-edit"></i>
                                 </button>
-                            </div>
-                            <div class="col-md-2">
-                                <button class="btn btn-danger btn-sm" onclick="deleteTax(\'' . $row["id"] . '\')"><i class="fa fa-trash"></i></button>
                             </div>
                         </div>
                      ';
@@ -37,7 +34,17 @@ class TaxController extends Controller
                     $value = ++$this->val;
                     return $value;
                 })
-                ->rawColumns(['action', 'index'])
+                ->addColumn('tax_type', function ($row) {
+                    if($row["type"] ==1)
+                    {
+                        $type = 'Invoice Tax';
+                    }
+                    else{
+                        $type = 'Item Tax';
+                    }
+                    return $type;
+                })
+                ->rawColumns(['action', 'index', 'tax_type'])
                 ->make(true);
         }
         return view('tax.create');

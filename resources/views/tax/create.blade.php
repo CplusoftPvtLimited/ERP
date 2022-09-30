@@ -129,7 +129,7 @@
                 <div class="modal-body">
                     <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
                     <form>
-                        <input type="text" name="tax_id">
+                        <input type="hidden" name="tax_id">
                         <div class="form-group">
                             <label>{{trans('file.Tax Name')}} *</label>
                             {{Form::text('meta',null,array('required' => 'required', 'class' => 'form-control'))}}
@@ -181,8 +181,8 @@
                     name: 'rate'
                 },
                 {
-                    "data": "type",
-                    name: 'type'
+                    "data": "tax_type",
+                    name: 'tax_type'
                 },
                 {
                     "data": 'action',
