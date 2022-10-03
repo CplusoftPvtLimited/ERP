@@ -338,7 +338,7 @@ class PurchaseController extends Controller
         if ($role->hasPermissionTo('purchases-add')) {
             $lims_supplier_list = Supplier::where('is_active', true)->get();
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
-            $lims_tax_list = Tax::where('is_active', true)->get();
+            $lims_tax_list = Tax::get();
             $lims_product_list_without_variant = $this->productWithoutVariant();
             $lims_product_list_with_variant = $this->productWithVariant();
             $manufacturers = Manufacturer::all();
@@ -1403,7 +1403,7 @@ class PurchaseController extends Controller
         try {
             $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
                 ->where('vehicleModelSeriesId', $request->model_id)
-                ->where('subLinkageTargetType', $request->engine_sub_type)->get();
+                ->where('linkageTargetType', $request->engine_sub_type)->get();
             // dd($models);
             return response()->json([
                 'data' => $engines
@@ -1416,10 +1416,13 @@ class PurchaseController extends Controller
     public function getSectionsByEngine(Request $request)
     {
         try {
-            $sections = AssemblyGroupNode::select('assemblyGroupNodeId', 'assemblyGroupName')
-                ->where('request__linkingTargetId', $request->engine_id)
-                ->where('request__linkingTargetType', $request->engine_sub_type)->get();
-            // dd($models);
+            $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function($query) use ($request){
+                    $query->where('linkingTargetId', $request->engine_id)
+                    ->where('linkingTargetType', $request->engine_sub_type);
+                })
+               ->groupBy('assemblyGroupNodeId')
+               ->limit(100)
+                ->get();
             return response()->json([
                 'data' => $sections
             ], 200);
@@ -1433,7 +1436,9 @@ class PurchaseController extends Controller
         try {
             $section_parts = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')->whereHas('articleVehicleTree', function ($query) use ($request) {
                 $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
-            })->get();
+            })
+            ->limit(100)
+            ->get();
 
             // dd($section_parts);
             return response()->json([

@@ -223,7 +223,7 @@
             {{-- <li id="sale-list-menu" class="{{ $route == 'assembly_group_nodes.index' ? 'active' : '' }}"><a href="{{route('assembly_group_nodes.index')}}"><i class="dripicons-list"></i> {{trans('file.Sections')}}</a></li> --}}
             
             <li id="supplier-list-menu" class="{{ $route == 'supplier.create' ? 'active' : '' }}"><a href="{{route('supplier.create')}}"><i class="dripicons-user-group"></i> {{trans('file.Suppliers')}}</a></li>
-            <li id="supplier-list-menu" class="{{ $route == 'cash.management' ? 'active' : '' }}"><a href="{{route('cash.management')}}"><i class="dripicons-user-group"></i> {{trans('file.Cash-Management')}}</a></li>
+            <li id="supplier-list-menu" class="{{ $route == 'cash.management' ? 'active' : '' }}"><a href="{{route('cash.management')}}"><i class="fa fa-dollar"></i> {{trans('file.Cash-Management')}}</a></li>
 
             {{-- <li id="makes-list-menu" class="{{ $route == 'allmake.get' ? 'active' : '' }}"><a href="{{route('allmake.get')}}"><i class="dripicons-wallet"></i> {{trans('file.All Makes')}}</a></li> --}}
 
@@ -438,7 +438,7 @@
             <ul id="people" class="collapse list-unstyled ">
 
                 @if($user_index_permission_active)
-                <li id="user-list-menu"><a href="{{route('user.index')}}">{{trans('file.User List')}}</a></li>
+                {{-- <li id="user-list-menu"><a href="{{route('user.index')}}">{{trans('file.User List')}}</a></li> --}}
                 <?php $user_add_permission_active = DB::table('permissions')
                     ->join('role_has_permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
                     ->where([
@@ -446,12 +446,12 @@
                         ['role_id', $role->id] ])->first();
                 ?>
                 @if($user_add_permission_active)
-                <li id="user-create-menu"><a href="{{route('user.create')}}">{{trans('file.Add User')}}</a></li>
+                {{-- <li id="user-create-menu"><a href="{{route('user.create')}}">{{trans('file.Add User')}}</a></li> --}}
                 @endif
                 @endif
 
                 @if($customer_index_permission_active)
-                <li id="customer-list-menu"><a href="{{route('customer.index')}}">{{trans('file.Customer List')}}</a></li>
+                {{-- <li id="customer-list-menu"><a href="{{route('customer.index')}}">{{trans('file.Customer List')}}</a></li> --}}
                 <?php
                 $customer_add_permission = DB::table('permissions')->where('name', 'customers-add')->first();
                 $customer_add_permission_active = DB::table('role_has_permissions')->where([
@@ -460,12 +460,12 @@
                 ])->first();
                 ?>
                 @if($customer_add_permission_active)
-                <li id="customer-create-menu"><a href="{{route('customer.create')}}">{{trans('file.Add Customer')}}</a></li>
+                {{-- <li id="customer-create-menu"><a href="{{route('customer.create')}}">{{trans('file.Add Customer')}}</a></li> --}}
                 @endif
                 @endif
 
                 @if($biller_index_permission_active)
-                <li id="biller-list-menu"><a href="{{route('biller.index')}}">{{trans('file.Biller List')}}</a></li>
+                {{-- <li id="biller-list-menu"><a href="{{route('biller.index')}}">{{trans('file.Biller List')}}</a></li> --}}
                 <?php
                 $biller_add_permission = DB::table('permissions')->where('name', 'billers-add')->first();
                 $biller_add_permission_active = DB::table('role_has_permissions')->where([
@@ -474,12 +474,12 @@
                 ])->first();
                 ?>
                 @if($biller_add_permission_active)
-                <li id="biller-create-menu"><a href="{{route('biller.create')}}">{{trans('file.Add Biller')}}</a></li>
+                {{-- <li id="biller-create-menu"><a href="{{route('biller.create')}}">{{trans('file.Add Biller')}}</a></li> --}}
                 @endif
                 @endif
 
                 @if($supplier_index_permission_active)
-                <li id="supplier-list-menu"><a href="{{route('supplier.index')}}">{{trans('file.Supplier List')}}</a></li>
+                {{-- <li id="supplier-list-menu"><a href="{{route('supplier.index')}}">{{trans('file.Supplier List')}}</a></li> --}}
                 <?php
                 $supplier_add_permission = DB::table('permissions')->where('name', 'suppliers-add')->first();
                 $supplier_add_permission_active = DB::table('role_has_permissions')->where([
@@ -488,7 +488,7 @@
                 ])->first();
                 ?>
                 @if($supplier_add_permission_active)
-                <li id="supplier-create-menu"><a href="{{route('supplier.create')}}">{{trans('file.Add Supplier')}}</a></li>
+                {{-- <li id="supplier-create-menu"><a href="{{route('supplier.create')}}">{{trans('file.Add Supplier')}}</a></li> --}}
                 @endif
                 @endif
             </ul>

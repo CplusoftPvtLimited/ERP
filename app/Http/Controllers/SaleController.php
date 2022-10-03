@@ -344,13 +344,13 @@ class SaleController extends Controller
         if ($role->hasPermissionTo('purchases-add')) {
             $lims_supplier_list = Supplier::where('is_active', true)->get();
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
-            $lims_tax_list = Tax::where('is_active', true)->get();
+            $lims_tax_list = Tax::where('type', 1)->first();
             $lims_product_list_without_variant = $this->productWithoutVariant();
             $lims_product_list_with_variant = $this->productWithVariant();
             $manufacturers = Manufacturer::all();
             // dd($manufacturers);
             $suppliers = AfterMarkitSupplier::select('id', 'name')->where('retailer_id', auth()->user()->id)->get();
-            return view('sale.create', compact('lims_supplier_list', 'lims_warehouse_list', 'lims_tax_list', 'lims_product_list_without_variant', 'lims_product_list_with_variant', 'manufacturers', 'suppliers'));
+            return view('sale.create', compact('lims_supplier_list','lims_tax_list','lims_warehouse_list', 'lims_product_list_without_variant', 'lims_product_list_with_variant', 'manufacturers', 'suppliers'));
         } else
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
     }
@@ -376,7 +376,7 @@ class SaleController extends Controller
         $id = explode('-', $request->id);
         $section_part_id = explode('-', $request->section_part_id);
 
-        dd($id);
+        // dd($id);
         $product = Article::where('dataSupplierId', $id[0])->where('legacyArticleId', $id[1])->first();
         // dd($product);
         return response()->json([

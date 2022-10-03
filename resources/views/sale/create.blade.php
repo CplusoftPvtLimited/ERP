@@ -52,10 +52,8 @@
                                             <div class="form-group">
                                                 <label>{{ trans('file.Order Tax') }}</label>
                                                 <select class="form-control" name="order_tax_rate">
-                                                    <option value="0">No Tax</option>
-                                                    @foreach ($lims_tax_list as $tax)
-                                                        <option value="{{ $tax->rate }}">{{ $tax->name }}</option>
-                                                    @endforeach
+                                                    <option value="" disabled selected>select one</option>
+                                                        <option value="{{ $lims_tax_list->rate }}">{{ $lims_tax_list->meta }}</option>
                                                 </select>
                                             </div>
                                         </div>

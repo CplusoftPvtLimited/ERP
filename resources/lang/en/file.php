@@ -2,6 +2,16 @@
 return [
 
 	'Sections' => 'Sections',
+	'NUMBER' => 'NUMBER',
+	'CONTACT' => 'CONTACT',
+	'CARRIER' => 'CARRIER',
+	'BANQUE' => 'BANQUE',
+	'SETTLEMENT DATE' => 'SETTLEMENT DATE',
+	'DUE DATE' => 'DUE DATE',
+	'AMOUNT' => 'AMOUNT',
+	'ETAT' => 'ETAT',
+	'Filtered' => 'Filtered',
+	'Edit Stock' => 'Edit Stock',
 	'Suppliers' => 'Suppliers',
 	'Additional Cost Without VAT' => 'Additional Cost Without VAT',
 	'Additional Cost With VAT' => 'Additional Cost With VAT',

@@ -270,6 +270,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 
 
 	///////////////// Purchase Article management ///////////////////
+	Route::get('manufacturers_by_engine_type', 'PurchaseController@getManufacturersByEngineType')->name('manufacturers_by_engine_type');
 	Route::get('get_manufacturers_by_engine_type', 'PurchaseController@getManufacturersByEngineType')->name('get_manufacturers_by_engine_type');
 	Route::get('get_models_by_manufacturer', 'PurchaseController@getModelsByManufacturer')->name('get_models_by_manufacturer');
 	Route::get('get_engines_by_model', 'PurchaseController@getEnginesByModel')->name('get_engines_by_model');

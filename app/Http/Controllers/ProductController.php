@@ -62,10 +62,9 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
-        try {
-        
+        try {        
             if ($request->ajax()) {
-                $all_stocks = StockManagement::where('retailer_id', Auth::user()->id)->orderBy('id', 'desc')->get();
+                $all_stocks = StockManagement::where('retailer_id', Auth::user()->id)->orderBy('id', 'desc')->skip(0)->take(100)->get();
                 return DataTables::of($all_stocks)
                     ->addIndexColumn('id')
                     ->addColumn('action', function ($row) {

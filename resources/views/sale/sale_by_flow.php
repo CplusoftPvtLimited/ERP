@@ -2,13 +2,13 @@
     <div class="col-md-12">
         <div id="other_data"></div>
         <div class="row">
-            {{-- <div class="col-md-4">
+            <!-- {{-- <div class="col-md-4">
                 <div class="form-group">
                     <label>{{ trans('file.Date') }}</label>
                     <input type="text" id="product_purchase_date" name="created_at" class="form-control date"
                         placeholder="Choose date" />
                 </div>
-            </div> --}}
+            </div> --}} -->
             <div class="col-md-4">
                 <div class="form-group">
                     <label>Engine Type</label>
@@ -24,7 +24,7 @@
                 <div class="form-group">
                     <label>Engine Sub-Type</label>
                     <select name="subLinkageTargetType"
-                        data-href="{{ route('get_manufacturers_by_engine_type') }}" id="subLinkageTarget"
+                        data-href="{{ route('manufacturers_by_engine_type') }}" id="subLinkageTarget"
                         class="selectpicker form-control">
                         <option value="-2">Select One</option>
                     </select>
@@ -32,7 +32,7 @@
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label>{{ trans('file.Manufacturers') }}</label>
+                    <label>Manufacturers</label>
                     <select name="manufacture_id" id="manufacturer_id" class="selectpicker form-control"
                         data-live-search="true" data-live-search-style="begins" title="Select Manufacturer..."
                         data-href="{{ route('get_models_by_manufacturer') }}">
@@ -46,7 +46,7 @@
             
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="model_id">{{ __('Select Model') }}</label>
+                    <label for="model_id">Select Model</label>
                     <select name="model_id" id="model_id" data-href="{{ route('get_engines_by_model') }}"
                         class="form-control" required>
                     </select>
@@ -54,7 +54,7 @@
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="engine_id">{{ __('Select Engine') }}</label>
+                    <label for="engine_id">Select Engine</label>
                     <select name="engine_id" id="engine_id" data-href="{{ route('get_sections_by_engine') }}"
                         class="form-control" required>
                     </select>
@@ -62,7 +62,7 @@
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="section_id">{{ __('Select Section') }}</label>
+                    <label for="section_id">Select Section</label>
                     <select name="section_id" id="section_id" data-href="{{ route('get_section_parts') }}"
                         class="form-control" required>
                     </select>
@@ -74,7 +74,7 @@
            
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="section_part_id">{{ __('Select Section Part') }}</label>
+                    <label for="section_part_id">Select Section Part</label>
                     <select name="section_part_id" id="section_part_id"
                         data-href="{{ route('get_brands_by_section_part') }}" class="form-control" required>
                     </select>
@@ -82,7 +82,7 @@
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="brand">{{ __('Select brand') }}</label>
+                    <label for="brand">Select brand</label>
                     <select name="brand_id" id="brand_id" class="form-control" required>
                     </select>
                 </div>
@@ -93,7 +93,7 @@
             <div class="col-md-12 text-right">
                 <div class="form-group">
                     <button type="button" class="btn btn-info purchase-save-btn"
-                        id="save-btn">{{ trans('file.Save') }}</button>
+                        id="save-btn">Save</button>
                 </div>
             </div>
           
@@ -104,7 +104,7 @@
 <script src="https://code.jquery.com/jquery-3.6.1.min.js"
     integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 <script>
-    $('#linkageTarget').on('change', function() {
+       $('#linkageTarget').on('change', function() {
         var val = this.value;
 
         if (val == "P") {
@@ -149,7 +149,7 @@
 
     // get manufacturers
     $(document).on('change', '#subLinkageTarget', function() {
-
+           
         let engine_sub_type = $(this).val();
         // alert(manufacture_id)
         let url = $(this).attr('data-href');
@@ -157,6 +157,7 @@
     });
 
     function getManufacturer(url, engine_sub_type) {
+
         $.get(url + '?engine_sub_type=' + engine_sub_type, function(data) {
             // $('#model_id').html(`<option value="">Select Model</option>`);
             $('#section_id').html('<option value="">Select One</option>');
@@ -165,12 +166,9 @@
             $('#section_part_id').selectpicker("refresh");
             $('#engine_id').html('<option value="">Select One</option>');
             $('#engine_id').selectpicker("refresh");
-
             // $('#manufacturer_id').html('<option value="">Select One</option>');
             // $('#manufacturer_id').selectpicker("refresh");
-
             let response = data.data;
-            // console.log(response)
             let view_html = `<option value="">Select One</option>`;
             $.each(response, function(key, value) {
                 view_html += `<option value="${value.manuId}">${value.manuName}</option>`;
@@ -179,8 +177,6 @@
             $('#manufacturer_id').html(view_html);
             // $("#model_id").val(4);
             $("#manufacturer_id").selectpicker("refresh");
-
-
         })
     }
 
@@ -319,7 +315,6 @@
         })
     }
 
-
     $("#product_purchase_date").on('change', function() {
         var selectedDate = this.value;
         var currentDate = new Date();
@@ -340,8 +335,8 @@
         }
     });
 
-    //// global variables that we were use in the save functionality ///
-    var supplier_ids_array = [],
+   //// global veriables that we were use in the save functionality ///
+   var supplier_ids_array = [],
         article_ids_array = [],
         selected_cash_type = [],
         all_product_ids = [];
@@ -358,23 +353,18 @@
         var engine_id = $('#engine_id').find(":selected").val();
         var section_id = $('#section_id').find(":selected").val();
         var section_part_id = $('#section_part_id').find(":selected").val();
-        var customer_id = $('#customer_id').find(":selected").val();
+        var supplier_id = $('#supplier_id').find(":selected").val();
         var status = $('#status').find(":selected").val();
         var date = $('#product_purchase_date').val();
         var cashType = $('#cash_type').find(":selected").val();
-        var orderTax = $('#order_tax_rate').find(":selected").val();
-        var orderDiscountType = $('#order_discount_type').find(":selected").val();
-        var order_discount_val = $('#order_discount_val').find(":selected").val();
-        var sale_note = $('#sale_note').find(":selected").val();
-        var staff_note = $('#staff_note').find(":selected").val();
         var brandId = $('#brand_id').find(":selected").val();
 
         checkIfExists(engine_type, engine_sub_type, manufacturer_id, model_id, engine_id, section_id,
-            section_part_id, customer_id, status, date, cashType,brandId);
+            section_part_id, supplier_id, status, date, cashType, brandId);
 
         $.ajax({
             method: "GET",
-            url: "{{ url('get_section_parts_in_table') }}",
+            url: "{{ url('show_section_parts_in_table') }}",
             data: {
                 id: id,
                 engine_type: engine_type,
@@ -384,19 +374,14 @@
                 engine_id: engine_id,
                 section_id: section_id,
                 section_part_id: section_part_id,
-                customer_id: customer_id,
+                supplier_id: supplier_id,
+                brand_id: brandId,
                 status: status,
                 date: date,
-                cash_type: cashType,
-                order_tax: orderTax,
-                orderDiscountType: orderDiscountType,
-                dis_value: dis_value,
-                sale_note: sale_note,
-                brand_id: brandId,
+                cash_type: cashType 
             },
 
             success: function(data) {
-                console.log(data);
                 // alert(data);
                 // $('#myTable').DataTable( {
                 //     "processing": true,
