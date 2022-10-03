@@ -55,6 +55,7 @@ return array(
     'App\\Http\\Controllers\\Auth\\VerificationController' => $baseDir . '/app/Http/Controllers/Auth/VerificationController.php',
     'App\\Http\\Controllers\\BillerController' => $baseDir . '/app/Http/Controllers/BillerController.php',
     'App\\Http\\Controllers\\BrandController' => $baseDir . '/app/Http/Controllers/BrandController.php',
+    'App\\Http\\Controllers\\CashManagementController' => $baseDir . '/app/Http/Controllers/CashManagementController.php',
     'App\\Http\\Controllers\\CashRegisterController' => $baseDir . '/app/Http/Controllers/CashRegisterController.php',
     'App\\Http\\Controllers\\CategoryController' => $baseDir . '/app/Http/Controllers/CategoryController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
