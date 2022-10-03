@@ -14,7 +14,7 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                               <span></span>
+                                <span></span>
                             </div>
                             {!! Form::open(['route' => 'purchases.store', 'method' => 'post', 'files' => true, 'id' => 'purchase-form']) !!}
                             <div class="row">
@@ -59,7 +59,7 @@
                                                 </select>
                                             </div>
                                         </div>
-   
+
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.Attach Document') }}</label> <i
@@ -114,7 +114,7 @@
                                             <div id="London" class="tabcontent">
                                                 @include('purchase.purchase_by_flow')
                                             </div>
-    
+
                                             <div id="Paris" class="tabcontent">
                                                 @include('purchase.purchase_by_article_number')
                                             </div>
@@ -130,8 +130,8 @@
                             @include('purchase.order-table')
                             <div class="row" id="submit-button" style="display: none;">
                                 <div class="col-md-12 form-group text-right">
-                                    <button type="submit" class="btn btn-primary"
-                                       >{{ trans('file.submit') }}</button>
+                                    <button type="button" id="submit_button"
+                                        class="btn btn-primary">{{ trans('file.submit') }}</button>
                                 </div>
                             </div>
                             {!! Form::close() !!}
@@ -162,6 +162,44 @@
 
         // Get the element with id="defaultOpen" and click on it
         document.getElementById("defaultOpen").click();
+
+        $('#submit_button').on('click', function() {
+            all_product_ids.forEach(checkFields);
+
+            function checkFields(id, index) {
+                var sale_price = $('#sale_price_' + id).val();
+                var actual_cost_per_product = $('#actual_cost_per_product_' + id).val();
+                var total_excluding_vat = $("#total_excluding_vat_" + id).val();
+                if (sale_price == null || sale_price <= 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Sale Price must be greater than zero',
+
+                    });
+                    exit();
+                }
+                if (actual_cost_per_product == null || actual_cost_per_product <= 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Actual Cost Per Product must be greater than zero',
+
+                    });
+                    exit();
+                }
+                if (total_excluding_vat == null || total_excluding_vat <= 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Total Excluding VAT must be greater than zero',
+
+                    });
+                    exit();
+                }
+                document.getElementById("purchase-form").submit();
+            }
+        });
     </script>
 
     <script type="text/javascript" src="https://js.stripe.com/v3/"></script>

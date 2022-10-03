@@ -12,7 +12,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label>Engine Type</label>
-                    <select name="linkageTargetType" id="linkageTarget" class="selectpicker form-control">
+                    <select name="linkageTargetType" id="linkageTarget" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins">
 
                         <option>Select Type</option>
                         <option value="P">Passenger</option>
@@ -25,7 +25,7 @@
                     <label>Engine Sub-Type</label>
                     <select name="subLinkageTargetType"
                         data-href="{{ route('get_manufacturers_by_engine_type') }}" id="subLinkageTarget"
-                        class="selectpicker form-control">
+                        class="selectpicker form-control" data-live-search="true" data-live-search-style="begins">
                         <option value="-2">Select One</option>
                     </select>
                 </div>
@@ -48,7 +48,7 @@
                 <div class="form-group">
                     <label for="model_id">{{ __('Select Model') }}</label>
                     <select name="model_id" id="model_id" data-href="{{ route('get_engines_by_model') }}"
-                        class="form-control" required>
+                        class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" required>
                     </select>
                 </div>
             </div>
@@ -56,7 +56,7 @@
                 <div class="form-group">
                     <label for="engine_id">{{ __('Select Engine') }}</label>
                     <select name="engine_id" id="engine_id" data-href="{{ route('get_sections_by_engine') }}"
-                        class="form-control" required>
+                        class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" required>
                     </select>
                 </div>
             </div>
@@ -64,7 +64,7 @@
                 <div class="form-group">
                     <label for="section_id">{{ __('Select Section') }}</label>
                     <select name="section_id" id="section_id" data-href="{{ route('get_section_parts') }}"
-                        class="form-control" required>
+                        class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" required>
                     </select>
                 </div>
             </div>
@@ -76,14 +76,14 @@
                 <div class="form-group">
                     <label for="section_part_id">{{ __('Select Section Part') }}</label>
                     <select name="section_part_id" id="section_part_id"
-                        data-href="{{ route('get_brands_by_section_part') }}" class="form-control" required>
+                        data-href="{{ route('get_brands_by_section_part') }}" data-live-search="true" data-live-search-style="begins" class="selectpicker form-control" required>
                     </select>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="brand">{{ __('Select brand') }}</label>
-                    <select name="brand_id" id="brand_id" class="form-control" required>
+                    <select name="brand_id" id="brand_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" required>
                     </select>
                 </div>
             </div>
@@ -777,4 +777,6 @@
             selected_cash_type = [];
         }
     }
+
+    
 </script>
