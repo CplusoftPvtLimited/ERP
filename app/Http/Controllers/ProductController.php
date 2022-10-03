@@ -757,7 +757,7 @@ class ProductController extends Controller
 
     public function importProduct(Request $request)
     {
-        //get file
+        // get file
         $upload = $request->file('file');
         $ext = pathinfo($upload->getClientOriginalName(), PATHINFO_EXTENSION);
         if ($ext != 'csv')
