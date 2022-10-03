@@ -51,11 +51,11 @@
 <script type="text/javascript">
     $('.primary-details').click(function() {
         console.log('here');
-        window.location = '/cash/management/cheque';
+        window.location = `{{ route('cash.management.cheque')}}`;
     });
     $('.secoundry-details').click(function() {
         console.log('here');
-        window.location = '/cash/management/cheque';
+        window.location = `{{ route('cash.management.cheque')}}`;
     });
 </script>
 @endpush
