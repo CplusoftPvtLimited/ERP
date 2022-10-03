@@ -1453,7 +1453,7 @@ class PurchaseController extends Controller
     {
         try { 
             
-            $articles = Article::where('articleNumber','LIKE' , '%' . $request->name . '%')->first();
+            $articles = Article::where('articleNumber','LIKE' , '%' . $request->name . '%')->paginate(10);
             // dd($articles);
             return response()->json([
                 'data' => $articles
