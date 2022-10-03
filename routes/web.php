@@ -250,7 +250,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('updatePurchaseProductQuantity','PurchaseController@updatePurchaseProductQuantity')->name('update_purchase_product_quantity'); // update a purchase
     
 	
-	////////////////Purchase END ////////////////////////
+	////////////////Purchase END //////////////////////// 
    
 	/////////////// Product Controller /////////////////
 	Route::resource('products',ProductController::class);
