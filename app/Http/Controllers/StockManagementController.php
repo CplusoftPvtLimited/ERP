@@ -196,7 +196,6 @@ class StockManagementController extends Controller
             }
             // Get field names from header column
             $fields = array_map('strtolower', $records[0]);
-           
             $count = 0;
             array_shift($records);
             $article_with_reference_no = Article::select('articleNumber')->get();
@@ -213,7 +212,7 @@ class StockManagementController extends Controller
                 $this->rows[] = $this->clear_encoding_str($record);
             }
             $saved_stock = StockManagement::where('retailer_id', Auth::user()->id)->get();
-            // dd($saved_stock);
+            dd($saved_stock);
             $record_save = false;
             $revert_data = [];
             // dd($this->rows);
