@@ -19,5 +19,9 @@ class AssemblyGroupNode extends Model
     {
         return $this->belongsTo(LinkageTarget::class, 'request__linkingTargetId', 'linkageTargetId');
     }
+    public function articleVehicleTree()
+    {
+        return $this->hasMany(ArticleVehicleTree::class,'assemblyGroupNodeId','assemblyGroupNodeId');
+    }
 
 }
