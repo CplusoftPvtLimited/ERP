@@ -153,6 +153,7 @@
         let engine_sub_type = $(this).val();
         // alert(manufacture_id)
         let url = $(this).attr('data-href');
+        
         getManufacturer(url, engine_sub_type);
     });
 

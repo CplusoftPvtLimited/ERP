@@ -52,6 +52,7 @@ use App\Mail\UserNotification;
 use App\Models\AfterMarkitSupplier;
 use App\Models\Article;
 use App\Models\Manufacturer;
+use App\Models\StockManagement;
 use App\Supplier;
 use Illuminate\Support\Facades\Mail;
 use Srmklive\PayPal\Services\ExpressCheckout;
@@ -370,31 +371,7 @@ class SaleController extends Controller
             ->orderBy('position')->get();
     }
 
-    public function showSectionParts(Request $request)
-    {
-        // dd($request->all());
-        $id = explode('-', $request->id);
-        $section_part_id = explode('-', $request->section_part_id);
-
-        // dd($id);
-        $product = Article::where('dataSupplierId', $id[0])->where('legacyArticleId', $id[1])->first();
-        // dd($product);
-        return response()->json([
-            'data' => $product,
-            'supplier' => $request->supplier_id,
-            'linkage_target_type' => $request->engine_type, // engine_type
-            'linkage_target_sub_type' => $request->engine_sub_type, //
-            'manufacturer_id' => $request->manufacturer_id,
-            'model_id' => $request->model_id,
-            'engine_id' => $request->engine_id,
-            'section_id' => $request->section_id,
-            'section_part_id' => $section_part_id[1],
-            'status' => $request->status,
-            'date' => $request->date,
-            'cash_type' => $request->cash_type,
-            'brand_id' => $request->brand_id,
-        ]);
-    }
+    
     
     // public function create()
     // {
@@ -838,6 +815,104 @@ class SaleController extends Controller
         else
             return view('sale.estimate_preview',compact('lims_customer_data','request','lims_sale_data'))->with('message', $message);
     }
+
+    // Our own code
+
+    public function getSectionPartsForSale(Request $request){
+        $stocks = StockManagement::where('retailer_id',auth()->user()->id)->get();
+        $articles = [];
+       
+        if(count($stocks) > 0){
+            foreach($stocks as $stock){
+                $article = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')->
+                where('legacyArticleId',$stock->product_id)->whereHas('articleVehicleTree', function ($query) use ($request) {
+                    $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
+                })->first();
+                if(!empty($article)){
+                    
+                    array_push($articles,$article);
+                }
+            }
+            
+            return response()->json([
+                'data' => $articles,
+                'message' => 1
+            ]);
+        }else{
+            return response()->json([
+                
+                'message' => 0
+            ],200);
+        }
+    }
+
+    public function checkProductStock(Request $request)
+    {
+        $id = explode('-',$request->section_part_id);
+        $stock = StockManagement::where('product_id',$id[1])
+                ->where('retailer_id',auth()->user()->id)->first();
+        // dd($stock);
+        if($request->cash_type == "white"){
+            if(empty($stock->white_items) || $stock->white_items <= 0){
+                return response()->json([
+                    
+                    'message' => "no_white_items"
+                ]);
+            }else{
+                return response()->json([
+                    
+                    'message' => "1"
+                ]);
+            }
+        }else if($request->cash_type == "black"){
+            
+                if(empty($stock->black_items) || $stock->black_items <= 0){
+                    return response()->json([
+                        
+                        'message' => "no_black_items"
+                    ]);
+                }else{
+                    return response()->json([
+                        
+                        'message' => "1"
+                    ]);
+                }
+            
+        }
+        
+    }
+    public function showSectionParts(Request $request)
+    {
+        // dd($request->all());
+        $id = explode('-', $request->id);
+        $section_part_id = explode('-', $request->section_part_id);
+
+        // dd($id);
+        $product = Article::where('dataSupplierId', $id[0])->where('legacyArticleId', $id[1])->first();
+        $stock = StockManagement::where('retailer_id',auth()->user()->id)
+                    ->where('product_id',$id[1])->first();
+        
+        // dd($product);
+        return response()->json([
+            'data' => $product,
+            // 'supplier' => $request->supplier_id,
+            'linkage_target_type' => $request->engine_type, // engine_type
+            'linkage_target_sub_type' => $request->engine_sub_type, //
+            'manufacturer_id' => $request->manufacturer_id,
+            'model_id' => $request->model_id,
+            'engine_id' => $request->engine_id,
+            'section_id' => $request->section_id,
+            'section_part_id' => $section_part_id[1],
+            'status' => $request->status,
+            'date' => $request->date,
+            'cash_type' => $request->cash_type,
+            'stock' => $stock,
+           
+            // 'brand_id' => $request->brand_id,
+        ]);
+    }
+
+    // our code end
 
     public function sendMail(Request $request)
     {
