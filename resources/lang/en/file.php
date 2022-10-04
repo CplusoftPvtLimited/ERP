@@ -10,6 +10,7 @@ return [
 	'DUE DATE' => 'DUE DATE',
 	'AMOUNT' => 'AMOUNT',
 	'ETAT' => 'ETAT',
+	'Select Supplier' => 'Select Supplier',
 	'VAT' => 'VAT',
 	'Sale Discount' => 'Sale Discount',
 	'Tax Stamp' => 'Tax Stamp',

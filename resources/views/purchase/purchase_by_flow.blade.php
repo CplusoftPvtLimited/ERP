@@ -82,7 +82,7 @@
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="brand">{{ __('Select brand') }}</label>
+                    <label for="brand">{{ __('Select Supplier') }} (Brand)</label>
                     <select name="brand_id" id="brand_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" required>
                     </select>
                 </div>
