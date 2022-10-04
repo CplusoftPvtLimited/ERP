@@ -1403,7 +1403,7 @@ class PurchaseController extends Controller
         try {
             $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
                 ->where('vehicleModelSeriesId', $request->model_id)
-                ->where('linkageTargetType', $request->engine_sub_type)->get();
+                ->where('subLinkageTargetType', $request->engine_sub_type)->get();
             // dd($models);
             return response()->json([
                 'data' => $engines
@@ -1453,7 +1453,7 @@ class PurchaseController extends Controller
     {
         try { 
             
-            $articles = Article::where('articleNumber','LIKE' , '%' . $request->name . '%')->get();
+            $articles = Article::where('articleNumber','LIKE' , '%' . $request->name . '%')->paginate(10);
             // dd($articles);
             return response()->json([
                 'data' => $articles

@@ -1,6 +1,5 @@
 <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
-<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+
 <div class="row">
     <div class="col-md-12">
         <div id="other_data"></div>
@@ -10,11 +9,11 @@
                 <div class="form-group">
                     <div class="col-md-12 mt-3">
                         <div class="ui-widget">
-                            <label for="autocomplete-1">{{ trans('file.Select Product') }}</label>
+                            <label for="automplete-1">{{ trans('file.Select Product') }}</label>
                             <div class="search-box input-group">
                                 <button class="btn btn-secondary"><i class="fa fa-barcode"></i></button>
 
-                                <input type="text" name="product_code_name" id="automplete-1"
+                                <input type="text" name="automplete-1" id="automplete-1"
                                     placeholder="Please type product code and select..." class="form-control" />
                             </div>
                         </div>
@@ -37,11 +36,14 @@
         </div>
     </div>
 </div>
-
-
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 <script>
     $(function() {
         let name = $('#automplete-1').val();
+        console.log(name)
         $.ajax({
             method: "GET",
             url: "{{ url('articlesByReferenceNo') }}",
@@ -52,10 +54,14 @@
             success: function(data) {
 
                 let response = data.data;
+                console.log("hjhjhjhk-------------",data.data)
                 var html = "";
                 var articleNumbers = [];
                 $.each(response, function(key, value) {
-                    articleNumbers.push(value.articleNumber)
+                    if(value != null){
+                        articleNumbers.push(value.articleNumber)
+                    }
+                    
                 });
 
                 $("#automplete-1").autocomplete({
