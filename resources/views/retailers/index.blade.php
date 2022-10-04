@@ -87,6 +87,7 @@
         var i = 1;
 
         $('#data-table').DataTable({
+            "ordering" : false,
             "processing": true,
             "serverside": true,
             ajax: "{{ route('retailers.index') }}",

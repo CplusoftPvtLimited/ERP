@@ -40,17 +40,6 @@
                         </div>
                     </div>
                     <div class="col-4">
-                        <h6>Value Key Id</h6>
-                        <select name="valueKeyId" id="valueKeyId" class="form-control">
-                            <option value="">--Select One--</option>
-                            @foreach ($keyValues as $keyValue)
-                            <option value="{{ $keyValue->keyId }}">
-                                {{ $keyValue->keyValue }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-4">
                         <div class="form-group">
                             <h6>Assembly Group Node</h6>
                             <select name="assemblyGroupNodeId" id="assemblyGroupNodeId" class="form-control">
@@ -63,15 +52,14 @@
                             </select>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Article Id</h6>
                             <input type="text" name="legacyArticleId" id="criteria_articleId" class="form-control" readonly required>
                         </div>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Criteria Description</h6>
@@ -84,13 +72,12 @@
                             <textarea name="criteriaAbbrDescription" id="criteriaAbbrDescription" cols="10" rows="5" class="form-control"></textarea>
                         </div>
                     </div>
-
-                </div>
-                <div class="row">
                     <div class="col-4">
                         <h6>Criteria Unit Description</h6>
                         <textarea name="criteriaUnitDescription" id="criteriaUnitDescription" cols="10" rows="5" class="form-control"></textarea>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Raw Value</h6>
@@ -145,7 +132,6 @@
         $('#nxtCriteria').on('click', function() {
             var legacyArticleId = $('#criteria_articleId').val();
             var criteriaType = $('#criteriaType').val();
-            var valueKeyId = $('#valueKeyId').val();
             var criteriaDescription = $('#criteriaDescription').val();
             var criteriaAbbrDescription = $('#criteriaAbbrDescription').val();
             var criteriaUnitDescription = $('#criteriaUnitDescription').val();
@@ -169,7 +155,6 @@
                     data: {
                         legacyArticleId: legacyArticleId,
                         criteriaType: criteriaType,
-                        valueKeyId: valueKeyId,
                         criteriaDescription: criteriaDescription,
                         criteriaAbbrDescription: criteriaAbbrDescription,
                         criteriaUnitDescription: criteriaUnitDescription,

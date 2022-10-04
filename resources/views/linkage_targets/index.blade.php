@@ -68,6 +68,7 @@
                                         <thead>
                                             <tr>
                                                 <th>#</th>
+                                                <th>engine Id</th>
                                                 <th>Capacity (cc)</th>
                                                 <th>Capacity (liters)</th>
                                                 <th>Code</th>
@@ -100,10 +101,16 @@
                 }
             });
             $('#model-data-table').DataTable({
+                "ordering":false,
                 "processing": true,
                 "serverside": true,
                 ajax: "{{ route('engine.index') }}",
-                columns: [{
+                columns: [
+                    {
+                        "data": 'index',
+                        name: 'index'
+                    },    
+                    {
                         data: 'linkageTargetId',
                         name: 'linkageTargetId'
                     },

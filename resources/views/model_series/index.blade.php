@@ -98,12 +98,13 @@
                 }
             });
             $('#model-data-table').DataTable({
+                "ordering": false,
                 "processing": true,
                 "serverside": true,
                 ajax: "{{ route('modelseries.index') }}",
                 columns: [{
-                        data: 'id',
-                        name: 'id'
+                        data: 'index',
+                        name: 'index'
                     },
                     {
                         "data": 'modelId',

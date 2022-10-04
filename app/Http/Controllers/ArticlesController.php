@@ -28,6 +28,7 @@ class ArticlesController extends Controller
      * @return \Illuminate\Http\Response
      */
     private $article;
+    private $val = 0;
 
     public function __construct(ArticleInterface $articleInterface)
     {
@@ -36,10 +37,11 @@ class ArticlesController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $articles = Article::select('id', 'legacyArticleId', 'articleNumber', 'mfrId', 'additionalDescription', 'assemblyGroupNodeId')
+            $articles = Article::select('id', 'legacyArticleId', 'articleNumber', 'mfrId', 'additionalDescription', 'assemblyGroupNodeId', 'created_at')
                 ->with(['assemblyGroup' => function ($query) {
                     $query->select('assemblyGroupNodeId', 'assemblyGroupName')->get();
-                }, 'manufacturer']);
+                }, 'manufacturer'])->orderBy('id', 'desc');
+            // dd($articles->get());
             // $articles = [];
             // foreach ($articless as $article) {
             //     // $manufacturer = Manufacturer::where('manuId',$article->mfrId)->first();
@@ -65,16 +67,66 @@ class ArticlesController extends Controller
                                     title=""><i class="fa fa-edit"></i></button></a>
                                 </div>
                                 <div class="col-md-2">
-                                    <a> <button
-                                    class="btn btn-danger btn-sm" onclick="deleteSection(' . $row['id'] . ')" style="" type="button"
-                                    data-original-title="btn btn-danger btn-sm"
-                                    title=""><i class="fa fa-trash"></i></button></a>
+                                <button class="btn btn-danger btn-sm" type="button"
+                                data-original-title="btn btn-danger btn-sm"
+                                id="show_confirm_' . $row["id"] . '"
+                                data-toggle="tooltip"><i
+                                    class="fa fa-trash"></i></button>
                                 </div>
                             </div>
-                         ';
+                            <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                     <script type="text/javascript">
+                        $.ajaxSetup({
+                            headers: {
+                                "X-CSRF-TOKEN": $(`meta[name="csrf-token"]`).attr("content")
+                            }
+                        });
+                        </script>
+                     <script type="text/javascript">
+                         
+                         $("#show_confirm_' . $row["id"] . '").click(async function(event) {
+                 
+                             const {
+                                 value: email
+                             } = await Swal.fire({
+                                 title: "Are you sure?",
+                                 text: "You wont be able to revert this!",
+                                 icon: "warning",
+                                 input: "text",
+                                 inputLabel: "Type product/delete to delete item",
+                                 inputPlaceholder: "Type product/delete to delete item",
+                                 showCancelButton: true,
+                                 inputValidator: (value) => {
+                                     return new Promise((resolve) => {
+                                         if (value != "product/delete") {
+                                             resolve("Type product/delete to delete item")
+                                         } else {
+                                             resolve()
+                                         }
+                                     })
+                                 },
+                             })
+                             if (email) {
+                                 $.ajax({
+                                    url: "article/' . $row["id"] . '",
+                                    type: "DELETE",
+                                    cache: false,
+                                    data: {
+                                        "_token": "{{ csrf_token() }}",
+                                    },
+                                    success: function(data) {
+                                        $("#show_confirm_' . $row['id'] . '").parents("tr").remove();
+                                    }
+                                 })
+                             }
+                         });</script>';
                     return $btn;
                 })
-                ->rawColumns(['action', 'section', 'manufacturer'])
+                ->addColumn('index', function ($row) {
+                    $value = ++$this->val;
+                    return $value;
+                })
+                ->rawColumns(['action', 'section', 'manufacturer', 'index'])
                 ->make(true);
         }
 
@@ -112,7 +164,7 @@ class ArticlesController extends Controller
                 return response()->json(
                     [
                         'success' => true,
-                        'message' => 'Data inserted successfully',
+                        'message' => 'Product Basic Details Saved Successfully.',
                         'data' => $item,
                     ]
                 );
@@ -126,7 +178,7 @@ class ArticlesController extends Controller
             }
         } else {
             if (isset($item->id)) {
-                return redirect()->route('article.index')->withSuccess(__('Product Added Successfully.'));
+                return redirect()->route('article.index')->withSuccess(__('Product Basic Details Saved Successfully.'));
             } else {
                 return redirect()->back();
             }
@@ -186,7 +238,7 @@ class ArticlesController extends Controller
                 return response()->json(
                     [
                         'success' => true,
-                        'message' => 'Data Updated successfully',
+                        'message' => 'Product Basic Details Updated Successfully.',
                         'data' => $item,
                     ]
                 );
@@ -200,7 +252,7 @@ class ArticlesController extends Controller
             }
         } else {
             if (isset($item->id)) {
-                return redirect()->route('article.index')->withSuccess(__('Product Updated Successfully.'));
+                return redirect()->route('article.index')->withSuccess(__('Product Basic Details Updated Successfully.'));
             } else {
                 return redirect()->back();
             }
@@ -220,6 +272,16 @@ class ArticlesController extends Controller
             return redirect()->route('article.index')->withSuccess(__('Product Deleted Successfully.'));
         } else {
             return redirect()->back()->withError(__('Some thing went wrong'));
+        }
+    }
+    public function destroy($id)
+    {
+        $article = Article::find($id);
+        if ($article) {
+            $article->delete();
+            return response()->json(['data' => "true", 'id' => $id]);
+        } else {
+            return response()->json("false");
         }
     }
 }

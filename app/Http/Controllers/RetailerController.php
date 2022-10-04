@@ -27,7 +27,7 @@ class RetailerController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $retailers = Retailer::where('role_id', 15)->get();
+            $retailers = Retailer::where('role_id', 15)->orderBy('id','desc')->get();
             return DataTables::of($retailers)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {

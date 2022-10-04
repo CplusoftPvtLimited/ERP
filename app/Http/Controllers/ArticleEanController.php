@@ -48,7 +48,7 @@ class ArticleEanController extends Controller
                 return response()->json(
                     [
                         'success' => true,
-                        'message' => 'Data inserted successfully',
+                        'message' => 'Product EAN Details Saved Successfully.',
                         'data' => $item,
                     ]
                 );
@@ -63,7 +63,7 @@ class ArticleEanController extends Controller
         }
         else{
             if(isset($item->id)){
-                return redirect()->route('article.index')->withSuccess(__('Product Ean Added Successfully.'));
+                return redirect()->route('article.index')->withSuccess(__('Product EAN Details Saved Successfully.'));
             }else{
                 return redirect()->back();
             }
@@ -108,7 +108,7 @@ class ArticleEanController extends Controller
                 return response()->json(
                     [
                         'success' => true,
-                        'message' => 'Data Updated successfully',
+                        'message' => 'Product EAN Details Updated Successfully.',
                         'data' => $item,
                     ]
                 );
@@ -122,7 +122,7 @@ class ArticleEanController extends Controller
             }
         } else {
             if (isset($item->id)) {
-                return redirect()->route('article.index')->withSuccess(__('Data Updated Successfully.'));
+                return redirect()->route('article.index')->withSuccess(__('Product EAN Details Updated Successfully.'));
             } else {
                 return redirect()->back();
             }

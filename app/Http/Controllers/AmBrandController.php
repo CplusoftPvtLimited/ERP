@@ -20,6 +20,7 @@ class AmBrandController extends Controller
      */
 
     private $amBrand;
+    private $val = 0;
 
     public function __construct(AmBrandInterface $amBrand)
     {
@@ -46,7 +47,11 @@ class AmBrandController extends Controller
                          ';
                                 return $btn;
                         })
-                        ->rawColumns(['action'])
+                        ->addColumn('index', function ($row) {
+                            $value = ++$this->val;
+                            return $value;
+                        })
+                        ->rawColumns(['action','index'])
                         ->make(true);
             }
           

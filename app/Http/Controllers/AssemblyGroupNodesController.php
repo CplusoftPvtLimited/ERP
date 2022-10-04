@@ -18,6 +18,7 @@ class AssemblyGroupNodesController extends Controller
      * @return \Illuminate\Http\Response
      */
     private $sectionRepository;
+    private $val = 0;
 
     public function __construct(AssemblyGroupNodeInterface $sectionInterface)
     {
@@ -47,7 +48,11 @@ class AssemblyGroupNodesController extends Controller
                          ';
                     return $btn;
                 })
-                ->rawColumns(['action'])
+                ->addColumn('index', function ($row) {
+                    $value = ++$this->val;
+                    return $value;
+                })
+                ->rawColumns(['action','index'])
                 ->toJson();
         }
 

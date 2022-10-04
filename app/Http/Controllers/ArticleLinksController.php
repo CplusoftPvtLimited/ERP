@@ -44,7 +44,7 @@ class ArticleLinksController extends Controller
         $item = $this->articleLinks->store($request);
         // dd($item);
             if(isset($item->id)){
-                return redirect()->route('article.index')->withSuccess(__('Product Added Successfully.'));
+                return redirect()->route('article.index')->withSuccess(__('Product Links Details Saved Successfully.'));
             }else{
                 return redirect()->back();
             }
@@ -88,7 +88,7 @@ class ArticleLinksController extends Controller
                 return response()->json(
                     [
                         'success' => true,
-                        'message' => 'Data Updated successfully',
+                        'message' => 'Product Links Details Updated Successfully.',
                         'data' => $item,
                     ]
                 );
@@ -102,7 +102,7 @@ class ArticleLinksController extends Controller
             }
         } else {
             if (isset($item->id)) {
-                return redirect()->route('article.index')->withSuccess(__('Data Updated Successfully.'));
+                return redirect()->route('article.index')->withSuccess(__('Product Links Details Updated Successfully.'));
             } else {
                 return redirect()->back();
             }

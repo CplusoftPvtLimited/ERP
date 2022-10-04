@@ -48,7 +48,7 @@ class ArticleCriteriaController extends Controller
                 return response()->json(
                     [
                         'success' => true,
-                        'message' => 'Data inserted successfully',
+                        'message' => 'Product Criteria Details Saved Successfully.',
                         'data' => $item,
                     ]
                 );
@@ -63,7 +63,7 @@ class ArticleCriteriaController extends Controller
         }
         else{
             if(isset($item->id)){
-                return redirect()->route('article.index')->withSuccess(__('Product Criteria Added Successfully.'));
+                return redirect()->route('article.index')->withSuccess(__('Product Criteria Details Saved Successfully.'));
             }else{
                 return redirect()->back();
             }
@@ -108,7 +108,7 @@ class ArticleCriteriaController extends Controller
                 return response()->json(
                     [
                         'success' => true,
-                        'message' => 'Data Updated successfully',
+                        'message' => 'Product Criteria Details Updated Successfully.',
                         'data' => $item,
                     ]
                 );
@@ -122,7 +122,7 @@ class ArticleCriteriaController extends Controller
             }
         } else {
             if (isset($item->id)) {
-                return redirect()->route('article.index')->withSuccess(__('Data Updated Successfully.'));
+                return redirect()->route('article.index')->withSuccess(__('Product Criteria Details Updated Successfully.'));
             } else {
                 return redirect()->back();
             }

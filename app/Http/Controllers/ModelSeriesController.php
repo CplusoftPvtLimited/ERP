@@ -19,6 +19,7 @@ class ModelSeriesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    private $val = 0;
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -43,7 +44,11 @@ class ModelSeriesController extends Controller
                          ';
                     return $btn;
                 })
-                ->rawColumns(['action'])
+                ->addColumn('index', function ($row) {
+                    $value = ++$this->val;
+                    return $value;
+                })
+                ->rawColumns(['action', 'index'])
                 ->make(true);
         }
 

@@ -20,6 +20,7 @@ class LinkageTargetsController extends Controller
 
     private $engineRepository;
     private $linkage_target_type;
+    private $val = 0;
 
     public function __construct(LinkageTargetInterface $engineInterface)
     {
@@ -61,7 +62,7 @@ class LinkageTargetsController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $engines = LinkageTarget::select('linkageTargetId', 'capacityCC', 'capacityLiters', 'code', 'kiloWattsFrom', 'kiloWattsTo', 'horsePowerTo', 'horsePowerFrom', 'engineType', 'id')->get();
+            $engines = LinkageTarget::select('id','linkageTargetId', 'capacityCC', 'capacityLiters', 'code', 'kiloWattsFrom', 'kiloWattsTo', 'horsePowerTo', 'horsePowerFrom', 'engineType', 'id')->orderBy('id', 'desc')->get();
             return DataTables::of($engines)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
@@ -82,7 +83,11 @@ class LinkageTargetsController extends Controller
                          ';
                     return $btn;
                 })
-                ->rawColumns(['action'])
+                ->addColumn('index', function ($row) {
+                    $value = ++$this->val;
+                    return $value;
+                })
+                ->rawColumns(['action', 'index'])
                 ->make(true);
         }
 

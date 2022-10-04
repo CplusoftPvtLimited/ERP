@@ -97,12 +97,14 @@
                 }
             });
             $('#model-data-table').DataTable({
+                // "order": [[1, desc]]
+                "ordering" : false,
                 "processing": true,
                 "serverside": true,
                 ajax: "{{ route('article.index') }}",
                 columns: [{
-                        data: 'id',
-                        name: 'id'
+                        data: 'index',
+                        name: 'index'
                     },
                     {
                         "data": 'legacyArticleId',
@@ -135,32 +137,32 @@
         });
 
 
-        function deleteSection(id) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                        $.ajax({
-                            method: "post",
-                            url: "{{ url('article/delete') }}",
-                            data: {
-                                id: id
-                            },
-                            success: function(data) {
-                                location.reload();
-                            }
+        // function deleteSection(id) {
+        //     Swal.fire({
+        //         title: 'Are you sure?',
+        //         text: "You won't be able to revert this!",
+        //         icon: 'warning',
+        //         showCancelButton: true,
+        //         confirmButtonColor: '#3085d6',
+        //         cancelButtonColor: '#d33',
+        //         confirmButtonText: 'Yes, delete it!'
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //                 $.ajax({
+        //                     method: "post",
+        //                     url: "{{ url('article/delete') }}",
+        //                     data: {
+        //                         id: id
+        //                     },
+        //                     success: function(data) {
+        //                         location.reload();
+        //                     }
 
-                        });
+        //                 });
 
                     
-                }
-            });
-        }
+        //         }
+        //     });
+        // }
     </script>
 @endsection
