@@ -250,7 +250,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('updatePurchaseProductQuantity','PurchaseController@updatePurchaseProductQuantity')->name('update_purchase_product_quantity'); // update a purchase
     
 	
-	////////////////Purchase END ////////////////////////
+	////////////////Purchase END //////////////////////// 
    
 	/////////////// Product Controller /////////////////
 	Route::resource('products',ProductController::class);
@@ -281,6 +281,12 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('getArticleInfo', 'PurchaseController@getArticleInfo')->name('article.info.get');
 	Route::get('articlesByReferenceNo', 'PurchaseController@articlesByReferenceNo')->name('article.reference');
     ///////////////////  end //////////////////////
+	///////////////////////// Sale-unique ////////////////////////
+	Route::get('get_section_parts_for_sale', 'SaleController@getSectionPartsForSale')->name('get_section_parts_for_sale');// get all articles from stock
+	Route::get('check_product_stock', 'SaleController@checkProductStock')->name('check_product_stock');// 
+	Route::get('show_section_parts_in_table_for_sale', 'SaleController@showSectionParts')->name('show_section_parts_in_table_for_sale'); 
+
+	
 
 
 

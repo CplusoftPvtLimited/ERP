@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-12">
         <div id="other_data"></div>
-        <div class="row">
+        <div class="row"> 
             <!-- {{-- <div class="col-md-4">
                 <div class="form-group">
                     <label>{{ trans('file.Date') }}</label>
@@ -24,7 +24,7 @@
                 <div class="form-group">
                     <label>Engine Sub-Type</label>
                     <select name="subLinkageTargetType"
-                        data-href="{{ route('manufacturers_by_engine_type') }}" id="subLinkageTarget"
+                    data-href="{{ route('get_manufacturers_by_engine_type') }}" id="subLinkageTarget"
                         class="selectpicker form-control">
                         <option value="-2">Select One</option>
                     </select>
@@ -63,7 +63,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="section_id">Select Section</label>
-                    <select name="section_id" id="section_id" data-href="{{ route('get_section_parts') }}"
+                    <select name="section_id" id="section_id" data-href="{{ route('get_section_parts_for_sale') }}"
                         class="form-control" required>
                     </select>
                 </div>
@@ -76,17 +76,17 @@
                 <div class="form-group">
                     <label for="section_part_id">Select Section Part</label>
                     <select name="section_part_id" id="section_part_id"
-                        data-href="{{ route('get_brands_by_section_part') }}" class="form-control" required>
+                        data-href="{{ route('check_product_stock') }}" class="form-control" required>
                     </select>
                 </div>
             </div>
-            <div class="col-md-4">
+            <!-- <div class="col-md-4">
                 <div class="form-group">
                     <label for="brand">Select brand</label>
                     <select name="brand_id" id="brand_id" class="form-control" required>
                     </select>
                 </div>
-            </div>
+            </div> -->
 
         </div>
         <div class="row">
@@ -104,7 +104,7 @@
 <script src="https://code.jquery.com/jquery-3.6.1.min.js"
     integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 <script>
-       $('#linkageTarget').on('change', function() {
+    $('#linkageTarget').on('change', function() {
         var val = this.value;
 
         if (val == "P") {
@@ -151,13 +151,14 @@
     $(document).on('change', '#subLinkageTarget', function() {
            
         let engine_sub_type = $(this).val();
-        // alert(manufacture_id)
-        let url = $(this).attr('data-href');
+        //alert(engine_sub_type)
+        let url = '/get_manufacturers_by_engine_type';
+        // alert(url)
         getManufacturer(url, engine_sub_type);
     });
 
     function getManufacturer(url, engine_sub_type) {
-
+        
         $.get(url + '?engine_sub_type=' + engine_sub_type, function(data) {
             // $('#model_id').html(`<option value="">Select Model</option>`);
             $('#section_id').html('<option value="">Select One</option>');
@@ -185,7 +186,9 @@
         let manufacturer_id = $(this).val();
         // alert(manufacture_id)
         let engine_sub_type = $('#subLinkageTarget :selected').val();
+        // let url = '/get_models_by_manufacturer';
         let url = $(this).attr('data-href');
+
         getModels(url, manufacturer_id, engine_sub_type);
     });
 
@@ -217,6 +220,7 @@
     ////// get engines==================
     $(document).on('change', '#model_id', function() {
         let model_id = $(this).val();
+        // let url = '/get_engines_by_model';
         let url = $(this).attr('data-href');
         let engine_sub_type = $('#subLinkageTarget :selected').val();
         getEngines(url, model_id, engine_sub_type);
@@ -247,7 +251,9 @@
     ///// get sections==================
     $(document).on('change', '#engine_id', function() {
         let engine_id = $(this).val();
+        // let url = '/get_sections_by_engine';
         let url = $(this).attr('data-href');
+
         let engine_sub_type = $('#subLinkageTarget :selected').val();
         getSections(url, engine_id, engine_sub_type);
     });
@@ -273,14 +279,32 @@
     ///// get section parts============
     $(document).on('change', '#section_id', function() {
         let section_id = $(this).val();
+        // let url = '/get_section_parts_for_sale';
         let url = $(this).attr('data-href');
+
         let engine_sub_type = $('#subLinkageTarget :selected').val();
         getSectionParts(url, section_id, engine_sub_type);
     });
 
     function getSectionParts(url, section_id, engine_sub_type) {
         $.get(url + '?section_id=' + section_id + '&engine_sub_type=' + engine_sub_type, function(data) {
+            if(data.message == 0){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Your Stock is empty',
 
+                });
+                exit();
+            }else if(data.message == 1 && data.data.length <= 0){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'You dont have any product against this section in your stock',
+
+                });
+                exit();
+            }
             let response = data.data;
             let view_html = `<option value="" selected>Select One</option>`;
             $.each(response, function(key, value) {
@@ -294,26 +318,45 @@
         })
     }
 
-    ///// get brands by section parts======
+    // check product stock
     $(document).on('change', '#section_part_id', function() {
         let section_part_id = $(this).val();
+        // let url = '/get_section_parts_for_sale';
         let url = $(this).attr('data-href');
-        getBrands(url, section_part_id);
+
+        let engine_sub_type = $('#subLinkageTarget :selected').val();
+        var cashType = $('#cash_type').find(":selected").val();
+        checkProductStock(url, section_part_id, engine_sub_type,cashType);
     });
 
-    function getBrands(url, section_part_id) {
-        $.get(url + '?section_part_id=' + section_part_id, function(data) {
-            let response = data.data;
-            let view_html = `<option value="">Select One</option>`;
-            $.each(response, function(key, value) {
-                view_html += `<option value="${value.brandId}">${value.brandName}</option>`;
-            });
-            console.log(data, view_html);
-            $('#brand_id').html(view_html);
-            $("#brand_id").val(4);
-            $("#brand_id").selectpicker("refresh");
+    function checkProductStock(url, section_part_id, engine_sub_type,cashType) {
+        $.get(url + '?section_part_id=' + section_part_id + '&engine_sub_type=' + engine_sub_type + '&cash_type='+cashType, function(data) {
+            if(data.message == "no_white_items"){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'No Items are availble for this White Cash',
+
+                });
+                // $('#section_part_id').html('<option value="">Select One</option>');
+                $('#section_part_id').selectpicker("refresh");
+                exit();
+            }else if(data.message == "no_black_items"){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'No Items are availble for this Black Cash',
+
+                });
+                // $('#section_part_id').html('<option value="">Select One</option>');
+                $('#section_part_id').selectpicker("refresh");
+                exit();
+            }
+            
         })
     }
+
+   
 
     $("#product_purchase_date").on('change', function() {
         var selectedDate = this.value;
@@ -353,18 +396,16 @@
         var engine_id = $('#engine_id').find(":selected").val();
         var section_id = $('#section_id').find(":selected").val();
         var section_part_id = $('#section_part_id').find(":selected").val();
-        var supplier_id = $('#supplier_id').find(":selected").val();
         var status = $('#status').find(":selected").val();
         var date = $('#product_purchase_date').val();
         var cashType = $('#cash_type').find(":selected").val();
-        var brandId = $('#brand_id').find(":selected").val();
 
         checkIfExists(engine_type, engine_sub_type, manufacturer_id, model_id, engine_id, section_id,
-            section_part_id, supplier_id, status, date, cashType, brandId);
+            section_part_id, status, date, cashType);
 
         $.ajax({
             method: "GET",
-            url: "{{ url('show_section_parts_in_table') }}",
+            url: "{{ url('show_section_parts_in_table_for_sale')}}",
             data: {
                 id: id,
                 engine_type: engine_type,
@@ -374,8 +415,7 @@
                 engine_id: engine_id,
                 section_id: section_id,
                 section_part_id: section_part_id,
-                supplier_id: supplier_id,
-                brand_id: brandId,
+               
                 status: status,
                 date: date,
                 cash_type: cashType 
@@ -400,28 +440,25 @@
                     white_cash_head += `<tr id="">
                     <th>{{ trans('file.name') }}</th>
                     <th>{{ trans('file.Quantity') }}</th>
-                    <th>{{ trans('file.Purchase Price') }}</th>
-                    <th>{{ trans('file.Sale Price') }}</th>
-                    <th>{{ trans('file.Discount') }}</th>
-                    <th>{{ trans('file.Additional Cost Without VAT') }}</th>
-                    <th>{{ trans('file.Additional Cost With VAT') }}</th>
+                    
+                    <th>{{ trans('file.Sale Price (Excluding VAT)') }}</th>
+                    <th>{{ trans('file.Discount (%)') }} <span>Optional</span></th>
+                    
                     <th style="width:200px">{{ trans('file.VAT %') }}</th>
-                    <th>{{ trans('file.Profit Margin') }}</th>
-                    <th>{{ trans('file.Total Excluding Vat') }}</th>
-                    <th>{{ trans('file.Actual Cost Per Product') }}</th>
+                    
+                    <th>{{ trans('file.Total (With Discount) Excluding Vat') }} </th>
+                    
                     <th><i class="dripicons-trash"></i></th>
                 </tr>`;
-
+                    // sale price => editable for white but non-editable for black
                     black_cash_head += `<tr id="">
                     <th>{{ trans('file.name') }}</th>
                     <th>{{ trans('file.Quantity') }}</th>
-                    <th>{{ trans('file.Purchase Price') }}</th>
-                    <th>{{ trans('file.Sale Price') }}</th>
-                    <th>{{ trans('file.Discount') }}</th>
-                    <th>{{ trans('file.Additional Cost Without VAT') }}</th>
-                    <th>{{ trans('file.Profit Margin') }}</th>
-                    <th>{{ trans('file.Total Excluding Vat') }}</th>
-                    <th>{{ trans('file.Actual Cost Per Product') }}</th>
+                    <th>{{ trans('file.Sale Price (Excluding VAT)') }}</th>
+                    <th>{{ trans('file.Discount (%)') }}</th>
+                    
+                    <th>{{ trans('file.Total (Without Discount)') }}</th>
+                    <th>{{ trans('file.Total (With Discount)') }}</th>
                     <th><i class="dripicons-trash"></i></th>
                 </tr>`;
 
@@ -443,7 +480,7 @@
                 html += '<input type="hidden" name="statuss[]" value="' + data.status + '">';
                 html += '<input type="hidden" name="datee[]" value="' + data.date + '">';
                 html += '<input type="hidden" name="cash_type" value="' + data.cash_type + '">';
-                html += '<input type="hidden" name="brand_id[]" value="' + data.brand_id + '">';
+                
 
                 $('#myTable tr').each(function() {
                     if (this.id != '') {
@@ -451,22 +488,7 @@
                     }
                 })
 
-                if (supplier_ids_array.length > 0) {
-                    supplier_ids_array.forEach(checkSupplier);
-
-                    function checkSupplier(item, index) {
-                        if (item != data.supplier) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'You have already selected a supplier , you are not to allowed to change the supplier during one purchase',
-                            });
-                            exit();
-                        }
-                    }
-                } else {
-                    supplier_ids_array.push(data.supplier);
-                }
+                
                 if (selected_cash_type.length > 0) {
                     selected_cash_type.forEach(checkCashType);
 
@@ -496,40 +518,45 @@
                     .genericArticleDescription + '-' + data.data.articleNumber +
                     '</td>';
 
-                markup +=
-                    '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterQty(' +
-                    data.data.legacyArticleId + ')" id="item_qty' + data.data
+                
+
+                
+                if(data.cash_type == "white"){
+                    markup += '<input type="hidden" value="'+data.stock.white_items+'" id="stock_items_'+data.data.legacyArticleId+'">';
+                    markup +=
+                    '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterSaleQty(' +
+                    data.data.legacyArticleId + ')" id="sale_item_qty' + data.data
                     .legacyArticleId +
-                    '" value="1" min="0" name="item_qty[]" required></td>';
+                    '" value="1" min="0" max="'+data.stock.white_items+'" name="item_qty[]" required></td>';
 
-                markup +=
-                    '<td><input style="width:100px" type="number" class="form-control" onkeyup="alterQty(' +
+                    markup +=
+                    '<td><input style="width:100px" onkeyup="alterSaleQty(' +
+                    data.data.legacyArticleId + ')" type="number" value="'+data.stock.unit_sale_price_of_white_cash+'" step="any" class="form-control"  id="sale_sale_price_' +
                     data.data.legacyArticleId +
-                    ')" value="1" min="0" step="any" id="purchase_price_' +
-                    data.data.legacyArticleId +
-                    '" name="purchase_price[]" required></td>';
+                    '" name="sale_price[]"></td>';
+                }else if(data.cash_type == "black"){
+                    markup += '<input type="hidden" value="'+data.stock.black_items+'" id="stock_items_'+data.data.legacyArticleId+'">';
 
-                markup +=
-                    '<td><input style="width:100px" type="number" class="form-control"  id="sale_price_' +
+                    markup +=
+                    '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterSaleQty(' +
+                    data.data.legacyArticleId + ')" id="sale_item_qty' + data.data
+                    .legacyArticleId +
+                    '" value="1" min="0" max="'+data.stock.black_items+'" name="item_qty[]" required></td>';
+                    markup +=
+                    '<td><input style="width:100px" onkeyup="alterSaleQty(' +
+                    data.data.legacyArticleId + ')" type="number" value="'+data.stock.unit_sale_price_of_black_cash+'" step="any" class="form-control"  id="sale_sale_price_' +
                     data.data.legacyArticleId +
                     '" name="sale_price[]" readonly></td>';
+                }
+                
 
                 markup +=
-                    '<td><input type="number" class="form-control" value="0" min="0" step="any" id="discount_' +
+                    '<td><input type="number" onkeyup="alterSaleQty(' +
+                    data.data.legacyArticleId + ')" class="form-control" value="0" min="0" max="100" step="any" id="sale_discount_' +
                     data.data.legacyArticleId +
                     '" name="discount[]"></td>';
 
-                markup +=
-                    '<td><input type="number" class="form-control" value="0" min="0" step="any"  onkeyup="alterQty(' +
-                    data.data.legacyArticleId + ')" id="additional_cost_without_vat_' + data.data
-                    .legacyArticleId +
-                    '" name="additional_cost_without_vat[]"></td>';
-                if (data.cash_type == "white") {
-                    markup +=
-                        '<td><input type="number" class="form-control" value="0" min="0" step="any" id="additional_cost_with_vat_' +
-                        data.data.legacyArticleId +
-                        '" name="additional_cost_with_vat[]"></td>';
-                }
+                
 
                 if (data.cash_type == "white") {
                     markup +=
@@ -538,21 +565,19 @@
                         '" name="vat[]" required></td>';
                 }
 
-                markup +=
-                    '<td><input type="number" style="width:100px" class="form-control" value="0" min="0" step="any"   onkeyup="alterQty(' +
-                    data.data.legacyArticleId + ')" id="profit_margin_' + data.data
-                    .legacyArticleId +
-                    '" name="profit_margin[]" required></td>';
+                if(data.cash_type == "black"){
+                    markup +=
+                    '<td><input style="width:200px" type="number" step="any" class="form-control" min="0"   id="sale_total_without_discount' +
+                    data.data.legacyArticleId +
+                    '" name="sale_total_without_discount[]" readonly></td>';
+                }
 
                 markup +=
-                    '<td><input style="width:100px" type="number" class="form-control" value="0" min="0"   id="total_excluding_vat_' +
+                    '<td><input style="width:200px" type="number" step="any" class="form-control" min="0"   id="sale_total_with_discount' +
                     data.data.legacyArticleId +
-                    '" name="total_excluding_vat[]" readonly></td>';
+                    '" name="sale_total_with_discount[]" readonly></td>';
 
-                markup +=
-                    '<td><input type="number" style="width:100px" class="form-control" value="0" min="0"   id="actual_cost_per_product_' +
-                    data.data.legacyArticleId +
-                    '" name="actual_cost_per_product[]" readonly></td>';
+                
 
                 markup += '<td><i id="article_delete_' +
                     data.data.legacyArticleId + '" onclick="deleteArticle(' + data.data
@@ -590,7 +615,7 @@
     });
 
     function checkIfExists(engine_type, engine_sub_type, manufacturer_id, model_id, engine_id, section_id,
-        section_part_id, supplier_id, status, date, cashType, brandId) {
+        section_part_id, status, date, cashType) {
         if (!engine_type) {
             Swal.fire({
                 icon: 'error',
@@ -653,15 +678,7 @@
             });
             exit();
         }
-        if (!supplier_id) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please select a supplier',
-
-            });
-            exit();
-        }
+        
         if (!status) {
             Swal.fire({
                 icon: 'error',
@@ -689,15 +706,7 @@
             });
             exit();
         }
-        if (!brandId) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please select Brand',
-
-            });
-            exit();
-        }
+        
     }
     var t_qty = 0;
     let w_qty = 0;
@@ -705,65 +714,36 @@
     var id_array = [];
     var total_quantity_of_all_row_products = 0;
 
-    function alterQty(id) {
-        item_qty = parseInt($("#item_qty" + id).val());
-        var purchasePrice = parseFloat($("#purchase_price_" + id).val());
-        var additional_cost_without_vat = parseFloat($("#additional_cost_without_vat_" + id).val());
-        var entireAditionalCost = $("#purchase_additional_cost").val();
+    function alterSaleQty(id) {
 
-        var total_cost_without_vat = (purchasePrice * item_qty) + additional_cost_without_vat;
-        $("#total_excluding_vat_" + id).val(total_cost_without_vat.toFixed(2));
+        var item_qty = parseInt($("#sale_item_qty" + id).val());
+        var stock = parseInt($("#stock_items_" + id).val());
+        if(item_qty > stock){
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Quantity must not be greater than Stock',
 
-        if (all_product_ids.length > 0) {
-            all_product_ids.forEach(getActualProductCost);
-
-            function getActualProductCost(id, index) {
-                total_quantity_of_all_row_products += parseInt($("#item_qty" + id).val());
-            }
-
-            var actual_cost_per_product = (total_cost_without_vat / item_qty) + (entireAditionalCost /
-                total_quantity_of_all_row_products);
+            });
+            $("#sale_item_qty" + id).val(stock - parseInt(1));
+            exit();
         }
+        
+        var sale_price = parseFloat($("#sale_sale_price_" + id).val());
+        var discount = parseFloat($("#sale_discount_" + id).val());
 
-        $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
-        var sale_price_per_product = actual_cost_per_product * (1 + parseFloat($('#profit_margin_' + id).val()));
-        sale_price_per_product = parseFloat(sale_price_per_product);
-        $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
-        total_quantity_of_all_row_products = 0;
+        var sale_total_with_discount = (item_qty * sale_price) - discount;
+        var sale_total_without_discount = (item_qty * sale_price);
+        console.log("Qty",item_qty)
+        console.log("stock",stock)
+        console.log("sale_total_with_discount",sale_total_with_discount)
+        console.log("sale_total_without_discount",sale_total_without_discount)
+        $('#sale_total_with_discount' + id).val(sale_total_with_discount.toFixed(2));
+        $('#sale_total_without_discount' + id).val(sale_total_without_discount.toFixed(2));
+       
     }
 
-    function calculateSalePrice() {
-        if (all_product_ids.length > 0) {
-            var entireAditionalCost = parseFloat($("#purchase_additional_cost").val());
-            all_product_ids.forEach(getSalePrice);
-
-            function getSalePrice(id, index) {
-                item_qty = parseInt($("#item_qty" + id).val());
-                var purchasePrice = parseFloat($("#purchase_price_" + id).val());
-                var additional_cost_without_vat = parseFloat($("#additional_cost_without_vat_" + id).val());
-                var entireAditionalCost = $("#purchase_additional_cost").val();
-
-
-                var total_cost_without_vat = (purchasePrice * item_qty) + additional_cost_without_vat;
-                $("#total_excluding_vat_" + id).val(total_cost_without_vat.toFixed(2));
-
-
-                total_quantity_of_all_row_products += parseInt($("#item_qty" + id).val());
-
-                var actual_cost_per_product = (total_cost_without_vat / item_qty) + (entireAditionalCost /
-                    total_quantity_of_all_row_products);
-
-                $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
-                var sale_price_per_product = actual_cost_per_product * (1 + parseFloat($('#profit_margin_' + id)
-                    .val()));
-
-
-                sale_price_per_product = parseFloat(sale_price_per_product);
-                $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
-            }
-            total_quantity_of_all_row_products = 0;
-        }
-    }
+   
 
     function deleteArticle(id) {
         $('#article_' + id).remove();

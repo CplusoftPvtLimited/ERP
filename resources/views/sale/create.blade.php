@@ -48,7 +48,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        {{-- <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.Order Tax') }}</label>
                                                 <select class="form-control" name="order_tax_rate">
@@ -56,8 +56,8 @@
                                                         <option value="{{ $lims_tax_list->rate }}">{{ $lims_tax_list->meta }}</option>
                                                 </select>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
+                                        </div> --}}
+                                        {{-- <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.Order Discount Type') }}</label>
                                                 <select id="order_discount_type" name="order_discount_type"
@@ -66,24 +66,22 @@
                                                     <option value="Percentage">{{ trans('file.Percentage') }}</option>
                                                 </select>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label>{{ trans('file.Value') }}</label>
-                                                <input type="text" name="order_discount_value"
-                                                    class="form-control numkey" id="order_discount_val">
-                                                <input type="hidden" name="order_discount" class="form-control"
-                                                    id="order_discount">
+                                                <label>{{ trans('file.VAT') }}</label>
+                                                <input type="number" min="0" value="0" name="vat"
+                                                    class="form-control numkey" id="vat">
+                                                <input type="hidden" name="vat" class="form-control"
+                                                    id="">
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>
                                                     {{ trans('file.Shipping Cost') }}
                                                 </label>
-                                                <input type="number" name="shipping_cost" id="shipping_cost" class="form-control"
+                                                <input type="number" name="shipping_cost" min="0" value="0" id="shipping_cost" class="form-control"
                                                     step="any" />
                                             </div>
                                         </div>
@@ -101,6 +99,24 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>{{ trans('file.Sale Discount') }}</label>
+                                                <input type="number" step="any" value="0" min="0" id="sale_discount" name="sale_discount"
+                                                    class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>{{ trans('file.Tax Stamp') }}</label>
+                                                <input type="number" step="any" value="0" min="0" id="tax_stamp" name="tax_stamp"
+                                                    class="form-control" />
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    
                                     <div class="row mt-2">
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -128,7 +144,7 @@
                                                 <button class="tablinks" onclick="openCity(event, 'Paris')">By Product
                                                     Number</button>
                                                 <button class="tablinks" onclick="openCity(event, 'Tokyo')">By Chassis
-                                                    Number</button>
+                                                     Number</button>
                                             </div>
                                         </div>
                                     </div>
