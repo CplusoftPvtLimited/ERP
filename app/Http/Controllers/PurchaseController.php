@@ -349,6 +349,7 @@ class PurchaseController extends Controller
                     array_push($article_array,$value->articleNumber);
                 }
             }
+            
             $suppliers = AfterMarkitSupplier::select('id', 'name')->where('retailer_id', auth()->user()->id)->get();
             return view('purchase.create', compact('lims_supplier_list', 'lims_warehouse_list', 'lims_tax_list', 'lims_product_list_without_variant', 'lims_product_list_with_variant', 'manufacturers', 'suppliers','article_array'));
         } else

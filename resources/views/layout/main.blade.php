@@ -1398,6 +1398,7 @@
 <!-- <script src="src/toaster.js"></script> -->
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/jquery.min.js') ?>"></script>
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/jquery-ui.min.js') ?>"></script>
+    
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/bootstrap-datepicker.min.js') ?>"></script>
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/jquery.timepicker.min.js') ?>"></script>
     <script type="text/javascript" src="<?php echo asset('vendor/popper.js/umd/popper.min.js') ?>">
