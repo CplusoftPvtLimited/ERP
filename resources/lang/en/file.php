@@ -16,6 +16,7 @@ return [
 	'Discount (%)' => 'Discount (%)',
 	'Total (With Discount) Excluding Vat' => 'Total (With Discount) Excluding Vat',
 	'Total (Without Discount)' => 'Total (Without Discount)',
+	'Total (With Discount)' => 'Total (With Discount)',
 	'Filtered' => 'Filtered',
 	'Edit Stock' => 'Edit Stock',
 	'Suppliers' => 'Suppliers',
