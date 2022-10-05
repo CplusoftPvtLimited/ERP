@@ -24,7 +24,7 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.Date') }}</label>
-                                                <input type="text" id="product_sale_date" name="created_at"
+                                                <input type="text" id="product_sale_date" name="date"
                                                     class="form-control date" placeholder="Choose date" />
                                             </div>
                                         </div>

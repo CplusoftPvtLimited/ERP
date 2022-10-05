@@ -59,7 +59,9 @@ use Illuminate\Support\Facades\Mail;
 use Srmklive\PayPal\Services\ExpressCheckout;
 use Srmklive\PayPal\Services\AdaptivePayments;
 use GeniusTS\HijriDate\Date;
+use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Auth as FacadesAuth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class SaleController extends Controller
@@ -420,8 +422,19 @@ class SaleController extends Controller
         Log::debug($request->all());
         dd($request->all());
 
-        $this->validate($request, [
-            
+         $this->validate($request, [
+            'date' => [
+                'required:d/my',
+                Rule::unique('products')->where(function ($query) {
+                    return $query->where('is_active', 1);
+                }),
+            ],
+            'name' => [
+                'max:255',
+                Rule::unique('products')->where(function ($query) {
+                    return $query->where('is_active', 1);
+                }),
+            ]
         ]);
 
         $sale = $this->saleRepository->store($request);
