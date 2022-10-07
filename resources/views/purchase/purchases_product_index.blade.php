@@ -2,6 +2,7 @@
 
 @section('css')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+
 @endsection
 
 @section('style')
@@ -76,10 +77,10 @@
                                             <th>Items</th>
                                             <th>Total Quantity</th>
                                             <th>Purchase Status</th>
-                                            <th>Paid</th>
-                                            <th>Due</th>
+                                            {{-- <th>Paid</th>
+                                            <th>Due</th> --}}
                                             <th>Grand Total</th>
-                                            <th>Action</th>
+                                            <th width="150px">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -105,10 +106,13 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            $('#data-table').DataTable({
+            var table = $('#data-table').DataTable({
                 "order": [[ 1, "DESC" ]],
+                // "scrollX": true,
+                "overflow-x": "auto",
                 "processing": true,
                 "serverside": true,
+                "paging": true,
                 ajax: "{{ route('purchases.index') }}",
                 columns: [{
                         data: 'id',
@@ -134,14 +138,14 @@
                         "data": "purchase_status",
                         name: 'purchase_status'
                     },
-                    {
-                        "data": "paid_amount",
-                        name: 'paid_amount'
-                    },
-                    {
-                        "data": "due_amount",
-                        name: 'due_amount'
-                    },
+                    // {
+                    //     "data": "paid_amount",
+                    //     name: 'paid_amount'
+                    // },
+                    // {
+                    //     "data": "due_amount",
+                    //     name: 'due_amount'
+                    // },
                     {
                         "data": "grand_total",
                         name: 'grand_total'
@@ -156,6 +160,8 @@
 
 
             });
+
+            table.ajax.reload(null, false);
             
         });
          //////// sweet alert ///////////

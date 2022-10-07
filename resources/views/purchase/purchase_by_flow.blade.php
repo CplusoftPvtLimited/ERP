@@ -12,7 +12,8 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label>Engine Type</label>
-                    <select name="linkageTargetType" id="linkageTarget" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins">
+                    <select name="linkageTargetType" id="linkageTarget" class="selectpicker form-control"
+                        data-live-search="true" data-live-search-style="begins">
 
                         <option>Select Type</option>
                         <option value="P">Passenger</option>
@@ -23,9 +24,9 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label>Engine Sub-Type</label>
-                    <select name="subLinkageTargetType"
-                        data-href="{{ route('get_manufacturers_by_engine_type') }}" id="subLinkageTarget"
-                        class="selectpicker form-control" data-live-search="true" data-live-search-style="begins">
+                    <select name="subLinkageTargetType" data-href="{{ route('get_manufacturers_by_engine_type') }}"
+                        id="subLinkageTarget" class="selectpicker form-control" data-live-search="true"
+                        data-live-search-style="begins">
                         <option value="-2">Select One</option>
                     </select>
                 </div>
@@ -43,12 +44,13 @@
 
         </div>
         <div class="row">
-            
+
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="model_id">{{ __('Select Model') }}</label>
                     <select name="model_id" id="model_id" data-href="{{ route('get_engines_by_model') }}"
-                        class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" required>
+                        class="selectpicker form-control" data-live-search="true" data-live-search-style="begins"
+                        required>
                     </select>
                 </div>
             </div>
@@ -56,7 +58,8 @@
                 <div class="form-group">
                     <label for="engine_id">{{ __('Select Engine') }}</label>
                     <select name="engine_id" id="engine_id" data-href="{{ route('get_sections_by_engine') }}"
-                        class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" required>
+                        class="selectpicker form-control" data-live-search="true" data-live-search-style="begins"
+                        required>
                     </select>
                 </div>
             </div>
@@ -64,26 +67,29 @@
                 <div class="form-group">
                     <label for="section_id">{{ __('Select Section') }}</label>
                     <select name="section_id" id="section_id" data-href="{{ route('get_section_parts') }}"
-                        class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" required>
+                        class="selectpicker form-control" data-live-search="true" data-live-search-style="begins"
+                        required>
                     </select>
                 </div>
             </div>
         </div>
 
         <div class="row">
-           
+
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="section_part_id">{{ __('Select Section Part') }}</label>
                     <select name="section_part_id" id="section_part_id"
-                        data-href="{{ route('get_brands_by_section_part') }}" data-live-search="true" data-live-search-style="begins" class="selectpicker form-control" required>
+                        data-href="{{ route('get_brands_by_section_part') }}" data-live-search="true"
+                        data-live-search-style="begins" class="selectpicker form-control" required>
                     </select>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="brand">{{ __('Select brand') }}</label>
-                    <select name="brand_id" id="brand_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" required>
+                    <select name="brand_id" id="brand_id" class="selectpicker form-control" data-live-search="true"
+                        data-live-search-style="begins" required>
                     </select>
                 </div>
             </div>
@@ -96,7 +102,7 @@
                         id="save-btn">{{ trans('file.Save') }}</button>
                 </div>
             </div>
-          
+
         </div>
     </div>
 </div>
@@ -153,7 +159,7 @@
         let engine_sub_type = $(this).val();
         // alert(manufacture_id)
         let url = $(this).attr('data-href');
-        
+
         getManufacturer(url, engine_sub_type);
     });
 
@@ -384,7 +390,7 @@
                 brand_id: brandId,
                 status: status,
                 date: date,
-                cash_type: cashType 
+                cash_type: cashType
             },
 
             success: function(data) {
@@ -403,7 +409,7 @@
                 var white_cash_head = "";
                 var black_cash_head = "";
 
-                    white_cash_head += `<tr id="">
+                white_cash_head += `<tr id="">
                     <th>{{ trans('file.name') }}</th>
                     <th>{{ trans('file.Quantity') }}</th>
                     <th>{{ trans('file.Purchase Price') }}</th>
@@ -418,7 +424,7 @@
                     <th><i class="dripicons-trash"></i></th>
                 </tr>`;
 
-                    black_cash_head += `<tr id="">
+                black_cash_head += `<tr id="">
                     <th>{{ trans('file.name') }}</th>
                     <th>{{ trans('file.Quantity') }}</th>
                     <th>{{ trans('file.Purchase Price') }}</th>
@@ -726,13 +732,14 @@
             function getActualProductCost(id, index) {
                 total_quantity_of_all_row_products += parseInt($("#item_qty" + id).val());
             }
-
+ 
             var actual_cost_per_product = (total_cost_without_vat / item_qty) + (entireAditionalCost /
                 total_quantity_of_all_row_products);
         }
 
         $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
-        var sale_price_per_product = actual_cost_per_product * (1 + parseFloat($('#profit_margin_' + id).val()));
+        var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
+        var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
         sale_price_per_product = parseFloat(sale_price_per_product);
         $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
         total_quantity_of_all_row_products = 0;
@@ -760,8 +767,9 @@
                     total_quantity_of_all_row_products);
 
                 $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
-                var sale_price_per_product = actual_cost_per_product * (1 + parseFloat($('#profit_margin_' + id)
-                    .val()));
+                var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
+                var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
+                    
 
 
                 sale_price_per_product = parseFloat(sale_price_per_product);
@@ -773,11 +781,20 @@
 
     function deleteArticle(id) {
         $('#article_' + id).remove();
-        article_ids_array = [];
-        if ($('#myTable tr').length == 0) {
-            selected_cash_type = [];
-        }
-    }
+        // article_ids_array = [];
+        
+        // jQuery.grep(article_ids_array, function(value) {
+        //     return value != id;
+        // });
+        // jQuery.grep(all_product_ids, function(value) {
+        //     return value != id;
+        // });
+        var tableBodyRow = $("table tbody tr");
 
-    
+        if(tableBodyRow.length <= 0){
+            document.getElementById('submit-button').style.display = "none !important";
+        }
+        console.log(all_product_ids.length)
+        console.log(article_ids_array.length)
+    }
 </script>

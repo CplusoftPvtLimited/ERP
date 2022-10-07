@@ -16,7 +16,7 @@
                             <div class="row">
                                 <span></span>
                             </div>
-                            {!! Form::open(['route' => 'sales.store', 'method' => 'post', 'files' => true, 'class' => 'payment-form']) !!}
+                            {!! Form::open(['route' => 'sales.store', 'method' => 'post','id' => 'sale_form', 'files' => true, 'class' => 'payment-form']) !!}
                             {{-- {!! Form::open(['route' => 'purchases.store', 'method' => 'post', 'files' => true, 'id' => 'purchase-form']) !!} --}}
                             <div class="row">
                                 <div class="col-md-12">
@@ -171,7 +171,7 @@
                             @include('purchase.order-table')
                             <div class="row" id="submit-button" style="display: none;">
                                 <div class="col-md-12 form-group text-right">
-                                    <button type="submit" class="btn btn-primary">{{ trans('file.submit') }}</button>
+                                    <button type="button" id="sale_submit_button" class="btn btn-primary">{{ trans('file.submit') }}</button>
                                 </div>
                             </div>
                             {!! Form::close() !!}
@@ -199,9 +199,47 @@
             evt.currentTarget.className += " active";
             return 1;
         }
-
         // Get the element with id="defaultOpen" and click on it
         document.getElementById("defaultOpen").click();
+        $('#sale_submit_button').on('click', function() {
+            var table_body_rows = $("table tbody tr").length;
+            if(table_body_rows <= 0){
+                Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Please add atleast one Item for Sale in table to proceed further',
+                    });
+                    exit();
+            }
+            document.getElementById("sale_form").submit();
+        });
+
+        $("#product_sale_date").on('change', function() {
+            var selectedDate = this.value;
+            var currentDate = new Date();
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+            var date_array = selectedDate.split("-");
+            var selected_day = date_array[0];
+            var selected_month = date_array[1];
+            var selected_year = date_array[2];
+            today = mm + '-' + dd + '-' + yyyy;
+            selected_date = selected_month + '-' + selected_day + '-' + selected_year;
+            var selected_date_2 = new Date(selected_date);
+            var today_date_2 = new Date(today);
+            if(selected_date_2 > today_date_2)
+                {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please select the current date! currently you are not be able to add the purchase on future date',
+                });
+                $('#product_sale_date').val('');
+                exit();
+            }
+        });
     </script>
 
     <script type="text/javascript" src="https://js.stripe.com/v3/"></script>

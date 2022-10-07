@@ -164,6 +164,17 @@
         document.getElementById("defaultOpen").click();
 
         $('#submit_button').on('click', function() {
+            
+            var table_body_rows = $("table tbody tr").length;
+            if(table_body_rows <= 0){
+                Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Please add atleast one purchase Item in table to proceed further',
+
+                    });
+                    exit();
+            }
             all_product_ids.forEach(checkFields);
 
             function checkFields(id, index) {
@@ -200,6 +211,42 @@
                 document.getElementById("purchase-form").submit();
             }
         });
+
+        // $('#product_purchase_date').on('click',function(){
+        //     alert(this.value)
+        // });
+        $("#product_purchase_date").on('change', function() {
+            var selectedDate = this.value;
+            var currentDate = new Date();
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+            var date_array = selectedDate.split("-");
+            var selected_day = date_array[0];
+            var selected_month = date_array[1];
+            var selected_year = date_array[2];
+            today = mm + '-' + dd + '-' + yyyy;
+            selected_date = selected_month + '-' + selected_day + '-' + selected_year;
+           
+            var selected_date_2 = new Date(selected_date);
+            var today_date_2 = new Date(today);
+             
+            if(selected_date_2 > today_date_2)
+                {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please select the current date! currently you are not be able to add the purchase on future date',
+                });
+                $('#product_purchase_date').val('');
+                exit();
+            }
+            
+           
+                   
+        });
+        
     </script>
 
     <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
