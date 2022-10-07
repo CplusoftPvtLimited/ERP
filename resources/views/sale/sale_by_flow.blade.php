@@ -554,7 +554,7 @@
                     '" name="sale_total_with_discount[]" readonly></td>';
 
                 markup += '<td><i id="article_delete_' +
-                    data.data.legacyArticleId + '" onclick="deleteArticle(' + data.data
+                    data.data.legacyArticleId + '" onclick="deleteSaleArticle(' + data.data
                     .legacyArticleId +
                     ')" class="fa fa-trash"></i></td>';
 
@@ -714,9 +714,9 @@
         }
 
         var sale_price = parseFloat($("#sale_sale_price_" + id).val());
-        var discount = parseFloat($("#sale_discount_" + id).val());
+        var discount = (parseFloat(1) - (parseFloat($("#sale_discount_" + id).val() / 100)));
 
-        var sale_total_with_discount = (item_qty * sale_price) - discount;
+        var sale_total_with_discount = (item_qty * sale_price) * discount;
         var sale_total_without_discount = (item_qty * sale_price);
 
         $('#sale_total_with_discount' + id).val(sale_total_with_discount.toFixed(2));
@@ -726,7 +726,7 @@
 
 
 
-    function deleteArticle(id) {
+    function deleteSaleArticle(id) {
         $('#article_' + id).remove();
         article_ids_array = [];
         if ($('#myTable tr').length == 0) {

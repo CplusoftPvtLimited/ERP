@@ -394,7 +394,8 @@ $(function() {
         }
 
         $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
-        var sale_price_per_product = actual_cost_per_product * (1 + parseFloat($('#profit_margin_' + id).val()));
+        var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
+        var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
         sale_price_per_product = parseFloat(sale_price_per_product);
         $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
         total_quantity_of_all_row_products = 0;
@@ -422,8 +423,9 @@ $(function() {
                     total_quantity_of_all_row_products);
 
                 $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
-                var sale_price_per_product = actual_cost_per_product * (1 + parseFloat($('#profit_margin_' + id)
-                    .val()));
+                var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
+                var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
+                    
 
 
                 sale_price_per_product = parseFloat(sale_price_per_product);
