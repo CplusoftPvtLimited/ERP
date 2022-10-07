@@ -6,6 +6,7 @@ return [
 	'CONTACT' => 'CONTACT',
 	'CARRIER' => 'CARRIER',
 	'BANQUE' => 'BANQUE',
+	'Create Sales' => 'Create Sales',
 	'SETTLEMENT DATE' => 'SETTLEMENT DATE',
 	'DUE DATE' => 'DUE DATE',
 	'AMOUNT' => 'AMOUNT',

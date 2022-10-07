@@ -3,7 +3,7 @@ namespace App\Repositories\Interfaces;
 
 interface SaleInterface{
 
-    public function store($request); // for purchase create
+    public function store($data); // for purchase create
     
 
 }

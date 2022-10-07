@@ -458,7 +458,7 @@ class PurchaseController extends Controller
         }
         if ($purchase == "true") {
             toastr()->success('Purchase created successfully');
-            return redirect('purchases')->with('message', 'Purchase created successfully');
+            return redirect()->route('purchases.index')->with('message', 'Purchase created successfully');
         } else {
             // dd($purchase);
             toastr()->error($purchase);

@@ -285,6 +285,8 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('get_section_parts_for_sale', 'SaleController@getSectionPartsForSale')->name('get_section_parts_for_sale');// get all articles from stock
 	Route::get('check_product_stock', 'SaleController@checkProductStock')->name('check_product_stock');// 
 	Route::get('show_section_parts_in_table_for_sale', 'SaleController@showSectionParts')->name('show_section_parts_in_table_for_sale'); 
+	Route::get('change_sale_status', 'SaleController@changeSaleStatus')->name('change_sale_status'); 
+	
 
 	
 
