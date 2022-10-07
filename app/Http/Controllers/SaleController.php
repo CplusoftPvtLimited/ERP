@@ -200,7 +200,6 @@ class SaleController extends Controller
                         $status = '<select name="sale_status" id="sale_status" class="form-control">
                         <option class="negotiation" value="#" selected disabled>Reactivated</option>
                         <option class="accept" value="created">Created</option>
-                       
                         </select>
                         <script>
                         $("select").on("change",function(){
@@ -225,7 +224,6 @@ class SaleController extends Controller
                 })
                 ->rawColumns(['action','sale_status'])->make(true);
         }
-
         return view('sale.index');
         // return view('sale.sale_index');
     }
@@ -249,7 +247,6 @@ class SaleController extends Controller
             $totalData = Sale::where('warehouse_id', $warehouse_id)->whereDate('created_at', '>=', $request->input('starting_date'))->whereDate('created_at', '<=', $request->input('ending_date'))->count();
         else
             $totalData = Sale::whereDate('created_at', '>=', $request->input('starting_date'))->whereDate('created_at', '<=', $request->input('ending_date'))->count();
-
         $totalFiltered = $totalData;
         if ($request->input('length') != -1)
             $limit = $request->input('length');

@@ -128,6 +128,9 @@
                                 </div>
                             </div>
                             @include('purchase.order-table')
+                            <div class="row p-5"  id="total_calculations" >
+                            
+                            </div>
                             <div class="row" id="submit-button" style="display: none;">
                                 <div class="col-md-12 form-group text-right">
                                     <button type="button" id="submit_button"
