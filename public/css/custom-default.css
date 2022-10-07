@@ -1191,7 +1191,9 @@ label.view-edit-purchase{
 	background: transparent !important;
 	border: none;
 }
-
+.total-calculations{
+	margin-top: 10px;
+}
 /* option.estimate{
 	background-color: #17a2b8;
 	color: white;
