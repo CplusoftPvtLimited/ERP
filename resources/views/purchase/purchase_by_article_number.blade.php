@@ -54,7 +54,7 @@
 
             success: function(data) {
 
-                let response = data.data;
+                let response = data.data.data;
                 console.log("hjhjhjhk-------------",data.data)
                 var html = "";
                 var articleNumbers = [];
