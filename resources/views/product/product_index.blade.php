@@ -122,8 +122,8 @@
                                             <th>Refrence No</th>
                                             <th>White Items</th>
                                             <th>Black Items</th>
-                                            <th>Actual Price/Unit</th>
-                                            <th>Sale Price/Unit</th>
+                                            {{-- <th>Actual Price/Unit</th>
+                                            <th>Sale Price/Unit</th> --}}
                                             <th>Total Quantity</th>
                                             <th>Action</th>
                                         </tr>
@@ -174,14 +174,14 @@
                         "data": "black_items",
                         name: 'black_items'
                     },
-                    {
-                        "data": "unit_actual_price",
-                        name: 'unit_actual_price'
-                    },
-                    {
-                        "data": "unit_sale_price",
-                        name: 'unit_sale_price'
-                    },
+                    // {
+                    //     "data": "unit_actual_price",
+                    //     name: 'unit_actual_price'
+                    // },
+                    // {
+                    //     "data": "unit_sale_price",
+                    //     name: 'unit_sale_price'
+                    // },
                     {
                         "data": "total_qty",
                         name: 'total_qty'

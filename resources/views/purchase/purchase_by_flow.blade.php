@@ -408,11 +408,11 @@
                     <th>{{ trans('file.Quantity') }}</th>
                     <th>{{ trans('file.Purchase Price') }}</th>
                     <th>{{ trans('file.Sale Price') }}</th>
-                    <th>{{ trans('file.Discount') }}</th>
+                    <th>{{ trans('file.Discount') }} %</th>
                     <th>{{ trans('file.Additional Cost Without VAT') }}</th>
                     <th>{{ trans('file.Additional Cost With VAT') }}</th>
                     <th style="width:200px">{{ trans('file.VAT %') }}</th>
-                    <th>{{ trans('file.Profit Margin') }}</th>
+                    <th>{{ trans('file.Profit Margin') }} %</th>
                     <th>{{ trans('file.Total Excluding Vat') }}</th>
                     <th>{{ trans('file.Actual Cost Per Product') }}</th>
                     <th><i class="dripicons-trash"></i></th>
@@ -423,9 +423,9 @@
                     <th>{{ trans('file.Quantity') }}</th>
                     <th>{{ trans('file.Purchase Price') }}</th>
                     <th>{{ trans('file.Sale Price') }}</th>
-                    <th>{{ trans('file.Discount') }}</th>
+                    <th>{{ trans('file.Discount') }} %</th>
                     <th>{{ trans('file.Additional Cost Without VAT') }}</th>
-                    <th>{{ trans('file.Profit Margin') }}</th>
+                    <th>{{ trans('file.Profit Margin') }} %</th>
                     <th>{{ trans('file.Total Excluding Vat') }}</th>
                     <th>{{ trans('file.Actual Cost Per Product') }}</th>
                     <th><i class="dripicons-trash"></i></th>
