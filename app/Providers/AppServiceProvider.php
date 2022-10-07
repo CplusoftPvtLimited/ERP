@@ -5,7 +5,9 @@ namespace App\Providers;
 use App\Repositories\AssemblyGroupNodeRepository;
 use App\Repositories\Interfaces\AssemblyGroupNodeInterface;
 use App\Repositories\Interfaces\PurchaseInterface;
+use App\Repositories\Interfaces\SaleInterface;
 use App\Repositories\PurchaseRepository;
+use App\Repositories\SaleRepository;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -30,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(AssemblyGroupNodeInterface::class,AssemblyGroupNodeRepository::class);
         $this->app->bind(StockManagementInterface::class,StockManagementRepository::class);
         $this->app->bind(PurchaseInterface::class,PurchaseRepository::class);
+        $this->app->bind(SaleInterface::class,SaleRepository::class);
     }
 
     public function boot()

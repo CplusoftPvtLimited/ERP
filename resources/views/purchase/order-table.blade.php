@@ -1,4 +1,4 @@
-<div class="row mt-4">
+<div class="row mt-4" id="sale_order_table">
     <div class="col-md-12">
         <h5 id="order-table-header"></h5>
         <div class="table-responsive mt-3">

@@ -1,5 +1,7 @@
-<link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
-
+<link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"
+         rel = "stylesheet">
+      <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
+      <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 <div class="row">
     <div class="col-md-12">
         <div id="other_data"></div>
@@ -8,15 +10,11 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <div class="col-md-12 mt-3">
-                        <div class="ui-widget">
-                            <label for="automplete-1">{{ trans('file.Select Product') }}</label>
-                            <div class="search-box input-group">
-                                <button class="btn btn-secondary"><i class="fa fa-barcode"></i></button>
-
-                                <input type="text" name="automplete-1" id="automplete-1"
-                                    placeholder="Please type product code and select..." class="form-control" />
-                            </div>
-                        </div>
+                        <div class = "ui-widget">
+                            
+                            <label for = "automplete-1">Product Number: </label>
+                            <input id = "automplete-1" class="form-control">
+                         </div>
 
                     </div>
                 </div>
@@ -37,13 +35,11 @@
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
-<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+
 <script>
-    $(function() {
-        let name = $('#automplete-1').val();
-        console.log(name)
+$(function() {
+        var name = $('#automplete-1').val();
+        console.log("jjjjjjjjjjjjj")
         $.ajax({
             method: "GET",
             url: "{{ url('articlesByReferenceNo') }}",
@@ -54,7 +50,7 @@
             success: function(data) {
 
                 let response = data.data;
-                console.log("hjhjhjhk-------------",data.data)
+                console.log(data.data)
                 var html = "";
                 var articleNumbers = [];
                 $.each(response, function(key, value) {
@@ -75,7 +71,51 @@
                 console.log(error);
             }
         });
-    });
+            // var availableTutorials  =  [
+            //    "ActionScript",
+            //    "Bootstrap",
+            //    "C",
+            //    "C++",
+            // ];
+            // $( "#automplete-1" ).autocomplete({
+            //    source: availableTutorials
+            // });
+});
+    // $(function() {
+    //     let name = $('#automplete-1').val();
+    //     console.log(name)
+    //     $.ajax({
+    //         method: "GET",
+    //         url: "{{ url('articlesByReferenceNo') }}",
+    //         data: {
+    //             name: name
+    //         },
+
+    //         success: function(data) {
+
+    //             let response = data.data;
+                
+    //             var html = "";
+    //             var articleNumbers = [];
+    //             $.each(response, function(key, value) {
+    //                 if(value != null){
+    //                     articleNumbers.push(value.articleNumber)
+    //                 }
+                    
+    //             });
+
+    //             $("#automplete-1").autocomplete({
+    //                 source: articleNumbers
+    //             });
+
+
+
+    //         },
+    //         error: function(error) {
+    //             console.log(error);
+    //         }
+    //     });
+    // });
     var product_name = "";
     $(document).ready(function() {
         $('#automplete-1').on('autocompletechange change', function() {
@@ -132,11 +172,11 @@
                         <th>{{ trans('file.Quantity') }}</th>
                         <th>{{ trans('file.Purchase Price') }}</th>
                         <th>{{ trans('file.Sale Price') }}</th>
-                        <th>{{ trans('file.Discount') }}</th>
+                        <th>{{ trans('file.Discount') }} %</th>
                         <th>{{ trans('file.Additional Cost Without VAT') }}</th>
                         <th>{{ trans('file.Additional Cost With VAT') }}</th>
                         <th style="width:200px">{{ trans('file.VAT %') }}</th>
-                        <th>{{ trans('file.Profit Margin') }}</th>
+                        <th>{{ trans('file.Profit Margin') }} %</th>
                         <th>{{ trans('file.Total Excluding Vat') }}</th>
                         <th>{{ trans('file.Actual Cost Per Product') }}</th>
                         <th><i class="dripicons-trash"></i></th>
@@ -147,9 +187,9 @@
                         <th>{{ trans('file.Quantity') }}</th>
                         <th>{{ trans('file.Purchase Price') }}</th>
                         <th>{{ trans('file.Sale Price') }}</th>
-                        <th>{{ trans('file.Discount') }}</th>
+                        <th>{{ trans('file.Discount') }} %</th>
                         <th>{{ trans('file.Additional Cost Without VAT') }}</th>
-                        <th>{{ trans('file.Profit Margin') }}</th>
+                        <th>{{ trans('file.Profit Margin') }} %</th>
                         <th>{{ trans('file.Total Excluding Vat') }}</th>
                         <th>{{ trans('file.Actual Cost Per Product') }}</th>
                         <th><i class="dripicons-trash"></i></th>
@@ -354,7 +394,8 @@
         }
 
         $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
-        var sale_price_per_product = actual_cost_per_product * (1 + parseFloat($('#profit_margin_' + id).val()));
+        var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
+        var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
         sale_price_per_product = parseFloat(sale_price_per_product);
         $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
         total_quantity_of_all_row_products = 0;
@@ -382,8 +423,9 @@
                     total_quantity_of_all_row_products);
 
                 $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
-                var sale_price_per_product = actual_cost_per_product * (1 + parseFloat($('#profit_margin_' + id)
-                    .val()));
+                var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
+                var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
+                    
 
 
                 sale_price_per_product = parseFloat(sale_price_per_product);

@@ -57,7 +57,7 @@
     <link rel="stylesheet" href="<?php echo asset('css/dropzone.css') ?>">
     <!-- Custom stylesheet - for your changes-->
     <link rel="stylesheet" href="<?php echo asset('css/custom-'.$general_setting->theme) ?>" type="text/css" id="custom-style">
-
+    <link rel="stylesheet" href="{{ asset('css/yajra-custom.css') }}">
     @if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl)
       <!-- RTL css -->
       <link rel="stylesheet" href="<?php echo asset('vendor/bootstrap/css/bootstrap-rtl.min.css') ?>" type="text/css">
@@ -1398,6 +1398,7 @@
 <!-- <script src="src/toaster.js"></script> -->
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/jquery.min.js') ?>"></script>
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/jquery-ui.min.js') ?>"></script>
+    
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/bootstrap-datepicker.min.js') ?>"></script>
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/jquery.timepicker.min.js') ?>"></script>
     <script type="text/javascript" src="<?php echo asset('vendor/popper.js/umd/popper.min.js') ?>">
