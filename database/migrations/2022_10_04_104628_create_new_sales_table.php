@@ -15,18 +15,20 @@ class CreateNewSalesTable extends Migration
     {
         Schema::create('new_sales', function (Blueprint $table) {
             $table->id();
-            $table->integer('retailer_id');
+            $table->timestamp('date');
             $table->bigInteger('customer_id');
+            $table->bigInteger('retailer_id');
             $table->enum('cash_type',['white','black']);
-            $table->string('vat')->default(0);
+            $table->string('entire_vat')->default(0);
             $table->string('shipping_cost')->default(0);
             $table->string('document')->nullable();
             $table->string('discount')->default(0);
             $table->string('tax_stamp')->nullable();
             $table->string('sale_note')->nullable();
             $table->string('staff_note')->nullable();
+            $table->string('total_qty')->nullable();
             $table->string('total_bill')->nullable();
-            $table->enum('status',['estimate','negotiation','accept','cancelled'])->default('estimate');
+            $table->enum('status',['created','negotiation','accepted','cancelled','reactivated'])->default('created');
             $table->softDeletes();
             $table->timestamps();
         });

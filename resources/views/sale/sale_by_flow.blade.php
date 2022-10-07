@@ -1,19 +1,11 @@
 <div class="row">
     <div class="col-md-12">
         <div id="other_data"></div>
-        <div class="row">
-            <!-- {{-- <div class="col-md-4">
-                <div class="form-group">
-                    <label>{{ trans('file.Date') }}</label>
-                    <input type="text" id="product_purchase_date" name="created_at" class="form-control date"
-                        placeholder="Choose date" />
-                </div>
-            </div> --}} -->
+        <div class="row"> 
             <div class="col-md-4">
                 <div class="form-group">
                     <label>Engine Type</label>
                     <select name="linkageTargetType" id="linkageTarget" class="selectpicker form-control">
-
                         <option>Select Type</option>
                         <option value="P">Passenger</option>
                         <option value="O">Commercial Vehicle and Tractor</option>
@@ -35,14 +27,11 @@
                     <select name="manufacture_id" id="manufacturer_id" class="selectpicker form-control"
                         data-live-search="true" data-live-search-style="begins" title="Select Manufacturer..."
                         data-href="{{ route('get_models_by_manufacturer') }}">
-
                     </select>
                 </div>
             </div>
-
         </div>
         <div class="row">
-
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="model_id">Select Model</label>
@@ -79,14 +68,6 @@
                     </select>
                 </div>
             </div>
-            <!-- <div class="col-md-4">
-                <div class="form-group">
-                    <label for="brand">Select brand</label>
-                    <select name="brand_id" id="brand_id" class="form-control" required>
-                    </select>
-                </div>
-            </div> -->
-
         </div>
         <div class="row">
             <div class="col-md-12 text-right">
@@ -398,12 +379,12 @@
         var engine_id = $('#engine_id').find(":selected").val();
         var section_id = $('#section_id').find(":selected").val();
         var section_part_id = $('#section_part_id').find(":selected").val();
-        var status = $('#status').find(":selected").val();
-        var date = $('#product_purchase_date').val();
+        // var status = $('#status').find(":selected").val();
+        // var date = $('#product_purchase_date').val();
         var cashType = $('#cash_type').find(":selected").val();
 
         checkIfExists(engine_type, engine_sub_type, manufacturer_id, model_id, engine_id, section_id,
-            section_part_id, status, date, cashType);
+            section_part_id, cashType);
 
         $.ajax({
             method: "GET",
@@ -417,10 +398,7 @@
                 engine_id: engine_id,
                 section_id: section_id,
                 section_part_id: section_part_id,
-
-                status: status,
-                date: date,
-                cash_type: cashType
+                cash_type: cashType 
             },
 
             success: function(data) {
@@ -467,29 +445,28 @@
                 var length = document.getElementById("myTable").rows.length;
 
                 var html = '';
-                html += '<input type="hidden" name="manufacturer_id[]" value="' + data
-                    .manufacturer_id + '">';
-                html += '<input type="hidden" name="linkage_target_type[]" value="' + data
-                    .linkage_target_type + '">';
-                html += '<input type="hidden" name="linkage_target_sub_type[]" value="' + data
-                    .linkage_target_sub_type + '">';
-                html += '<input type="hidden" name="modell_id[]" value="' + data.model_id + '">';
-                html += '<input type="hidden" name="enginee_id[]" value="' + data.engine_id + '">';
-                html += '<input type="hidden" name="sectionn_id[]" value="' + data.section_id +
-                    '">';
-                html += '<input type="hidden" name="sectionn_part_id[]" value="' + data
-                    .section_part_id + '">';
-                html += '<input type="hidden" name="statuss[]" value="' + data.status + '">';
-                html += '<input type="hidden" name="datee[]" value="' + data.date + '">';
-                html += '<input type="hidden" name="cash_type" value="' + data.cash_type + '">';
-
-
+                // html += '<input type="hidden" name="manufacturer_id[]" value="' + data
+                //     .manufacturer_id + '">';
+                // html += '<input type="hidden" name="linkage_target_type[]" value="' + data
+                //     .linkage_target_type + '">';
+                // html += '<input type="hidden" name="linkage_target_sub_type[]" value="' + data
+                //     .linkage_target_sub_type + '">';
+                // html += '<input type="hidden" name="modell_id[]" value="' + data.model_id + '">';
+                // html += '<input type="hidden" name="enginee_id[]" value="' + data.engine_id + '">';
+                // html += '<input type="hidden" name="sectionn_id[]" value="' + data.section_id +
+                //     '">';
+                // html += '<input type="hidden" name="sectionn_part_id[]" value="' + data
+                //     .section_part_id + '">';
+                // html += '<input type="hidden" name="statuss[]" value="' + data.status + '">';
+                // html += '<input type="hidden" name="datee[]" value="' + data.date + '">';
+                // html += '<input type="hidden" name="cash_type" value="' + data.cash_type + '">';
+                html += '<input type="hidden" name="article_number[]" value="' + data.data.articleNumber + '">';
+                
                 $('#myTable tr').each(function() {
                     if (this.id != '') {
                         article_ids_array.push(this.id)
                     }
                 })
-
 
                 if (selected_cash_type.length > 0) {
                     selected_cash_type.forEach(checkCashType);
@@ -520,30 +497,28 @@
                     .genericArticleDescription + '-' + data.data.articleNumber +
                     '</td>';
 
-
-
-
-                if (data.cash_type == "white") {
-                    markup += '<input type="hidden" value="' + data.stock.white_items +
-                        '" id="stock_items_' + data.data.legacyArticleId + '">';
+                if(data.cash_type == "white"){
+                    markup += '<input type="hidden" value="'+data.stock.white_items+'" id="stock_items_'+data.data.legacyArticleId+'">';
                     markup +=
-                        '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterSaleQty(' +
-                        data.data.legacyArticleId + ')" id="sale_item_qty' + data.data
-                        .legacyArticleId +
-                        '" value="1" min="0" max="' + data.stock.white_items +
-                        '" name="item_qty[]" required></td>';
-
+                    '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterSaleQty(' +
+                    data.data.legacyArticleId + ')" id="sale_item_qty' + data.data
+                    .legacyArticleId +
+                    '" value="1" min="0" max="'+data.stock.white_items+'" name="item_qty[]" required></td>';
+                    var white_price = 1;
+                    if(data.stock.unit_sale_price_of_white_cash != null){
+                        white_price = data.stock.unit_sale_price_of_white_cash;
+                    }
                     markup +=
-                        '<td><input style="width:100px" onkeyup="alterSaleQty(' +
-                        data.data.legacyArticleId + ')" type="number" value="' + data.stock
-                        .unit_sale_price_of_white_cash +
-                        '" step="any" class="form-control"  id="sale_sale_price_' +
-                        data.data.legacyArticleId +
-                        '" name="sale_price[]"></td>';
-                } else if (data.cash_type == "black") {
-                    markup += '<input type="hidden" value="' + data.stock.black_items +
-                        '" id="stock_items_' + data.data.legacyArticleId + '">';
-
+                    '<td><input style="width:100px" onkeyup="alterSaleQty(' +
+                    data.data.legacyArticleId + ')" type="number" value="'+white_price+'" step="any" class="form-control"  id="sale_sale_price_' +
+                    data.data.legacyArticleId +
+                    '" name="sale_price[]"></td>';
+                }else if(data.cash_type == "black"){
+                    markup += '<input type="hidden" value="'+data.stock.black_items+'" id="stock_items_'+data.data.legacyArticleId+'">';
+                    var black_price = 1;
+                    if(data.stock.unit_sale_price_of_black_cash != null){
+                        black_price = data.stock.unit_sale_price_of_black_cash;
+                    }
                     markup +=
                         '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterSaleQty(' +
                         data.data.legacyArticleId + ')" id="sale_item_qty' + data.data
@@ -551,23 +526,18 @@
                         '" value="1" min="0" max="' + data.stock.black_items +
                         '" name="item_qty[]" required></td>';
                     markup +=
-                        '<td><input style="width:100px" onkeyup="alterSaleQty(' +
-                        data.data.legacyArticleId + ')" type="number" value="' + data.stock
-                        .unit_sale_price_of_black_cash +
-                        '" step="any" class="form-control"  id="sale_sale_price_' +
-                        data.data.legacyArticleId +
-                        '" name="sale_price[]" readonly></td>';
+                    '<td><input style="width:100px" onkeyup="alterSaleQty(' +
+                    data.data.legacyArticleId + ')" type="number" value="'+black_price+'" step="any" class="form-control"  id="sale_sale_price_' +
+                    data.data.legacyArticleId +
+                    '" name="sale_price[]" readonly></td>';
                 }
-
-
+                
                 markup +=
                     '<td><input type="number" onkeyup="alterSaleQty(' +
                     data.data.legacyArticleId +
                     ')" class="form-control" value="0" min="0" max="100" step="any" id="sale_discount_' +
                     data.data.legacyArticleId +
                     '" name="discount[]"></td>';
-
-
 
                 if (data.cash_type == "white") {
                     markup +=
@@ -587,8 +557,6 @@
                     '<td><input style="width:200px" type="number" step="any" class="form-control" min="0"   id="sale_total_with_discount' +
                     data.data.legacyArticleId +
                     '" name="sale_total_with_discount[]" readonly></td>';
-
-
 
                 markup += '<td><i id="article_delete_' +
                     data.data.legacyArticleId + '" onclick="deleteSaleArticle(' + data.data
@@ -636,7 +604,7 @@
     });
 
     function checkIfExists(engine_type, engine_sub_type, manufacturer_id, model_id, engine_id, section_id,
-        section_part_id, status, date, cashType) {
+        section_part_id, cashType) {
         if (!engine_type) {
             Swal.fire({
                 icon: 'error',
@@ -755,12 +723,18 @@
 
         var sale_total_with_discount = (item_qty * sale_price) * discount;
         var sale_total_without_discount = (item_qty * sale_price);
+        if(sale_total_with_discount <= 0){
+            $('#sale_total_with_discount' + id).val(0);
+        }else{
+            $('#sale_total_with_discount' + id).val(sale_total_with_discount.toFixed(2))
+        }
 
-        $('#sale_total_with_discount' + id).val(sale_total_with_discount.toFixed(2));
-        $('#sale_total_without_discount' + id).val(sale_total_without_discount.toFixed(2));
-
+        if(sale_total_without_discount <= 0){
+            $('#sale_total_without_discount' + id).val(0);
+        }else{
+            $('#sale_total_without_discount' + id).val(sale_total_without_discount.toFixed(2))
+        }        
     }
-
 
 
     function deleteSaleArticle(id) {

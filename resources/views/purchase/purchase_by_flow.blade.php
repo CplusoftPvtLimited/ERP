@@ -87,9 +87,8 @@
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="brand">{{ __('Select brand') }}</label>
-                    <select name="brand_id" id="brand_id" class="selectpicker form-control" data-live-search="true"
-                        data-live-search-style="begins" required>
+                    <label for="brand">{{ __('Select Supplier') }} (Brand)</label>
+                    <select name="brand_id" id="brand_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" required>
                     </select>
                 </div>
             </div>
@@ -414,11 +413,11 @@
                     <th>{{ trans('file.Quantity') }}</th>
                     <th>{{ trans('file.Purchase Price') }}</th>
                     <th>{{ trans('file.Sale Price') }}</th>
-                    <th>{{ trans('file.Discount') }}</th>
+                    <th>{{ trans('file.Discount') }} %</th>
                     <th>{{ trans('file.Additional Cost Without VAT') }}</th>
                     <th>{{ trans('file.Additional Cost With VAT') }}</th>
                     <th style="width:200px">{{ trans('file.VAT %') }}</th>
-                    <th>{{ trans('file.Profit Margin') }}</th>
+                    <th>{{ trans('file.Profit Margin') }} %</th>
                     <th>{{ trans('file.Total Excluding Vat') }}</th>
                     <th>{{ trans('file.Actual Cost Per Product') }}</th>
                     <th><i class="dripicons-trash"></i></th>
@@ -429,9 +428,9 @@
                     <th>{{ trans('file.Quantity') }}</th>
                     <th>{{ trans('file.Purchase Price') }}</th>
                     <th>{{ trans('file.Sale Price') }}</th>
-                    <th>{{ trans('file.Discount') }}</th>
+                    <th>{{ trans('file.Discount') }} %</th>
                     <th>{{ trans('file.Additional Cost Without VAT') }}</th>
-                    <th>{{ trans('file.Profit Margin') }}</th>
+                    <th>{{ trans('file.Profit Margin') }} %</th>
                     <th>{{ trans('file.Total Excluding Vat') }}</th>
                     <th>{{ trans('file.Actual Cost Per Product') }}</th>
                     <th><i class="dripicons-trash"></i></th>

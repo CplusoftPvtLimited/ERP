@@ -24,23 +24,23 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.Date') }}</label>
-                                                <input type="text" id="product_sale_date" name="created_at"
+                                                <input type="text" id="product_sale_date" name="date"
                                                     class="form-control date" placeholder="Choose date" />
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.Customer') }}</label>
-                                                <select name="customer" id="customer_id" class="form-control">
+                                                <select name="customer_id" id="customer_id" class="form-control">
                                                     <option value="" disabled selected>select customer</option>
-                                                    <option value="walk_in">walk In</option>
+                                                    <option value="1">walk In</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.Cash Type') }}</label>
-                                                <select name="status" id="cash_type" class="form-control">
+                                                <select name="cash_type" id="cash_type" class="form-control">
                                                     <option value="white">{{ trans('file.White Cash') }}</option>
                                                     <option value="black">{{ trans('file.Black Cash') }}</option>
                                                 </select>
@@ -48,29 +48,10 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        {{-- <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label>{{ trans('file.Order Tax') }}</label>
-                                                <select class="form-control" name="order_tax_rate">
-                                                    <option value="" disabled selected>select one</option>
-                                                        <option value="{{ $lims_tax_list->rate }}">{{ $lims_tax_list->meta }}</option>
-                                                </select>
-                                            </div>
-                                        </div> --}}
-                                        {{-- <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label>{{ trans('file.Order Discount Type') }}</label>
-                                                <select id="order_discount_type" name="order_discount_type"
-                                                    class="form-control">
-                                                    <option value="Flat">{{ trans('file.Flat') }}</option>
-                                                    <option value="Percentage">{{ trans('file.Percentage') }}</option>
-                                                </select>
-                                            </div>
-                                        </div> --}}
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.VAT') }}</label>
-                                                <input type="number" min="0" value="0" name="vat"
+                                                <input type="number" min="0" value="0" name="entire_vat"
                                                     class="form-control numkey" id="vat">
                                                 <input type="hidden" name="vat" class="form-control"
                                                     id="">

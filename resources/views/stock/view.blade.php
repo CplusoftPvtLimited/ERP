@@ -85,16 +85,24 @@
 
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Unit Actual Price</label>
-                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->unit_actual_price) ? $get_product->unit_actual_price : 'N/A' }}" readonly>
+                                    <label for="" class="view-edit-purchase">Unit Actual Price (White Cash)</label>
+                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->unit_purchase_price_of_white_cash) ? $get_product->unit_purchase_price_of_white_cash : '' }}" readonly>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Unit Sale price</label>
-                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->unit_sale_price) ? $get_product->unit_sale_price : 'N/A' }}" readonly>
+                                    <label for="" class="view-edit-purchase">Unit Actual price (Black Cash)</label>
+                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->unit_purchase_price_of_black_cash) ? $get_product->unit_purchase_price_of_black_cash : '' }}" readonly>
                                 </div>
                             </div>
                             <hr>
                             <div class="row">
+                                <div class="col-md-3">
+                                    <label for="" class="view-edit-purchase">Unit Sale Price (White Cash)</label>
+                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->unit_sale_price_of_white_cash) ? $get_product->unit_sale_price_of_white_cash : '' }}" readonly>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="" class="view-edit-purchase">Unit Sale price (Black Cash)</label>
+                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->unit_sale_price_of_black_cash) ? $get_product->unit_sale_price_of_black_cash : '' }}" readonly>
+                                </div>
                                 <div class="col-md-3">
                                     <label for="" class="view-edit-purchase">Total Product Quantity</label>
                                     <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->total_qty) ? $get_product->total_qty : 'N/A' }}" readonly>

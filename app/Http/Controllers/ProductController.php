@@ -45,16 +45,16 @@ class ProductController extends Controller
     //     else
     //         return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
     // }
-    public function viewProduct($id){
-           
+    public function viewProduct($id)
+    {
+
         Log::debug($id);
         try {
-            $get_product = StockManagement::where('id',$id)->with(['purchaseProduct'=>function($query){
-                 $query->with(['purchase']);
+            $get_product = StockManagement::where('id', $id)->with(['purchaseProduct' => function ($query) {
+                $query->with(['purchase']);
             }])->first();
             // dd($get_product);
             return view('stock.view', compact('get_product'));
-            
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -62,35 +62,32 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
-        try {        
+        try {
             if ($request->ajax()) {
                 $all_stocks = StockManagement::where('retailer_id', Auth::user()->id)->orderBy('id', 'desc')->skip(0)->take(100)->get();
                 return DataTables::of($all_stocks)
                     ->addIndexColumn('id')
                     ->addColumn('action', function ($row) {
                         $btn = '<div class="row">
-                             <div class="col-sm-3">
-                             <a> <button
-                             class="btn btn-danger btn-sm " onclick= "deleteStock('. $row["id"] .')" style="" type="button"
-                             data-original-title="btn btn-danger btn-sm"
-                             title=""><i class="fa fa-trash"></i></button></a>
+                        <div class="col-sm-4">
+                            <a href="viewProduct/' . $row["id"] . '"> <button
+                                    class="btn btn-success btn-sm " type="button"
+                                    data-original-title="btn btn-success btn-xs"
+                                    title=""><i class="fa fa-eye"></i></button></a>
                              </div>
-                             
-                             <div class="col-sm-3">
+                             <div class="col-sm-4">
                              <a href="editPurchaseByProduct/' . $row["id"] . '"> <button
                                          class="btn btn-primary btn-sm " type="button"
                                          data-original-title="btn btn-danger btn-xs"
                                          title=""><i class="fa fa-edit"></i></button></a>
                              </div>
-
-                             <div class="col-sm-3">
-                             <a href="viewProduct/' . $row["id"] . '"> <button
-                                         class="btn btn-success btn-sm " type="button"
-                                         data-original-title="btn btn-success btn-xs"
-                                         title=""><i class="fa fa-eye"></i></button></a>
+                             <div class="col-sm-4">
+                             <a> <button
+                             class="btn btn-danger btn-sm " onclick= "deleteStock(' . $row["id"] . ')" style="" type="button"
+                             data-original-title="btn btn-danger btn-sm"
+                             title=""><i class="fa fa-trash"></i></button></a>
                              </div>
-                         </div>
-                         ';
+                         </div>';
                         return $btn;
                     })
                     ->rawColumns(['action'])->make(true);
@@ -119,12 +116,11 @@ class ProductController extends Controller
         return view('product.get', compact('products'));
     }
 
-    public function editProduct($id){
-           
-         $product_stock = StockManagement::find($id);  
-         return view('stock.edit', compact('product_stock'));
+    public function editProduct($id)
+    {
 
-       
+        $product_stock = StockManagement::find($id);
+        return view('stock.edit', compact('product_stock'));
     }
 
     public function productData(Request $request)
