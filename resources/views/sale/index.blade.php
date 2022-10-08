@@ -68,7 +68,7 @@
             ],
             "processing": true,
             "serverside": true,
-            "scrollX": true,
+            // "scrollX": true,
             ajax: "{{ route('sales.index') }}",
             columns: [{
                     data: 'id',
@@ -115,6 +115,22 @@
             ],
         });
     });
+
+    function changeSaleStatus(id){
+        var status = $('#sale_status').find(":selected").val();
+        
+        $.ajax({
+            url: "{{ route('change_sale_status') }}",
+            method: "get",
+            data: {
+                id:id,
+                status: status,
+            },
+            success: function(data){
+                location.reload();
+            }
+        });
+    }
     //////// sweet alert ///////////
     function deletePurchase(id) {
         console.log(id);

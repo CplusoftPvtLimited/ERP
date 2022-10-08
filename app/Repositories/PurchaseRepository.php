@@ -37,18 +37,12 @@ class PurchaseRepository implements PurchaseInterface
             $purchase = new Purchase();
             $total_qty = 0;
             $total_amount = 0;
-            // for ($i = 0; $i < count($request->item_qty); $i++) {
-            //     $total_qty = $total_qty + ($request->black_qty[$i] + $request->white_qty[$i]);
-            // }
-            for ($i = 0; $i < count($request->actual_cost_per_product); $i++) {
-                $total_amount += $request->actual_cost_per_product[$i];
-            }
 
             $purchase->user_id = auth()->user()->id;
             $purchase->item = count($request->item_qty);
             $purchase->total_qty = $count_item;
-            $purchase->total_cost = $total_amount;
-            $purchase->grand_total = $total_amount;
+            $purchase->total_cost = $request->total_to_be_paid;
+            $purchase->grand_total = $request->total_to_be_paid;
             $purchase->supplier_id = $request->supplier_id;
             $purchase->cash_type = $request->cash_type;
             $purchase->additional_cost = $request->purchase_additional_cost;

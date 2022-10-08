@@ -205,6 +205,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
     ///////////////////// sale controllers ////////////////////////
 	Route::resource('sales', 'SaleController');
 	Route::get('sale/new/create', 'SaleController@newCreate')->name('sales.newCreate');
+	Route::get('sale_product_delete', 'SaleController@saleProductDelete');
 	Route::get('get_section_parts_in_table', 'SaleController@showSectionParts')->name('get_section_parts_in_table'); 
 
     /////////////////////////// end /////////////////////////////
@@ -281,6 +282,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('getArticleInfo', 'PurchaseController@getArticleInfo')->name('article.info.get');
 	Route::get('articlesByReferenceNo', 'PurchaseController@articlesByReferenceNo')->name('article.reference');
     ///////////////////  end //////////////////////
+	///////////////////////// Sale-unique ////////////////////////
 	///////////////////////// Sale-unique ////////////////////////
 	Route::get('get_section_parts_for_sale', 'SaleController@getSectionPartsForSale')->name('get_section_parts_for_sale');// get all articles from stock
 	Route::get('check_product_stock', 'SaleController@checkProductStock')->name('check_product_stock');// 

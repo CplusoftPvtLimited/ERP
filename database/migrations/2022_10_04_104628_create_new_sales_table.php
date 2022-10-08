@@ -22,6 +22,7 @@ class CreateNewSalesTable extends Migration
             $table->string('entire_vat')->default(0);
             $table->string('shipping_cost')->default(0);
             $table->string('document')->nullable();
+            $table->string('sale_entire_total_exculding_vat')->default(0);
             $table->string('discount')->default(0);
             $table->string('tax_stamp')->nullable();
             $table->string('sale_note')->nullable();
