@@ -70,7 +70,7 @@ class SaleRepository implements SaleInterface
                     $stock->black_items = $stock->black_items - $stock->black_items;
                     $stock->white_items = $stock->white_items - $white_items_needed;
                     $stock->update();
-
+ 
                     // Creating Purchase
 
                     $purchase = new Purchase();
