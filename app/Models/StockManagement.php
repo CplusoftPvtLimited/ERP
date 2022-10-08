@@ -26,4 +26,9 @@ class StockManagement extends Model
     {
         return $this->belongsTo(User::class,'retailer_id','id');
     }
+
+    public function purchase() :BelongsTo
+    {
+        return $this->belongsTo(ProductPurchase::class,'product_id','product_id');
+    }
 }
