@@ -48,7 +48,7 @@
                                 <div class="col-md-4">
                                     <div class="d-flex flex-row-reverse mb-3">
                                         <div class="row">
-                                            
+
                                             <div class="col-md-12">
                                                 <a class="p-3"><button class="btn btn-primary" data-toggle="modal"
                                                         data-target="#exampleModal">Import</button></a>
@@ -66,14 +66,14 @@
                                                                 </button>
                                                             </div>
                                                             <form action="{{ route('stock.import') }}" method="POST"
-                                                                    enctype="multipart/form-data">
-                                                            <div class="modal-body">
-                                                                
+                                                                enctype="multipart/form-data">
+                                                                <div class="modal-body">
+
                                                                     @csrf
                                                                     <div class="row">
-                                                                        
+
                                                                         <div class="col-md-5">
-                                                                            <input type="file" name="file"  required>
+                                                                            <input type="file" name="file" required>
                                                                         </div>
                                                                         {{-- <div class="col-md-3">
                                                                             <button class="btn btn-primary">CSV
@@ -82,16 +82,16 @@
                                                                     </div>
                                                                     {{-- <a class="p-1" href=""><button class="btn btn-primary">CSV Import</button></a> --}}
 
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="submit" class="btn btn-primary"
-                                                                    >Upload</button>
-                                                                <button type="button" class="btn btn-secondary"
-                                                                    data-dismiss="modal">Close</button>
-                                                                    
-                                                                
-                                                            </div>
-                                                        </form>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" id="upload_btn"
+                                                                        class="btn btn-primary">Upload</button>
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                        data-dismiss="modal">Close</button>
+
+
+                                                                </div>
+                                                            </form>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -100,7 +100,6 @@
                                     </div>
                                 </div>
                             </div>
-
 
                             <div class="product-table">
                                 @if ($message = Session::get('success'))
@@ -116,16 +115,18 @@
                                 <table class="display" id="data-table">
                                     <thead>
                                         <tr>
-                                            {{-- <th>#</th> --}}
                                             <th>Product Id</th>
-                                            {{-- <th>Retailer</th> --}}
                                             <th>Refrence No</th>
                                             <th>White Items</th>
                                             <th>Black Items</th>
-                                            {{-- <th>Actual Price/Unit</th>
-                                            <th>Sale Price/Unit</th> --}}
+                                            {{-- <th>Purchase Price/Unit <span>(White Cash)</span></th> --}}
+                                            <th>Sale Price/Unit <span>(White Cash)</span></th>
+                                            {{-- <th>Purchase Price/Unit <span>(Black Cash)</span></th> --}}
+                                            <th>Sale Price/Unit <span>(Black Cash)</span></th>
+                                            {{-- <th>Discount</th> --}}
                                             <th>Total Quantity</th>
-                                            <th>Action</th>
+                                            <th style="">Action</th>
+
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -140,6 +141,13 @@
         </div>
     </div>
     <script type="text/javascript">
+        $('#upload_btn').on('click', function() {
+            console.log("here");
+            // $('#upload_btn').css('disabled', true);
+            document.getElementById('upload_btn').style.disabled = true;
+            $("form").submit();
+        });
+
         $(document).ready(function() {
             console.log('here');
             $.ajaxSetup({
@@ -148,20 +156,18 @@
                 }
             });
             $('#data-table').DataTable({
-                "order": [[ 1, "DESC" ]],
+                "order": [
+                    [1, "DESC"]
+                ],
+                "scrollX": true,
                 "processing": true,
                 "serverside": true,
                 ajax: "{{ route('products.index') }}",
                 columns: [
-                    // {data: 'id', name: 'id'},
                     {
                         "data": "product_id",
                         name: 'product_id'
                     },
-                    // {
-                    //     "data": "retailer",
-                    //     name: 'retailer'
-                    // },
                     {
                         "data": "reference_no",
                         name: 'reference_no'
@@ -175,12 +181,24 @@
                         name: 'black_items'
                     },
                     // {
-                    //     "data": "unit_actual_price",
-                    //     name: 'unit_actual_price'
+                    //     "data": "unit_purchase_price_of_white_cash",
+                    //     name: 'unit_purchase_price_of_white_cash'
                     // },
+                    {
+                        "data": "unit_sale_price_of_white_cash",
+                        name: 'unit_sale_price_of_white_cash'
+                    },
                     // {
-                    //     "data": "unit_sale_price",
-                    //     name: 'unit_sale_price'
+                    //     "data": "unit_purchase_price_of_black_cash",
+                    //     name: 'unit_purchase_price_of_black_cash'
+                    // },
+                    {
+                        "data": "unit_sale_price_of_black_cash",
+                        name: 'unit_sale_price_of_black_cash'
+                    },
+                    // {
+                    //     "data": "discount",
+                    //     name: 'discount'
                     // },
                     {
                         "data": "total_qty",

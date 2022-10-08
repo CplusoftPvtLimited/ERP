@@ -504,14 +504,21 @@
                     data.data.legacyArticleId + ')" id="sale_item_qty' + data.data
                     .legacyArticleId +
                     '" value="1" min="0" max="'+data.stock.white_items+'" name="item_qty[]" required></td>';
+                    var white_price = 1;
+                    if(data.stock.unit_sale_price_of_white_cash != null){
+                        white_price = data.stock.unit_sale_price_of_white_cash;
+                    }
                     markup +=
                     '<td><input style="width:100px" onkeyup="alterSaleQty(' +
-                    data.data.legacyArticleId + ')" type="number" value="'+data.stock.unit_sale_price_of_white_cash+'" step="any" class="form-control"  id="sale_sale_price_' +
+                    data.data.legacyArticleId + ')" type="number" value="'+white_price+'" step="any" class="form-control"  id="sale_sale_price_' +
                     data.data.legacyArticleId +
                     '" name="sale_price[]"></td>';
                 }else if(data.cash_type == "black"){
-
                     markup += '<input type="hidden" value="'+data.stock.black_items+'" id="stock_items_'+data.data.legacyArticleId+'">';
+                    var black_price = 1;
+                    if(data.stock.unit_sale_price_of_black_cash != null){
+                        black_price = data.stock.unit_sale_price_of_black_cash;
+                    }
                     markup +=
                         '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterSaleQty(' +
                         data.data.legacyArticleId + ')" id="sale_item_qty' + data.data
@@ -519,12 +526,10 @@
                         '" value="1" min="0" max="' + data.stock.black_items +
                         '" name="item_qty[]" required></td>';
                     markup +=
-                        '<td><input style="width:100px" onkeyup="alterSaleQty(' +
-                        data.data.legacyArticleId + ')" type="number" value="' + data.stock
-                        .unit_sale_price_of_black_cash +
-                        '" step="any" class="form-control"  id="sale_sale_price_' +
-                        data.data.legacyArticleId +
-                        '" name="sale_price[]" readonly></td>';
+                    '<td><input style="width:100px" onkeyup="alterSaleQty(' +
+                    data.data.legacyArticleId + ')" type="number" value="'+black_price+'" step="any" class="form-control"  id="sale_sale_price_' +
+                    data.data.legacyArticleId +
+                    '" name="sale_price[]" readonly></td>';
                 }
                 
                 markup +=
@@ -718,12 +723,18 @@
 
         var sale_total_with_discount = (item_qty * sale_price) * discount;
         var sale_total_without_discount = (item_qty * sale_price);
+        if(sale_total_with_discount <= 0){
+            $('#sale_total_with_discount' + id).val(0);
+        }else{
+            $('#sale_total_with_discount' + id).val(sale_total_with_discount.toFixed(2))
+        }
 
-        $('#sale_total_with_discount' + id).val(sale_total_with_discount.toFixed(2));
-        $('#sale_total_without_discount' + id).val(sale_total_without_discount.toFixed(2));
-
+        if(sale_total_without_discount <= 0){
+            $('#sale_total_without_discount' + id).val(0);
+        }else{
+            $('#sale_total_without_discount' + id).val(sale_total_without_discount.toFixed(2))
+        }        
     }
-
 
 
     function deleteSaleArticle(id) {

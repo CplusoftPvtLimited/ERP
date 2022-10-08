@@ -1410,7 +1410,7 @@ class PurchaseController extends Controller
         try {
             $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
                 ->where('vehicleModelSeriesId', $request->model_id)
-                ->where('subLinkageTargetType', $request->engine_sub_type)->get();
+                ->where('linkageTargetType', $request->engine_sub_type)->get();
             // dd($models);
             return response()->json([
                 'data' => $engines
