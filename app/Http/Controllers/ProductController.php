@@ -73,41 +73,52 @@ class ProductController extends Controller
                 return DataTables::of($all_stocks)
                     ->addIndexColumn('id')
                     ->editColumn('white_items', function ($row) {
+                        $white_0_item_qty = 0;
+                        $white_1_item_qty = 0;
                         $white_items = "" . $row->white_items;
-                        if(isset($row->purchase->flag )) {
+                        
+                        foreach ($row->purchase as $key => $product) {
+                            if(isset($product->flag ) && ($product->cash_type == 'white')) {
 
-                            if($row->purchase->flag == '0') {
-                                $white_items .= " <span style='color: orange'>(";
-                                $white_items .= isset($row->purchase->qty) ? ($row->purchase->qty) : "" ;
-                                $white_items .= ")</span>";
-
-                            }
-                            if($row->purchase->flag == '1') {
-                                $white_items .= " <span style='color: red'>(";
-                                $white_items .= isset($row->purchase->qty) ? ($row->purchase->qty) : "" ;
-                                $white_items .= ")</span>";
-
+                                if($product->flag == '0') {
+                                    $white_0_item_qty += $product->qty;
+                                }
+                                if($product->flag == '1') {
+                                    $white_1_item_qty += $product->qty;
+                                }
                             }
                         }
+                        $white_items .= " <span style='color: orange'>(";
+                        $white_items .= $white_0_item_qty ;
+                        $white_items .= ")</span>";
+                        $white_items .= " <span style='color: red'>(";
+                        $white_items .= $white_1_item_qty ;
+                        $white_items .= ")</span>";
                         return $white_items;
                     })
                     ->editColumn('black_items', function ($row) {
+
+                        $black_0_item_qty = 0;
+                        $black_1_item_qty = 0;
                         $black_items = "" . $row->black_items;
-                        if(isset($row->purchase->flag )) {
-                            if($row->purchase->flag == '0') {
-                                $black_items .= " <span style='color: orange'>(";
-                                $black_items .= isset($row->purchase->qty) ? ($row->purchase->qty) : "" ;
-                                $black_items .= ")</span>";
-    
-                            }
-                            if($row->purchase->flag == '1') {
-                                $black_items .= " <span style='color: red'>(";
-                                $black_items .= isset($row->purchase->qty) ? ($row->purchase->qty) : "" ;
-                                $black_items .= ")</span>";
-    
+                        
+                        foreach ($row->purchase as $key => $product) {
+                            if(isset($product->flag ) && ($product->cash_type == 'black')) {
+
+                                if($product->flag == '0') {
+                                    $black_0_item_qty += $product->qty;
+                                }
+                                if($product->flag == '1') {
+                                    $black_1_item_qty += $product->qty;
+                                }
                             }
                         }
-                        
+                        $black_items .= " <span style='color: orange'>(";
+                        $black_items .= $black_0_item_qty ;
+                        $black_items .= ")</span>";
+                        $black_items .= " <span style='color: red'>(";
+                        $black_items .= $black_1_item_qty ;
+                        $black_items .= ")</span>";
                         return $black_items;
                     })
                     ->addColumn('action', function ($row) {
