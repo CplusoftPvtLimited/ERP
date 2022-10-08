@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StockManagement extends Model
@@ -25,5 +26,10 @@ class StockManagement extends Model
     public function retailer() :BelongsTo
     {
         return $this->belongsTo(User::class,'retailer_id','id');
+    }
+
+    public function purchase() :HasMany
+    {
+        return $this->hasMany(ProductPurchase::class,'product_id','product_id');
     }
 }
