@@ -19,14 +19,18 @@
                                     <p>{{ $purchase->date }}</p>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for=""><b>Total Items</b></label>
+                                    <label for=""><b>Total Purchase Items</b></label>
                                     <p>{{ $purchase->item }}</p>
                                     
                                 </div>
                                 <div class="col-md-4">
-                                    <label for=""><b>Total Quantity</b></label>
+                                    <label for=""><b>Total Purchase Items Quantity</b></label>
                                     <p>{{ $purchase->total_qty }}</p>
-                                    
+                                </div>
+                                <div class="col-md-4">
+                                    <label for=""><b>Purchase Cash Type</b></label>
+                                    <p>{{ ($purchase->cash_type == "white") ? "white cash" : "balck cash" }}</p>
+
                                 </div>
                                 <div class="col-md-4">
                                     <label for=""><b>Grand Total</b></label>
@@ -50,7 +54,7 @@
                                     <th>Manufacturer</th>
                                     <th>Model</th>
                                     <th>Section</th>
-                                    <th>Brand</th>
+                                    <th>Supplier <span>(Brand)</span></th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
