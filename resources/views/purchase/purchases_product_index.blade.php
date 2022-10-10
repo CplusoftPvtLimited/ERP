@@ -44,7 +44,7 @@
                     <div class="card-body">
                         <div class="container">
                             <div>
-                                <h4>All Purchases</h4>
+                                <h4>Purchases</h4>
                             </div>
                             <div class="d-flex flex-row-reverse mb-3">
                                 <a class="p-1" href="{{ route('purchasesPdfDownload') }}"><button
