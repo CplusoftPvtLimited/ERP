@@ -42,41 +42,11 @@ class InvoiceController extends Controller
         if ($request->ajax()) {
             return DataTables::of(ERPInvoice::where('retailer_id', FacadesAuth::user()->id)->orderBy('id', 'DESC'))
                 ->addIndexColumn('id')
-                // ->addColumn('supplier', function ($row) {
-                //     return isset($row->afterMarkitSupplier->name) ? $row->afterMarkitSupplier->name : null;
-                // })
-                // ->addColumn('due_amount', function ($row) {
-                //     $due_amount = $row->grand_total - $row->paid_amount;
-                //     return $due_amount;
-                // })
-                // ->addColumn('purchase_status', function ($row) {
-                //     $check_odd_one = [];
-                //     foreach ($row->productPurchases as $product) {
-                //         if ($product->status == "ordered") {
-                //             array_push($check_odd_one, $product->status);
-                //         }
-                //     }
-                //     $purchase_status = "";
-                //     if (count($check_odd_one) > 0) {
-                //         $purchase_status = "Pending";
-                //     } else {
-                //         $purchase_status = "Completed";
-                //     }
-                //     return $purchase_status;
-                // })
+               
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="row">
                      <div class="col-sm-3">
-                     <a> <button
-                     class="btn btn-danger btn-sm" onclick = "deletePurchase(' . $row["id"] . ')" style="" type="button"
-                     data-original-title="btn btn-danger btn-sm"
-                     title="Delete"><i class="fa fa-trash"></i></button></a>
-                     </div>
-                     
-                     
-
-                     <div class="col-sm-3">
-                     <a href="#"> <button
+                     <a href="/show_invoice/'.$row["id"].'"> <button
                                  class="btn btn-success btn-sm " type="button"
                                  data-original-title="btn btn-success btn-xs"
                                  title=""><i class="fa fa-eye"></i></button></a>
@@ -94,9 +64,7 @@ class InvoiceController extends Controller
                         <option class="cancel" value="paid">Paid</option>
                         </select>';
                     }else if($row['status'] == "paid"){
-                        $status .= '<select name="invoice_status" onchange="changeInvoiceStatus('.$row["id"].')" id="invoice_status" class="form-control">
-                        <option class="negotiation" value="#" selected disabled>Paid</option>
-                        </select>';
+                        $status = '<span class="badge badge-success" style="padding-left:20px;padding-right:20px;padding-bottom:7px;">paid</span>';
                     }
 
                     return $status;
@@ -168,6 +136,52 @@ class InvoiceController extends Controller
             'status' => $request->status,
         ]);
         return true;
+    }
+
+    public function showInvoice($id){
+        $sale = ERPInvoice::find($id);
+            $sale_products = ERPInvoiceProduct::where('invoice_id',$id)->get();
+            // dd($lims_quotation_data);
+            return view('invoice.view_invoice',compact('sale','sale_products'));
+    }
+
+    public function getDeliverySlips(Request $request){
+        if ($request->ajax()) {
+            return DataTables::of(ERPInvoice::where('retailer_id', FacadesAuth::user()->id)->where('status','paid')->orderBy('id', 'DESC'))
+               
+                ->addColumn('action', function ($row) {
+                    $btn = '<div class="row">
+                     <div class="col-sm-3">
+                     <a href="/show_delivery_slip/'.$row["id"].'"> <button
+                                 class="btn btn-success btn-sm " type="button"
+                                 data-original-title="btn btn-success btn-xs"
+                                 title=""><i class="fa fa-eye"></i></button></a>
+                     </div>';
+                     
+                 $btn .= '</div>
+                 ';
+
+                    return $btn;
+                })->addColumn('invoice_status', function ($row) {
+                    $status = '<span class="badge badge-success" style="padding-left:20px;padding-right:20px;padding-bottom:7px;">paid</span>';
+                    
+
+                    return $status;
+                })->addColumn('customer', function ($row) {
+                    $customer = "Walkin";
+
+                    return $customer;
+                })
+                ->rawColumns(['action','invoice_status','customer'])->make(true);
+        }
+        return view('invoice.delivery_slips_list');
+    }
+
+    public function showDeliverySlip($id){
+        $sale = ERPInvoice::find($id);
+            $sale_products = ERPInvoiceProduct::where('invoice_id',$id)->get();
+            // dd($lims_quotation_data);
+            return view('invoice.show_delivery_slip',compact('sale','sale_products'));
     }
 
     public function edit($id)

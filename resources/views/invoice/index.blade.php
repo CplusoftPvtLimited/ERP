@@ -165,40 +165,11 @@
                     status: status,
                 },
                 success: function(data) {
-                    location.reload();
+                    window.location.href = "{{ url('delivery_slips') }}";
                 }
             });
         }
 
-        function deletePurchase(id) {
-            console.log(id);
-            // href="deletePurchase/' . $row['id'] . '"
-            var form = $(this).closest("form");
-            var name = $(this).data("name");
-            event.preventDefault();
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((willDelete) => {
-                if (willDelete.isConfirmed) {
-                    $.ajax({
-                        method: "GET",
-                        url: "/deletePurchase/" + id,
-                        data: {
-                            id: id
-                        },
-                        success: function($data) {
-                            location.reload();
-                        }
-                    });
-                }
-            });
-
-        }
+        
     </script>
 @endsection

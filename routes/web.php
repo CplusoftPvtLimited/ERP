@@ -290,6 +290,10 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('change_sale_status', 'SaleController@changeSaleStatus')->name('change_sale_status');  
 	Route::get('change_invoice_status', 'InvoiceController@changeInvoiceStatus')->name('change_invoice_status');  
 	Route::get('createInvoice/{id}', 'InvoiceController@createInvoice')->name('create_invoice'); 
+	Route::get('show_invoice/{id}', 'InvoiceController@showInvoice')->name('show_invoice'); 
+
+	Route::get('delivery_slips', 'InvoiceController@getDeliverySlips')->name('delivery_slips'); 
+	Route::get('show_delivery_slip/{id}', 'InvoiceController@showDeliverySlip')->name('show_delivery_slip'); 
 	
 
 	

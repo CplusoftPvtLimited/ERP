@@ -108,6 +108,9 @@ class PurchaseController extends Controller
                         $purchase_status = "Completed";
                     }
                     return $purchase_status;
+                })->editColumn('grand_total', function ($row) {
+                    $grand_total = $row['grand_total']. " €";
+                    return $grand_total;
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="row">

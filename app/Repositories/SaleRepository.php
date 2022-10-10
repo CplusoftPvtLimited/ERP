@@ -87,7 +87,6 @@ class SaleRepository implements SaleInterface
                     $purchase->additional_cost = 0;
                     $purchase->status = 0;
                     $purchase->date = date('Y-m-d');
-                    $purchase->flag = 1;
                     $purchase->save();
 
                     $article = Article::where('articleNumber',$data['article_number'][$i])->first();
@@ -124,6 +123,7 @@ class SaleRepository implements SaleInterface
                     $product_purchase->total_excluding_vat = ($white_items_needed * $stock->unit_purchase_price_of_white_cash);
                     $product_purchase->actual_cost_per_product = ($white_items_needed * $stock->unit_purchase_price_of_white_cash);
                     $date = date("Y-m-d");
+                    $product_purchase->flag = 1;
                     $product_purchase->date = $date;
                     $product_purchase->save();
                 }

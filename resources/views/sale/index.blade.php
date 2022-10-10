@@ -46,12 +46,8 @@
                                 <h4>Sales</h4>
                             </div>
                             <div class="d-flex flex-row-reverse mb-3">
-                                <a class="p-1" href="{{ route('purchasesPdfDownload') }}"><button
-                                        class="btn btn-primary"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                                        Pdf</button></a>
-                                <a class="p-1" href="{{ route('exportPurchases') }}"><button
-                                        class="btn btn-warning">Export</button></a>
-                                <a class="p-1" href="{{ route('purchases.create') }}"><button class="btn btn-success"><i
+                                
+                                <a class="p-1" href="{{ route('sales.create') }}"><button class="btn btn-success"><i
                                             class="fa fa-plus"></i> Add</button></a>
                             </div>
 
@@ -77,7 +73,7 @@
                                             <th>Total Quantity</th>
                                             {{-- <th>Shipping Cost</th>
                     <th>Discount</th> --}}
-                                            <th>Total Bill</th>
+                                            {{-- <th>Total Bill</th> --}}
                                             <th width="100px">Status</th>
                                             <th width="180px">Action</th>
                                         </tr>
@@ -141,10 +137,10 @@
                     //     "data": "discount",
                     //     name: 'discount'
                     // },
-                    {
-                        "data": "total_bill",
-                        name: 'total_bill'
-                    },
+                    // {
+                    //     "data": "total_bill",
+                    //     name: 'total_bill'
+                    // },
                     {
                         "data": "sale_status",
                         name: 'sale_status'
