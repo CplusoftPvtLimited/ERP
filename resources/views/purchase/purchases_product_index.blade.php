@@ -77,6 +77,7 @@
                                             <th>Items</th>
                                             <th>Total Quantity</th>
                                             <th>Purchase Status</th>
+                                            <th>Cash Type</th>
                                             {{-- <th>Paid</th>
                                             <th>Due</th> --}}
                                             <th>Grand Total</th>
@@ -142,10 +143,10 @@
                     //     "data": "paid_amount",
                     //     name: 'paid_amount'
                     // },
-                    // {
-                    //     "data": "due_amount",
-                    //     name: 'due_amount'
-                    // },
+                    {
+                        "data": "cash_type",
+                        name: 'cash_type'
+                    },
                     {
                         "data": "grand_total",
                         name: 'grand_total'
