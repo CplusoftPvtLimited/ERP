@@ -17,4 +17,8 @@ class AfterMarkitSupplier extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function balanceSheet()
+    {
+        return $this->hasMany(BalanceSheet::class,'supplier_id','id');
+    }
 }

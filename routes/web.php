@@ -4,6 +4,7 @@ use App\Http\Controllers\AssemblyGroupNodeController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\RetailerRegisterController;
 use App\Http\Controllers\Auth\RetailerLoginController;
+use App\Http\Controllers\BalanceSheetController;
 use App\Http\Controllers\CashManagementController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\ProductController;
@@ -431,6 +432,15 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('supplier/create', [SupplierController::class, 'create'])->name('supplier.create');
 	Route::get('cash/management', [CashManagementController::class, 'index'])->name('cash.management');
 	Route::get('cash/management/cheque', [CashManagementController::class, 'cheque'])->name('cash.management.cheque');
+	Route::get('cash/management/balance', [CashManagementController::class, 'balance'])->name('cash.management.balance');
+
+
+	Route::resource('balanceSheet','BalanceSheetController');
+	Route::get('get/balanacecategories',[BalanceSheetController::class,'getBalanaceCategories'])->name('get_categories_from_type');
+	Route::resource('bank_account','BankAccountController');
+
+
+
 	Route::get('allMakes', [MakeController::class, 'getAllMakes'])->name('allmake.get');
 
 });
