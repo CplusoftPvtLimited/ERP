@@ -60,7 +60,7 @@ return [
 	'Sales Estimate List' => 'Sales Estimate List',
 	'Delivery Slips' => 'Delivery Slips',
 	'Un Paid'=> 'Un Paid',
-	'After Markit Supplier' => 'After Markit Supplier',
+	'After Market Supplier' => 'After Market Supplier',
 	'All Makes' => 'All Makes',
 	'Reference' => 'Reference',
 	'Customer' => 'Customer',

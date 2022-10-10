@@ -10,7 +10,7 @@
                 <div class="col-md-12">
                     <div class="card p-0">
                         <div class="card-header">
-                            <h3>Add Purchases</h3>
+                            <h3>Add Purchase</h3>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -29,7 +29,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label>{{ trans('file.After Markit Supplier') }}</label>
+                                                <label>{{ trans('file.After Market Supplier') }}</label>
                                                 <select name="supplier_id" id="supplier_id" data-href="#"
                                                     class="selectpicker form-control" data-live-search="true"
                                                     data-live-search-style="begins" title="Select supplier...">
@@ -60,7 +60,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4">
+                                        {{-- <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.Attach Document') }}</label> <i
                                                     class="dripicons-question" data-toggle="tooltip"
@@ -72,7 +72,7 @@
                                                     </span>
                                                 @endif
                                             </div>
-                                        </div>
+                                        </div> --}}
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.Additional Cost') }}</label>
