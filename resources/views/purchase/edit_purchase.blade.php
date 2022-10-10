@@ -36,17 +36,17 @@
                                     <p>{{ $purchase->date }}</p>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for=""><b>Total Purchase Items</b></label>
+                                    <label for=""><b>Total Items</b></label>
                                     <p>{{ $purchase->item }}</p>
 
                                 </div>
                                 <div class="col-md-4">
-                                    <label for=""><b>Total Purchase Items Quantity</b></label>
+                                    <label for=""><b>Total Items Quantity</b></label>
                                     <p>{{ $purchase->total_qty }}</p>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for=""><b>Purchase Cash Type</b></label>
-                                    <p>{{ ($purchase->cash_type == "white") ? "white cash" : "balck cash" }}</p>
+                                    <label for=""><b>Cash Type</b></label>
+                                    <p>{{ ($purchase->cash_type == "white") ? "white" : "black" }}</p>
 
                                 </div>
                                 <div class="col-md-4">
@@ -72,7 +72,7 @@
                                     <th>Model</th>
                                     <th>Section</th>
                                     <th>Supplier <span>(Brand)</span></th>
-                                    <th>After Markit Supplier</th>
+                                    <th>After Market Supplier</th>
                                     <th>Quantity</th>
                                     <th>Purchase Status</th>
                                     <th>Action</th>
