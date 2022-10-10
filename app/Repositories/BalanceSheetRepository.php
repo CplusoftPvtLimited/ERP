@@ -132,7 +132,9 @@ class BalanceSheetRepository implements BalanceSheetInterface
             $revenue['primary_balance'] = $primary_revenue;
             $revenue['secondary_balance'] = $secondary_revenue;
             $bank_account = BankAccount::where('retailer_id', $auth_id)->first();
-            $bank_account->update($revenue);
+            if ($bank_account) {
+                $bank_account->update($revenue);
+            }
             DB::commit();
             return $item;
         } catch (\Exception $e) {
