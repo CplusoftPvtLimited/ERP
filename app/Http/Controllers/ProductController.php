@@ -98,7 +98,7 @@ class ProductController extends Controller
                     })
                     ->editColumn('black_items', function ($row) {
 
-                        $black_0_item_qty = 0;
+                        $black_1_item_qty = 0;
                         $black_1_item_qty = 0;
                         $black_items = "" . $row->black_items;
                         
@@ -106,7 +106,7 @@ class ProductController extends Controller
                             if(isset($product->flag ) && ($product->cash_type == 'black')) {
 
                                 if($product->flag == '0') {
-                                    $black_0_item_qty += $product->qty;
+                                    $black_1_item_qty += $product->qty;
                                 }
                                 if($product->flag == '1') {
                                     $black_1_item_qty += $product->qty;
@@ -114,7 +114,7 @@ class ProductController extends Controller
                             }
                         }
                         $black_items .= " <span style='color: orange'>(";
-                        $black_items .= $black_0_item_qty ;
+                        $black_items .= $black_1_item_qty ;
                         $black_items .= ")</span>";
                         $black_items .= " <span style='color: red'>(";
                         $black_items .= $black_1_item_qty ;

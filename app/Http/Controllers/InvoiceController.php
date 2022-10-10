@@ -26,30 +26,148 @@ use Auth;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Mail\UserNotification;
+use App\Models\ERPInvoice;
+use App\Models\ERPInvoiceProduct;
+use App\Models\NewSale;
+use App\Models\NewSaleProduct;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\Facades\DataTables;
 
 class InvoiceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $role = Role::find(Auth::user()->role_id);
-        if($role->hasPermissionTo('quotes-index')){
-            $permissions = Role::findByName($role->name)->permissions;
-            foreach ($permissions as $permission)
-                $all_permission[] = $permission->name;
-            if(empty($all_permission))
-                $all_permission[] = 'dummy text';
-            
-            if(Auth::user()->role_id > 2 && config('staff_access') == 'own')
-                $lims_quotation_all = Quotation::with('customer', 'supplier', 'user')->orderBy('id', 'desc')->where('user_id', Auth::id())->where('payment_status', 4)->get();
-            else
-                $lims_quotation_all = Quotation::with('customer', 'supplier', 'user')->orderBy('id', 'desc')->where('payment_status', 4)->get();
-            return view('invoice.index', compact('lims_quotation_all', 'all_permission'));
+        if ($request->ajax()) {
+            return DataTables::of(ERPInvoice::where('retailer_id', FacadesAuth::user()->id)->orderBy('id', 'DESC'))
+                ->addIndexColumn('id')
+                // ->addColumn('supplier', function ($row) {
+                //     return isset($row->afterMarkitSupplier->name) ? $row->afterMarkitSupplier->name : null;
+                // })
+                // ->addColumn('due_amount', function ($row) {
+                //     $due_amount = $row->grand_total - $row->paid_amount;
+                //     return $due_amount;
+                // })
+                // ->addColumn('purchase_status', function ($row) {
+                //     $check_odd_one = [];
+                //     foreach ($row->productPurchases as $product) {
+                //         if ($product->status == "ordered") {
+                //             array_push($check_odd_one, $product->status);
+                //         }
+                //     }
+                //     $purchase_status = "";
+                //     if (count($check_odd_one) > 0) {
+                //         $purchase_status = "Pending";
+                //     } else {
+                //         $purchase_status = "Completed";
+                //     }
+                //     return $purchase_status;
+                // })
+                ->addColumn('action', function ($row) {
+                    $btn = '<div class="row">
+                     <div class="col-sm-3">
+                     <a> <button
+                     class="btn btn-danger btn-sm" onclick = "deletePurchase(' . $row["id"] . ')" style="" type="button"
+                     data-original-title="btn btn-danger btn-sm"
+                     title="Delete"><i class="fa fa-trash"></i></button></a>
+                     </div>
+                     
+                     
+
+                     <div class="col-sm-3">
+                     <a href="#"> <button
+                                 class="btn btn-success btn-sm " type="button"
+                                 data-original-title="btn btn-success btn-xs"
+                                 title=""><i class="fa fa-eye"></i></button></a>
+                     </div>';
+                     if($row['status'] == "unpaid"){
+                        $btn .= '<div class="col-sm-3">
+                        <a href="/invoices/' . $row["id"] . '/edit"> <button
+                                    class="btn btn-primary btn-sm " type="button"
+                                    data-original-title="btn btn-danger btn-xs"
+                                    title=""><i class="fa fa-edit"></i></button></a>
+                        </div>';
+                     }
+                 $btn .= '</div>
+                 ';
+
+                    return $btn;
+                })->addColumn('invoice_status', function ($row) {
+                    $status = "";
+                    if($row['status'] == "unpaid"){
+                        $status .= '<select name="invoice_status" onchange="changeInvoiceStatus('.$row["id"].')" id="invoice_status" class="form-control">
+                        <option class="negotiation" value="#" selected disabled>UnPaid</option>
+                        <option class="cancel" value="paid">Paid</option>
+                        </select>';
+                    }else if($row['status'] == "paid"){
+                        $status .= '<select name="invoice_status" onchange="changeInvoiceStatus('.$row["id"].')" id="invoice_status" class="form-control">
+                        <option class="negotiation" value="#" selected disabled>Paid</option>
+                        </select>';
+                    }
+
+                    return $status;
+                })->addColumn('customer', function ($row) {
+                    $customer = "Walkin";
+
+                    return $customer;
+                })
+                ->rawColumns(['action','invoice_status','customer'])->make(true);
         }
-        else
-            return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+        return view('invoice.index');
+        // return view('sale.sale_index');
     }
+
+    // our own code
+
+    public function createInvoice($id){
+        $sale = NewSale::find($id);
+        if($sale){
+            $sale_products = NewSaleProduct::where('sale_id',$sale->id)->get();
+            $invoice = ERPInvoice::create([
+                'date' => date('Y-m-d'),
+                'sale_id' => $sale->id,
+                'customer_id' => $sale->customer_id,
+                'retailer_id' => auth()->user()->id,
+                'cash_type' => $sale->cash_type,
+                'entire_vat' => $sale->entire_vat,
+                'shipping_cost' => $sale->shipping_cost,
+                'discount' => $sale->discount,
+                'tax_stamp' => $sale->tax_stamp,
+                'sale_entire_total_exculding_vat' => $sale->sale_entire_total_exculding_vat,
+                'total_qty' => $sale->total_qty,
+                'total_bill' => $sale->total_bill,
+            ]);
+
+            foreach($sale_products as $product){
+                ERPInvoiceProduct::create([
+                    'invoice_id' => $invoice->id,
+                    'reference_no' => $product->reference_no,
+                    'quantity' => $product->quantity,
+                    'sale_price' => $product->sale_price,
+                    'discount' => $product->discount,
+                    'vat' => $product->vat,
+                    'total_with_discount' => $product->total_with_discount,
+                    'total_without_discount' => $product->total_without_discount,
+                ]);
+            }
+            toastr()->success('Invoice created successfully');
+
+            return redirect()->route('invoices.index');
+            
+        }else{
+            return redirect()->back();
+        }
+    }
+
+    public function changeInvoiceStatus(Request $request){
+        $invoice = ERPInvoice::find($request->id);
+        $invoice->update([
+            'status' => $request->status,
+        ]);
+        return true;
+    }
+
     public function edit($id)
     {
         // dd('dgdg');

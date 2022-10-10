@@ -51,6 +51,8 @@ use Spatie\Permission\Models\Permission;
 use App\Mail\UserNotification;
 use App\Models\AfterMarkitSupplier;
 use App\Models\Article;
+use App\Models\ERPInvoice;
+use App\Models\ERPInvoiceProduct;
 use App\Models\Manufacturer;
 use App\Models\NewSale;
 use App\Models\NewSaleProduct;
@@ -67,6 +69,7 @@ use Illuminate\Support\Facades\DB as FacadesDB;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Stripe\Invoice;
 use Yajra\DataTables\Facades\DataTables;
 
 class SaleController extends Controller
@@ -162,12 +165,21 @@ class SaleController extends Controller
                      </div>
 
                      <div class="col-sm-3">
-                     <a href="viewPurchase/' . $row["id"] . '"> <button
+                     <a href="#"> <button
                                  class="btn btn-success btn-sm " type="button"
                                  data-original-title="btn btn-success btn-xs"
                                  title=""><i class="fa fa-eye"></i></button></a>
-                     </div>
-                 </div>
+                     </div>';
+                     if($row['status'] == "accepted"){
+                        $btn .= '<div class="col-sm-3">
+                        <a href="/createInvoice/'.$row["id"].'"> <button
+                                    class="btn btn-success btn-sm " style="background: grey;
+                                    border: 1px solid grey;" type="button"
+                                    data-original-title="btn btn-success btn-xs"
+                                    title=""><i class="fa fa-file"></i></button></a>
+                        </div>';
+                     }
+                 $btn .= '</div>
                  ';
 
                     return $btn;
@@ -554,7 +566,6 @@ class SaleController extends Controller
                 return redirect()->back();
             }
             toastr()->error($sale);
-            dd($sale);
             return redirect()->back()->withErrors($sale);
         } catch (\Exception $e) {
             Log::debug($e->getMessage());
@@ -565,6 +576,8 @@ class SaleController extends Controller
     }
 
     // Our own code
+
+    
 
     public function getSectionPartsForSale(Request $request)
     {
