@@ -1,6 +1,13 @@
 <?php 
 return [
-
+	'Add an Expense' => 'Add an Expense',
+	'Balance Type' => 'Balance Type',
+	'Transaction Type' => 'Transaction Type',
+	'Mode Payment' => 'Mode Payment',
+	'Category'=> 'Category',
+	'Settelement Date' => 'Settelement Date',
+	'Account Source'=> 'Account Source',
+	'Due Date' =>'Due Date',
 	'Sections' => 'Sections',
 	'NUMBER' => 'NUMBER',
 	'CONTACT' => 'CONTACT',
@@ -26,7 +33,9 @@ return [
 	'Additional Cost Without VAT' => 'Additional Cost Without VAT',
 	'Additional Cost With VAT' => 'Additional Cost With VAT',
 	'Shop Name' => 'Shop Name',
-	'Cash-Management' => 'Cash-Management',
+	'Cash Management' => 'Cash Management',
+	'Bank Account' => 'Bank Account',
+	'Check And Drafts' => 'Check And Drafts',
 	'Primary balance' => 'Primary balance',
 	'Secondary balance' => 'Secondary balance',
 	'Detail' => 'Detail',
