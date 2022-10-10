@@ -35,9 +35,9 @@
                     <div class="card-body">
                         <div class="container">
                             <div class="d-flex flex-row-reverse mb-3 mr-4">
-                                <a href="{{route('bank_account.create')}}" class="btn btn-info mb-1"><i class="dripicons-plus"></i> {{trans('file.Add Bank Account')}}</a>
+                                {{-- <a href="{{route('bank_account.create')}}" class="btn btn-info mb-1"><i class="dripicons-plus"></i> {{trans('file.Add Bank Account')}}</a> --}}
                                 <div class="col pl-4 pt-1">
-                                    <h2>{{trans('file.Bank Accounts')}}</h2>
+                                    <h2>{{trans('file.Bank Account')}}</h2>
                                 </div>
                             </div>
                             <div class="table-responsive">

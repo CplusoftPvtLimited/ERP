@@ -12,7 +12,7 @@ class BalanceSheetRepository implements BalanceSheetInterface
 {
     public function store($data)
     {
-        // dd($data->all());
+        // dd(Auth::name());
         DB::beginTransaction();
         if ($data->has('ajax')) {
             $input = $data->except('_token', 'ajax');
@@ -134,12 +134,17 @@ class BalanceSheetRepository implements BalanceSheetInterface
             $bank_account = BankAccount::where('retailer_id', $auth_id)->first();
             if ($bank_account) {
                 $bank_account->update($revenue);
+            }else{
+                $revenue['account_title'] = "Default Account";
+                $revenue['account_number'] = rand(1000000000,99999999999);
+                $revenue['retailer_id'] = Auth::id();
+                BankAccount::create($revenue);
             }
             DB::commit();
             return $item;
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e->getMessage());
+            // dd($e->getMessage());
             return $e;
         }
     }
