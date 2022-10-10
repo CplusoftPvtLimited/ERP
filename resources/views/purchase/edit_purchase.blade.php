@@ -54,6 +54,12 @@
                                     <p>{{ $purchase->grand_total }}</p>
 
                                 </div>
+                                <div class="col-md-4">
+                                    <label for=""><b>After Markit Supplier</b></label>
+                                    @php $supplier = App\Models\AfterMarkitSupplier::where('id', $purchase->supplier_id)->first(); @endphp
+                                    <p>{{ isset($supplier) ? $supplier->name : '' }}</p>
+
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -72,7 +78,7 @@
                                     <th>Model</th>
                                     <th>Section</th>
                                     <th>Supplier <span>(Brand)</span></th>
-                                    <th>After Markit Supplier</th>
+                                    {{-- <th>After Markit Supplier</th> --}}
                                     <th>Quantity</th>
                                     <th>Purchase Status</th>
                                     <th>Action</th>
@@ -88,7 +94,7 @@
                                         <td>{{ $product->model }}</td>
                                         <td>{{ $product->section }}</td>
                                         <td>{{ $product->brand }}</td>
-                                        <td>{{ $product->supplier }}</td>
+                                       
                                         <td>
                                             @if ($product->status == 'received')
                                                 {{$product->qty}}

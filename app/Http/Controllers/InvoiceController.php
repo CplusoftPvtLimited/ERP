@@ -81,14 +81,7 @@ class InvoiceController extends Controller
                                  data-original-title="btn btn-success btn-xs"
                                  title=""><i class="fa fa-eye"></i></button></a>
                      </div>';
-                     if($row['status'] == "unpaid"){
-                        $btn .= '<div class="col-sm-3">
-                        <a href="/invoices/' . $row["id"] . '/edit"> <button
-                                    class="btn btn-primary btn-sm " type="button"
-                                    data-original-title="btn btn-danger btn-xs"
-                                    title=""><i class="fa fa-edit"></i></button></a>
-                        </div>';
-                     }
+                     
                  $btn .= '</div>
                  ';
 
@@ -123,37 +116,46 @@ class InvoiceController extends Controller
     public function createInvoice($id){
         $sale = NewSale::find($id);
         if($sale){
-            $sale_products = NewSaleProduct::where('sale_id',$sale->id)->get();
-            $invoice = ERPInvoice::create([
-                'date' => date('Y-m-d'),
-                'sale_id' => $sale->id,
-                'customer_id' => $sale->customer_id,
-                'retailer_id' => auth()->user()->id,
-                'cash_type' => $sale->cash_type,
-                'entire_vat' => $sale->entire_vat,
-                'shipping_cost' => $sale->shipping_cost,
-                'discount' => $sale->discount,
-                'tax_stamp' => $sale->tax_stamp,
-                'sale_entire_total_exculding_vat' => $sale->sale_entire_total_exculding_vat,
-                'total_qty' => $sale->total_qty,
-                'total_bill' => $sale->total_bill,
-            ]);
-
-            foreach($sale_products as $product){
-                ERPInvoiceProduct::create([
-                    'invoice_id' => $invoice->id,
-                    'reference_no' => $product->reference_no,
-                    'quantity' => $product->quantity,
-                    'sale_price' => $product->sale_price,
-                    'discount' => $product->discount,
-                    'vat' => $product->vat,
-                    'total_with_discount' => $product->total_with_discount,
-                    'total_without_discount' => $product->total_without_discount,
+            $invoice = ERPInvoice::where('sale_id',$sale->id)
+            ->where('retailer_id',auth()->user()->id)->first();
+            if(empty($invoice)){
+                $sale_products = NewSaleProduct::where('sale_id',$sale->id)->get();
+                $invoice = ERPInvoice::create([
+                    'date' => date('Y-m-d'),
+                    'sale_id' => $sale->id,
+                    'customer_id' => $sale->customer_id,
+                    'retailer_id' => auth()->user()->id,
+                    'cash_type' => $sale->cash_type,
+                    'entire_vat' => $sale->entire_vat,
+                    'shipping_cost' => $sale->shipping_cost,
+                    'discount' => $sale->discount,
+                    'tax_stamp' => $sale->tax_stamp,
+                    'sale_entire_total_exculding_vat' => $sale->sale_entire_total_exculding_vat,
+                    'total_qty' => $sale->total_qty,
+                    'total_bill' => $sale->total_bill,
                 ]);
+    
+                foreach($sale_products as $product){
+                    ERPInvoiceProduct::create([
+                        'invoice_id' => $invoice->id,
+                        'reference_no' => $product->reference_no,
+                        'quantity' => $product->quantity,
+                        'sale_price' => $product->sale_price,
+                        'discount' => $product->discount,
+                        'vat' => $product->vat,
+                        'total_with_discount' => $product->total_with_discount,
+                        'total_without_discount' => $product->total_without_discount,
+                    ]);
+                }
+                toastr()->success('Invoice created successfully');
+    
+                return redirect()->route('invoices.index');
+            }else{
+                toastr()->info('Invoice Already Exists');
+    
+                return redirect()->route('sales.index');
             }
-            toastr()->success('Invoice created successfully');
-
-            return redirect()->route('invoices.index');
+           
             
         }else{
             return redirect()->back();
@@ -173,15 +175,10 @@ class InvoiceController extends Controller
         // dd('dgdg');
         $role = Role::find(Auth::user()->role_id);
         if($role->hasPermissionTo('quotes-edit')){
-            $lims_customer_list = Customer::where('is_active', true)->get();
-            $lims_warehouse_list = Warehouse::where('is_active', true)->get();
-            $lims_biller_list = Biller::where('is_active', true)->get();
-            $lims_supplier_list = Supplier::where('is_active', true)->get();
-            $lims_tax_list = Tax::where('is_active', true)->get();
-            $lims_quotation_data = Quotation::find($id);
-            $lims_product_quotation_data = ProductQuotation::where('quotation_id', $id)->get();
+            $sale = ERPInvoice::find($id);
+            $sale_products = ERPInvoiceProduct::where('invoice_id',$id)->get();
             // dd($lims_quotation_data);
-            return view('invoice.edit',compact('lims_customer_list', 'lims_warehouse_list', 'lims_biller_list', 'lims_tax_list', 'lims_quotation_data','lims_product_quotation_data', 'lims_supplier_list'));
+            return view('invoice.edit',compact('sale','sale_products'));
         }
         else
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');

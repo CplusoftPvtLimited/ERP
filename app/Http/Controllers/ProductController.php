@@ -129,12 +129,7 @@ class ProductController extends Controller
                                     data-original-title="btn btn-success btn-xs"
                                     title=""><i class="fa fa-eye"></i></button></a>
                              </div>
-                             <div class="col-sm-4">
-                             <a href="editPurchaseByProduct/' . $row["id"] . '"> <button
-                                         class="btn btn-primary btn-sm " type="button"
-                                         data-original-title="btn btn-danger btn-xs"
-                                         title=""><i class="fa fa-edit"></i></button></a>
-                             </div>
+                             
                              <div class="col-sm-4">
                              <a> <button
                              class="btn btn-danger btn-sm " onclick= "deleteStock(' . $row["id"] . ')" style="" type="button"

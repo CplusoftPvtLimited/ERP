@@ -26,11 +26,11 @@
 <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
 
 @section('breadcrumb-title')
-    <h3>Purchases list</h3>
+    <h3>Invoicees list</h3>
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item active">Purchases list</li>
+    <li class="breadcrumb-item active">Invoices list</li>
 @endsection
 
 @section('content')
@@ -43,17 +43,9 @@
                     <div class="card-body">
                         <div class="container">
                             <div>
-                                <h4>All Purchases</h4>
+                                <h4>All Invoices</h4>
                             </div>
-                            <div class="d-flex flex-row-reverse mb-3">
-                                <a class="p-1" href="{{ route('purchasesPdfDownload') }}"><button
-                                        class="btn btn-primary"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                                        Pdf</button></a>
-                                <a class="p-1" href="{{ route('exportPurchases') }}"><button
-                                        class="btn btn-warning">Export</button></a>
-                                <a class="p-1" href="{{ route('purchases.create') }}"><button class="btn btn-success"><i
-                                            class="fa fa-plus"></i> Add</button></a>
-                            </div>
+                            
 
                             <div class="product-table">
                                 @if ($message = Session::get('success'))
@@ -78,7 +70,7 @@
                                             <th>Invoice Status</th>
                                             {{-- <th>Paid</th>
                                             <th>Due</th> --}}
-                                            <th width="150px">Action</th>
+                                            <th width="100px">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>

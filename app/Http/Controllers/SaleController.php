@@ -671,10 +671,11 @@ class SaleController extends Controller
     }
 
     public function changeSaleStatus(Request $request){
+        // dd($request->all());
         $sale = NewSale::find($request->id);
-        $sale->update([
-            'status' => $request->status,
-        ]);
+        $sale->status = $request->status;
+        $sale->save();
+          
         return true;
     }
     // our code end
