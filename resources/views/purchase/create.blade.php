@@ -10,11 +10,11 @@
                 <div class="col-md-12">
                     <div class="card p-0">
                         <div class="card-header">
-                            <h3>Add Purchases</h3>
+                            <h3>Add Purchase</h3>
                         </div>
                         <div class="card-body">
                             <div class="row">
-                               <span></span>
+                                <span></span>
                             </div>
                             {!! Form::open(['route' => 'purchases.store', 'method' => 'post', 'files' => true, 'id' => 'purchase-form']) !!}
                             <div class="row">
@@ -29,7 +29,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label>{{ trans('file.After Markit Supplier') }}</label>
+                                                <label>{{ trans('file.After Market Supplier') }}</label>
                                                 <select name="supplier_id" id="supplier_id" data-href="#"
                                                     class="selectpicker form-control" data-live-search="true"
                                                     data-live-search-style="begins" title="Select supplier...">
@@ -59,8 +59,8 @@
                                                 </select>
                                             </div>
                                         </div>
-   
-                                        <div class="col-md-4">
+
+                                        {{-- <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.Attach Document') }}</label> <i
                                                     class="dripicons-question" data-toggle="tooltip"
@@ -72,12 +72,12 @@
                                                     </span>
                                                 @endif
                                             </div>
-                                        </div>
+                                        </div> --}}
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.Additional Cost') }}</label>
                                                 <input type="number" name="purchase_additional_cost" value="0"
-                                                    id="purchase_additional_cost" onkeyup="calculateSalePrice()"
+                                                    id="purchase_additional_cost" onkeyup="calculatePurchasePrice()"
                                                     class="form-control" min="0" max="100000000">
                                             </div>
                                         </div>
@@ -114,7 +114,7 @@
                                             <div id="London" class="tabcontent">
                                                 @include('purchase.purchase_by_flow')
                                             </div>
-    
+
                                             <div id="Paris" class="tabcontent">
                                                 @include('purchase.purchase_by_article_number')
                                             </div>
@@ -128,10 +128,13 @@
                                 </div>
                             </div>
                             @include('purchase.order-table')
+                            <div class="row p-5"  id="total_calculations" >
+                            
+                            </div>
                             <div class="row" id="submit-button" style="display: none;">
                                 <div class="col-md-12 form-group text-right">
-                                    <button type="submit" class="btn btn-primary"
-                                       >{{ trans('file.submit') }}</button>
+                                    <button type="button" id="submit_button"
+                                        class="btn btn-primary">{{ trans('file.submit') }}</button>
                                 </div>
                             </div>
                             {!! Form::close() !!}
@@ -162,6 +165,91 @@
 
         // Get the element with id="defaultOpen" and click on it
         document.getElementById("defaultOpen").click();
+
+        $('#submit_button').on('click', function() {
+            
+            var table_body_rows = $("table tbody tr").length;
+            if(table_body_rows <= 0){
+                Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Please add atleast one purchase Item in table to proceed further',
+
+                    });
+                    exit();
+            }
+            all_product_ids.forEach(checkFields);
+
+            function checkFields(id, index) {
+                var sale_price = $('#sale_price_' + id).val();
+                var actual_cost_per_product = $('#actual_cost_per_product_' + id).val();
+                var total_excluding_vat = $("#total_excluding_vat_" + id).val();
+                if (sale_price == null || sale_price <= 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Sale Price must be greater than zero',
+
+                    });
+                    exit();
+                }
+                if (actual_cost_per_product == null || actual_cost_per_product <= 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Actual Cost Per Product must be greater than zero',
+
+                    });
+                    exit();
+                }
+                if (total_excluding_vat == null || total_excluding_vat <= 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Total Excluding VAT must be greater than zero',
+
+                    });
+                    exit();
+                }
+                document.getElementById("purchase-form").submit();
+            }
+        });
+
+        // $('#product_purchase_date').on('click',function(){
+        //     alert(this.value)
+        // });
+        $("#product_purchase_date").on('change', function() {
+            var selectedDate = this.value;
+            var currentDate = new Date();
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+            var date_array = selectedDate.split("-");
+            var selected_day = date_array[0];
+            var selected_month = date_array[1];
+            var selected_year = date_array[2];
+            today = mm + '-' + dd + '-' + yyyy;
+            selected_date = selected_month + '-' + selected_day + '-' + selected_year;
+           
+            var selected_date_2 = new Date(selected_date);
+            var today_date_2 = new Date(today);
+             
+            if(selected_date_2 > today_date_2)
+                {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please select the current date! currently you are not be able to add the purchase on future date',
+                });
+                $('#product_purchase_date').val('');
+                exit();
+            }
+            
+           
+                   
+        });
+        
     </script>
 
     <script type="text/javascript" src="https://js.stripe.com/v3/"></script>

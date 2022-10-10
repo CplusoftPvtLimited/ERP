@@ -21,7 +21,7 @@
                                         <div id="other_data"></div>
                                         <input type="hidden" name="id" value="{{$product_stock->id}}">
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label>Retailer Id</label>
                                                     <input type="text" id="" name="retailer_id"
@@ -29,7 +29,7 @@
                                                         readonly />
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label>Refrence No</label>
                                                     <input type="text" id="" name="reference_no"
@@ -37,7 +37,7 @@
                                                         readonly />
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label>White cash Items</label>
                                                     <input type="number" name="white_items" class="form-control"
@@ -45,8 +45,6 @@
                                                         min="1" />
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label>Black cash Items</label>
@@ -55,22 +53,44 @@
                                                         min="1" />
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div class="row">
+                                            
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <label>Actual Price Per Unit</label>
-                                                    <input type="number" name="unit_actual_price" class="form-control"
-                                                        value="{{ $product_stock->unit_actual_price }}" placeholder=""
+                                                    <label>Actual Price (Black Cash)</label>
+                                                    <input type="number" name="unit_purchase_price_of_black_cash" class="form-control"
+                                                        value="{{ $product_stock->unit_purchase_price_of_black_cash }}" placeholder=""
                                                         min="1" />
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <label>Sale Price Per Unit</label>
-                                                    <input type="number" name="unit_sale_price" class="form-control"
-                                                        value="{{ $product_stock->unit_sale_price }}" placeholder=""
+                                                    <label>Actual Price (White Cash)</label>
+                                                    <input type="number" name="unit_purchase_price_of_white_cash" class="form-control"
+                                                        value="{{ $product_stock->unit_purchase_price_of_white_cash }}" placeholder=""
                                                         min="1" />
                                                 </div>
                                             </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label>Sale Price (Black Cash)</label>
+                                                    <input type="number" name="unit_sale_price_of_black_cash" class="form-control"
+                                                        value="{{ $product_stock->unit_sale_price_of_black_cash }}" placeholder=""
+                                                        min="1" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label>Sale Price (White Cash)</label>
+                                                    <input type="number" name="unit_sale_price_of_white_cash" class="form-control"
+                                                        value="{{ $product_stock->unit_sale_price_of_white_cash }}" placeholder=""
+                                                        min="1" />
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="row">
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label>Total Quantity</label>

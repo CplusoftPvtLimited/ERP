@@ -1,19 +1,11 @@
 <div class="row">
     <div class="col-md-12">
         <div id="other_data"></div>
-        <div class="row">
-            <!-- {{-- <div class="col-md-4">
-                <div class="form-group">
-                    <label>{{ trans('file.Date') }}</label>
-                    <input type="text" id="product_purchase_date" name="created_at" class="form-control date"
-                        placeholder="Choose date" />
-                </div>
-            </div> --}} -->
+        <div class="row"> 
             <div class="col-md-4">
                 <div class="form-group">
                     <label>Engine Type</label>
                     <select name="linkageTargetType" id="linkageTarget" class="selectpicker form-control">
-
                         <option>Select Type</option>
                         <option value="P">Passenger</option>
                         <option value="O">Commercial Vehicle and Tractor</option>
@@ -23,9 +15,8 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label>Engine Sub-Type</label>
-                    <select name="subLinkageTargetType"
-                        data-href="{{ route('manufacturers_by_engine_type') }}" id="subLinkageTarget"
-                        class="selectpicker form-control">
+                    <select name="subLinkageTargetType" data-href="{{ route('get_manufacturers_by_engine_type') }}"
+                        id="subLinkageTarget" class="selectpicker form-control">
                         <option value="-2">Select One</option>
                     </select>
                 </div>
@@ -36,14 +27,11 @@
                     <select name="manufacture_id" id="manufacturer_id" class="selectpicker form-control"
                         data-live-search="true" data-live-search-style="begins" title="Select Manufacturer..."
                         data-href="{{ route('get_models_by_manufacturer') }}">
-
                     </select>
                 </div>
             </div>
-
         </div>
         <div class="row">
-            
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="model_id">Select Model</label>
@@ -63,7 +51,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="section_id">Select Section</label>
-                    <select name="section_id" id="section_id" data-href="{{ route('get_section_parts') }}"
+                    <select name="section_id" id="section_id" data-href="{{ route('get_section_parts_for_sale') }}"
                         class="form-control" required>
                     </select>
                 </div>
@@ -71,32 +59,23 @@
         </div>
 
         <div class="row">
-           
+
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="section_part_id">Select Section Part</label>
-                    <select name="section_part_id" id="section_part_id"
-                        data-href="{{ route('get_brands_by_section_part') }}" class="form-control" required>
+                    <select name="section_part_id" id="section_part_id" data-href="{{ route('check_product_stock') }}"
+                        class="form-control" required>
                     </select>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="brand">Select brand</label>
-                    <select name="brand_id" id="brand_id" class="form-control" required>
-                    </select>
-                </div>
-            </div>
-
         </div>
         <div class="row">
             <div class="col-md-12 text-right">
                 <div class="form-group">
-                    <button type="button" class="btn btn-info purchase-save-btn"
-                        id="save-btn">Save</button>
+                    <button type="button" class="btn btn-info purchase-save-btn" id="save-btn">Save</button>
                 </div>
             </div>
-          
+
         </div>
     </div>
 </div>
@@ -104,7 +83,7 @@
 <script src="https://code.jquery.com/jquery-3.6.1.min.js"
     integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 <script>
-       $('#linkageTarget').on('change', function() {
+    $('#linkageTarget').on('change', function() {
         var val = this.value;
 
         if (val == "P") {
@@ -149,10 +128,11 @@
 
     // get manufacturers
     $(document).on('change', '#subLinkageTarget', function() {
-           
+
         let engine_sub_type = $(this).val();
-        // alert(manufacture_id)
-        let url = $(this).attr('data-href');
+        //alert(engine_sub_type)
+        let url = '/get_manufacturers_by_engine_type';
+        // alert(url)
         getManufacturer(url, engine_sub_type);
     });
 
@@ -185,7 +165,9 @@
         let manufacturer_id = $(this).val();
         // alert(manufacture_id)
         let engine_sub_type = $('#subLinkageTarget :selected').val();
+        // let url = '/get_models_by_manufacturer';
         let url = $(this).attr('data-href');
+
         getModels(url, manufacturer_id, engine_sub_type);
     });
 
@@ -217,6 +199,7 @@
     ////// get engines==================
     $(document).on('change', '#model_id', function() {
         let model_id = $(this).val();
+        // let url = '/get_engines_by_model';
         let url = $(this).attr('data-href');
         let engine_sub_type = $('#subLinkageTarget :selected').val();
         getEngines(url, model_id, engine_sub_type);
@@ -247,7 +230,9 @@
     ///// get sections==================
     $(document).on('change', '#engine_id', function() {
         let engine_id = $(this).val();
+        // let url = '/get_sections_by_engine';
         let url = $(this).attr('data-href');
+
         let engine_sub_type = $('#subLinkageTarget :selected').val();
         getSections(url, engine_id, engine_sub_type);
     });
@@ -273,14 +258,32 @@
     ///// get section parts============
     $(document).on('change', '#section_id', function() {
         let section_id = $(this).val();
+        // let url = '/get_section_parts_for_sale';
         let url = $(this).attr('data-href');
+
         let engine_sub_type = $('#subLinkageTarget :selected').val();
         getSectionParts(url, section_id, engine_sub_type);
     });
 
     function getSectionParts(url, section_id, engine_sub_type) {
         $.get(url + '?section_id=' + section_id + '&engine_sub_type=' + engine_sub_type, function(data) {
+            if (data.message == 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Your Stock is empty',
 
+                });
+                exit();
+            } else if (data.message == 1 && data.data.length <= 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'You dont have any product against this section in your stock',
+
+                });
+                exit();
+            }
             let response = data.data;
             let view_html = `<option value="" selected>Select One</option>`;
             $.each(response, function(key, value) {
@@ -294,26 +297,49 @@
         })
     }
 
-    ///// get brands by section parts======
+    // check product stock
     $(document).on('change', '#section_part_id', function() {
         let section_part_id = $(this).val();
+        // let url = '/get_section_parts_for_sale';
         let url = $(this).attr('data-href');
-        getBrands(url, section_part_id);
+
+        let engine_sub_type = $('#subLinkageTarget :selected').val();
+        var cashType = $('#cash_type').find(":selected").val();
+        checkProductStock(url, section_part_id, engine_sub_type, cashType);
     });
 
-    function getBrands(url, section_part_id) {
-        $.get(url + '?section_part_id=' + section_part_id, function(data) {
-            let response = data.data;
-            let view_html = `<option value="">Select One</option>`;
-            $.each(response, function(key, value) {
-                view_html += `<option value="${value.brandId}">${value.brandName}</option>`;
-            });
-            console.log(data, view_html);
-            $('#brand_id').html(view_html);
-            $("#brand_id").val(4);
-            $("#brand_id").selectpicker("refresh");
-        })
+    function checkProductStock(url, section_part_id, engine_sub_type, cashType) {
+        $.get(url + '?section_part_id=' + section_part_id + '&engine_sub_type=' + engine_sub_type + '&cash_type=' +
+            cashType,
+            function(data) {
+                if (data.message == "no_white_items") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'No Items are availble for this White Cash',
+
+                    });
+                    exit();
+                    // $('#section_part_id').html('<option value="">Select One</option>');
+                    $('#section_part_id').selectpicker("refresh");
+                    exit();
+                } else if (data.message == "no_black_items") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'No Items are availble for this Black Cash',
+
+                    });
+                    exit();
+                    // $('#section_part_id').html('<option value="">Select One</option>');
+                    $('#section_part_id').selectpicker("refresh");
+                    exit();
+                }
+
+            })
     }
+
+
 
     $("#product_purchase_date").on('change', function() {
         var selectedDate = this.value;
@@ -335,8 +361,8 @@
         }
     });
 
-   //// global veriables that we were use in the save functionality ///
-   var supplier_ids_array = [],
+    //// global veriables that we were use in the save functionality ///
+    var supplier_ids_array = [],
         article_ids_array = [],
         selected_cash_type = [],
         all_product_ids = [];
@@ -353,18 +379,16 @@
         var engine_id = $('#engine_id').find(":selected").val();
         var section_id = $('#section_id').find(":selected").val();
         var section_part_id = $('#section_part_id').find(":selected").val();
-        var supplier_id = $('#supplier_id').find(":selected").val();
-        var status = $('#status').find(":selected").val();
-        var date = $('#product_purchase_date').val();
+        // var status = $('#status').find(":selected").val();
+        // var date = $('#product_purchase_date').val();
         var cashType = $('#cash_type').find(":selected").val();
-        var brandId = $('#brand_id').find(":selected").val();
 
         checkIfExists(engine_type, engine_sub_type, manufacturer_id, model_id, engine_id, section_id,
-            section_part_id, supplier_id, status, date, cashType, brandId);
+            section_part_id, cashType);
 
         $.ajax({
             method: "GET",
-            url: "{{ url('show_section_parts_in_table') }}",
+            url: "{{ url('show_section_parts_in_table_for_sale') }}",
             data: {
                 id: id,
                 engine_type: engine_type,
@@ -374,10 +398,6 @@
                 engine_id: engine_id,
                 section_id: section_id,
                 section_part_id: section_part_id,
-                supplier_id: supplier_id,
-                brand_id: brandId,
-                status: status,
-                date: date,
                 cash_type: cashType 
             },
 
@@ -394,79 +414,107 @@
                 var tableHeadRow = $("table thead tr");
                 var other_data_div = $('#other_data');
 
+                var total_calculations = $('#total_sale_calculations');
+
                 var white_cash_head = "";
                 var black_cash_head = "";
+                var white_cash_calculations_head = "";
+                white_cash_calculations_head += `
+                       <div class="col-md-12">
+                            <div class="row total-calculations"> 
+                                <div class="col-md-4">
+                                   <h5>Total Exculding Vat (Before Discount)</h5>    
+                                </div>
+                                <div class="col-md-3">
+                                   <input type="number" name="sale_entire_total_exculding_vat" value="0" id="sale_entire_total_exculding_vat" class="form-control" readonly>
+                                </div>
+                            </div>
+                            <div class="row total-calculations"> 
+                                <div class="col-md-4">
+                                   <h5>Discount</h5>    
+                                </div>
+                                <div class="col-md-3">
+                                   <input type="number" name="sale_discount" id="sale_discount" onkeyup="calculateSaleTotal()" value="0" class="form-control">
+                                </div>
+                            </div> 
+                            <div class="row total-calculations"> 
+                                <div class="col-md-4">
+                                   <h5>Vat</5>    
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="number" name="entire_vat" value="1" min="1" onkeyup="calculateSaleTotal()"  id="sale_entire_vat" class="form-control">
+                                </div>
+                            </div> 
+                            <div class="row total-calculations"> 
+                                <div class="col-md-4">
+                                   <h5>Tax Stamp</h5>    
+                                </div> 
+                                <div class="col-md-3">
+                                    <input type="number" name="tax_stamp" id="sale_tax_stamp" onkeyup="calculateSaleTotal()" class="form-control" min="0" value="0" step="any">    
+                                </div>
+                            </div> 
+                            <div class="row total-calculations"> 
+                                <div class="col-md-4">
+                                   <h5>Total To Be Paid</h5>    
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="number" name="total_to_be_paid" id="total_to_be_paid" class="form-control" readonly> 
+                                </div> 
+                            </div>
+                       </div>
+                `;
 
-                    white_cash_head += `<tr id="">
+                white_cash_head += `<tr id="">
                     <th>{{ trans('file.name') }}</th>
                     <th>{{ trans('file.Quantity') }}</th>
-                    <th>{{ trans('file.Purchase Price') }}</th>
-                    <th>{{ trans('file.Sale Price') }}</th>
-                    <th>{{ trans('file.Discount') }}</th>
-                    <th>{{ trans('file.Additional Cost Without VAT') }}</th>
-                    <th>{{ trans('file.Additional Cost With VAT') }}</th>
+                    
+                    <th>{{ trans('file.Sale Price (Excluding VAT)') }}</th>
+                    <th>{{ trans('file.Discount (%)') }} <span>Optional</span></th>
+                    
                     <th style="width:200px">{{ trans('file.VAT %') }}</th>
-                    <th>{{ trans('file.Profit Margin') }}</th>
-                    <th>{{ trans('file.Total Excluding Vat') }}</th>
-                    <th>{{ trans('file.Actual Cost Per Product') }}</th>
+                    
+                    <th>{{ trans('file.Total (With Discount) Excluding Vat') }} </th>
+                    
                     <th><i class="dripicons-trash"></i></th>
                 </tr>`;
-
-                    black_cash_head += `<tr id="">
+                // sale price => editable for white but non-editable for black
+                black_cash_head += `<tr id="">
                     <th>{{ trans('file.name') }}</th>
                     <th>{{ trans('file.Quantity') }}</th>
-                    <th>{{ trans('file.Purchase Price') }}</th>
-                    <th>{{ trans('file.Sale Price') }}</th>
-                    <th>{{ trans('file.Discount') }}</th>
-                    <th>{{ trans('file.Additional Cost Without VAT') }}</th>
-                    <th>{{ trans('file.Profit Margin') }}</th>
-                    <th>{{ trans('file.Total Excluding Vat') }}</th>
-                    <th>{{ trans('file.Actual Cost Per Product') }}</th>
+                    <th>{{ trans('file.Sale Price (Excluding VAT)') }}</th>
+                    <th>{{ trans('file.Discount (%)') }}</th>
+                    
+                    <th>{{ trans('file.Total (Without Discount)') }}</th>
+                    <th>{{ trans('file.Total (With Discount)') }}</th>
                     <th><i class="dripicons-trash"></i></th>
                 </tr>`;
 
                 var length = document.getElementById("myTable").rows.length;
 
                 var html = '';
-                html += '<input type="hidden" name="manufacturer_id[]" value="' + data
-                    .manufacturer_id + '">';
-                html += '<input type="hidden" name="linkage_target_type[]" value="' + data
-                    .linkage_target_type + '">';
-                html += '<input type="hidden" name="linkage_target_sub_type[]" value="' + data
-                    .linkage_target_sub_type + '">';
-                html += '<input type="hidden" name="modell_id[]" value="' + data.model_id + '">';
-                html += '<input type="hidden" name="enginee_id[]" value="' + data.engine_id + '">';
-                html += '<input type="hidden" name="sectionn_id[]" value="' + data.section_id +
-                    '">';
-                html += '<input type="hidden" name="sectionn_part_id[]" value="' + data
-                    .section_part_id + '">';
-                html += '<input type="hidden" name="statuss[]" value="' + data.status + '">';
-                html += '<input type="hidden" name="datee[]" value="' + data.date + '">';
-                html += '<input type="hidden" name="cash_type" value="' + data.cash_type + '">';
-                html += '<input type="hidden" name="brand_id[]" value="' + data.brand_id + '">';
-
+                // html += '<input type="hidden" name="manufacturer_id[]" value="' + data
+                //     .manufacturer_id + '">';
+                // html += '<input type="hidden" name="linkage_target_type[]" value="' + data
+                //     .linkage_target_type + '">';
+                // html += '<input type="hidden" name="linkage_target_sub_type[]" value="' + data
+                //     .linkage_target_sub_type + '">';
+                // html += '<input type="hidden" name="modell_id[]" value="' + data.model_id + '">';
+                // html += '<input type="hidden" name="enginee_id[]" value="' + data.engine_id + '">';
+                // html += '<input type="hidden" name="sectionn_id[]" value="' + data.section_id +
+                //     '">';
+                // html += '<input type="hidden" name="sectionn_part_id[]" value="' + data
+                //     .section_part_id + '">';
+                // html += '<input type="hidden" name="statuss[]" value="' + data.status + '">';
+                // html += '<input type="hidden" name="datee[]" value="' + data.date + '">';
+                // html += '<input type="hidden" name="cash_type" value="' + data.cash_type + '">';
+                html += '<input type="hidden" name="article_number[]" value="' + data.data.articleNumber + '">';
+                calculateEntireSaleTotal(all_product_ids);
                 $('#myTable tr').each(function() {
                     if (this.id != '') {
                         article_ids_array.push(this.id)
                     }
                 })
 
-                if (supplier_ids_array.length > 0) {
-                    supplier_ids_array.forEach(checkSupplier);
-
-                    function checkSupplier(item, index) {
-                        if (item != data.supplier) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'You have already selected a supplier , you are not to allowed to change the supplier during one purchase',
-                            });
-                            exit();
-                        }
-                    }
-                } else {
-                    supplier_ids_array.push(data.supplier);
-                }
                 if (selected_cash_type.length > 0) {
                     selected_cash_type.forEach(checkCashType);
 
@@ -486,50 +534,61 @@
                     selected_cash_type.push(cashType);
 
                 }
+                
                 if (data.cash_type == "white" && tableHeadRow.length <= 0) {
                     tableHead.append(white_cash_head);
+                    total_calculations.html(white_cash_calculations_head);
+                    
+                    
                 } else if (data.cash_type == "black" && tableHeadRow.length <= 0) {
                     tableHead.append(black_cash_head);
                 }
-
+                $('#total_sale_calculations').css('display','block')
                 markup = '<tr id="article_' + data.data.legacyArticleId + '"><td>' + data.data
                     .genericArticleDescription + '-' + data.data.articleNumber +
                     '</td>';
 
-                markup +=
-                    '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterQty(' +
-                    data.data.legacyArticleId + ')" id="item_qty' + data.data
+                if(data.cash_type == "white"){
+                    markup += '<input type="hidden" value="'+data.stock.white_items+'" id="stock_items_'+data.data.legacyArticleId+'">';
+                    markup +=
+                    '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterSaleQty(' +
+                    data.data.legacyArticleId + ')" id="sale_item_qty' + data.data
                     .legacyArticleId +
-                    '" value="1" min="0" name="item_qty[]" required></td>';
-
-                markup +=
-                    '<td><input style="width:100px" type="number" class="form-control" onkeyup="alterQty(' +
+                    '" value="1" min="0" max="'+data.stock.white_items+'" name="item_qty[]" required></td>';
+                    var white_price = 1;
+                    if(data.stock.unit_sale_price_of_white_cash != null){
+                        white_price = data.stock.unit_sale_price_of_white_cash;
+                    }
+                    markup +=
+                    '<td><input style="width:100px" onkeyup="alterSaleQty(' +
+                    data.data.legacyArticleId + ')" type="number" value="'+white_price+'" step="any" class="form-control"  id="sale_sale_price_' +
                     data.data.legacyArticleId +
-                    ')" value="1" min="0" step="any" id="purchase_price_' +
-                    data.data.legacyArticleId +
-                    '" name="purchase_price[]" required></td>';
-
-                markup +=
-                    '<td><input style="width:100px" type="number" class="form-control"  id="sale_price_' +
+                    '" name="sale_price[]"></td>';
+                }else if(data.cash_type == "black"){
+                    markup += '<input type="hidden" value="'+data.stock.black_items+'" id="stock_items_'+data.data.legacyArticleId+'">';
+                    var black_price = 1;
+                    if(data.stock.unit_sale_price_of_black_cash != null){
+                        black_price = data.stock.unit_sale_price_of_black_cash;
+                    }
+                    markup +=
+                        '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterSaleQty(' +
+                        data.data.legacyArticleId + ')" id="sale_item_qty' + data.data
+                        .legacyArticleId +
+                        '" value="1" min="0" max="' + data.stock.black_items +
+                        '" name="item_qty[]" required></td>';
+                    markup +=
+                    '<td><input style="width:100px" onkeyup="alterSaleQty(' +
+                    data.data.legacyArticleId + ')" type="number" value="'+black_price+'" step="any" class="form-control"  id="sale_sale_price_' +
                     data.data.legacyArticleId +
                     '" name="sale_price[]" readonly></td>';
-
+                }
+                
                 markup +=
-                    '<td><input type="number" class="form-control" value="0" min="0" step="any" id="discount_' +
+                    '<td><input type="number" onkeyup="alterSaleQty(' +
+                    data.data.legacyArticleId +
+                    ')" class="form-control" value="0" min="0" max="100" step="any" id="sale_discount_' +
                     data.data.legacyArticleId +
                     '" name="discount[]"></td>';
-
-                markup +=
-                    '<td><input type="number" class="form-control" value="0" min="0" step="any"  onkeyup="alterQty(' +
-                    data.data.legacyArticleId + ')" id="additional_cost_without_vat_' + data.data
-                    .legacyArticleId +
-                    '" name="additional_cost_without_vat[]"></td>';
-                if (data.cash_type == "white") {
-                    markup +=
-                        '<td><input type="number" class="form-control" value="0" min="0" step="any" id="additional_cost_with_vat_' +
-                        data.data.legacyArticleId +
-                        '" name="additional_cost_with_vat[]"></td>';
-                }
 
                 if (data.cash_type == "white") {
                     markup +=
@@ -538,24 +597,20 @@
                         '" name="vat[]" required></td>';
                 }
 
-                markup +=
-                    '<td><input type="number" style="width:100px" class="form-control" value="0" min="0" step="any"   onkeyup="alterQty(' +
-                    data.data.legacyArticleId + ')" id="profit_margin_' + data.data
-                    .legacyArticleId +
-                    '" name="profit_margin[]" required></td>';
+                if (data.cash_type == "black") {
+                    markup +=
+                        '<td><input style="width:200px" type="number" step="any" class="form-control" min="0"   id="sale_total_without_discount' +
+                        data.data.legacyArticleId +
+                        '" name="sale_total_without_discount[]" readonly></td>';
+                }
 
                 markup +=
-                    '<td><input style="width:100px" type="number" class="form-control" value="0" min="0"   id="total_excluding_vat_' +
+                    '<td><input style="width:200px" type="number" step="any" class="form-control" min="0"   id="sale_total_with_discount' +
                     data.data.legacyArticleId +
-                    '" name="total_excluding_vat[]" readonly></td>';
-
-                markup +=
-                    '<td><input type="number" style="width:100px" class="form-control" value="0" min="0"   id="actual_cost_per_product_' +
-                    data.data.legacyArticleId +
-                    '" name="actual_cost_per_product[]" readonly></td>';
+                    '" name="sale_total_with_discount[]" readonly></td>';
 
                 markup += '<td><i id="article_delete_' +
-                    data.data.legacyArticleId + '" onclick="deleteArticle(' + data.data
+                    data.data.legacyArticleId + '" onclick="deleteSaleArticle(' + data.data
                     .legacyArticleId +
                     ')" class="fa fa-trash"></i></td>';
 
@@ -585,12 +640,22 @@
                     selected_cash_type = [];
                 }
                 all_product_ids.push(data.data.legacyArticleId);
+
+                var sale_price = parseFloat($("#sale_sale_price_" + data.data.legacyArticleId).val());
+                var discount = parseFloat($("#sale_discount_" + data.data.legacyArticleId).val());
+                var item_qty = parseInt($("#sale_item_qty" + data.data.legacyArticleId).val());
+
+                var sale_total_with_discount = (item_qty * sale_price) - discount;
+                var sale_total_without_discount = (item_qty * sale_price);
+
+                $('#sale_total_with_discount' + data.data.legacyArticleId).val(sale_total_with_discount.toFixed(2));
+                $('#sale_total_without_discount' + data.data.legacyArticleId).val(sale_total_without_discount.toFixed(2));
             }
         });
     });
 
     function checkIfExists(engine_type, engine_sub_type, manufacturer_id, model_id, engine_id, section_id,
-        section_part_id, supplier_id, status, date, cashType, brandId) {
+        section_part_id, cashType) {
         if (!engine_type) {
             Swal.fire({
                 icon: 'error',
@@ -653,15 +718,7 @@
             });
             exit();
         }
-        if (!supplier_id) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please select a supplier',
 
-            });
-            exit();
-        }
         if (!status) {
             Swal.fire({
                 icon: 'error',
@@ -689,15 +746,7 @@
             });
             exit();
         }
-        if (!brandId) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please select Brand',
 
-            });
-            exit();
-        }
     }
     var t_qty = 0;
     let w_qty = 0;
@@ -705,71 +754,122 @@
     var id_array = [];
     var total_quantity_of_all_row_products = 0;
 
-    function alterQty(id) {
-        item_qty = parseInt($("#item_qty" + id).val());
-        var purchasePrice = parseFloat($("#purchase_price_" + id).val());
-        var additional_cost_without_vat = parseFloat($("#additional_cost_without_vat_" + id).val());
-        var entireAditionalCost = $("#purchase_additional_cost").val();
+    function alterSaleQty(id) {
 
-        var total_cost_without_vat = (purchasePrice * item_qty) + additional_cost_without_vat;
-        $("#total_excluding_vat_" + id).val(total_cost_without_vat.toFixed(2));
+        var item_qty = parseInt($("#sale_item_qty" + id).val());
+        var stock = parseInt($("#stock_items_" + id).val());
+        // if (item_qty > stock) {
+        //     Swal.fire({
+        //         icon: 'error',
+        //         title: 'Oops...',
+        //         text: 'Quantity must not be greater than Stock',
 
-        if (all_product_ids.length > 0) {
-            all_product_ids.forEach(getActualProductCost);
+        //     });
+        //     $("#sale_item_qty" + id).val(stock - parseInt(1));
+        //     exit();
+        // }
 
-            function getActualProductCost(id, index) {
-                total_quantity_of_all_row_products += parseInt($("#item_qty" + id).val());
-            }
+        var sale_price = parseFloat($("#sale_sale_price_" + id).val());
+        var discount = (parseFloat(1) - (parseFloat($("#sale_discount_" + id).val() / 100)));
 
-            var actual_cost_per_product = (total_cost_without_vat / item_qty) + (entireAditionalCost /
-                total_quantity_of_all_row_products);
+        var sale_total_with_discount = (item_qty * sale_price) * discount;
+        var sale_total_without_discount = (item_qty * sale_price);
+        if(sale_total_with_discount <= 0){
+            $('#sale_total_with_discount' + id).val(0);
+        }else{
+            $('#sale_total_with_discount' + id).val(sale_total_with_discount.toFixed(2))
         }
 
-        $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
-        var sale_price_per_product = actual_cost_per_product * (1 + parseFloat($('#profit_margin_' + id).val()));
-        sale_price_per_product = parseFloat(sale_price_per_product);
-        $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
-        total_quantity_of_all_row_products = 0;
+        if(sale_total_without_discount <= 0){
+            $('#sale_total_without_discount' + id).val(0);
+        }else{
+            $('#sale_total_without_discount' + id).val(sale_total_without_discount.toFixed(2))
+        }    
+        calculateEntireSaleTotal(all_product_ids);    
     }
 
-    function calculateSalePrice() {
-        if (all_product_ids.length > 0) {
-            var entireAditionalCost = parseFloat($("#purchase_additional_cost").val());
-            all_product_ids.forEach(getSalePrice);
 
-            function getSalePrice(id, index) {
-                item_qty = parseInt($("#item_qty" + id).val());
-                var purchasePrice = parseFloat($("#purchase_price_" + id).val());
-                var additional_cost_without_vat = parseFloat($("#additional_cost_without_vat_" + id).val());
-                var entireAditionalCost = $("#purchase_additional_cost").val();
-
-
-                var total_cost_without_vat = (purchasePrice * item_qty) + additional_cost_without_vat;
-                $("#total_excluding_vat_" + id).val(total_cost_without_vat.toFixed(2));
-
-
-                total_quantity_of_all_row_products += parseInt($("#item_qty" + id).val());
-
-                var actual_cost_per_product = (total_cost_without_vat / item_qty) + (entireAditionalCost /
-                    total_quantity_of_all_row_products);
-
-                $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
-                var sale_price_per_product = actual_cost_per_product * (1 + parseFloat($('#profit_margin_' + id)
-                    .val()));
-
-
-                sale_price_per_product = parseFloat(sale_price_per_product);
-                $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
-            }
-            total_quantity_of_all_row_products = 0;
-        }
-    }
-
-    function deleteArticle(id) {
+    function deleteSaleArticle(id) {
         $('#article_' + id).remove();
-        article_ids_array = [];
+        for (var i = 0; i < all_product_ids.length; i++) {
+
+            if (all_product_ids[i] === id) {
+
+                all_product_ids.splice(i, 1);
+            }
+
+        }
+        if(all_product_ids.length <= 0){
+            $('#total_sale_calculations').css('display','none');
+            $('#submit-button').css('display','none');
+        }
+        calculateEntireTotal(all_product_ids);
+        // article_ids_array = [];
         if ($('#myTable tr').length == 0) {
             selected_cash_type = [];
         }
     }
+
+    function calculateEntireSaleTotal(product_ids_array) {
+        var total_before_discount = 0.0;
+        var total_to_be_paid = 0.0;
+        // console.log(product_ids_array)
+        var cashType = $('#cash_type').find(":selected").val();
+        var id_array = [];
+        id_array =  product_ids_array.filter(onlyUnique);
+       
+        if (id_array.length > 0) {
+            id_array.forEach(getActualProductCost);
+
+            function getActualProductCost(id, index) {
+                    
+                    total_before_discount += (parseInt($('#sale_item_qty' + id).val()) * parseFloat($('#sale_sale_price_' + id).val()));
+            }
+            
+            
+            var tax_stamp = parseFloat($('#sale_tax_stamp').val());
+            var entire_vat = parseFloat($('#sale_entire_vat').val());
+            var discount = parseFloat($('#sale_discount').val());
+            $('#sale_entire_total_exculding_vat').val(total_before_discount.toFixed(2));
+            total_to_be_paid = (parseFloat(total_before_discount.toFixed(2)) - parseFloat(discount.toFixed(2))) * parseFloat(entire_vat.toFixed(2)) + parseFloat(tax_stamp.toFixed(2)) ;
+           
+            $('#total_to_be_paid').val(total_to_be_paid);
+           
+            
+        }
+        // }
+    }
+
+    function calculateSaleTotal(){
+        var total_before_discount = 0.0;
+        var total_to_be_paid = 0.0;
+        // console.log(product_ids_array)
+        var cashType = $('#cash_type').find(":selected").val();
+        var id_array = [];
+        id_array =  all_product_ids.filter(onlyUnique);
+       
+        if (id_array.length > 0) {
+            id_array.forEach(getActualProductCost);
+
+            function getActualProductCost(id, index) {
+                    
+                    total_before_discount += (parseInt($('#sale_item_qty' + id).val()) * parseFloat($('#sale_sale_price_' + id).val()));
+            }
+            
+            
+            var tax_stamp = parseFloat($('#sale_tax_stamp').val());
+            var entire_vat = parseFloat($('#sale_entire_vat').val());
+            var discount = parseFloat($('#sale_discount').val());
+            $('#sale_entire_total_exculding_vat').val(total_before_discount.toFixed(2));
+            total_to_be_paid = (parseFloat(total_before_discount.toFixed(2)) - parseFloat(discount.toFixed(2))) * parseFloat(entire_vat.toFixed(2)) + parseFloat(tax_stamp.toFixed(2)) ;
+           
+            $('#total_to_be_paid').val(total_to_be_paid);
+           
+            
+        }
+    }
+    function onlyUnique(value, index, self) {
+        return self.indexOf(value) === index;
+    }
+    
 </script>

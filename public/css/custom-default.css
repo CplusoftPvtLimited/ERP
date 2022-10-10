@@ -1223,3 +1223,25 @@ label.view-edit-purchase{
 	background-color: #6244A6;
 	color: white;
   }
+.total-calculations{
+	margin-top: 10px;
+}
+/* option.estimate{
+	background-color: #17a2b8;
+	color: white;
+}
+
+option.negotiation{
+	background-color: grey;
+	color: white;
+}
+
+option.accept{
+	background-color: #218838;
+	color: white;
+}
+
+option.cancel{
+	background-color: #c82333;
+	color: white;
+} */

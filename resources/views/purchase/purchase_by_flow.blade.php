@@ -12,7 +12,8 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label>Engine Type</label>
-                    <select name="linkageTargetType" id="linkageTarget" class="selectpicker form-control">
+                    <select name="linkageTargetType" id="linkageTarget" class="selectpicker form-control"
+                        data-live-search="true" data-live-search-style="begins">
 
                         <option>Select Type</option>
                         <option value="P">Passenger</option>
@@ -23,9 +24,9 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label>Engine Sub-Type</label>
-                    <select name="subLinkageTargetType"
-                        data-href="{{ route('get_manufacturers_by_engine_type') }}" id="subLinkageTarget"
-                        class="selectpicker form-control">
+                    <select name="subLinkageTargetType" data-href="{{ route('get_manufacturers_by_engine_type') }}"
+                        id="subLinkageTarget" class="selectpicker form-control" data-live-search="true"
+                        data-live-search-style="begins">
                         <option value="-2">Select One</option>
                     </select>
                 </div>
@@ -43,12 +44,13 @@
 
         </div>
         <div class="row">
-            
+
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="model_id">{{ __('Select Model') }}</label>
                     <select name="model_id" id="model_id" data-href="{{ route('get_engines_by_model') }}"
-                        class="form-control" required>
+                        class="selectpicker form-control" data-live-search="true" data-live-search-style="begins"
+                        required>
                     </select>
                 </div>
             </div>
@@ -56,7 +58,8 @@
                 <div class="form-group">
                     <label for="engine_id">{{ __('Select Engine') }}</label>
                     <select name="engine_id" id="engine_id" data-href="{{ route('get_sections_by_engine') }}"
-                        class="form-control" required>
+                        class="selectpicker form-control" data-live-search="true" data-live-search-style="begins"
+                        required>
                     </select>
                 </div>
             </div>
@@ -64,26 +67,28 @@
                 <div class="form-group">
                     <label for="section_id">{{ __('Select Section') }}</label>
                     <select name="section_id" id="section_id" data-href="{{ route('get_section_parts') }}"
-                        class="form-control" required>
+                        class="selectpicker form-control" data-live-search="true" data-live-search-style="begins"
+                        required>
                     </select>
                 </div>
             </div>
         </div>
 
         <div class="row">
-           
+
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="section_part_id">{{ __('Select Section Part') }}</label>
                     <select name="section_part_id" id="section_part_id"
-                        data-href="{{ route('get_brands_by_section_part') }}" class="form-control" required>
+                        data-href="{{ route('get_brands_by_section_part') }}" data-live-search="true"
+                        data-live-search-style="begins" class="selectpicker form-control" required>
                     </select>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="brand">{{ __('Select brand') }}</label>
-                    <select name="brand_id" id="brand_id" class="form-control" required>
+                    <label for="brand">{{ __('Select Supplier') }} (Brand)</label>
+                    <select name="brand_id" id="brand_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" required>
                     </select>
                 </div>
             </div>
@@ -96,7 +101,7 @@
                         id="save-btn">{{ trans('file.Save') }}</button>
                 </div>
             </div>
-          
+
         </div>
     </div>
 </div>
@@ -153,6 +158,7 @@
         let engine_sub_type = $(this).val();
         // alert(manufacture_id)
         let url = $(this).attr('data-href');
+
         getManufacturer(url, engine_sub_type);
     });
 
@@ -383,7 +389,7 @@
                 brand_id: brandId,
                 status: status,
                 date: date,
-                cash_type: cashType 
+                cash_type: cashType
             },
 
             success: function(data) {
@@ -398,33 +404,82 @@
                 var tableHead = $("table thead");
                 var tableHeadRow = $("table thead tr");
                 var other_data_div = $('#other_data');
+                var total_calculations = $('#total_calculations');
 
                 var white_cash_head = "";
                 var black_cash_head = "";
+                var white_cash_calculations_head = "";
+                var black_cash_calculations_head = "";
+                white_cash_calculations_head += `
+                       <div class="col-md-12">
+                            <div class="row total-calculations"> 
+                                <div class="col-md-3">
+                                   <h5>Total Exculding Vat</h5>    
+                                </div>
+                                <div class="col-md-3">
+                                   <input type="number" name="entire_total_exculding_vat" id="entire_total_exculding_vat" class="form-control" readonly>
+                                </div>
+                            </div> 
+                            <div class="row total-calculations"> 
+                                <div class="col-md-3">
+                                   <h5>Vat</h5>    
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="number" name="entire_vat" id="entire_vat" class="form-control" readonly>
+                                </div>
+                            </div> 
+                            <div class="row total-calculations"> 
+                                <div class="col-md-3">
+                                   <h5>Tax Stamp</h5>    
+                                </div> 
+                                <div class="col-md-3">
+                                    <input type="number" name="tax_stamp" id="tax_stamp" class="form-control" min="0" value="0" step="any">    
+                                </div>
+                            </div> 
+                            <div class="row total-calculations"> 
+                                <div class="col-md-3">
+                                   <h5>Total To Be Paid</h5>    
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="number" name="total_to_be_paid" id="total_to_be_paid" class="form-control" readonly> 
+                                </div> 
+                            </div>
+                       </div>
+                `;
+                black_cash_calculations_head += `
+                            <div class="row total-calculations"> 
+                                <div class="col-md-3">
+                                   <h5>Total To Be Paid</h5>    
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="number" name="total_to_be_paid" id="total_to_be_paid" class="form-control" readonly> 
+                                </div> 
+                            </div>
+                `;
 
-                    white_cash_head += `<tr id="">
+                white_cash_head += `<tr id="">
                     <th>{{ trans('file.name') }}</th>
                     <th>{{ trans('file.Quantity') }}</th>
                     <th>{{ trans('file.Purchase Price') }}</th>
                     <th>{{ trans('file.Sale Price') }}</th>
-                    <th>{{ trans('file.Discount') }}</th>
+                    <th>{{ trans('file.Discount') }} %</th>
                     <th>{{ trans('file.Additional Cost Without VAT') }}</th>
                     <th>{{ trans('file.Additional Cost With VAT') }}</th>
                     <th style="width:200px">{{ trans('file.VAT %') }}</th>
-                    <th>{{ trans('file.Profit Margin') }}</th>
+                    <th>{{ trans('file.Profit Margin') }} %</th>
                     <th>{{ trans('file.Total Excluding Vat') }}</th>
                     <th>{{ trans('file.Actual Cost Per Product') }}</th>
                     <th><i class="dripicons-trash"></i></th>
                 </tr>`;
 
-                    black_cash_head += `<tr id="">
+                black_cash_head += `<tr id="">
                     <th>{{ trans('file.name') }}</th>
                     <th>{{ trans('file.Quantity') }}</th>
                     <th>{{ trans('file.Purchase Price') }}</th>
                     <th>{{ trans('file.Sale Price') }}</th>
-                    <th>{{ trans('file.Discount') }}</th>
+                    <th>{{ trans('file.Discount') }} %</th>
                     <th>{{ trans('file.Additional Cost Without VAT') }}</th>
-                    <th>{{ trans('file.Profit Margin') }}</th>
+                    <th>{{ trans('file.Profit Margin') }} %</th>
                     <th>{{ trans('file.Total Excluding Vat') }}</th>
                     <th>{{ trans('file.Actual Cost Per Product') }}</th>
                     <th><i class="dripicons-trash"></i></th>
@@ -449,7 +504,7 @@
                 html += '<input type="hidden" name="datee[]" value="' + data.date + '">';
                 html += '<input type="hidden" name="cash_type" value="' + data.cash_type + '">';
                 html += '<input type="hidden" name="brand_id[]" value="' + data.brand_id + '">';
-
+                calculateEntireTotal(all_product_ids);
                 $('#myTable tr').each(function() {
                     if (this.id != '') {
                         article_ids_array.push(this.id)
@@ -493,22 +548,25 @@
                 }
                 if (data.cash_type == "white" && tableHeadRow.length <= 0) {
                     tableHead.append(white_cash_head);
+                    total_calculations.html(white_cash_calculations_head);
+
                 } else if (data.cash_type == "black" && tableHeadRow.length <= 0) {
                     tableHead.append(black_cash_head);
+                    total_calculations.html(black_cash_calculations_head);
                 }
-
+                $('#total_calculations').css('display','block');
                 markup = '<tr id="article_' + data.data.legacyArticleId + '"><td>' + data.data
                     .genericArticleDescription + '-' + data.data.articleNumber +
                     '</td>';
 
                 markup +=
-                    '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterQty(' +
+                    '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterPurchaseQty(' +
                     data.data.legacyArticleId + ')" id="item_qty' + data.data
                     .legacyArticleId +
                     '" value="1" min="0" name="item_qty[]" required></td>';
 
                 markup +=
-                    '<td><input style="width:100px" type="number" class="form-control" onkeyup="alterQty(' +
+                    '<td><input style="width:100px" type="number" class="form-control" onkeyup="alterPurchaseQty(' +
                     data.data.legacyArticleId +
                     ')" value="1" min="0" step="any" id="purchase_price_' +
                     data.data.legacyArticleId +
@@ -525,26 +583,26 @@
                     '" name="discount[]"></td>';
 
                 markup +=
-                    '<td><input type="number" class="form-control" value="0" min="0" step="any"  onkeyup="alterQty(' +
+                    '<td><input type="number" class="form-control" value="0" min="0" step="any"  onkeyup="alterPurchaseQty(' +
                     data.data.legacyArticleId + ')" id="additional_cost_without_vat_' + data.data
                     .legacyArticleId +
                     '" name="additional_cost_without_vat[]"></td>';
                 if (data.cash_type == "white") {
                     markup +=
-                        '<td><input type="number" class="form-control" value="0" min="0" step="any" id="additional_cost_with_vat_' +
+                        '<td><input type="number" class="form-control" value="0" min="0" step="any" onkeyup="changeTotalWithVAT()" id="additional_cost_with_vat_' +
                         data.data.legacyArticleId +
                         '" name="additional_cost_with_vat[]"></td>';
                 }
 
                 if (data.cash_type == "white") {
                     markup +=
-                        '<td><input style="width:100px" type="number" class="form-control" value="0" min="0" step="any" id="vat_' +
+                        '<td><input style="width:100px" type="number" onkeyup="changeTotalWithVAT()" class="form-control" value="0" min="0" step="any" id="vat_' +
                         data.data.legacyArticleId +
                         '" name="vat[]" required></td>';
                 }
 
                 markup +=
-                    '<td><input type="number" style="width:100px" class="form-control" value="0" min="0" step="any"   onkeyup="alterQty(' +
+                    '<td><input type="number" style="width:100px" class="form-control" value="0" min="0" step="any"   onkeyup="alterPurchaseQty(' +
                     data.data.legacyArticleId + ')" id="profit_margin_' + data.data
                     .legacyArticleId +
                     '" name="profit_margin[]" required></td>';
@@ -555,7 +613,7 @@
                     '" name="total_excluding_vat[]" readonly></td>';
 
                 markup +=
-                    '<td><input type="number" style="width:100px" class="form-control" value="0" min="0"   id="actual_cost_per_product_' +
+                    '<td><input type="text" style="width:100px" class="form-control" value="0" min="0"   id="actual_cost_per_product_' +
                     data.data.legacyArticleId +
                     '" name="actual_cost_per_product[]" readonly></td>';
 
@@ -574,6 +632,7 @@
                             article_ids_array.push(this.id)
                         }
                     });
+                    
 
                 } else {
                     if (!article_ids_array.includes("article_" + data.data.legacyArticleId)) {
@@ -590,6 +649,9 @@
                     selected_cash_type = [];
                 }
                 all_product_ids.push(data.data.legacyArticleId);
+                
+
+                
             }
         });
     });
@@ -710,7 +772,7 @@
     var id_array = [];
     var total_quantity_of_all_row_products = 0;
 
-    function alterQty(id) {
+    function alterPurchaseQty(id) {
         item_qty = parseInt($("#item_qty" + id).val());
         var purchasePrice = parseFloat($("#purchase_price_" + id).val());
         var additional_cost_without_vat = parseFloat($("#additional_cost_without_vat_" + id).val());
@@ -720,27 +782,39 @@
         $("#total_excluding_vat_" + id).val(total_cost_without_vat.toFixed(2));
 
         if (all_product_ids.length > 0) {
+
             all_product_ids.forEach(getActualProductCost);
 
             function getActualProductCost(id, index) {
                 total_quantity_of_all_row_products += parseInt($("#item_qty" + id).val());
-            }
 
+            }
             var actual_cost_per_product = (total_cost_without_vat / item_qty) + (entireAditionalCost /
                 total_quantity_of_all_row_products);
-        }
 
+        }
         $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
-        var sale_price_per_product = actual_cost_per_product * (1 + parseFloat($('#profit_margin_' + id).val()));
+        calculateEntireTotal(all_product_ids);
+
+        
+
+
+
+        var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
+        var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
         sale_price_per_product = parseFloat(sale_price_per_product);
         $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
         total_quantity_of_all_row_products = 0;
     }
 
-    function calculateSalePrice() {
+    
+
+    function calculatePurchasePrice() {
         if (all_product_ids.length > 0) {
             var entireAditionalCost = parseFloat($("#purchase_additional_cost").val());
+            console.log("kkkkkkkkkkkkkk",all_product_ids)
             all_product_ids.forEach(getSalePrice);
+            var actual_total = 0.0;
 
             function getSalePrice(id, index) {
                 item_qty = parseInt($("#item_qty" + id).val());
@@ -759,22 +833,106 @@
                     total_quantity_of_all_row_products);
 
                 $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
-                var sale_price_per_product = actual_cost_per_product * (1 + parseFloat($('#profit_margin_' + id)
-                    .val()));
-
-
+                actual_total += actual_cost_per_product.toFixed(2);
+                var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
+                var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
                 sale_price_per_product = parseFloat(sale_price_per_product);
                 $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
+
             }
+            calculateEntireTotal(all_product_ids);
             total_quantity_of_all_row_products = 0;
         }
+        
     }
 
     function deleteArticle(id) {
         $('#article_' + id).remove();
-        article_ids_array = [];
+        for (var i = 0; i < all_product_ids.length; i++) {
+
+            if (all_product_ids[i] === id) {
+
+                all_product_ids.splice(i, 1);
+            }
+
+        }
+        console.log(all_product_ids);
+        if(all_product_ids.length <= 0){
+            $('#total_sale_calculations').css('display','none');
+            $('#submit-button').css('display','none');
+        }
+        calculateEntireTotal(all_product_ids);
+        // article_ids_array = [];
         if ($('#myTable tr').length == 0) {
             selected_cash_type = [];
         }
+    }
+
+    function changeTotalWithVAT(){
+        var total_vat = 0.0;
+        var cashType = $('#cash_type').find(":selected").val();
+        var id_array = [];
+        id_array =  all_product_ids.filter(onlyUnique);
+       
+        if (id_array.length > 0) {
+            id_array.forEach(getActualProductCost);
+
+            function getActualProductCost(id, index) {
+                    
+                    if(cashType == "white"){
+                        total_vat = total_vat + parseFloat($('#vat_' + id).val() / 100) + parseFloat($('#additional_cost_with_vat_' + id).val());
+                    }
+
+               
+            }
+            total_vat = total_vat + parseFloat($('#purchase_additional_cost').val());
+            
+            $('#entire_vat').val(total_vat.toFixed(2));
+            var tax_stamp = parseFloat($('#tax_stamp').val());
+            var total_to_be_paid = total_actual.toFixed(2) + entire_vat.toFixed(2) + tax_stamp.toFixed(2);
+            $('#total_to_be_paid').val(total_to_be_paid);
+        }
+    }
+
+    function calculateEntireTotal(product_ids_array) {
+        var total_actual = 0.0;
+        var total_vat = 0.0;
+        var total_to_be_paid = 0.0;
+        // console.log(product_ids_array)
+        var cashType = $('#cash_type').find(":selected").val();
+        var id_array = [];
+        id_array =  product_ids_array.filter(onlyUnique);
+       
+        if (id_array.length > 0) {
+            id_array.forEach(getActualProductCost);
+
+            function getActualProductCost(id, index) {
+                    
+                    total_actual += parseFloat($('#actual_cost_per_product_' + id).val());
+                    if(cashType == "white"){
+                        total_vat = total_vat + parseFloat($('#vat_' + id).val() / 100) + parseFloat($('#additional_cost_with_vat_' + id).val());
+                    }
+
+               
+            }
+            total_vat = total_vat + parseFloat($('#purchase_additional_cost').val());
+            
+            $('#entire_total_exculding_vat').val(total_actual.toFixed(2));
+            $('#entire_vat').val(total_vat.toFixed(2));
+            var tax_stamp = parseFloat($('#tax_stamp').val());
+            console.log('stamp',tax_stamp)
+            total_to_be_paid = parseFloat(total_actual.toFixed(2)) + parseFloat(total_vat.toFixed(2)) + parseFloat(tax_stamp.toFixed(2));
+            if(cashType == "white"){
+                $('#total_to_be_paid').val(total_to_be_paid);
+            }else if(cashType == "black"){
+                ('#total_to_be_paid').val(total_actual);
+            }
+            
+        }
+
+    }
+
+    function onlyUnique(value, index, self) {
+        return self.indexOf(value) === index;
     }
 </script>

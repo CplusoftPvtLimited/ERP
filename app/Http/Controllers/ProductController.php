@@ -45,16 +45,16 @@ class ProductController extends Controller
     //     else
     //         return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
     // }
-    public function viewProduct($id){
-           
+    public function viewProduct($id)
+    {
+
         Log::debug($id);
         try {
-            $get_product = StockManagement::where('id',$id)->with(['purchaseProduct'=>function($query){
-                 $query->with(['purchase']);
+            $get_product = StockManagement::where('id', $id)->with(['purchaseProduct' => function ($query) {
+                $query->with(['purchase']);
             }])->first();
             // dd($get_product);
             return view('stock.view', compact('get_product'));
-            
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -62,38 +62,89 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
-        try {        
+        try {
             if ($request->ajax()) {
-                $all_stocks = StockManagement::where('retailer_id', Auth::user()->id)->orderBy('id', 'desc')->skip(0)->take(100)->get();
+                $all_stocks = StockManagement::where('retailer_id', Auth::user()->id)->orderBy('id', 'desc')
+                ->with('purchase', function($query) {
+                    $query->where('status', 'ordered');
+                })
+                ->skip(0)->take(100)->get();
+                // dd($all_stocks);
                 return DataTables::of($all_stocks)
                     ->addIndexColumn('id')
+                    ->editColumn('white_items', function ($row) {
+                        $white_0_item_qty = 0;
+                        $white_1_item_qty = 0;
+                        $white_items = "" . $row->white_items;
+                        
+                        foreach ($row->purchase as $key => $product) {
+                            if(isset($product->flag ) && ($product->cash_type == 'white')) {
+
+                                if($product->flag == '0') {
+                                    $white_0_item_qty += $product->qty;
+                                }
+                                if($product->flag == '1') {
+                                    $white_1_item_qty += $product->qty;
+                                }
+                            }
+                        }
+                        $white_items .= " <span style='color: orange'>(";
+                        $white_items .= $white_0_item_qty ;
+                        $white_items .= ")</span>";
+                        $white_items .= " <span style='color: red'>(";
+                        $white_items .= $white_1_item_qty ;
+                        $white_items .= ")</span>";
+                        return $white_items;
+                    })
+                    ->editColumn('black_items', function ($row) {
+
+                        $black_0_item_qty = 0;
+                        $black_1_item_qty = 0;
+                        $black_items = "" . $row->black_items;
+                        
+                        foreach ($row->purchase as $key => $product) {
+                            if(isset($product->flag ) && ($product->cash_type == 'black')) {
+
+                                if($product->flag == '0') {
+                                    $black_0_item_qty += $product->qty;
+                                }
+                                if($product->flag == '1') {
+                                    $black_1_item_qty += $product->qty;
+                                }
+                            }
+                        }
+                        $black_items .= " <span style='color: orange'>(";
+                        $black_items .= $black_0_item_qty ;
+                        $black_items .= ")</span>";
+                        $black_items .= " <span style='color: red'>(";
+                        $black_items .= $black_1_item_qty ;
+                        $black_items .= ")</span>";
+                        return $black_items;
+                    })
                     ->addColumn('action', function ($row) {
                         $btn = '<div class="row">
-                             <div class="col-sm-3">
-                             <a> <button
-                             class="btn btn-danger btn-sm " onclick= "deleteStock('. $row["id"] .')" style="" type="button"
-                             data-original-title="btn btn-danger btn-sm"
-                             title=""><i class="fa fa-trash"></i></button></a>
+                        <div class="col-sm-4">
+                            <a href="viewProduct/' . $row["id"] . '"> <button
+                                    class="btn btn-success btn-sm " type="button"
+                                    data-original-title="btn btn-success btn-xs"
+                                    title=""><i class="fa fa-eye"></i></button></a>
                              </div>
-                             
-                             <div class="col-sm-3">
+                             <div class="col-sm-4">
                              <a href="editPurchaseByProduct/' . $row["id"] . '"> <button
                                          class="btn btn-primary btn-sm " type="button"
                                          data-original-title="btn btn-danger btn-xs"
                                          title=""><i class="fa fa-edit"></i></button></a>
                              </div>
-
-                             <div class="col-sm-3">
-                             <a href="viewProduct/' . $row["id"] . '"> <button
-                                         class="btn btn-success btn-sm " type="button"
-                                         data-original-title="btn btn-success btn-xs"
-                                         title=""><i class="fa fa-eye"></i></button></a>
+                             <div class="col-sm-4">
+                             <a> <button
+                             class="btn btn-danger btn-sm " onclick= "deleteStock(' . $row["id"] . ')" style="" type="button"
+                             data-original-title="btn btn-danger btn-sm"
+                             title=""><i class="fa fa-trash"></i></button></a>
                              </div>
-                         </div>
-                         ';
+                         </div>';
                         return $btn;
                     })
-                    ->rawColumns(['action'])->make(true);
+                    ->rawColumns(['action', 'black_items', 'white_items'])->make(true);
             }
             return view('product.product_index');
         } catch (\Throwable $th) {
@@ -119,12 +170,11 @@ class ProductController extends Controller
         return view('product.get', compact('products'));
     }
 
-    public function editProduct($id){
-           
-         $product_stock = StockManagement::find($id);  
-         return view('stock.edit', compact('product_stock'));
+    public function editProduct($id)
+    {
 
-       
+        $product_stock = StockManagement::find($id);
+        return view('stock.edit', compact('product_stock'));
     }
 
     public function productData(Request $request)

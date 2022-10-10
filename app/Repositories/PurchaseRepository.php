@@ -23,7 +23,7 @@ class PurchaseRepository implements PurchaseInterface
 {
     public function store($request)
     {
-        dd($request->all());
+        // dd($request->all());
         DB::beginTransaction();
         try {
             $count_item = 0;
@@ -37,18 +37,12 @@ class PurchaseRepository implements PurchaseInterface
             $purchase = new Purchase();
             $total_qty = 0;
             $total_amount = 0;
-            // for ($i = 0; $i < count($request->item_qty); $i++) {
-            //     $total_qty = $total_qty + ($request->black_qty[$i] + $request->white_qty[$i]);
-            // }
-            for ($i = 0; $i < count($request->actual_cost_per_product); $i++) {
-                $total_amount += $request->actual_cost_per_product[$i];
-            }
 
             $purchase->user_id = auth()->user()->id;
             $purchase->item = count($request->item_qty);
             $purchase->total_qty = $count_item;
-            $purchase->total_cost = $total_amount;
-            $purchase->grand_total = $total_amount;
+            $purchase->total_cost = $request->total_to_be_paid;
+            $purchase->grand_total = $request->total_to_be_paid;
             $purchase->supplier_id = $request->supplier_id;
             $purchase->cash_type = $request->cash_type;
             $purchase->additional_cost = $request->purchase_additional_cost;
@@ -121,8 +115,10 @@ class PurchaseRepository implements PurchaseInterface
             $stock_exists->update([
                 'white_items' => ($cash_type == "white") ? $product_purchase->qty+$stock_exists->white_items : $stock_exists->white_items, 
                 'black_items' => ($cash_type == "black") ? $product_purchase->qty+$stock_exists->black_items : $stock_exists->black_items,
-                'unit_actual_price' => isset($product_purchase->actual_price) ? $product_purchase->actual_price : $stock_exists->unit_actual_price,
-                'unit_sale_price' => isset($product_purchase->sell_price) ? $product_purchase->sell_price : $stock_exists->unit_sale_price,
+                'unit_purchase_price_of_white_cash' => isset($product_purchase->actual_price) && $cash_type == "white" ? $product_purchase->actual_price : $stock_exists->unit_purchase_price_of_white_cash, // purchase price white
+                'unit_purchase_price_of_black_cash' => isset($product_purchase->actual_price) && $cash_type == "black" ? $product_purchase->actual_price : $stock_exists->unit_purchase_price_of_black_cash, // purchase price black
+                'unit_sale_price_of_white_cash' => isset($product_purchase->sell_price) && $cash_type == "white" ? $product_purchase->sell_price : $stock_exists->unit_sale_price_of_black_cash, // Sale price white
+                'unit_sale_price_of_black_cash' => isset($product_purchase->sell_price) && $cash_type == "black" ? $product_purchase->sell_price : $stock_exists->unit_sale_price_of_black_cash, // Sale price black
                 'total_qty' => isset($product_purchase->qty) ? $product_purchase->qty + $stock_exists->total_qty : $stock_exists->total_qty,
                 'discount' => isset($product_purchase->discount) ? $product_purchase->discount : $stock_exists->total_qty,
                 'additional_cost_without_vat' => isset($product_purchase->additional_cost_without_vat) ? $product_purchase->additional_cost_without_vat : $stock_exists->additional_cost_without_vat,
@@ -140,8 +136,10 @@ class PurchaseRepository implements PurchaseInterface
                 'retailer_id' => isset($purchase->user_id) ? $purchase->user_id : null,
                 'white_items' => ($cash_type == "white") ? $product_purchase->qty : null, 
                 'black_items' => ($cash_type == "black") ? $product_purchase->qty : null, 
-                'unit_actual_price' => isset($product_purchase->actual_price) ? $product_purchase->actual_price : null,
-                'unit_sale_price' => isset($product_purchase->sell_price) ? $product_purchase->sell_price : null,
+                'unit_purchase_price_of_white_cash' => isset($product_purchase->actual_price) && $cash_type == "white" ? $product_purchase->actual_price : NULL, // purchase price white
+                'unit_purchase_price_of_black_cash' => isset($product_purchase->actual_price) && $cash_type == "black" ? $product_purchase->actual_price : NULL, // purchase price black
+                'unit_sale_price_of_white_cash' => isset($product_purchase->sell_price) && $cash_type == "white" ? $product_purchase->sell_price : NULL, // Sale price white
+                'unit_sale_price_of_black_cash' => isset($product_purchase->sell_price) && $cash_type == "black" ? $product_purchase->sell_price : NULL, // Sale price black
                 'total_qty' => isset($product_purchase->qty) ? $product_purchase->qty : null,
                 'discount' => isset($product_purchase->discount) ? $product_purchase->discount : null,
                 'additional_cost_without_vat' => isset($product_purchase->additional_cost_without_vat) ? $product_purchase->additional_cost_without_vat : null,
@@ -243,8 +241,10 @@ class PurchaseRepository implements PurchaseInterface
                     $stock->update([
                         'white_items' => (!empty($purchase->cash_type) && $purchase->cash_type == "white") ? $stock->white_items + $product_purchase->qty : $stock->white_items,
                         'black_items' => (!empty($purchase->cash_type) && $purchase->cash_type == "black") ? $stock->black_items + $product_purchase->qty : $stock->black_items,
-                        'unit_actual_price' => !empty($product_purchase->actual_price) ? $product_purchase->actual_price : $stock->unit_actual_price,
-                        'unit_sale_price' => !empty($product_purchase->sell_price) ? $product_purchase->sell_price : $stock->unit_sale_price,
+                        'unit_purchase_price_of_white_cash' => isset($product_purchase->actual_price) && $purchase->cash_type == "white" ? $product_purchase->actual_price : $stock->unit_purchase_price_of_white_cash, // purchase price white
+                        'unit_purchase_price_of_black_cash' => isset($product_purchase->actual_price) && $purchase->cash_type == "black" ? $product_purchase->actual_price : $stock->unit_purchase_price_of_black_cash, // purchase price black
+                        'unit_sale_price_of_white_cash' => isset($product_purchase->sell_price) && $purchase->cash_type == "white" ? $product_purchase->sell_price : $stock->unit_sale_price_of_black_cash, // Sale price white
+                        'unit_sale_price_of_black_cash' => isset($product_purchase->sell_price) && $purchase->cash_type == "black" ? $product_purchase->sell_price : $stock->unit_sale_price_of_black_cash, // Sale price black
                         'total_qty' => ( $stock->total_qty + $product_purchase->qty),
                     ]);
                 } else {
@@ -255,8 +255,10 @@ class PurchaseRepository implements PurchaseInterface
                         'retailer_id' => $purchase->user_id,
                         'white_items' => (!empty($purchase->cash_type) && $purchase->cash_type == "white") ? $product_purchase->qty : null,
                         'black_items' => (!empty($purchase->cash_type) && $purchase->cash_type == "black") ? $product_purchase->qty : null,
-                        'unit_actual_price' => !empty($product_purchase->actual_price) ? $product_purchase->actual_price : null,
-                        'unit_sale_price' => !empty($product_purchase->sell_price) ? $product_purchase->sell_price : null,
+                        'unit_purchase_price_of_white_cash' => isset($product_purchase->actual_price) && $purchase->cash_type == "white" ? $product_purchase->actual_price : NULL, // purchase price white
+                        'unit_purchase_price_of_black_cash' => isset($product_purchase->actual_price) && $purchase->cash_type == "black" ? $product_purchase->actual_price : NULL, // purchase price black
+                        'unit_sale_price_of_white_cash' => isset($product_purchase->sell_price) && $purchase->cash_type == "white" ? $product_purchase->sell_price : NULL, // Sale price white
+                        'unit_sale_price_of_black_cash' => isset($product_purchase->sell_price) && $purchase->cash_type == "black" ? $product_purchase->sell_price : NULL, // Sale price black
                         'total_qty' => $product_purchase->qty,
                         'discount' => isset($product_purchase->discount) ? $product_purchase->discount : null,
                         'additional_cost_without_vat' => isset($product_purchase->additional_cost_without_vat) ? $product_purchase->additional_cost_without_vat : null,

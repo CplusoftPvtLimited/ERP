@@ -9,7 +9,9 @@ use App\Repositories\Interfaces\AssemblyGroupNodeInterface;
 use App\Repositories\Interfaces\BalanceSheetInterface;
 use App\Repositories\Interfaces\BankAccountInterface;
 use App\Repositories\Interfaces\PurchaseInterface;
+use App\Repositories\Interfaces\SaleInterface;
 use App\Repositories\PurchaseRepository;
+use App\Repositories\SaleRepository;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -37,6 +39,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(BalanceSheetInterface::class,BalanceSheetRepository::class);
         $this->app->bind(BankAccountInterface::class,BankAccountRepository::class);
 
+        $this->app->bind(SaleInterface::class,SaleRepository::class);
     }
 
     public function boot()

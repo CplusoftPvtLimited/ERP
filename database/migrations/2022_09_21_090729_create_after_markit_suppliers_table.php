@@ -26,7 +26,6 @@ class CreateAfterMarkitSuppliersTable extends Migration
             $table->string('country')->nullable();
             $table->boolean('is_active')->nullable();
             // $table->foreign('retailer_id')->references('id')->on('users')->cascadeOnDelete();
-
             $table->softDeletes();
             $table->timestamps();
         });

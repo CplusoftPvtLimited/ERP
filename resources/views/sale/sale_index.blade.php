@@ -2,7 +2,6 @@
 
 @section('css')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
-
 @endsection
 
 @section('style')
@@ -44,16 +43,16 @@
                     <div class="card-body">
                         <div class="container">
                             <div>
-                                <h4>All Purchases</h4>
+                                <h4>All Sales</h4>
                             </div>
                             <div class="d-flex flex-row-reverse mb-3">
-                                <a class="p-1" href="{{ route('purchasesPdfDownload') }}"><button
+                                {{-- <a class="p-1" href="{{ route('purchasesPdfDownload') }}"><button
                                         class="btn btn-primary"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                                        Pdf</button></a>
-                                <a class="p-1" href="{{ route('exportPurchases') }}"><button
-                                        class="btn btn-warning">Export</button></a>
-                                <a class="p-1" href="{{ route('purchases.create') }}"><button class="btn btn-success"><i
-                                            class="fa fa-plus"></i> Add</button></a>
+                                        Pdf</button></a> --}}
+                                {{-- <a class="p-1" href="{{ route('exportPurchases') }}"><button
+                                        class="btn btn-warning">Export</button></a> --}}
+                                <a class="p-1" href="{{ route('sales.create') }}"><button class="btn btn-success"><i
+                                            class="fa fa-plus"></i> Add Sale</button></a>
                             </div>
 
                             <div class="product-table">
@@ -73,15 +72,14 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Date</th>
-                                            <th>Supplier</th>
-                                            <th>Items</th>
-                                            <th>Total Quantity</th>
-                                            <th>Purchase Status</th>
+                                            <th>Customer</th>
                                             <th>Cash Type</th>
-                                            {{-- <th>Paid</th>
-                                            <th>Due</th> --}}
-                                            <th>Grand Total</th>
-                                            <th width="150px">Action</th>
+                                            <th>Total Quantity</th>
+                                            <th>Shipping Cost</th>
+                                            <th>Discount</th>
+                                            <th>Total Bill</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -107,14 +105,14 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            var table = $('#data-table').DataTable({
-                "order": [[ 1, "DESC" ]],
-                // "scrollX": true,
-                "overflow-x": "auto",
+            $('#data-table').DataTable({
+                "order": [
+                    [1, "DESC"]
+                ],
                 "processing": true,
                 "serverside": true,
-                "paging": true,
-                ajax: "{{ route('purchases.index') }}",
+                "scrollX": true,
+                ajax: "{{ route('sales.index') }}",
                 columns: [{
                         data: 'id',
                         name: 'id'
@@ -124,32 +122,32 @@
                         name: 'date'
                     },
                     {
-                        "data": "supplier",
-                        name: 'supplier'
+                        "data": "customer_id",
+                        name: 'customer_id'
                     },
                     {
-                        "data": "item",
-                        name: 'item'
+                        "data": "cash_type",
+                        name: 'cash_type'
                     },
                     {
                         "data": "total_qty",
                         name: 'total_qty'
                     },
                     {
-                        "data": "purchase_status",
-                        name: 'purchase_status'
-                    },
-                    // {
-                    //     "data": "paid_amount",
-                    //     name: 'paid_amount'
-                    // },
-                    {
-                        "data": "cash_type",
-                        name: 'cash_type'
+                        "data": "shipping_cost",
+                        name: 'shipping_cost'
                     },
                     {
-                        "data": "grand_total",
-                        name: 'grand_total'
+                        "data": "discount",
+                        name: 'discount'
+                    },
+                    {
+                        "data": "total_bill",
+                        name: 'total_bill'
+                    },
+                    {
+                        "data": "status",
+                        name: 'status'
                     },
                     {
                         "data": 'action',
@@ -158,21 +156,16 @@
                         searchable: false
                     }
                 ],
-
-
             });
-
-            table.ajax.reload(null, false);
-            
         });
-         //////// sweet alert ///////////
-         function deletePurchase(id) {
-                console.log(id);
-                // href="deletePurchase/' . $row['id'] . '"
-                var form = $(this).closest("form");
-                var name = $(this).data("name");
-                event.preventDefault();
-                Swal.fire({
+        //////// sweet alert ///////////
+        function deletePurchase(id) {
+            console.log(id);
+            // href="deletePurchase/' . $row['id'] . '"
+            var form = $(this).closest("form");
+            var name = $(this).data("name");
+            event.preventDefault();
+            Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
                 icon: 'warning',
@@ -181,20 +174,20 @@
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, delete it!'
             }).then((willDelete) => {
-                        if (willDelete.isConfirmed) {
-                            $.ajax({
-                               method: "GET",
-                               url: "/deletePurchase/"+id,
-                               data: {
-                                  id:id
-                               },
-                               success: function($data){
-                                  location.reload();
-                               }
-                            });
+                if (willDelete.isConfirmed) {
+                    $.ajax({
+                        method: "GET",
+                        url: "/deletePurchase/" + id,
+                        data: {
+                            id: id
+                        },
+                        success: function($data) {
+                            location.reload();
                         }
                     });
-                
-            }
+                }
+            });
+
+        }
     </script>
 @endsection
