@@ -1,4 +1,9 @@
 <div class="card-body m-0">
+    @php
+            $date = Carbon\Carbon::now();
+            $current_date = $date->format('Y-m-d');
+            // dd($current_date);
+        @endphp
     <div class="container">
         <div class="row">
             <div class="col mb-1 mt-0 pt-0">
@@ -164,7 +169,7 @@
                         </div>
                         <div class="col-9">
                             <div class="form-group">
-                                <input type="date" name="settlement_date" id="overview_settlement_date" class="form-control">
+                                <input type="date" name="settlement_date" id="overview_settlement_date" max={{$current_date}} class="form-control">
                             </div>
                         </div>
                     </div>

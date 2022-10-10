@@ -16,6 +16,11 @@
             </ul>
         </div>
     @endif
+    @php
+            $date = Carbon\Carbon::now();
+            $current_date = $date->format('Y-m-d');
+            // dd($current_date);
+        @endphp
     <form action="{{ route('balanceSheet.store') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="row">
@@ -71,7 +76,7 @@
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Settelement Date *</h6>
-                            <input type="date" name="settlement_date" id="settlement_date" class="form-control">
+                            <input type="date" name="settlement_date" id="settlement_date" max={{$current_date}} class="form-control">
                         </div>
                     </div>
                     <div class="col-4" id="carrier">

@@ -11,6 +11,11 @@
     @endif
 
     <section>
+        @php
+            $date = Carbon\Carbon::now();
+            $current_date = $date->format('Y-m-d');
+            // dd($current_date);
+        @endphp
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
@@ -383,7 +388,7 @@
                                 </div>
                                 <div class="col-9">
                                     <div class="form-group">
-                                        <input type="date" name="settlement_date" id="overview_settlement_date"
+                                        <input type="date" name="settlement_date" id="overview_settlement_date" max ={{$current_date}} placeholder="DD-MM-YYYY"
                                             class="form-control">
                                     </div>
                                 </div>

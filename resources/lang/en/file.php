@@ -1,5 +1,6 @@
 <?php 
 return [
+	'Add an Expense' => 'Add an Expense',
 	'Balance Type' => 'Balance Type',
 	'Transaction Type' => 'Transaction Type',
 	'Mode Payment' => 'Mode Payment',
