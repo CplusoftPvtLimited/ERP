@@ -43,7 +43,7 @@
                     <div class="card-body">
                         <div class="container">
                             <div>
-                                <h4>All Invoices</h4>
+                                <h4>Delivery Slips</h4>
                             </div>
                             
 
@@ -105,7 +105,7 @@
                 "processing": true,
                 "serverside": true,
                 "paging": true,
-                ajax: "{{ route('invoices.index') }}",
+                ajax: "{{ route('delivery_slips') }}",
                 columns: [{
                         data: 'id',
                         name: 'id'
@@ -165,7 +165,7 @@
                     status: status,
                 },
                 success: function(data) {
-                    window.location.href = "{{ url('delivery_slips') }}";
+                    location.reload();
                 }
             });
         }

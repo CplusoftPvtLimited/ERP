@@ -51,6 +51,8 @@ use Spatie\Permission\Models\Permission;
 use App\Mail\UserNotification;
 use App\Models\AfterMarkitSupplier;
 use App\Models\Article;
+use App\Models\ERPInvoice;
+use App\Models\ERPInvoiceProduct;
 use App\Models\Manufacturer;
 use App\Models\NewSale;
 use App\Models\NewSaleProduct;
@@ -67,6 +69,7 @@ use Illuminate\Support\Facades\DB as FacadesDB;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Stripe\Invoice;
 use Yajra\DataTables\Facades\DataTables;
 
 class SaleController extends Controller
@@ -147,12 +150,6 @@ class SaleController extends Controller
                 // })
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="row">
-                     <div class="col-sm-3">
-                     <a> <button
-                     class="btn btn-danger btn-sm" onclick = "deletePurchase(' . $row["id"] . ')" style="" type="button"
-                     data-original-title="btn btn-danger btn-sm"
-                     title="Delete"><i class="fa fa-trash"></i></button></a>
-                     </div>
                      
                      <div class="col-sm-3">
                      <a href="/sales/' . $row["id"] . '/edit"> <button
@@ -162,12 +159,21 @@ class SaleController extends Controller
                      </div>
 
                      <div class="col-sm-3">
-                     <a href="viewPurchase/' . $row["id"] . '"> <button
+                     <a href="/view_sale/'.$row["id"].'"> <button
                                  class="btn btn-success btn-sm " type="button"
                                  data-original-title="btn btn-success btn-xs"
                                  title=""><i class="fa fa-eye"></i></button></a>
-                     </div>
-                 </div>
+                     </div>';
+                     if($row['status'] == "accepted"){
+                        $btn .= '<div class="col-sm-3">
+                        <a href="/createInvoice/'.$row["id"].'"> <button
+                                    class="btn btn-success btn-sm " style="background: grey;
+                                    border: 1px solid grey;" type="button"
+                                    data-original-title="btn btn-success btn-xs"
+                                    title=""><i class="fa fa-file"></i></button></a>
+                        </div>';
+                     }
+                 $btn .= '</div>
                  ';
 
                     return $btn;
@@ -554,7 +560,6 @@ class SaleController extends Controller
                 return redirect()->back();
             }
             toastr()->error($sale);
-            dd($sale);
             return redirect()->back()->withErrors($sale);
         } catch (\Exception $e) {
             Log::debug($e->getMessage());
@@ -565,6 +570,13 @@ class SaleController extends Controller
     }
 
     // Our own code
+
+    public function viewSale($id){
+        $sale = NewSale::find($id);
+        $sale_products = NewSaleProduct::where('sale_id',$id)->get();
+            // dd($lims_quotation_data);
+        return view('sale.view_sale',compact('sale','sale_products'));
+    }
 
     public function getSectionPartsForSale(Request $request)
     {
@@ -658,10 +670,11 @@ class SaleController extends Controller
     }
 
     public function changeSaleStatus(Request $request){
+        // dd($request->all());
         $sale = NewSale::find($request->id);
-        $sale->update([
-            'status' => $request->status,
-        ]);
+        $sale->status = $request->status;
+        $sale->save();
+          
         return true;
     }
     // our code end
@@ -1511,10 +1524,16 @@ class SaleController extends Controller
             FacadesDB::beginTransaction();
             $sale = $this->saleRepository->update($data,$id);
             FacadesDB::commit();
-            if ($sale) {
-                toastr()->success('Sale Updated successfully');
-                return redirect()->route('sales.index')->with('message', 'Sale Updated successfully');
+            if ($sale && !isset($sale['message'])) {
+                toastr()->success('Sale updated successfully');
+                return redirect()->route('sales.index')->with('message', 'Sales Updated successfully');
             }
+            if($sale && isset($sale['message']) && $sale['message'] == "quantity-exceeded"){
+                FacadesDB::rollBack();
+                toastr()->info('Your Requested Quantity is not available for Reference No. '.$sale['reference_no']);
+                return redirect()->back();
+            }
+            // dd($sale);
             toastr()->error($sale);
             return redirect()->back()->withErrors($sale);
         } catch (\Exception $e) {

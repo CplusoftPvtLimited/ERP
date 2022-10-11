@@ -191,6 +191,7 @@ class PurchaseRepository implements PurchaseInterface
             $purchase_products = [];
             $purchases_products = ProductPurchase::where('purchase_id', $purchase_get->id)->get();
             // dd($purchases_products);
+            
             foreach ($purchases_products as $lims_purchase_data) {
                 $manufacturer = Manufacturer::where('manuId', $lims_purchase_data->manufacture_id)->first();
                 $model = ModelSeries::where('modelId', $lims_purchase_data->model_id)->first();

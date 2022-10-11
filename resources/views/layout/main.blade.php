@@ -116,8 +116,120 @@
         ->first();
     // dd($FormUser);
     ?>
-    @if ($FormUser != null)
+      @if($FormUser != Null)
 
+      
+      <!-- Side Navbar -->
+      
+      <nav class="side-navbar">
+        <span class="brand-big">
+            @if($general_setting->site_logo)
+            <a href="{{url('/')}}"><img src="{{url('logo', $general_setting->site_logo)}}" width="115"></a>
+            @else
+            <a href="{{url('/')}}"><h1 class="d-inline">{{$general_setting->site_title}}</h1></a>
+            @endif
+        </span>
+        <ul id="side-main-menu" class="side-menu list-unstyled">
+            <li><a href="{{url('/')}}"> <i class="dripicons-meter"></i><span>{{ __('file.dashboard') }}</span></a></li>
+            <?php
+                $role = DB::table('roles')->find(Auth::user()->role_id);
+                $category_permission_active = DB::table('permissions')
+                    ->join('role_has_permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+                    ->where([
+                    ['permissions.name', 'category'],
+                    ['role_id', $role->id] ])->first();
+                $index_permission = DB::table('permissions')->where('name', 'products-index')->first();
+                $index_permission_active = DB::table('role_has_permissions')->where([
+                    ['permission_id', $index_permission->id],
+                    ['role_id', $role->id]
+                ])->first();
+
+                $print_barcode = DB::table('permissions')->where('name', 'print_barcode')->first();
+                    $print_barcode_active = DB::table('role_has_permissions')->where([
+                        ['permission_id', $print_barcode->id],
+                        ['role_id', $role->id]
+                    ])->first();
+
+                $stock_count = DB::table('permissions')->where('name', 'stock_count')->first();
+                    $stock_count_active = DB::table('role_has_permissions')->where([
+                        ['permission_id', $stock_count->id],
+                        ['role_id', $role->id]
+                    ])->first();
+
+                $adjustment = DB::table('permissions')->where('name', 'adjustment')->first();
+                $adjustment_active = DB::table('role_has_permissions')->where([
+                    ['permission_id', $adjustment->id],
+                    ['role_id', $role->id]
+                ])->first();
+            ?>
+            @if($category_permission_active || $index_permission_active || $print_barcode_active || $stock_count_active || $adjustment_active)
+            
+            @endif
+            <?php
+            $index_permission = DB::table('permissions')->where('name', 'purchases-index')->first();
+                $index_permission_active = DB::table('role_has_permissions')->where([
+                    ['permission_id', $index_permission->id],
+                    ['role_id', $role->id]
+                ])->first();
+            ?>
+            @if($index_permission_active)
+            <li>
+                <a href="#purchase" aria-expanded="false" data-toggle="collapse"> 
+                    <i class="dripicons-card"></i><span>{{trans('file.Purchase')}}</span>
+                </a>
+            <ul id="purchase" class="collapse list-unstyled ">
+                <li id="purchase-list-menu"><a href="{{route('purchases.index')}}">{{trans('file.Purchase List')}}</a></li>
+                <!-- <li id=""><a href="{{route('purchases.index')}}">{{trans('file.Pre Invoice List')}}</a></li> -->
+                <!-- <li id=""><a href="{{route('purchases.index')}}">{{trans('file.Invoice List')}}</a></li> -->
+
+            </ul>
+            </li>
+            @endif
+            <?php
+            $sale_index_permission = DB::table('permissions')->where('name', 'sales-index')->first();
+            $sale_index_permission_active = DB::table('role_has_permissions')->where([
+                    ['permission_id', $sale_index_permission->id],
+                    ['role_id', $role->id]
+                ])->first();
+
+            $gift_card_permission = DB::table('permissions')->where('name', 'gift_card')->first();
+            $gift_card_permission_active = DB::table('role_has_permissions')->where([
+                    ['permission_id', $gift_card_permission->id],
+                    ['role_id', $role->id]
+                ])->first();
+
+            $coupon_permission = DB::table('permissions')->where('name', 'coupon')->first();
+            $coupon_permission_active = DB::table('role_has_permissions')->where([
+                    ['permission_id', $coupon_permission->id],
+                    ['role_id', $role->id]
+                ])->first();
+
+            $delivery_permission_active = DB::table('permissions')
+                    ->join('role_has_permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+                    ->where([
+                    ['permissions.name', 'delivery'],
+                    ['role_id', $role->id] ])->first();
+
+            $sale_add_permission = DB::table('permissions')->where('name', 'sales-add')->first();
+            $sale_add_permission_active = DB::table('role_has_permissions')->where([
+                ['permission_id', $sale_add_permission->id],
+                ['role_id', $role->id]
+            ])->first();
+            ?>
+            @if($sale_index_permission_active || $gift_card_permission_active || $coupon_permission_active || $delivery_permission_active)
+            <li><a href="#sale" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-cart"></i><span>{{trans('file.Sale')}}</span></a>
+            <ul id="sale" class="collapse list-unstyled ">
+                {{-- @if($sale_index_permission_active) --}}
+                <!-- <li id="sale-list-menu"><a href="{{route('sales.index')}}">{{trans('file.Sale List')}}</a></li> -->
+                {{-- @if($sale_add_permission_active) --}}
+                <!-- <li><a href="{{route('sale.pos')}}">POS</a></li> -->
+                <!-- <li id="sale-create-menu"><a href="{{route('sales.create')}}">{{trans('file.Add Sale')}}</a></li> -->
+                <!-- <li id="sale-import-menu"><a href="{{url('sales/sale_by_csv')}}">{{trans('file.Import Sale By CSV')}}</a></li> -->
+                {{-- @endif --}}
+                {{-- @endif --}}
+                <li id="sale-list-menu"><a href="{{route('sales.index')}}">{{trans('file.Sale List')}}</a></li>
+                <li id="invoices-list-menu"><a href="{{route('invoices.index')}}">{{trans('file.Invoice List')}}</a></li>
+                <li id="pre-invoices-list-menu"><a href="{{route('delivery_slips')}}">{{trans('file.Delivery Slips')}}</a></li>
 
         <!-- Side Navbar -->
 

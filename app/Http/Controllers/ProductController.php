@@ -95,10 +95,27 @@ class ProductController extends Controller
                         $white_items .= $white_1_item_qty ;
                         $white_items .= ")</span>";
                         return $white_items;
+                    })->editColumn('unit_sale_price_of_white_cash', function ($row) {
+                        $price = "";
+                        if($row['unit_sale_price_of_white_cash']){
+                            $price = $row['unit_sale_price_of_white_cash'] . " TND";
+                            return $price;
+                        }else{
+                            return $price;
+                        }
+                    })->editColumn('unit_sale_price_of_black_cash', function ($row) {
+                        $price = "";
+                        if($row['unit_sale_price_of_black_cash']){
+                            $price = $row['unit_sale_price_of_black_cash'] . " TND";
+                            return $price;
+                        }else{
+                            return $price;
+                        }
+                        
                     })
                     ->editColumn('black_items', function ($row) {
 
-                        $black_0_item_qty = 0;
+                        $black_1_item_qty = 0;
                         $black_1_item_qty = 0;
                         $black_items = "" . $row->black_items;
                         
@@ -106,7 +123,7 @@ class ProductController extends Controller
                             if(isset($product->flag ) && ($product->cash_type == 'black')) {
 
                                 if($product->flag == '0') {
-                                    $black_0_item_qty += $product->qty;
+                                    $black_1_item_qty += $product->qty;
                                 }
                                 if($product->flag == '1') {
                                     $black_1_item_qty += $product->qty;
@@ -114,7 +131,7 @@ class ProductController extends Controller
                             }
                         }
                         $black_items .= " <span style='color: orange'>(";
-                        $black_items .= $black_0_item_qty ;
+                        $black_items .= $black_1_item_qty ;
                         $black_items .= ")</span>";
                         $black_items .= " <span style='color: red'>(";
                         $black_items .= $black_1_item_qty ;
@@ -129,12 +146,7 @@ class ProductController extends Controller
                                     data-original-title="btn btn-success btn-xs"
                                     title=""><i class="fa fa-eye"></i></button></a>
                              </div>
-                             <div class="col-sm-4">
-                             <a href="editPurchaseByProduct/' . $row["id"] . '"> <button
-                                         class="btn btn-primary btn-sm " type="button"
-                                         data-original-title="btn btn-danger btn-xs"
-                                         title=""><i class="fa fa-edit"></i></button></a>
-                             </div>
+                             
                              <div class="col-sm-4">
                              <a> <button
                              class="btn btn-danger btn-sm " onclick= "deleteStock(' . $row["id"] . ')" style="" type="button"
