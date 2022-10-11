@@ -62,7 +62,7 @@
                 </div>
             </div>
         </div>
-        <div class="row mr-1">
+        <div class="row">
             <div class="col-md-12 text-right">
                 <div class="form-group">
                     <button type="submit" class="btn btn-info purchase-save-btn"
