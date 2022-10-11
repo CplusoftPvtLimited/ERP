@@ -440,6 +440,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('products', [ProductController::class, 'getProducts'])->name('product.get');
 	Route::get('suppliers', [SupplierController::class, 'getSuppliers'])->name('supplier.get');
 	Route::get('supplier/create', [SupplierController::class, 'create'])->name('supplier.create');
+	Route::post('supplier/update', [SupplierController::class, 'update'])->name('supplier.update');
 	Route::get('cash/management', [CashManagementController::class, 'index'])->name('cash.management');
 	Route::get('cash/management/cheque', [CashManagementController::class, 'cheque'])->name('cash.management.cheque');
 	Route::get('cash/management/balance', [CashManagementController::class, 'balance'])->name('cash.management.balance');
