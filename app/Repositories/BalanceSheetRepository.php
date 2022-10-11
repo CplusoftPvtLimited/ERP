@@ -38,11 +38,12 @@ class BalanceSheetRepository implements BalanceSheetInterface
                     'retailer_id' => $input['retailer_id']
                 ]);
             } elseif ($input['transaction_type'] == 'debit' && $input['mode_payment'] == 'cheque') {
+                // dd($input);
                 $item = BalanceSheet::create([
                     'mode_payment' => $input['mode_payment'],
                     'category_id' => $data->has('category_id') ? $input['category_id'] : null,
                     'amount' => $input['amount'],
-                    'supplier_id' => $input['supplier_id'],
+                    'supplier_id' => $data->has('supplier_id')? $input['supplier_id'] : null,
                     'settlement_date' => $input['settlement_date'],
                     'note' => $input['note'],
                     'transaction_type' => $input['transaction_type'],

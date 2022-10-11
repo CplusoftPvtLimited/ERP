@@ -198,6 +198,8 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('create/sale/invoice/{id}', 'SaleController@createSaleInvoice')->name('sales.createSaleInvoice');
 	Route::get('sales/invoices', 'SaleController@salesInvoices')->name('sales.salesInvoices');
 	Route::get('generate-preinvoice-pdf/{id}', 'SaleController@generatePreInvoicePDF')->name('sales.generatePreInvoicePDF');
+	Route::get('preinvoice-pdf/{id}', 'SaleController@PreInvoicePDF')->name('sales.PreInvoicePDF');
+
 	Route::get('invoice/edit/{id}', 'SaleController@editInvoice')->name('sales.editInvoice');
 	Route::put('invoice/update/{id}', 'SaleController@updateInvoice')->name('sales.updateInvoice');
 	Route::get('invoice/change/status/{id}/{val}', 'SaleController@changeInvoiceStatus')->name('sales.changeInvoiceStatus');
