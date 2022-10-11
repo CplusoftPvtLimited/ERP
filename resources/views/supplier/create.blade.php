@@ -128,52 +128,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            {{-- <h3>{{trans('file.Cheque And Draft')}}</h3> --}}
-                            {{-- <button class="btn btn-success"><i class="fa fa-plus"></i>abc</button> --}}
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="purchase-table" class="table purchase-list" style="width: 100%">
-                                    <thead>
-                                        <tr>
-                                            <th class="not-exported"></th>
-                                            <th>#</th>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Image</th>
-                                            <th>Shop Name</th>
-                                            <th>Phone No</th>
-                                            <th>Address</th>
-                                            <th>City</th>
-                                            <th>Country</th>
-                                            <th class="not-exported">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tfoot class="tfoot active">
-                                        @foreach ($suppliers as $item => $supplier)
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        @endforeach
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 @endsection
