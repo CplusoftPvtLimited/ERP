@@ -271,6 +271,7 @@
                     $('#myTable tr').each(function() {
                         if (this.id != '') {
                             article_ids_array.push(this.id)
+                            
                         }
                     })
 

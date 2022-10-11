@@ -12,29 +12,35 @@ use App\Mail\UserNotification;
 use App\Models\AfterMarkitSupplier;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Ambrand;
+use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class SupplierController extends Controller
 {
-    // public function index()
-    // {
-    //     $role = Role::find(Auth::user()->role_id);
-    //     if($role->hasPermissionTo('suppliers-index')){
-    //         $permissions = Role::findByName($role->name)->permissions;
-    //         foreach ($permissions as $permission)
-    //             $all_permission[] = $permission->name;
-    //         if(empty($all_permission))
-    //             $all_permission[] = 'dummy text';
-    //         $lims_supplier_all = Supplier::where('is_active', true)->get();
-    //         return view('supplier.index',compact('lims_supplier_all', 'all_permission'));
-    //     }
-    //     else
-    //         return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
-    // }
-
     public function create()
     {
         $role = Role::find(Auth::user()->role_id);
         if ($role->hasPermissionTo('suppliers-add')) {
+            if (request()->ajax()) {
+                $all_stocks = AfterMarkitSupplier::where('retailer_id', Auth::user()->id)->orderBy('id', 'desc')
+                ->skip(0)->take(100)->get();
+                return DataTables::of($all_stocks)
+                    ->addColumn('action', function ($row) {
+                        $btn = '<div class="row">
+                        <div class="col-sm-4">
+                             <button class="btn btn-primary btn-sm edit_supplier" type="button"
+                                         data-original-title="btn btn-danger btn-xs"
+                                         data-id="'. $row["id"] .'" data-name="'. $row["name"] .'" 
+                                         data-email="'. $row["email"] .'" data-image="'. $row["image"] .'"
+                                         data-shop_name="'. $row["shop_name"] .'" data-phone="'. $row["phone"] .'"
+                                         data-address="'. $row["address"] .'" data-city="'. $row["city"] .'"
+                                         data-country="'. $row["country"] .'"
+                                         title=""><i class="fa fa-edit"></i></button>
+                         </div>';
+                        return $btn;
+                    })
+                    ->rawColumns(['action'])->make(true);
+            }
             return view('supplier.create');
         } else
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
@@ -93,126 +99,50 @@ class SupplierController extends Controller
         return redirect()->back();
     }
 
-    // public function edit($id)
-    // {
-    //     $role = Role::find(Auth::user()->role_id);
-    //     if($role->hasPermissionTo('suppliers-edit')){
-    //         $lims_supplier_data = Supplier::where('id',$id)->first();
-    //         return view('supplier.edit',compact('lims_supplier_data'));
-    //     }
-    //     else
-    //         return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
-    // }
-
-    // public function update(Request $request, $id)
-    // {
-    //     $this->validate($request, [
-    //         'company_name' => [
-    //             'max:255',
-    //                 Rule::unique('suppliers')->ignore($id)->where(function ($query) {
-    //                 return $query->where('is_active', 1);
-    //             }),
-    //         ],
-
-    //         'email' => [
-    //             'max:255',
-    //                 Rule::unique('suppliers')->ignore($id)->where(function ($query) {
-    //                 return $query->where('is_active', 1);
-    //             }),
-    //         ],
-    //         'image' => 'image|mimes:jpg,jpeg,png,gif|max:100000',
-    //     ]);
-
-    //     $input = $request->except('image');
-    //     $image = $request->image;
-    //     if ($image) {
-    //         $ext = pathinfo($image->getClientOriginalName(), PATHINFO_EXTENSION);
-    //         $imageName = preg_replace('/[^a-zA-Z0-9]/', '', $request['company_name']);
-    //         $imageName = $imageName . '.' . $ext;
-    //         $image->move('public/images/supplier', $imageName);
-    //         $input['image'] = $imageName;
-    //     }
-
-    //     $lims_supplier_data = Supplier::findOrFail($id);
-    //     $lims_supplier_data->update($input);
-    //     return redirect('supplier')->with('message','Data updated successfully');
-    // }
-
-    // public function deleteBySelection(Request $request)
-    // {
-    //     $supplier_id = $request['supplierIdArray'];
-    //     foreach ($supplier_id as $id) {
-    //         $lims_supplier_data = Supplier::findOrFail($id);
-    //         $lims_supplier_data->is_active = false;
-    //         $lims_supplier_data->save();
-    //     }
-    //     return 'Supplier deleted successfully!';
-    // }
-
-    // public function destroy($id)
-    // {
-    //     $lims_supplier_data = Supplier::findOrFail($id);
-    //     $lims_supplier_data->is_active = false;
-    //     $lims_supplier_data->save();
-    //     return redirect('supplier')->with('not_permitted','Data deleted successfully');
-    // }
-
-    // public function importSupplier(Request $request)
-    // {
-    //     $upload=$request->file('file');
-    //     $ext = pathinfo($upload->getClientOriginalName(), PATHINFO_EXTENSION);
-    //     if($ext != 'csv')
-    //         return redirect()->back()->with('not_permitted', 'Please upload a CSV file');
-    //     $filename =  $upload->getClientOriginalName();
-    //     $filePath=$upload->getRealPath();
-    //     //open and read
-    //     $file=fopen($filePath, 'r');
-    //     $header= fgetcsv($file);
-    //     $escapedHeader=[];
-    //     //validate
-    //     foreach ($header as $key => $value) {
-    //         $lheader=strtolower($value);
-    //         $escapedItem=preg_replace('/[^a-z]/', '', $lheader);
-    //         array_push($escapedHeader, $escapedItem);
-    //     }
-    //     //looping through othe columns
-    //     while($columns=fgetcsv($file))
-    //     {
-    //         if($columns[0]=="")
-    //             continue;
-    //         foreach ($columns as $key => $value) {
-    //             $value=preg_replace('/\D/','',$value);
-    //         }
-    //        $data= array_combine($escapedHeader, $columns);
-
-    //        $supplier = Supplier::firstOrNew(['company_name'=>$data['companyname']]);
-    //        $supplier->name = $data['name'];
-    //        $supplier->image = $data['image'];
-    //        $supplier->vat_number = $data['vatnumber'];
-    //        $supplier->email = $data['email'];
-    //        $supplier->phone_number = $data['phonenumber'];
-    //        $supplier->address = $data['address'];
-    //        $supplier->city = $data['city'];
-    //        $supplier->state = $data['state'];
-    //        $supplier->postal_code = $data['postalcode'];
-    //        $supplier->country = $data['country'];
-    //        $supplier->is_active = true;
-    //        $supplier->save();
-    //        $message = 'Supplier Imported Successfully';
-    //        if($data['email']){
-    //             try{
-    //                 Mail::send( 'mail.supplier_create', $data, function( $message ) use ($data)
-    //                 {
-    //                     $message->to( $data['email'] )->subject( 'New Supplier' );
-    //                 });
-    //             }
-    //             catch(\Excetion $e){
-    //                 $message = 'Supplier imported successfully. Please setup your <a href="setting/mail_setting">mail setting</a> to send mail.';
-    //             }   
-    //         }
-    //     }
-    //     return redirect('supplier')->with('message', $message); 
-    // }
+    public function update(Request $request)
+    {
+        $this->validate($request, [
+            'shop_name' => [
+                'max:255',
+                Rule::unique('after_markit_suppliers')->where(function ($query) {
+                    return $query->where('is_active', 1);
+                }),
+            ],
+            'email' => [
+                'max:255',
+                Rule::unique('after_markit_suppliers')->where(function ($query) {
+                    return $query->where('is_active', 1);
+                }),
+            ],'phone' => [
+                'max:255',
+                Rule::unique('after_markit_suppliers')->where(function ($query) {
+                    return $query->where('is_active', 1);
+                }),
+            ]
+        ]);
+        try {
+            DB::beginTransaction();
+            $supplier = AfterMarkitSupplier::findOrFail(request('supplier-id'));
+            $data = [
+                'name' => request('supplier-name'),
+                'email' => request('supplier-email'),
+                'phone' => request('supplier-phone'),
+                'shop_name' => request('supplier-shop_name'),
+                'address' => request('supplier-address'),
+                'city' => request('supplier-city'),
+                'country' => request('supplier-country'),
+            ];
+            $supplier->update($data);
+            DB::commit();
+            toastr()->success('Data updated successfully');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            toastr()->error($e->getMessage());
+            return redirect()->back();
+        }
+        
+    }
 
     public function getSuppliers() // by afzal
     {

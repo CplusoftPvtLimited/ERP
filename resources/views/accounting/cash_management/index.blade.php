@@ -16,9 +16,9 @@
                     </div>
                     <div class="card-body text-center">
                         <p>
-                            <strong>0,000 TND  TTC</strong>
+                            <strong>{{$primary_revenue}} TND</strong>
                         </p>
-                        <button class="btn btn-primary primary-details">
+                        <button data-href="{{ route('cash.management.balance') }}" class="btn btn-primary primary-details">
                             <i class="fa fa-eye"></i> {{trans('file.Detail')}}
                         </button>
                     </div>
@@ -31,9 +31,9 @@
                     </div>
                     <div class="card-body text-center">
                         <p>
-                            <strong>0,000 TND  TTC</strong>
+                            <strong>{{$secondary_revenue}} TND</strong>
                         </p>
-                        <button class="btn btn-primary secoundry-details">
+                        <button data-href="{{ route('cash.management.balance') }}" class="btn btn-primary secoundry-details">
                             <i class="fa fa-eye"></i> {{trans('file.Detail')}}
                         </button>
                     </div>
@@ -51,11 +51,18 @@
 <script type="text/javascript">
     $('.primary-details').click(function() {
         console.log('here');
-        window.location = `{{ route('cash.management.cheque')}}`;
+        let url = $(this).attr('data-href');
+        let balance_type = "primary";
+        let operation = 0;
+            // alert(url);
+        window.location = url + '?balance_type=' + balance_type + '&operation=' + operation;
     });
     $('.secoundry-details').click(function() {
         console.log('here');
-        window.location = `{{ route('cash.management.cheque')}}`;
+        let url = $(this).attr('data-href');
+        let balance_type = "secondary";
+        let operation = 0;
+        window.location = url + '?balance_type=' + balance_type + '&operation=' + operation;
     });
 </script>
 @endpush
