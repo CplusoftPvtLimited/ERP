@@ -223,7 +223,7 @@
                                     </div>
                                 </div>
                                 @if ($sale->cash_type == 'white')
-                                    <div class="row p-5" id="total_sale_calculations">
+                                    <div class="row" id="total_sale_calculations">
                                         <div class="col-md-12">
                                             <div class="row total-calculations">
                                                 <div class="col-md-4">

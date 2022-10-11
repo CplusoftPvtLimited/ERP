@@ -10,7 +10,7 @@
                 <div class="col-md-12">
                     <div class="card p-0">
                         <div class="card-header">
-                            <h3>Delivery Slip</h3>
+                            <h3>Sale</h3>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -276,7 +276,7 @@
                                     <div class="col-md-12">
                                         <div class="row">
                                             <div class="col-md-3">
-                                                <a href="{{ url('delivery_slips') }}" class="btn btn-primary">Back</a>
+                                                <a href="{{ url('sales') }}" class="btn btn-primary">Back</a>
                                             </div>
                                         </div>
                                     </div>

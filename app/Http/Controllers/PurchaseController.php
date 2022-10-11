@@ -109,7 +109,7 @@ class PurchaseController extends Controller
                     }
                     return $purchase_status;
                 })->editColumn('grand_total', function ($row) {
-                    $grand_total = $row['grand_total']. " €";
+                    $grand_total = $row['grand_total']. " TND";
                     return $grand_total;
                 })
                 ->addColumn('action', function ($row) {

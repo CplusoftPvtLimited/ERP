@@ -150,12 +150,6 @@ class SaleController extends Controller
                 // })
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="row">
-                     <div class="col-sm-3">
-                     <a> <button
-                     class="btn btn-danger btn-sm" onclick = "deletePurchase(' . $row["id"] . ')" style="" type="button"
-                     data-original-title="btn btn-danger btn-sm"
-                     title="Delete"><i class="fa fa-trash"></i></button></a>
-                     </div>
                      
                      <div class="col-sm-3">
                      <a href="/sales/' . $row["id"] . '/edit"> <button
@@ -165,7 +159,7 @@ class SaleController extends Controller
                      </div>
 
                      <div class="col-sm-3">
-                     <a href="#"> <button
+                     <a href="/view_sale/'.$row["id"].'"> <button
                                  class="btn btn-success btn-sm " type="button"
                                  data-original-title="btn btn-success btn-xs"
                                  title=""><i class="fa fa-eye"></i></button></a>
@@ -577,7 +571,12 @@ class SaleController extends Controller
 
     // Our own code
 
-    
+    public function viewSale($id){
+        $sale = NewSale::find($id);
+        $sale_products = NewSaleProduct::where('sale_id',$id)->get();
+            // dd($lims_quotation_data);
+        return view('sale.view_sale',compact('sale','sale_products'));
+    }
 
     public function getSectionPartsForSale(Request $request)
     {
