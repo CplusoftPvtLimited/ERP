@@ -167,6 +167,15 @@
         document.getElementById("defaultOpen").click();
 
         $('#submit_button').on('click', function() {
+        var supplier_id = $('#supplier_id').find(":selected").val();
+        if (!supplier_id) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'please select a supplier',
+                            });
+                            exit();
+                        }
             if (selected_cash_type.length > 0) {
             var cashType = $('#cash_type').find(":selected").val();
 

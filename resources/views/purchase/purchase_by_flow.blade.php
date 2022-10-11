@@ -563,12 +563,12 @@
                     '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterPurchaseQty(' +
                     data.data.legacyArticleId + ')" id="item_qty' + data.data
                     .legacyArticleId +
-                    '" value="1" min="0" name="item_qty[]" required></td>';
+                    '" value="0" min="0" name="item_qty[]" required></td>';
 
                 markup +=
                     '<td><input style="width:100px" type="number" class="form-control" onkeyup="alterPurchaseQty(' +
                     data.data.legacyArticleId +
-                    ')" value="0" min="0" step="any" id="purchase_price_' +
+                    ')" value="1" min="1" step="any" id="purchase_price_' +
                     data.data.legacyArticleId +
                     '" name="purchase_price[]" required></td>';
 
@@ -720,6 +720,7 @@
             });
             exit();
         }
+        console.log(supplier_id);
         if (!supplier_id) {
             Swal.fire({
                 icon: 'error',
