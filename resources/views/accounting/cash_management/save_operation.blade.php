@@ -121,7 +121,7 @@
                 <div class="row">
                     <div class="col-4">
                         <h6>Note</h6>
-                        <textarea name="note" id="note" cols="30" rows="5"></textarea>
+                        <textarea name="note" id="note" cols="30" rows="5" class="form-control"></textarea>
                     </div>
                 </div>
                 <div class="d-flex flex-row-reverse">

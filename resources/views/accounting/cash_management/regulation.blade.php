@@ -23,10 +23,14 @@
                     <p>{{ $message }}</p>
                 </div>
             @endif
-            <table id="data-table" class="table table-striped" style="width: 100% !important">
+            <div class="row">
+                <div class="col pl-4 pt-1">
+                    <h2>{{ trans('file.Regulation') }}</h2>
+                </div>
+            </div>
+            <table id="regulation-data-table" class="table table-striped" style="width: 100% !important">
                 <thead style="border-bottom: 3px solid white;">
                     <tr>
-                        <th>#</th>
                         <th>Date</th>
                         <th>Label</th>
                         <th>Payment Mode</th>
@@ -40,24 +44,31 @@
                         $i = 0;
                     @endphp
                     @foreach ($regulations as $item)
-                    <tr>
-                        <td>{{++$i}}</td>
-                        <td>{{substr($item->settlement_date, 0, 10)}}</td>
-                        <td>{{$item->balanceCategory->category}}</td>
-                        <td>{{$item->mode_payment}}</td>
-                        <td style="color: red">{{$item->transaction_type == "debit" ? "- ".$item->amount : "---"}}</td>
-                        <td style="color: green">{{$item->transaction_type == "credit" ? "+ ".$item->amount : "---"}}</td>
-                        <td><button class= "btn btn-primary"><i class="fa fa-eye"></i></button></td>
-                    </tr>
+                        <tr>
+                            <td>{{ substr($item->settlement_date, 0, 10) }}</td>
+                            <td>{{ $item->balanceCategory->category }}</td>
+                            <td>{{ $item->mode_payment }}</td>
+                            <td style="color: red">
+                                TND {{ $item->transaction_type == 'debit' ? '- ' . $item->amount : '00' }}
+                            </td>
+                            <td style="color: green">
+                                TND {{ $item->transaction_type == 'credit' ? '+ ' . $item->amount : '00' }}</td>
+                            <td><a href="{{ route('cash.managemnt.regulation', $item->id) }}"
+                                    class="btn btn-primary text-white"><i class="fa fa-eye"></i></a></td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+<script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script>
     $(document).ready(function() {
-    })
+        $('#regulation-data-table').DataTable({
+            searching: false,
+            ordering: false
+        });
+    });
 </script>

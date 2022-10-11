@@ -444,6 +444,8 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('cash/management', [CashManagementController::class, 'index'])->name('cash.management');
 	Route::get('cash/management/cheque', [CashManagementController::class, 'cheque'])->name('cash.management.cheque');
 	Route::get('cash/management/balance', [CashManagementController::class, 'balance'])->name('cash.management.balance');
+	Route::get('cash/management/regulation/{id}', [CashManagementController::class, 'regulation'])->name('cash.managemnt.regulation');
+
 
 
 	Route::resource('balanceSheet','BalanceSheetController');

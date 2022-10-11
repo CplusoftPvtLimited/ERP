@@ -53,6 +53,16 @@
                                         <div class="row">
                                             <div class="col-4">
                                                 <div class="form-group">
+                                                    <strong>Bank Title: *</strong>
+                                                    <select name="bank_id" id="" class="form-control">
+                                                        @foreach ($banks as $item)
+                                                            <option value="{{$item->id}}" {{$item->id == $bankAccount->bank_id ? 'selected' : ''}}>{{$item->title}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="form-group">
                                                     <strong>Account Number: *</strong>
                                                     <input type="number" name="account_number" class="form-control"
                                                         required value="{{$bankAccount->account_number}}">
@@ -63,6 +73,22 @@
                                                     <strong>Account Title: *</strong>
                                                     <input type="text" name="account_title" class="form-control" required
                                                     value="{{$bankAccount->account_title}}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <div class="form-group">
+                                                    <strong>Swift Code: *</strong>
+                                                    <input type="text" name="swift_code" class="form-control" required
+                                                    value="{{$bankAccount->swift_code}}">
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="form-group">
+                                                    <strong>IBAN: *</strong>
+                                                    <input type="text" name="iban" class="form-control" required
+                                                    value="{{$bankAccount->iban}}">
                                                 </div>
                                             </div>
                                         </div>
