@@ -249,9 +249,9 @@
                             <li id="sale-list-menu"><a
                                     href="{{ route('sales.index') }}">{{ trans('file.Estimate List') }}</a></li>
                             <li id="invoices-list-menu"><a
-                                    href="{{ route('sales.salesInvoices') }}">{{ trans('file.Invoice List') }}</a>
+                                    href="{{ route('invoices.index') }}">{{ trans('file.Invoice List') }}</a>
                             </li>
-                            <li id="pre-invoices-list-menu"><a href="">{{ trans('file.Delivery Slips') }}</a>
+                            <li id="pre-invoices-list-menu"><a href="{{ route('delivery_slips') }}">{{ trans('file.Delivery Slips') }}</a>
                             </li>
 
 
@@ -494,7 +494,7 @@
     ?>
 
     @if (Auth::user()->role_id != 5)
-        <!-- <li class=""><a href="#hrm" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-user-group"></i><span>HRM</span></a> -->
+        <li class=""><a href="#hrm" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-user-group"></i><span>HRM</span></a>
         <ul id="hrm" class="collapse list-unstyled ">
             @if ($department_active)
                 <li id="dept-menu"><a href="{{ route('departments.index') }}">{{ trans('file.Department') }}</a>
@@ -550,35 +550,35 @@
         $customer_index_permission_active ||
         $biller_index_permission_active ||
         $supplier_index_permission_active)
-        {{-- <li><a href="#people" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-user"></i><span>{{ trans('file.People') }}</span></a> --}}
+        <li><a href="#people" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-user"></i><span>{{ trans('file.People') }}</span></a>
         <ul id="people" class="collapse list-unstyled ">
 
             @if ($user_index_permission_active)
-                {{-- <li id="user-list-menu"><a href="{{route('user.index')}}">{{trans('file.User List')}}</a></li> --}}
+                <li id="user-list-menu"><a href="{{route('user.index')}}">{{trans('file.User List')}}</a></li>
                 <?php $user_add_permission_active = DB::table('permissions')
                     ->join('role_has_permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
                     ->where([['permissions.name', 'users-add'], ['role_id', $role->id]])
                     ->first();
                 ?>
                 @if ($user_add_permission_active)
-                    {{-- <li id="user-create-menu"><a href="{{route('user.create')}}">{{trans('file.Add User')}}</a></li> --}}
+                    <li id="user-create-menu"><a href="{{route('user.create')}}">{{trans('file.Add User')}}</a></li>
                 @endif
             @endif
 
-            @if ($customer_index_permission_active)
-                <li id="customer-list-menu"><a href="{{route('customer.index')}}">{{trans('file.Customer List')}}</a></li>
-                <?php
-                $customer_add_permission = DB::table('permissions')
-                    ->where('name', 'customers-add')
-                    ->first();
-                $customer_add_permission_active = DB::table('role_has_permissions')
-                    ->where([['permission_id', $customer_add_permission->id], ['role_id', $role->id]])
-                    ->first();
-                ?>
+            {{-- @if ($customer_index_permission_active) --}}
+                {{-- <li id="customer-list-menu"><a href="{{route('customer.index')}}">{{trans('file.Customer List')}}</a></li> --}}
+                {{--
+                // $customer_add_permission = DB::table('permissions')
+                    // ->where('name', 'customers-add')
+                    // ->first();
+                // $customer_add_permission_active = DB::table('role_has_permissions')
+                    // ->where([['permission_id', $customer_add_permission->id], ['role_id', $role->id]])
+                    // ->first();
+                // ?>
                 @if ($customer_add_permission_active)
                     {{-- <li id="customer-create-menu"><a href="{{route('customer.create')}}">{{trans('file.Add Customer')}}</a></li> --}}
-                @endif
-            @endif
+                {{-- @endif --}}
+            {{-- @endif --}}
 
             @if ($biller_index_permission_active)
                 {{-- <li id="biller-list-menu"><a href="{{route('biller.index')}}">{{trans('file.Biller List')}}</a></li> --}}

@@ -17,9 +17,30 @@ use Yajra\DataTables\Facades\DataTables;
 
 class SupplierController extends Controller
 {
+    // public function index()
+    // {
+    //     $role = Role::find(Auth::user()->role_id);
+    //     if($role->hasPermissionTo('suppliers-index')){
+    //         $permissions = Role::findByName($role->name)->permissions;
+    //         foreach ($permissions as $permission)
+    //             $all_permission[] = $permission->name;
+    //         if(empty($all_permission))
+    //             $all_permission[] = 'dummy text';
+    //         $lims_supplier_all = Supplier::where('is_active', true)->get();
+    //         return view('supplier.index',compact('lims_supplier_all', 'all_permission'));
+    //     }
+    //     else
+    //         return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+    // }
+
+    public function index(){
+
+    }
+
     public function create()
     {
         $role = Role::find(Auth::user()->role_id);
+        $suppliers = AfterMarkitSupplier::where('retailer_id',Auth::user()->id)->get();
         if ($role->hasPermissionTo('suppliers-add')) {
             if (request()->ajax()) {
                 $all_stocks = AfterMarkitSupplier::where('retailer_id', Auth::user()->id)->orderBy('id', 'desc')

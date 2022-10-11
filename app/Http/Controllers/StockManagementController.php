@@ -308,6 +308,7 @@ class StockManagementController extends Controller
                     array_push($revert_data, $data);
                 }
             }
+            
             if (!empty($revert_data)) {
                 $headers = array(
                     'Content-Type' => 'text/csv'
@@ -365,7 +366,7 @@ class StockManagementController extends Controller
                     'message' => $csv_url,
                 ];
                 $user = User::find($data['sender']);
-
+                // dd($user);
                 $user->notify(new SendNotification($data));
                 // dd($check);
             }
