@@ -568,7 +568,7 @@
                 markup +=
                     '<td><input style="width:100px" type="number" class="form-control" onkeyup="alterPurchaseQty(' +
                     data.data.legacyArticleId +
-                    ')" value="1" min="0" step="any" id="purchase_price_' +
+                    ')" value="0" min="0" step="any" id="purchase_price_' +
                     data.data.legacyArticleId +
                     '" name="purchase_price[]" required></td>';
 
