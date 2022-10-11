@@ -190,9 +190,9 @@
                 <!-- <li id="sale-import-menu"><a href="{{url('sales/sale_by_csv')}}">{{trans('file.Import Sale By CSV')}}</a></li> -->
                 {{-- @endif --}}
                 {{-- @endif --}}
-                <li id="sale-list-menu"><a href="{{route('sales.index')}}">{{trans('file.Estimate List')}}</a></li>
-                <li id="invoices-list-menu"><a href="{{route('sales.salesInvoices')}}">{{trans('file.Invoice List')}}</a></li>
-                <li id="pre-invoices-list-menu"><a href="">{{trans('file.Delivery Slips')}}</a></li>
+                <li id="sale-list-menu"><a href="{{route('sales.index')}}">{{trans('file.Sale List')}}</a></li>
+                <li id="invoices-list-menu"><a href="{{route('invoices.index')}}">{{trans('file.Invoice List')}}</a></li>
+                <li id="pre-invoices-list-menu"><a href="{{route('delivery_slips')}}">{{trans('file.Delivery Slips')}}</a></li>
 
 
                 <?php

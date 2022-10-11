@@ -2,7 +2,6 @@
 
 @section('css')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
-
 @endsection
 
 @section('style')
@@ -27,11 +26,11 @@
 <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
 
 @section('breadcrumb-title')
-    <h3>Purchases list</h3>
+    <h3>Invoicees list</h3>
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item active">Purchases list</li>
+    <li class="breadcrumb-item active">Invoices list</li>
 @endsection
 
 @section('content')
@@ -44,17 +43,9 @@
                     <div class="card-body">
                         <div class="container">
                             <div>
-                                <h4>Purchases</h4>
+                                <h4>Delivery Slips</h4>
                             </div>
-                            <div class="d-flex flex-row-reverse mb-3">
-                                <a class="p-1" href="{{ route('purchasesPdfDownload') }}"><button
-                                        class="btn btn-primary"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                                        Pdf</button></a>
-                                <a class="p-1" href="{{ route('exportPurchases') }}"><button
-                                        class="btn btn-warning">Export</button></a>
-                                <a class="p-1" href="{{ route('purchases.create') }}"><button class="btn btn-success"><i
-                                            class="fa fa-plus"></i> Add</button></a>
-                            </div>
+                            
 
                             <div class="product-table">
                                 @if ($message = Session::get('success'))
@@ -73,15 +64,13 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Date</th>
-                                            <th>Supplier</th>
-                                            <th>Items</th>
-                                            <th>Total Quantity</th>
-                                            <th>Purchase Status</th>
+                                            <th>Customer</th>
                                             <th>Cash Type</th>
+                                            <th>Total Quantity</th>
+                                            <th>Invoice Status</th>
                                             {{-- <th>Paid</th>
                                             <th>Due</th> --}}
-                                            <th>Grand Total</th>
-                                            <th width="150px">Action</th>
+                                            <th width="100px">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -108,13 +97,15 @@
                 }
             });
             var table = $('#data-table').DataTable({
-                "order": [[ 1, "DESC" ]],
+                "order": [
+                    [1, "DESC"]
+                ],
                 // "scrollX": true,
                 "overflow-x": "auto",
                 "processing": true,
                 "serverside": true,
                 "paging": true,
-                ajax: "{{ route('purchases.index') }}",
+                ajax: "{{ route('delivery_slips') }}",
                 columns: [{
                         data: 'id',
                         name: 'id'
@@ -124,33 +115,30 @@
                         name: 'date'
                     },
                     {
-                        "data": "supplier",
-                        name: 'supplier'
+                        "data": "customer",
+                        name: 'customer'
                     },
                     {
-                        "data": "item",
-                        name: 'item'
+                        "data": "cash_type",
+                        name: 'cash_type'
                     },
                     {
                         "data": "total_qty",
                         name: 'total_qty'
                     },
                     {
-                        "data": "purchase_status",
-                        name: 'purchase_status'
+                        "data": "invoice_status",
+                        name: 'invoice_status'
                     },
                     // {
                     //     "data": "paid_amount",
                     //     name: 'paid_amount'
                     // },
-                    {
-                        "data": "cash_type",
-                        name: 'cash_type'
-                    },
-                    {
-                        "data": "grand_total",
-                        name: 'grand_total'
-                    },
+                    // {
+                    //     "data": "due_amount",
+                    //     name: 'due_amount'
+                    // },
+
                     {
                         "data": 'action',
                         name: 'action',
@@ -163,38 +151,25 @@
             });
 
             table.ajax.reload(null, false);
-            
+
         });
-         //////// sweet alert ///////////
-         function deletePurchase(id) {
-                console.log(id);
-                // href="deletePurchase/' . $row['id'] . '"
-                var form = $(this).closest("form");
-                var name = $(this).data("name");
-                event.preventDefault();
-                Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((willDelete) => {
-                        if (willDelete.isConfirmed) {
-                            $.ajax({
-                               method: "GET",
-                               url: "/deletePurchase/"+id,
-                               data: {
-                                  id:id
-                               },
-                               success: function($data){
-                                  location.reload();
-                               }
-                            });
-                        }
-                    });
-                
-            }
+        //////// sweet alert ///////////
+        function changeInvoiceStatus(id) {
+            var status = $('#invoice_status').find(":selected").val();
+
+            $.ajax({
+                url: "{{ route('change_invoice_status') }}",
+                method: "get",
+                data: {
+                    id: id,
+                    status: status,
+                },
+                success: function(data) {
+                    location.reload();
+                }
+            });
+        }
+
+        
     </script>
 @endsection

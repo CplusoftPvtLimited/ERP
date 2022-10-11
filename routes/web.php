@@ -205,6 +205,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
     ///////////////////// sale controllers ////////////////////////
 	Route::resource('sales', 'SaleController');
 	Route::get('sale/new/create', 'SaleController@newCreate')->name('sales.newCreate');
+	Route::get('sale_product_delete', 'SaleController@saleProductDelete');
 	Route::get('get_section_parts_in_table', 'SaleController@showSectionParts')->name('get_section_parts_in_table'); 
 
     /////////////////////////// end /////////////////////////////
@@ -282,10 +283,19 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('articlesByReferenceNo', 'PurchaseController@articlesByReferenceNo')->name('article.reference');
     ///////////////////  end //////////////////////
 	///////////////////////// Sale-unique ////////////////////////
+	///////////////////////// Sale-unique ////////////////////////
 	Route::get('get_section_parts_for_sale', 'SaleController@getSectionPartsForSale')->name('get_section_parts_for_sale');// get all articles from stock
 	Route::get('check_product_stock', 'SaleController@checkProductStock')->name('check_product_stock');// 
 	Route::get('show_section_parts_in_table_for_sale', 'SaleController@showSectionParts')->name('show_section_parts_in_table_for_sale'); 
 	Route::get('change_sale_status', 'SaleController@changeSaleStatus')->name('change_sale_status'); 
+	Route::get('view_sale/{id}', 'SaleController@viewSale')->name('view_sale'); 
+
+	Route::get('change_invoice_status', 'InvoiceController@changeInvoiceStatus')->name('change_invoice_status');  
+	Route::get('createInvoice/{id}', 'InvoiceController@createInvoice')->name('create_invoice'); 
+	Route::get('show_invoice/{id}', 'InvoiceController@showInvoice')->name('show_invoice'); 
+
+	Route::get('delivery_slips', 'InvoiceController@getDeliverySlips')->name('delivery_slips'); 
+	Route::get('show_delivery_slip/{id}', 'InvoiceController@showDeliverySlip')->name('show_delivery_slip'); 
 	
 
 	

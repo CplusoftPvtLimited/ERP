@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateNewSalesTable extends Migration
+class CreateErpInvoicesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class CreateNewSalesTable extends Migration
      */
     public function up()
     {
-        Schema::create('new_sales', function (Blueprint $table) {
+        Schema::create('erp_invoices', function (Blueprint $table) {
             $table->id();
-            $table->timestamp('date');
+            $table->bigInteger('sale_id')->unsigned();
+            $table->foreign('sale_id')->references('id')->on('new_sales')->onDelete('cascade');
+            $table->string('date');
             $table->bigInteger('customer_id');
             $table->bigInteger('retailer_id');
             $table->enum('cash_type',['white','black']);
@@ -25,11 +27,10 @@ class CreateNewSalesTable extends Migration
             $table->string('sale_entire_total_exculding_vat')->default(0);
             $table->string('discount')->default(0);
             $table->string('tax_stamp')->nullable();
-            $table->string('sale_note')->nullable();
-            $table->string('staff_note')->nullable();
+           
             $table->string('total_qty')->nullable();
             $table->string('total_bill')->nullable();
-            $table->enum('status',['created','negotiation','accepted','cancelled','reactivated'])->default('created');
+            $table->enum('status',['paid','unpaid'])->default('unpaid');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -42,6 +43,6 @@ class CreateNewSalesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('new_sales');
+        Schema::dropIfExists('erp_invoices');
     }
 }

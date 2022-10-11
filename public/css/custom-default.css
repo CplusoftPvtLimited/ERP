@@ -1194,6 +1194,10 @@ label.view-edit-purchase{
 .total-calculations{
 	margin-top: 10px;
 }
+
+.invoice-label{
+	font-weight: 700;
+}
 /* option.estimate{
 	background-color: #17a2b8;
 	color: white;

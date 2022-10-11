@@ -414,8 +414,55 @@
                 var tableHeadRow = $("table thead tr");
                 var other_data_div = $('#other_data');
 
+                var total_calculations = $('#total_sale_calculations');
+
                 var white_cash_head = "";
                 var black_cash_head = "";
+                var white_cash_calculations_head = "";
+                white_cash_calculations_head += `
+                       <div class="col-md-12">
+                            <div class="row total-calculations"> 
+                                <div class="col-md-4">
+                                   <h5>Total Exculding Vat (Before Discount)</h5>    
+                                </div>
+                                <div class="col-md-3">
+                                   <input type="number" name="sale_entire_total_exculding_vat" value="0" id="sale_entire_total_exculding_vat" class="form-control" readonly>
+                                </div>
+                            </div>
+                            <div class="row total-calculations"> 
+                                <div class="col-md-4">
+                                   <h5>Discount</h5>    
+                                </div>
+                                <div class="col-md-3">
+                                   <input type="number" name="sale_discount" id="sale_discount" onkeyup="calculateSaleTotal()" value="0" class="form-control">
+                                </div>
+                            </div> 
+                            <div class="row total-calculations"> 
+                                <div class="col-md-4">
+                                   <h5>Vat</5>    
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="number" name="entire_vat" value="1" min="1" onkeyup="calculateSaleTotal()"  id="sale_entire_vat" class="form-control">
+                                </div>
+                            </div> 
+                            <div class="row total-calculations"> 
+                                <div class="col-md-4">
+                                   <h5>Tax Stamp</h5>    
+                                </div> 
+                                <div class="col-md-3">
+                                    <input type="number" name="tax_stamp" id="sale_tax_stamp" onkeyup="calculateSaleTotal()" class="form-control" min="0" value="0" step="any">    
+                                </div>
+                            </div> 
+                            <div class="row total-calculations"> 
+                                <div class="col-md-4">
+                                   <h5>Total To Be Paid</h5>    
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="number" name="total_to_be_paid" id="total_to_be_paid" class="form-control" readonly> 
+                                </div> 
+                            </div>
+                       </div>
+                `;
 
                 white_cash_head += `<tr id="">
                     <th>{{ trans('file.name') }}</th>
@@ -461,7 +508,7 @@
                 // html += '<input type="hidden" name="datee[]" value="' + data.date + '">';
                 // html += '<input type="hidden" name="cash_type" value="' + data.cash_type + '">';
                 html += '<input type="hidden" name="article_number[]" value="' + data.data.articleNumber + '">';
-                
+                calculateEntireSaleTotal(all_product_ids);
                 $('#myTable tr').each(function() {
                     if (this.id != '') {
                         article_ids_array.push(this.id)
@@ -487,12 +534,16 @@
                     selected_cash_type.push(cashType);
 
                 }
+                
                 if (data.cash_type == "white" && tableHeadRow.length <= 0) {
                     tableHead.append(white_cash_head);
+                    total_calculations.html(white_cash_calculations_head);
+                    
+                    
                 } else if (data.cash_type == "black" && tableHeadRow.length <= 0) {
                     tableHead.append(black_cash_head);
                 }
-
+                $('#total_sale_calculations').css('display','block')
                 markup = '<tr id="article_' + data.data.legacyArticleId + '"><td>' + data.data
                     .genericArticleDescription + '-' + data.data.articleNumber +
                     '</td>';
@@ -707,16 +758,16 @@
 
         var item_qty = parseInt($("#sale_item_qty" + id).val());
         var stock = parseInt($("#stock_items_" + id).val());
-        if (item_qty > stock) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Quantity must not be greater than Stock',
+        // if (item_qty > stock) {
+        //     Swal.fire({
+        //         icon: 'error',
+        //         title: 'Oops...',
+        //         text: 'Quantity must not be greater than Stock',
 
-            });
-            $("#sale_item_qty" + id).val(stock - parseInt(1));
-            exit();
-        }
+        //     });
+        //     $("#sale_item_qty" + id).val(stock - parseInt(1));
+        //     exit();
+        // }
 
         var sale_price = parseFloat($("#sale_sale_price_" + id).val());
         var discount = (parseFloat(1) - (parseFloat($("#sale_discount_" + id).val() / 100)));
@@ -733,15 +784,92 @@
             $('#sale_total_without_discount' + id).val(0);
         }else{
             $('#sale_total_without_discount' + id).val(sale_total_without_discount.toFixed(2))
-        }        
+        }    
+        calculateEntireSaleTotal(all_product_ids);    
     }
 
 
     function deleteSaleArticle(id) {
         $('#article_' + id).remove();
-        article_ids_array = [];
+        for (var i = 0; i < all_product_ids.length; i++) {
+
+            if (all_product_ids[i] === id) {
+
+                all_product_ids.splice(i, 1);
+            }
+
+        }
+        if(all_product_ids.length <= 0){
+            $('#total_sale_calculations').css('display','none');
+            $('#submit-button').css('display','none');
+        }
+        calculateEntireTotal(all_product_ids);
+        // article_ids_array = [];
         if ($('#myTable tr').length == 0) {
             selected_cash_type = [];
         }
     }
+
+    function calculateEntireSaleTotal(product_ids_array) {
+        var total_before_discount = 0.0;
+        var total_to_be_paid = 0.0;
+        // console.log(product_ids_array)
+        var cashType = $('#cash_type').find(":selected").val();
+        var id_array = [];
+        id_array =  product_ids_array.filter(onlyUnique);
+       
+        if (id_array.length > 0) {
+            id_array.forEach(getActualProductCost);
+
+            function getActualProductCost(id, index) {
+                    
+                    total_before_discount += (parseInt($('#sale_item_qty' + id).val()) * parseFloat($('#sale_sale_price_' + id).val()));
+            }
+            
+            
+            var tax_stamp = parseFloat($('#sale_tax_stamp').val());
+            var entire_vat = parseFloat($('#sale_entire_vat').val());
+            var discount = parseFloat($('#sale_discount').val());
+            $('#sale_entire_total_exculding_vat').val(total_before_discount.toFixed(2));
+            total_to_be_paid = (parseFloat(total_before_discount.toFixed(2)) - parseFloat(discount.toFixed(2))) * parseFloat(entire_vat.toFixed(2)) + parseFloat(tax_stamp.toFixed(2)) ;
+           
+            $('#total_to_be_paid').val(total_to_be_paid);
+           
+            
+        }
+        // }
+    }
+
+    function calculateSaleTotal(){
+        var total_before_discount = 0.0;
+        var total_to_be_paid = 0.0;
+        // console.log(product_ids_array)
+        var cashType = $('#cash_type').find(":selected").val();
+        var id_array = [];
+        id_array =  all_product_ids.filter(onlyUnique);
+       
+        if (id_array.length > 0) {
+            id_array.forEach(getActualProductCost);
+
+            function getActualProductCost(id, index) {
+                    
+                    total_before_discount += (parseInt($('#sale_item_qty' + id).val()) * parseFloat($('#sale_sale_price_' + id).val()));
+            }
+            
+            
+            var tax_stamp = parseFloat($('#sale_tax_stamp').val());
+            var entire_vat = parseFloat($('#sale_entire_vat').val());
+            var discount = parseFloat($('#sale_discount').val());
+            $('#sale_entire_total_exculding_vat').val(total_before_discount.toFixed(2));
+            total_to_be_paid = (parseFloat(total_before_discount.toFixed(2)) - parseFloat(discount.toFixed(2))) * parseFloat(entire_vat.toFixed(2)) + parseFloat(tax_stamp.toFixed(2)) ;
+           
+            $('#total_to_be_paid').val(total_to_be_paid);
+           
+            
+        }
+    }
+    function onlyUnique(value, index, self) {
+        return self.indexOf(value) === index;
+    }
+    
 </script>

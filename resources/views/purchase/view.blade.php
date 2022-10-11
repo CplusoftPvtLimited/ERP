@@ -37,6 +37,12 @@
                                     <p>{{ $purchase->grand_total }}</p>
                                     
                                 </div>
+                                <div class="col-md-4">
+                                    <label for=""><b>After Markit Supplier</b></label>
+                                    @php $supplier = App\Models\AfterMarkitSupplier::where('id', $purchase->supplier_id)->first(); @endphp
+                                    <p>{{ isset($supplier) ? $supplier->name : '' }}</p>
+
+                                </div>
                             </div>
                         </div>
                     </div>

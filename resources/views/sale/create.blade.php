@@ -48,7 +48,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        {{-- <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.VAT') }}</label>
                                                 <input type="number" min="0" value="0" name="entire_vat"
@@ -56,7 +56,7 @@
                                                 <input type="hidden" name="vat" class="form-control"
                                                     id="">
                                             </div>
-                                        </div>
+                                        </div> --}}
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>
@@ -80,7 +80,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    {{-- <div class="row">
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.Sale Discount') }}</label>
@@ -96,7 +96,7 @@
                                             </div>
                                         </div>
                                         
-                                    </div>
+                                    </div> --}}
                                     
                                     <div class="row mt-2">
                                         <div class="col-md-6">
@@ -150,6 +150,9 @@
                                 </div>
                             </div>
                             @include('purchase.order-table')
+                            <div class="row p-5"  id="total_sale_calculations" >
+                            
+                            </div>
                             <div class="row" id="submit-button" style="display: none;">
                                 <div class="col-md-12 form-group text-right">
                                     <button type="button" id="sale_submit_button" class="btn btn-primary">{{ trans('file.submit') }}</button>
