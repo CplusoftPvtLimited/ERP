@@ -17,10 +17,10 @@
         </div>
     @endif
     @php
-            $date = Carbon\Carbon::now();
-            $current_date = $date->format('Y-m-d');
-            // dd($current_date);
-        @endphp
+        $date = Carbon\Carbon::now();
+        $current_date = $date->format('Y-m-d');
+        // dd($current_date);
+    @endphp
     <form action="{{ route('balanceSheet.store') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="row">
@@ -55,11 +55,11 @@
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Mode Payment *</h6>
-                            <input type="radio" id="cash_payment" name="mode_payment" class="form_control operation_mode_payment"
-                                value="cash">
+                            <input type="radio" id="cash_payment" name="mode_payment"
+                                class="form_control operation_mode_payment" value="cash">
                             <label for="cash">Cash</label>
-                            <input type="radio" id="cheque" name="mode_payment" class="form_control operation_mode_payment"
-                                value="cheque">
+                            <input type="radio" id="cheque" name="mode_payment"
+                                class="form_control operation_mode_payment" value="cheque">
                             <label for="cheque">Cheque</label>
 
                         </div>
@@ -69,14 +69,18 @@
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Amount *</h6>
-                            <input type="number" name="amount" id="total_amount" step="any" maxlength="191"
-                                class="form-control">
+                            <div class="input-group">
+                                <div class="input-group-text">TND</div>
+                                <input type="number" name="amount" id="total_amount" step="any" maxlength="191"
+                                    class="form-control">
+                            </div>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Settelement Date *</h6>
-                            <input type="date" name="settlement_date" id="settlement_date" max={{$current_date}} class="form-control">
+                            <input type="date" name="settlement_date" id="settlement_date" max={{ $current_date }}
+                                class="form-control">
                         </div>
                     </div>
                     <div class="col-4" id="carrier">
@@ -89,7 +93,7 @@
                             <select name="account_source" id="account_source_overview" class="form-control">
                                 <option value="">--Select One--</option>
                                 @foreach ($source_accounts as $item)
-                                <option value="{{$item->id}}">{{$item->account_title}}</option>
+                                    <option value="{{ $item->id }}">{{ $item->account_title }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -249,10 +253,12 @@
                                     confirmButtonText: 'Ok'
                                 }).then((result) => {
                                     if (result.isConfirmed) {
-                                        let url = "{{ route('cash.management.balance') }}";
+                                        let url =
+                                            "{{ route('cash.management.balance') }}";
                                         let operation_save = "1";
                                         window.location = url + '?balance_type=' +
-                                            balance_type + '&operation=' + operation_save;
+                                            balance_type + '&operation=' +
+                                            operation_save;
                                     }
                                 });
 
@@ -321,10 +327,12 @@
                                     confirmButtonText: 'Ok'
                                 }).then((result) => {
                                     if (result.isConfirmed) {
-                                        let url = "{{ route('cash.management.balance') }}";
+                                        let url =
+                                            "{{ route('cash.management.balance') }}";
                                         let operation_save = "1";
                                         window.location = url + '?balance_type=' +
-                                            balance_type + '&operation=' + operation_save;
+                                            balance_type + '&operation=' +
+                                            operation_save;
                                     }
                                 });
 
@@ -392,10 +400,12 @@
                                     confirmButtonText: 'Ok'
                                 }).then((result) => {
                                     if (result.isConfirmed) {
-                                        let url = "{{ route('cash.management.balance') }}";
+                                        let url =
+                                            "{{ route('cash.management.balance') }}";
                                         let operation_save = "1";
                                         window.location = url + '?balance_type=' +
-                                            balance_type + '&operation=' + operation_save;
+                                            balance_type + '&operation=' +
+                                            operation_save;
                                     }
                                 });
 
