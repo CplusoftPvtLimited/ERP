@@ -1666,7 +1666,7 @@
         <script type="text/javascript" src="<?php echo asset('vendor/datatable/dataTables.bootstrap4.min.js'); ?>"></script>
         <script type="text/javascript" src="<?php echo asset('vendor/datatable/dataTables.buttons.min.js'); ?>"></script>
         <script type="text/javascript" src="<?php echo asset('vendor/datatable/buttons.bootstrap4.min.js'); ?>">
-            ">
+
         </script>
         <script type="text/javascript" src="<?php echo asset('vendor/datatable/buttons.colVis.min.js'); ?>"></script>
         <script type="text/javascript" src="<?php echo asset('vendor/datatable/buttons.html5.min.js'); ?>"></script>
@@ -1682,21 +1682,8 @@
         </script>
     @endif
     @stack('scripts')
-    <script>
-        // if ('serviceWorker' in navigator ) {
-        //     window.addEventListener('load', function() {
-        //         navigator.serviceWorker.register('/salepro/service-worker.js').then(function(registration) {
-        //             // Registration was successful
-        //             console.log('ServiceWorker registration successful with scope: ', registration.scope);
-        //         }, function(err) {
-        //             // registration failed :(
-        //             console.log('ServiceWorker registration failed: ', err);
-        //         });
-        //     });
-        // }
-    </script>
     <script type="text/javascript">
-        var theme = <?php echo json_encode($theme); ?>;
+        var theme = "{{ json_encode($theme) }}";
         if (theme == 'dark') {
             $('body').addClass('dark-mode light-mode');
             $('#switch-theme i').addClass('dripicons-brightness-low');
@@ -1707,12 +1694,12 @@
         $('#switch-theme').click(function() {
             if (theme == 'light') {
                 theme = 'dark';
-                var url = <?php echo json_encode(route('switchTheme', 'dark')); ?>;
+                var url = "{{json_encode(route('switchTheme', 'dark'))}}";
                 $('body').addClass('dark-mode light-mode');
                 $('#switch-theme i').addClass('dripicons-brightness-low');
             } else {
                 theme = 'light';
-                var url = <?php echo json_encode(route('switchTheme', 'light')); ?>;
+                var url = "{{json_encode(route('switchTheme', 'light'))}}";
                 $('body').removeClass('dark-mode light-mode');
                 $('#switch-theme i').addClass('dripicons-brightness-max');
             }
@@ -1722,7 +1709,7 @@
             });
         });
 
-        var alert_product = <?php echo json_encode($alert_product); ?>;
+        var alert_product = "{{ json_encode($alert_product) }}";
 
         if ($(window).outerWidth() > 1199) {
             $('nav.side-navbar').removeClass('shrink');
@@ -1840,7 +1827,7 @@
         });
 
         $('.selectpicker').selectpicker({
-            style: 'btn-link',
+            style: 'btn-link'
         });
     </script>
     <script src="//js.pusher.com/3.1/pusher.min.js"></script>

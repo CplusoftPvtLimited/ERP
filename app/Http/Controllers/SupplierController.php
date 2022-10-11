@@ -156,7 +156,7 @@ class SupplierController extends Controller
             $supplier->update($data);
             DB::commit();
             toastr()->success('Data updated successfully');
-            return redirect()->back();
+            return redirect()->route('supplier.create');
         } catch (\Exception $e) {
             DB::rollBack();
             toastr()->error($e->getMessage());
