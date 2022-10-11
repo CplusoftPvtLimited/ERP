@@ -6,6 +6,7 @@ use App\Models\BankAccount;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBankAccountRequest;
 use App\Http\Requests\UpdateBankAccountRequest;
+use App\Models\BankList;
 use App\Repositories\Interfaces\BankAccountInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,29 +29,31 @@ class BankAccountController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            // $accounts = [];
-            $accounts = BankAccount::where('retailer_id', Auth::id())->get();
-
+            $accounts = BankAccount::where('retailer_id', Auth::id())->with('bankList')->get();
             return DataTables::of($accounts)
-                    ->addIndexColumn()
-                    ->addColumn('action', function($row) {
-                        $btn = '<div class="row">
+                ->addIndexColumn()
+                ->addcolumn('bank',function($row){
+                    $bank = $row->bankList->title;
+                    return $bank;
+                })
+                ->addColumn('action', function ($row) {
+                    $btn = '<div class="row">
                             <div class="col-md-2 mr-1">
-                                <a href="bank_account/' . $row["id"].'/edit"> <button
+                                <a href="bank_account/' . $row["id"] . '/edit"> <button
                                 class="btn btn-primary btn-sm " type="button"
                                 data-original-title="btn btn-danger btn-xs"
                                 title=""><i class="fa fa-edit"></i></button></a>
                             </div>
                         </div>
                      ';
-                            return $btn;
-                    })
-                    ->addColumn('index', function ($row) {
-                        $value = ++$this->val;
-                        return $value;
-                    })
-                    ->rawColumns(['action','index'])
-                    ->make(true);
+                    return $btn;
+                })
+                ->addColumn('index', function ($row) {
+                    $value = ++$this->val;
+                    return $value;
+                })
+                ->rawColumns(['action', 'index','bank'])
+                ->make(true);
         }
         return view('accounting.bank_account.index');
     }
@@ -75,12 +78,10 @@ class BankAccountController extends Controller
     {
         $item = $this->bankAccount->store($request);
         // dd($item);
-        if($item == true)
-        {
+        if ($item == true) {
             return redirect()->route('bank_account.index')->withSuccess(__('Bank Account has been Added Successfully !'));
-        }
-        else{
-            return redirect()->back()->with('error',$item);
+        } else {
+            return redirect()->back()->with('error', $item);
         }
     }
 
@@ -104,7 +105,8 @@ class BankAccountController extends Controller
     public function edit(BankAccount $bankAccount)
     {
         // dd($bankAccount);
-        return view('accounting.bank_account.edit',compact('bankAccount'));
+        $banks = BankList::all();
+        return view('accounting.bank_account.edit', compact('bankAccount','banks'));
     }
 
     /**
@@ -118,18 +120,15 @@ class BankAccountController extends Controller
     {
         // dd($bankAccount);
         $validated = $request->validate([
-            'account_number'=> 'required|max:191|unique:bank_accounts,account_number,'.$bankAccount->id,
+            'account_number' => 'required|max:191|unique:bank_accounts,account_number,' . $bankAccount->id,
             'account_title' => 'required|max:191'
         ]);
         $item = $this->bankAccount->update($request, $bankAccount);
-        if($item == true)
-        {
+        if ($item == true) {
             return redirect()->route('bank_account.index')->withSuccess(__('Bank Account has been Updated Successfully !'));
+        } else {
+            return redirect()->back()->with('error', $item);
         }
-        else{
-            return redirect()->back()->with('error',$item);
-        }
-    
     }
 
     /**

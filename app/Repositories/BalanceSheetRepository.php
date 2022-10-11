@@ -135,9 +135,13 @@ class BalanceSheetRepository implements BalanceSheetInterface
             if ($bank_account) {
                 $bank_account->update($revenue);
             }else{
+                $revenue['bank_id'] = 1;
                 $revenue['account_title'] = "Default Account";
                 $revenue['account_number'] = rand(1000000000,99999999999);
                 $revenue['retailer_id'] = Auth::id();
+                $revenue['swift_code'] = 'TND0022';
+                $revenue['iban'] = $revenue['swift_code'] .  $revenue['account_number'];
+                // dd($revenue['iban']);
                 BankAccount::create($revenue);
             }
             DB::commit();

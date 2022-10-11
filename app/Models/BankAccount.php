@@ -14,4 +14,8 @@ class BankAccount extends Model
     {
         return $this->hasMany(BalanceSheet::class,'account_source','id');
     }
+    public function bankList()
+    {
+        return $this->belongsTo(BankList::class,'bank_id','id');
+    }
 }

@@ -155,7 +155,7 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="purchase-table" class="table purchase-list" style="width: 100%">
+                                <table id="data-table" class="table" style="width: 100%">
                                     <thead>
                                         <tr>
                                             <th>{{ trans('file.Payment Mode') }}</th>
@@ -177,11 +177,11 @@
                                                 <td>{{ $item->cheque_number != null ? $item->cheque_number : $item->draft_number }}
                                                 </td>
                                                 <td>{{ $item->carrier != null ? $item->carrier : 'N/A' }}</td>
-                                                <td>{{ $item->bank_id != null ? $item->bankList->title : $item->bankAccount->account_title }}
+                                                <td>{{ $item->bank_id != null ? $item->bankList->title : ($item->bankAccount->account_title != null ? $item->bankAccount->account_title : null) }}
                                                 </td>
                                                 <td>{{ substr($item->settlement_date, 0, 10) }}</td>
                                                 <td>{{ substr($item->due_date, 0, 10) }}</td>
-                                                <td>{{ $item->amount }}</td>
+                                                <td> TND {{ $item->amount }}</td>
                                                 <td>{{ $item->balance_type }}</td>
                                                 <td>{{ $item->transaction_type }}</td>
                                             </tr>
@@ -388,8 +388,8 @@
                                 </div>
                                 <div class="col-9">
                                     <div class="form-group">
-                                        <input type="date" name="settlement_date" id="overview_settlement_date" max ={{$current_date}} placeholder="DD-MM-YYYY"
-                                            class="form-control">
+                                        <input type="date" name="settlement_date" id="overview_settlement_date"
+                                            max={{ $current_date }} placeholder="DD-MM-YYYY" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -425,6 +425,17 @@
 @endsection
 
 @push('scripts')
+    <link href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+    <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#data-table').DataTable({
+                searching: false,
+                ordering: false
+            });
+        });
+    </script>
+
     <script type="text/javascript">
         $(document).ready(function() {
             $("#draftNumber").css('display', "none");

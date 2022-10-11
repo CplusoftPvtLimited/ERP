@@ -1,14 +1,17 @@
 <div class="card-body m-0">
     @php
-            $date = Carbon\Carbon::now();
-            $current_date = $date->format('Y-m-d');
-            // dd($current_date);
-        @endphp
+        $date = Carbon\Carbon::now();
+        $current_date = $date->format('Y-m-d');
+        // dd($current_date);
+    @endphp
     <div class="container">
         <div class="row">
             <div class="col mb-1 mt-0 pt-0">
                 <a href="" data-toggle="modal" data-target="#createModal" class="btn btn-danger float-right">+ Add
                     Expense</a>
+                <div class="col pl-4 pt-1">
+                    <h2>{{ trans('file.Over View') }}</h2>
+                </div>
             </div>
         </div>
         <div class="table-responsive">
@@ -40,27 +43,29 @@
                     <tr>
                         <td>1</td>
                         <td>Cash</td>
-                        <td><strong>&euro; {{ $cash_revenue }}</strong></td>
+                        <td class="{{$cash_revenue >= 0 ? 'text-success' : 'text-danger'}}"><strong>TND {{ $cash_revenue }}</strong></td>
                     </tr>
                     <tr>
                         <td>2</td>
                         <td>Cheque</td>
-                        <td><strong>&euro; {{ $cheque_revenue }}</strong></td>
+                        <td class="{{$cheque_revenue >= 0 ? 'text-success' : 'text-danger'}}"><strong>TND {{ $cheque_revenue }}</strong></td>
                     </tr>
                     <tr>
                         <td>3</td>
                         <td>Draft</td>
-                        <td><strong>&euro; {{ $draft_revenue }}</strong></td>
+                        <td class="{{$draft_revenue >= 0 ? 'text-success' : 'text-danger'}}"><strong>TND {{ $draft_revenue }}</strong></td>
                     </tr>
                     <tr>
                         <td>4</td>
                         <td>Withholding</td>
-                        <td><strong>&euro; {{ $withholding_revenue }}</strong></td>
+                        <td class="{{$withholding_revenue >= 0 ? 'text-success' : 'text-danger'}}"><strong>TND {{ $withholding_revenue }}</strong></td>
                     </tr>
                     <tr>
                         <td></td>
                         <td></td>
-                        <td><strong>Total = &euro; {{ $withholding_revenue + $draft_revenue + $cash_revenue + $cheque_revenue  }}</strong></td>
+                        <td><strong>Total = <span class="{{( $withholding_revenue + $draft_revenue + $cash_revenue + $cheque_revenue) >= 0 ? 'text-success' : 'text-danger'}}">TND
+                                {{ $withholding_revenue + $draft_revenue + $cash_revenue + $cheque_revenue }}</span></strong>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -77,7 +82,8 @@
                         aria-hidden="true"><i class="dripicons-cross"></i></span></button>
             </div>
             <div class="modal-body pr-5 pl-5">
-                <p class="italic"><small>{{ trans('file.The field labels marked with * are required input fields') }}.</small></p>
+                <p class="italic">
+                    <small>{{ trans('file.The field labels marked with * are required input fields') }}.</small></p>
                 <form action="{{ route('balanceSheet.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
@@ -86,13 +92,15 @@
                         </div>
                         <div class="col-5">
                             <div class="form-group">
-                                <input type="radio" id="cash" name="mode_payment" checked="checked" value="cash" class="overview_mode_payment" >
+                                <input type="radio" id="cash" name="mode_payment" checked="checked"
+                                    value="cash" class="overview_mode_payment">
                                 <label for="html">Cash</label>
                             </div>
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <input type="radio" id="check" name="mode_payment" value="cheque" class="overview_mode_payment">
+                                <input type="radio" id="check" name="mode_payment" value="cheque"
+                                    class="overview_mode_payment">
                                 <label for="css">Cheque</label>
                             </div>
                         </div>
@@ -129,7 +137,7 @@
                         </div>
                         <div class="col-9">
                             <div class="form-group">
-                                <select name="supplier_id" id= "supplier_id" class="form-control">
+                                <select name="supplier_id" id="supplier_id" class="form-control">
                                     <option value="">--Select One--</option>
                                     @foreach ($suppliers as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -144,7 +152,8 @@
                         </div>
                         <div class="col-9">
                             <div class="form-group">
-                                <input type="text" name="cheque_number" id="overview_cheque_number" class="form-control">
+                                <input type="text" name="cheque_number" id="overview_cheque_number"
+                                    class="form-control">
                             </div>
                         </div>
                     </div>
@@ -157,7 +166,7 @@
                                 <select name="account_source" id="overview_account_source" class="form-control">
                                     <option value="">--Select One--</option>
                                     @foreach ($source_accounts as $item)
-                                    <option value="{{$item->id}}">{{$item->account_title}}</option>
+                                        <option value="{{ $item->id }}">{{ $item->account_title }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -169,7 +178,8 @@
                         </div>
                         <div class="col-9">
                             <div class="form-group">
-                                <input type="date" name="settlement_date" id="overview_settlement_date" max={{$current_date}} class="form-control">
+                                <input type="date" name="settlement_date" id="overview_settlement_date"
+                                    max={{ $current_date }} class="form-control">
                             </div>
                         </div>
                     </div>
@@ -193,8 +203,8 @@
                             </div>
                         </div>
                     </div>
-                    <input type="hidden"  name ="transaction_type" value="debit">
-                    <input type="hidden"  name ="balance_type" value="{{$balance_type}}">
+                    <input type="hidden" name="transaction_type" value="debit">
+                    <input type="hidden" name="balance_type" value="{{ $balance_type }}">
 
                     <input type="submit" value="{{ trans('file.submit') }}" class="btn btn-primary">
                 </form>

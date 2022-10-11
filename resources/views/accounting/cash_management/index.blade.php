@@ -16,7 +16,7 @@
                     </div>
                     <div class="card-body text-center">
                         <p>
-                            <strong>{{$primary_revenue}} Euro</strong>
+                            <strong>{{$primary_revenue}} TND</strong>
                         </p>
                         <button data-href="{{ route('cash.management.balance') }}" class="btn btn-primary primary-details">
                             <i class="fa fa-eye"></i> {{trans('file.Detail')}}
@@ -31,7 +31,7 @@
                     </div>
                     <div class="card-body text-center">
                         <p>
-                            <strong>{{$secondary_revenue}} Euro</strong>
+                            <strong>{{$secondary_revenue}} TND</strong>
                         </p>
                         <button data-href="{{ route('cash.management.balance') }}" class="btn btn-primary secoundry-details">
                             <i class="fa fa-eye"></i> {{trans('file.Detail')}}

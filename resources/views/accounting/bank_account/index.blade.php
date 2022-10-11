@@ -58,8 +58,11 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
+                                            <th>Bank Title</th>
                                             <th>Account No.</th>
                                             <th>Account Title</th>
+                                            <th>Swift Code</th>
+                                            <th>IBAN</th>
                                             <th>Primary Balance</th>
                                             <th>Secondary Balance</th>
                                             <th>Action</th>
@@ -97,12 +100,24 @@
                     name: 'index'
                 },
                 {
+                    "data": "bank",
+                    name: 'bank'
+                },
+                {
                     "data": "account_number",
                     name: 'account_number'
                 },
                 {
                     "data": "account_title",
                     name: 'account_title'
+                },
+                {
+                    "data": "swift_code",
+                    name: 'swift_code'
+                },
+                {
+                    "data": "iban",
+                    name: 'iban'
                 },
                 {
                     "data": "primary_balance",

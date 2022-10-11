@@ -1,5 +1,10 @@
 <?php 
 return [
+	'Edit Bank Account' => 'Edit Bank Account',
+	'Regulation' => 'Regulation',
+	'Over View' => 'Over View',
+	'BANK' => 'BANK',
+	'Regulation Data' => 'Regulation Data',
 	'Add an Expense' => 'Add an Expense',
 	'Balance Type' => 'Balance Type',
 	'Transaction Type' => 'Transaction Type',

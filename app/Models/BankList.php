@@ -13,4 +13,8 @@ class BankList extends Model
     {
         return $this->hasMany(BalanceSheet::class,'bank_id','id');
     }
+    public function balanceAccount()
+    {
+        return $this->hasOne(BankAccount::class,'bank_id','id');
+    }
 }
