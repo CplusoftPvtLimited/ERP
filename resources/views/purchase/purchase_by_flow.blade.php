@@ -469,7 +469,7 @@
                     <th>{{ trans('file.Profit Margin') }} %</th>
                     <th>{{ trans('file.Total Excluding Vat') }}</th>
                     <th>{{ trans('file.Actual Cost Per Product') }}</th>
-                    <th><i class="dripicons-trash"></i></th>
+                    <th>Action</th>
                 </tr>`;
 
                 black_cash_head += `<tr id="">
@@ -482,7 +482,7 @@
                     <th>{{ trans('file.Profit Margin') }} %</th>
                     <th>{{ trans('file.Total Excluding Vat') }}</th>
                     <th>{{ trans('file.Actual Cost Per Product') }}</th>
-                    <th><i class="dripicons-trash"></i></th>
+                    <th>Action</th>
                 </tr>`;
 
                 var length = document.getElementById("myTable").rows.length;
@@ -617,10 +617,10 @@
                     data.data.legacyArticleId +
                     '" name="actual_cost_per_product[]" readonly></td>';
 
-                markup += '<td><i id="article_delete_' +
+                markup += '<td><button class="btn btn-danger"><i id="article_delete_' +
                     data.data.legacyArticleId + '" onclick="deleteArticle(' + data.data
                     .legacyArticleId +
-                    ')" class="fa fa-trash"></i></td>';
+                    ')" class="fa fa-trash"></i></button></td>';
 
                 markup += '<td style="display:none;">' + html +
                     '</td></tr>';
