@@ -23,11 +23,10 @@
                 <td colspan="5">
                     <h1 style="color:#728299">Invoice</h1>
                 </td>
-                <td ></td>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td></td>
+                <td colspan="2" align="right" ><img src="images/logo.png" alt="" width="150"></td>
             </tr>
             <tr>
                 <td style="border-bottom:3px solid black;padding-top:10px" colspan="5"> <strong>Customer:</strong>
