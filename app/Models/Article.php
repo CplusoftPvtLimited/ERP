@@ -61,5 +61,8 @@ class Article extends Model
     {
         return $this->belongsTo(AssemblyGroupNode::class, 'assemblyGroupNodeId', 'assemblyGroupNodeId');
     }
+    public function section() { 
+        return $this->belongsTo(AssemblyGroupNode::class,'assemblyGroupNodeId', 'assemblyGroupNodeId');
+    }
 
 }

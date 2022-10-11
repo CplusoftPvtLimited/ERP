@@ -78,6 +78,12 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::resource('articleEan', 'ArticleEanController');
 	Route::resource('articleLinks', 'ArticleLinksController');
 
+	Route::get('get_manufacturers_by_engine_type', [ArticlesController::class,'getManufacturersByEngineType'])->name('get_manufacturers_by_engine_type');
+	Route::get('search_models_by_manufacturer',[ModelSeriesController::class, 'searchModelsByManufacturer'])->name('search_models_by_manufacturer');
+	Route::get('search_engines_by_model',[LinkageTargetsController::class, 'searchEnginesByModel'])->name('search_engines_by_model');
+	Route::get('search_sections_by_engine',[AssemblyGroupNodesController::class, 'searchSectionsByEngine'])->name('search_sections_by_engine');
+	Route::get('get_section_parts', [AssemblyGroupNodesController::class, 'getSectionParts'])->name('get_section_parts');
+	Route::get('articlesByReferenceNo', [ArticlesController::class,'articlesByReferenceNo'])->name('article.reference');
 
 
 	Route::get('get_models_by_manufacturer',[ModelSeriesController::class, 'getModelsByManufacturer'])->name('get_models_by_manufacturer');

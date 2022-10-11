@@ -17,5 +17,9 @@ class AssemblyGroupNode extends Model
     {
         return $this->hasMany(GenericArticle::class);
     }
+    public function articleVehicleTree()
+    {
+        return $this->hasMany(ArticleVehicleTree::class,'assemblyGroupNodeId','assemblyGroupNodeId');
+    }
 
 }

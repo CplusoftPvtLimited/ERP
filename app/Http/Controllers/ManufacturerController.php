@@ -94,7 +94,6 @@ class ManufacturerController extends Controller
                         $value = ++$this->val;
                         return $value;
                     })
-                    ->rawColumns(['action','index'])
                     ->rawColumns(['action', 'linkingTargetType','index'])
                     ->make(true);
         }

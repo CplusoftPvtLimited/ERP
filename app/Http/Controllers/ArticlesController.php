@@ -36,30 +36,30 @@ class ArticlesController extends Controller
     }
     public function index(Request $request)
     {
-        if ($request->ajax()) {
-            $articles = Article::select('id', 'legacyArticleId', 'articleNumber', 'mfrId', 'additionalDescription', 'assemblyGroupNodeId', 'created_at')
-                ->with(['assemblyGroup' => function ($query) {
+        // dd($request->all());
+            if ($request->ajax()) {
+                $articles = Article::select('id', 'legacyArticleId', 'articleNumber', 'mfrId', 'additionalDescription', 'assemblyGroupNodeId', 'created_at');
+                if (isset( $request['article_id']) && $request['article_id'] != null) {
+                    $articles =  $articles->where('articleNumber', $request['article_id']);
+                }
+                if (isset($request['engine_sub_type']) && !empty($request['engine_sub_type']) && !empty($request['section_id']) && isset($request['section_id'])) {
+                    $articles =  $articles->whereHas('articleVehicleTree', function ($query) use ($request) {
+                        $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
+                    });
+                }
+                $articles->with(['assemblyGroup' => function ($query) {
                     $query->select('assemblyGroupNodeId', 'assemblyGroupName')->get();
                 }, 'manufacturer'])->orderBy('id', 'desc');
-            // dd($articles->get());
-            // $articles = [];
-            // foreach ($articless as $article) {
-            //     // $manufacturer = Manufacturer::where('manuId',$article->mfrId)->first();
-            //     $section = AssemblyGroupNode::where('assemblyGroupNodeId',$article->assemblyGroupNodeId)->first();
-            //     // $article['manufacturer'] = $manufacturer ? $manufacturer->manuName : 'N/A';
-            //     $article['section'] = $section ? $section->assemblyGroupName : 'N/A';
-            //     array_push($articles,$article);
-            // }
-            return DataTables::of($articles)
-                ->addIndexColumn()
-                ->addColumn('manufacturer', function ($row) {
-                    return isset($row->manufacturer->manuName) ? $row->manufacturer->manuName : "N/A";
-                })
-                ->addColumn('section', function ($row) {
-                    return isset($row->assemblyGroup->assemblyGroupName) ? $row->assemblyGroup->assemblyGroupName : "N/A";
-                })
-                ->addColumn('action', function ($row) {
-                    $btn = '<div class="row">
+                return DataTables::of($articles)
+                    ->addIndexColumn()
+                    ->addColumn('manufacturer', function ($row) {
+                        return isset($row->manufacturer->manuName) ? $row->manufacturer->manuName : "N/A";
+                    })
+                    ->addColumn('section', function ($row) {
+                        return isset($row->assemblyGroup->assemblyGroupName) ? $row->assemblyGroup->assemblyGroupName : "N/A";
+                    })
+                    ->addColumn('action', function ($row) {
+                        $btn = '<div class="row">
                                 <div class="col-md-2 mr-1">
                                     <a href="article/' . $row["id"] . '/edit"> <button
                                     class="btn btn-primary btn-sm " type="button"
@@ -120,14 +120,14 @@ class ArticlesController extends Controller
                                  })
                              }
                          });</script>';
-                    return $btn;
-                })
-                ->addColumn('index', function ($row) {
-                    $value = ++$this->val;
-                    return $value;
-                })
-                ->rawColumns(['action', 'section', 'manufacturer', 'index'])
-                ->make(true);
+                        return $btn;
+                    })
+                    ->addColumn('index', function ($row) {
+                        $value = ++$this->val;
+                        return $value;
+                    })
+                    ->rawColumns(['action', 'section', 'manufacturer', 'index'])
+                    ->make(true);
         }
 
         return view('articles.index');
@@ -282,6 +282,30 @@ class ArticlesController extends Controller
             return response()->json(['data' => "true", 'id' => $id]);
         } else {
             return response()->json("false");
+        }
+    }
+    public function getManufacturersByEngineType(Request $request)
+    {
+        try {
+            $manufacturers = Manufacturer::where('linkingTargetType', $request->engine_sub_type)->get();
+            // dd($manufacturers);
+            return response()->json([
+                'data' => $manufacturers
+            ], 200);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+    public function articlesByReferenceNo(Request $request)
+    {
+        try {
+            $articles = Article::where('articleNumber', 'LIKE', '%' . $request->name . '%')->paginate(10);
+            // dd($articles);
+            return response()->json([
+                'data' => $articles
+            ], 200);
+        } catch (\Exception $e) {
+            return $e->getMessage();
         }
     }
 }

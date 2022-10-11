@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Article;
 use App\Models\AssemblyGroupNode;
 use App\Models\Language;
 use App\Models\LinkageTarget;
@@ -157,6 +158,41 @@ class AssemblyGroupNodesController extends Controller
                 ->where('request__linkingTargetId', $request->engine_id)->get();
             return response()->json([
                 'data' => $sections
+            ], 200);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+    public function searchSectionsByEngine(Request $request)
+    {
+        // dd($request->all());
+        try {
+            $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function($query) use ($request){
+                    $query->where('linkingTargetId', $request->engine_id)
+                    ->where('linkingTargetType', $request->engine_sub_type);
+                })
+               ->groupBy('assemblyGroupNodeId')
+               ->limit(100)
+                ->get();
+            return response()->json([
+                'data' => $sections
+            ], 200);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+    public function getSectionParts(Request $request)
+    {
+        try {
+            $section_parts = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')->whereHas('articleVehicleTree', function ($query) use ($request) {
+                $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
+            })
+            ->limit(100)
+            ->get();
+
+            // dd($section_parts);
+            return response()->json([
+                'data' => $section_parts
             ], 200);
         } catch (\Exception $e) {
             return $e->getMessage();

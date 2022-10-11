@@ -163,4 +163,17 @@ class AmBrandController extends Controller
             return redirect()->back()->withError($item);
         }
     }
+    public function getBrandsBySectionPart(Request $request)
+    {
+        try {
+            $id = explode('-', $request->section_part_id);
+            $suppliers = Ambrand::select('brandId', 'brandName')
+                ->where('brandId', $id[0])->get();
+            return response()->json([
+                'data' => $suppliers
+            ], 200);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
 }

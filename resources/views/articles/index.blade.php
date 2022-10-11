@@ -5,7 +5,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
 <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
 <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
 <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
@@ -37,13 +36,41 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
+                    <div class="card p-0">
+                        <div class="row m-0">
+                            <div class="col-3" style="margin: 0px; padding:0px; ">
+                                <div class="card" style="margin: 0px; padding:0px; height: 100%;">
+                                    <div class="card-body" style="margin: 0px;">
+                                        <div class="tab search-tabs">
+                                            <button class="searchLinks" onclick="switchTab(event, 'generalSearch')" id="defaultOpen">Filter</button>
+                                            <button class="searchLinks" onclick="switchTab(event, 'searchByProductNumber')" id="searchByProductNoTab">Search By Product Number</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-9" style="margin: 0px; padding:0px;">
+                                <div class="card" style="margin: 0px; height:100%;">
+                                    <div class="card-body searchcontent" id="generalSearch">
+                                        @include('articles.general_search')
+                                    </div>
+                                    <div class="card-body searchcontent" id="searchByProductNumber">
+                                        @include('articles.search_product_number')
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
                     <div class="card">
                         <div class="card-body">
                             <div class="container">
                                 <div class="d-flex flex-row-reverse mb-3 mr-4">
                                     <a href="{{ route('article.create') }}" class="btn btn-info mb-1"><i
                                             class="dripicons-plus"></i> {{ trans('file.Add Product') }}</a>
-                                    <div class="col-10 pl-4 pt-1">
+                                    <div class="col-10 pl-0 pt-1">
                                         <h2>Products</h2>
                                     </div>
                                 </div>
@@ -96,12 +123,18 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            $('#model-data-table').DataTable({
-                // "order": [[1, desc]]
-                "ordering" : false,
+            var oTable = $('#model-data-table').DataTable({
+                "ordering": false,
                 "processing": true,
                 "serverside": true,
-                ajax: "{{ route('article.index') }}",
+                ajax: {
+                    "url": "{{ route('article.index') }}",
+                    "data": (d) => {
+                        d.article_id =  $('#automplete-1').val(),
+                        d.engine_sub_type = $('#subLinkageTarget').val(),
+                        d.section_id = $('#section_id').val()
+                    }
+                },
                 columns: [{
                         data: 'index',
                         name: 'index'
@@ -134,35 +167,32 @@
                     }
                 ],
             });
+
+            $('.purchase-save-btn').on('click', (e) => {
+                oTable.ajax.reload();
+            });
+
+            $('#save-btn').on('click', (e) => {
+                oTable.ajax.reload();
+            });
         });
+    </script>
+    <script>
+        function switchTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("searchcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("searchlinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
 
-
-        // function deleteSection(id) {
-        //     Swal.fire({
-        //         title: 'Are you sure?',
-        //         text: "You won't be able to revert this!",
-        //         icon: 'warning',
-        //         showCancelButton: true,
-        //         confirmButtonColor: '#3085d6',
-        //         cancelButtonColor: '#d33',
-        //         confirmButtonText: 'Yes, delete it!'
-        //     }).then((result) => {
-        //         if (result.isConfirmed) {
-        //                 $.ajax({
-        //                     method: "post",
-        //                     url: "{{ url('article/delete') }}",
-        //                     data: {
-        //                         id: id
-        //                     },
-        //                     success: function(data) {
-        //                         location.reload();
-        //                     }
-
-        //                 });
-
-                    
-        //         }
-        //     });
-        // }
+        // Get the element with id="defaultOpen" and click on it
+        document.getElementById("defaultOpen").click();
     </script>
 @endsection

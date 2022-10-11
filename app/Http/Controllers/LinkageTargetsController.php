@@ -198,4 +198,18 @@ class LinkageTargetsController extends Controller
             return $e->getMessage();
         }
     }
+    public function searchEnginesByModel(Request $request)
+    {
+        try {
+            $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                ->where('vehicleModelSeriesId', $request->model_id)
+                ->where('linkageTargetType', $request->engine_sub_type)->get();
+            // dd($models);
+            return response()->json([
+                'data' => $engines
+            ], 200);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
 }

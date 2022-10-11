@@ -210,4 +210,18 @@ class ModelSeriesController extends Controller
             ],200
         );
     }
+    public function searchModelsByManufacturer(Request $request)
+    {
+        try {
+
+            $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                ->where('linkingTargetType', $request->engine_sub_type)->get();
+            // dd($models);
+            return response()->json([
+                'data' => $models
+            ], 200);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
 }

@@ -27,4 +27,5 @@ class ArticleVehicleTree extends Model
     public function assemblyGroupNodes() {
         return $this->belongsTo(AssemblyGroupNode::class, 'assemblyGroupNodeId', 'assemblyGroupNodeId');
     }
+    
 }
