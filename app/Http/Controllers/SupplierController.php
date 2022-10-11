@@ -31,11 +31,16 @@ class SupplierController extends Controller
     //         return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
     // }
 
+    public function index(){
+
+    }
+
     public function create()
     {
         $role = Role::find(Auth::user()->role_id);
+        $suppliers = AfterMarkitSupplier::where('retailer_id',Auth::user()->id)->get();
         if ($role->hasPermissionTo('suppliers-add')) {
-            return view('supplier.create');
+            return view('supplier.create',compact('suppliers'));
         } else
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
     }
