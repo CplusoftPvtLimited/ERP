@@ -1191,6 +1191,38 @@ label.view-edit-purchase{
 	background: transparent !important;
 	/* border: none; */
 }
+.article-tabs {
+	float: left;
+	width: 100%;
+  }
+  
+  /* Style the buttons that are used to open the tab content */
+  .balance-tabs button {
+	display: block;
+	background-color: inherit;
+	color: black;
+	padding: 10px;
+	width: 100%;
+	border: none;
+	outline: none;
+	text-align: left;
+	cursor: pointer;
+	transition: 0.3s;
+	border-radius: 1%;
+	margin: 10px 0px;
+  }
+  
+  /* Change background color of buttons on hover */
+  .balance-tabs button:hover {
+	background-color: #ddd;
+	box-shadow: 0px 1px 7px 1px #b1a6ca;
+  }
+  
+  /* Create an active/current "tab button" class */
+  .balance-tabs button.active {
+	background-color: #6244A6;
+	color: white;
+  }
 .total-calculations{
 	margin-top: 10px;
 }
