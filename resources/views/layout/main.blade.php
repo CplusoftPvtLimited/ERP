@@ -249,9 +249,9 @@
                             <li id="sale-list-menu"><a
                                     href="{{ route('sales.index') }}">{{ trans('file.Estimate List') }}</a></li>
                             <li id="invoices-list-menu"><a
-                                    href="{{ route('sales.salesInvoices') }}">{{ trans('file.Invoice List') }}</a>
+                                    href="{{ route('invoices.index') }}">{{ trans('file.Invoice List') }}</a>
                             </li>
-                            <li id="pre-invoices-list-menu"><a href="">{{ trans('file.Delivery Slips') }}</a>
+                            <li id="pre-invoices-list-menu"><a href="{{ route('delivery_slips') }}">{{ trans('file.Delivery Slips') }}</a>
                             </li>
 
 
