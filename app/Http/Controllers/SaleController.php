@@ -2718,6 +2718,25 @@ class SaleController extends Controller
         $invoices = SalesInvoice::orderBy('id', 'desc')->get();
         return view('sale.invoices_index', compact('invoices'));
     }
+
+    public function PreInvoicePDF($id)
+    {
+
+        $sale = Sale::Find($id);
+        // dump($sale);
+        $customer = Customer::find($sale->customer_id);
+        // dd($customer);
+        $products = Product_Sale::where('sale_id', $id)->get();
+        $data = [
+            'sale' => $sale,
+            'customer' => $customer,
+            'products' => $products
+        ];
+
+        // $pdf = PDF::loadView('sale.preinvoice_view', $data);
+
+        return view('sale.preinvoice_view', $data);
+    }
     public function createSaleInvoice($id)
     {
         $invoice = SalesInvoice::latest()->first();

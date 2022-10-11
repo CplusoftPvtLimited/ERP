@@ -425,7 +425,7 @@
                                    <h5>Vat</h5>    
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="number" name="entire_vat" id="entire_vat" class="form-control" readonly>
+                                    <input type="number" name="entire_vat" id="entire_vat" class="form-control">
                                 </div>
                             </div> 
                             <div class="row total-calculations"> 
@@ -777,7 +777,8 @@
         var purchasePrice = parseFloat($("#purchase_price_" + id).val());
         var additional_cost_without_vat = parseFloat($("#additional_cost_without_vat_" + id).val());
         var entireAditionalCost = $("#purchase_additional_cost").val();
-
+        var cashType = $('#cash_type').find(":selected").val();
+        var total_actual = 0.0;
         var total_cost_without_vat = (purchasePrice * item_qty) + additional_cost_without_vat;
         $("#total_excluding_vat_" + id).val(total_cost_without_vat.toFixed(2));
 
@@ -786,6 +787,7 @@
             all_product_ids.forEach(getActualProductCost);
 
             function getActualProductCost(id, index) {
+                total_actual += parseFloat($('#actual_cost_per_product_' + id).val());
                 total_quantity_of_all_row_products += parseInt($("#item_qty" + id).val());
 
             }
@@ -794,10 +796,12 @@
 
         }
         $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
-        calculateEntireTotal(all_product_ids);
-
-        
-
+        // console.log(total_actual);
+        // if(cashType == "white"){
+            calculateEntireTotal(all_product_ids);
+        // }else{
+        //     $("#total_to_be_paid").val(total_actual);
+        // }
 
 
         var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
@@ -890,6 +894,7 @@
             $('#entire_vat').val(total_vat.toFixed(2));
             var tax_stamp = parseFloat($('#tax_stamp').val());
             var total_to_be_paid = total_actual.toFixed(2) + entire_vat.toFixed(2) + tax_stamp.toFixed(2);
+            console.log(total_to_be_paid)
             $('#total_to_be_paid').val(total_to_be_paid);
         }
     }
@@ -921,11 +926,14 @@
             $('#entire_vat').val(total_vat.toFixed(2));
             var tax_stamp = parseFloat($('#tax_stamp').val());
             console.log('stamp',tax_stamp)
+            if(tax_stamp == null || tax_stamp == NaN){
+                tax_stamp = 0;
+            }
             total_to_be_paid = parseFloat(total_actual.toFixed(2)) + parseFloat(total_vat.toFixed(2)) + parseFloat(tax_stamp.toFixed(2));
             if(cashType == "white"){
                 $('#total_to_be_paid').val(total_to_be_paid);
             }else if(cashType == "black"){
-                ('#total_to_be_paid').val(total_actual);
+                $('#total_to_be_paid').val(total_actual);
             }
             
         }

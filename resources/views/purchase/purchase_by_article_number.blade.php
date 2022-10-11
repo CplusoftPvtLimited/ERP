@@ -567,7 +567,7 @@
             if (cashType == "white") {
                 $('#total_to_be_paid').val(total_to_be_paid);
             } else if (cashType == "black") {
-                ('#total_to_be_paid').val(total_actual);
+                $('#total_to_be_paid').val(total_actual);
             }
 
         }

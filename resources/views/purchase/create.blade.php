@@ -167,7 +167,24 @@
         document.getElementById("defaultOpen").click();
 
         $('#submit_button').on('click', function() {
-            
+            if (selected_cash_type.length > 0) {
+            var cashType = $('#cash_type').find(":selected").val();
+
+                    selected_cash_type.forEach(checkCashType);
+
+                    function checkCashType(element, index, data) {
+                        console.log(element, index, data )
+                        if (element != cashType) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'you can not able to change the cash type for a purchase once you selected',
+                            });
+                            exit();
+                        }
+                    }
+
+                }
             var table_body_rows = $("table tbody tr").length;
             if(table_body_rows <= 0){
                 Swal.fire({

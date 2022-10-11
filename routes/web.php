@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-
+Route::get('preinvoice-pdf/{id}', 'salecontroller@preinvoicepdf')->name('sales.preinvoicepdf');
 
 Route::group(['middleware' => 'auth'], function() {
 	Route::get('/dashboard', 'HomeController@dashboard');
