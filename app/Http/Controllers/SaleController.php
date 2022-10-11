@@ -159,52 +159,52 @@ class SaleController extends Controller
                      </div>
 
                      <div class="col-sm-3">
-                     <a href="/view_sale/'.$row["id"].'"> <button
+                     <a href="/view_sale/' . $row["id"] . '"> <button
                                  class="btn btn-info btn-sm " type="button"
                                  data-original-title="btn btn-success btn-xs"
                                  title=""><i class="fa fa-eye"></i></button></a>
                      </div>';
-                     if($row['status'] == "accepted"){
+                    if ($row['status'] == "accepted") {
                         $btn .= '<div class="col-sm-3">
-                        <a href="/createInvoice/'.$row["id"].'"> <button
+                        <a href="/createInvoice/' . $row["id"] . '"> <button
                                     class="btn btn-success btn-sm " style="background: grey;
                                     border: 1px solid grey;" type="button"
                                     data-original-title="btn btn-success btn-xs"
                                     title=""><i class="fa fa-file"></i></button></a>
                         </div>';
-                     }
-                 $btn .= '</div>
+                    }
+                    $btn .= '</div>
                  ';
 
                     return $btn;
                 })->addColumn('sale_status', function ($row) {
                     $status = "";
-                    if($row['status'] == "accepted"){
-                        $status = '<select name="sale_status" onchange="changeSaleStatus('.$row["id"].')" id="sale_status" class="form-control">
+                    if ($row['status'] == "accepted") {
+                        $status = '<select name="sale_status" onchange="changeSaleStatus(' . $row["id"] . ')" id="sale_status" class="form-control">
                         <option class="negotiation" value="#" selected disabled>Accepted</option>
                         <option class="cancel" value="cancelled">Cancel</option>
                         </select>';
-                    }else if($row['status'] == "negotiation"){
-                        $status = '<select name="sale_status" onchange="changeSaleStatus('.$row["id"].')" id="sale_status" class="form-control">
+                    } else if ($row['status'] == "negotiation") {
+                        $status = '<select name="sale_status" onchange="changeSaleStatus(' . $row["id"] . ')" id="sale_status" class="form-control">
                         <option class="negotiation" value="#" selected disabled>Negotiation</option>
                         <option class="accept" value="accepted">Accept</option>
                         <option class="cancel" value="cancelled">Cancel</option>
                         </select>';
-                    }else if($row['status'] == "cancelled"){
-                        $status = '<select name="sale_status" onchange="changeSaleStatus('.$row["id"].')" id="sale_status" class="form-control">
+                    } else if ($row['status'] == "cancelled") {
+                        $status = '<select name="sale_status" onchange="changeSaleStatus(' . $row["id"] . ')" id="sale_status" class="form-control">
                         <option class="negotiation" value="#" selected disabled>Cancelled</option>
                         <option class="accept" value="reactivated">Reactivate</option>
                        
                         </select>';
-                    }else if($row['status'] == "created"){
-                        $status = '<select name="sale_status" onchange="changeSaleStatus('.$row["id"].')" id="sale_status" class="form-control">
+                    } else if ($row['status'] == "created") {
+                        $status = '<select name="sale_status" onchange="changeSaleStatus(' . $row["id"] . ')" id="sale_status" class="form-control">
                         <option class="negotiation" value="#" selected disabled>Created</option>
                         <option class="negotiation" value="negotiation">Negotiation</option>
                         <option class="accept" value="accepted" >Accept</option>
                         <option class="cancel" value="cancelled">Cancel</option>
                         </select>';
-                    }else if($row['status'] == "reactivated"){
-                        $status = '<select name="sale_status" onchange="changeSaleStatus('.$row["id"].')" id="sale_status"  class="form-control">
+                    } else if ($row['status'] == "reactivated") {
+                        $status = '<select name="sale_status" onchange="changeSaleStatus(' . $row["id"] . ')" id="sale_status"  class="form-control">
                         <option class="negotiation" value="#" selected disabled>Reactivated</option>
                         <option class="accept" value="created">Created</option>
                         </select>
@@ -214,7 +214,7 @@ class SaleController extends Controller
 
                     return $status;
                 })
-                ->rawColumns(['action','sale_status'])->make(true);
+                ->rawColumns(['action', 'sale_status'])->make(true);
         }
         return view('sale.index');
         // return view('sale.sale_index');
@@ -443,7 +443,7 @@ class SaleController extends Controller
         echo json_encode($json_data);
     }
 
-   
+
     public function create()
     {
         $role = Role::find(FacadesAuth::user()->role_id);
@@ -554,9 +554,9 @@ class SaleController extends Controller
                 toastr()->success('Sale created successfully');
                 return redirect()->route('sales.index')->with('message', 'Sales created successfully');
             }
-            if($sale && isset($sale['message']) && $sale['message'] == "quantity-exceeded"){
+            if ($sale && isset($sale['message']) && $sale['message'] == "quantity-exceeded") {
                 FacadesDB::rollBack();
-                toastr()->info('Your Requested Quantity is not available for Reference No. '.$sale['reference_no']);
+                toastr()->info('Your Requested Quantity is not available for Reference No. ' . $sale['reference_no']);
                 return redirect()->back();
             }
             toastr()->error($sale);
@@ -571,11 +571,12 @@ class SaleController extends Controller
 
     // Our own code
 
-    public function viewSale($id){
+    public function viewSale($id)
+    {
         $sale = NewSale::find($id);
-        $sale_products = NewSaleProduct::where('sale_id',$id)->get();
-            // dd($lims_quotation_data);
-        return view('sale.view_sale',compact('sale','sale_products'));
+        $sale_products = NewSaleProduct::where('sale_id', $id)->get();
+        // dd($lims_quotation_data);
+        return view('sale.view_sale', compact('sale', 'sale_products'));
     }
 
     public function getSectionPartsForSale(Request $request)
@@ -669,12 +670,13 @@ class SaleController extends Controller
         ]);
     }
 
-    public function changeSaleStatus(Request $request){
+    public function changeSaleStatus(Request $request)
+    {
         // dd($request->all());
         $sale = NewSale::find($request->id);
         $sale->status = $request->status;
         $sale->save();
-          
+
         return true;
     }
     // our code end
@@ -1479,9 +1481,9 @@ class SaleController extends Controller
         $role = Role::find(Auth::user()->role_id);
         if ($role->hasPermissionTo('sales-edit')) {
             $sale = NewSale::find($id);
-            $sale_products = NewSaleProduct::where('sale_id',$id)->get();
-           
-            return view('sale.edit', compact('sale','sale_products'));
+            $sale_products = NewSaleProduct::where('sale_id', $id)->get();
+
+            return view('sale.edit', compact('sale', 'sale_products'));
         } else
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
     }
@@ -1522,15 +1524,15 @@ class SaleController extends Controller
         try {
             $data = $request->all();
             FacadesDB::beginTransaction();
-            $sale = $this->saleRepository->update($data,$id);
+            $sale = $this->saleRepository->update($data, $id);
             FacadesDB::commit();
             if ($sale && !isset($sale['message'])) {
                 toastr()->success('Sale updated successfully');
                 return redirect()->route('sales.index')->with('message', 'Sales Updated successfully');
             }
-            if($sale && isset($sale['message']) && $sale['message'] == "quantity-exceeded"){
+            if ($sale && isset($sale['message']) && $sale['message'] == "quantity-exceeded") {
                 FacadesDB::rollBack();
-                toastr()->info('Your Requested Quantity is not available for Reference No. '.$sale['reference_no']);
+                toastr()->info('Your Requested Quantity is not available for Reference No. ' . $sale['reference_no']);
                 return redirect()->back();
             }
             // dd($sale);
@@ -1543,21 +1545,22 @@ class SaleController extends Controller
         }
     }
 
-    public function saleProductDelete(Request $request){
+    public function saleProductDelete(Request $request)
+    {
         $sale_product = NewSaleProduct::find($request->id);
-        if($sale_product){
+        if ($sale_product) {
             $sale = NewSale::find($sale_product->sale_id);
             $sale_product->delete();
-            $products = NewSaleProduct::where('sale_id',$sale->id)->get();
-            
+            $products = NewSaleProduct::where('sale_id', $sale->id)->get();
 
-            if(count($products) <= 0){
+
+            if (count($products) <= 0) {
                 $sale->delete();
                 return response(1);
             }
 
             return response(2);
-        }else{
+        } else {
             return response(3);
         }
     }
@@ -2789,14 +2792,12 @@ class SaleController extends Controller
     public function PreInvoicePDF($id)
     {
 
-        $sale = Sale::Find($id);
-        // dump($sale);
-        $customer = Customer::find($sale->customer_id);
+        $sale = ERPInvoice::Find($id);
         // dd($customer);
-        $products = Product_Sale::where('sale_id', $id)->get();
+        $products = ERPInvoiceProduct::where('invoice_id', $id)->get();
+        // dd($products);
         $data = [
             'sale' => $sale,
-            'customer' => $customer,
             'products' => $products
         ];
 
@@ -2807,14 +2808,12 @@ class SaleController extends Controller
     public function generatePreInvoicePDF($id)
     {
 
-        $sale = Sale::Find($id);
-        // dump($sale);
-        $customer = Customer::find($sale->customer_id);
+        $sale = ERPInvoice::Find($id);
         // dd($customer);
-        $products = Product_Sale::where('sale_id', $id)->get();
+        $products = ERPInvoiceProduct::where('invoice_id', $id)->get();
+        // dd($products);
         $data = [
             'sale' => $sale,
-            'customer' => $customer,
             'products' => $products
         ];
 
