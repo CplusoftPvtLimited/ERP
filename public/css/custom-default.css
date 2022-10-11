@@ -1189,7 +1189,7 @@ label.view-edit-purchase{
 
 .view-edit-purchase-input{
 	background: transparent !important;
-	border: none;
+	/* border: none; */
 }
 .total-calculations{
 	margin-top: 10px;
@@ -1197,6 +1197,10 @@ label.view-edit-purchase{
 
 .invoice-label{
 	font-weight: 700;
+}
+
+div#data-table_length {
+    display: none !important;
 }
 /* option.estimate{
 	background-color: #17a2b8;

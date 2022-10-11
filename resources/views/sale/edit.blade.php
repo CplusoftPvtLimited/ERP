@@ -200,7 +200,7 @@
                                                                     <input class="form-control" type="number"
                                                                         step="any"
                                                                         id="sale_total_with_discount_{{ $sale_product->id }}"
-                                                                        name="total_with_discount[]"
+                                                                        name="sale_total_with_discount[]"
                                                                         value="{{ $sale_product->total_with_discount }}"
                                                                         readonly>
                                                                 </td>
@@ -249,7 +249,7 @@
                                                                     <input class="form-control" type="number"
                                                                         step="any"
                                                                         id="sale_total_without_discount_{{ $sale_product->id }}"
-                                                                        name="total_without_discount[]"
+                                                                        name="sale_total_without_discount[]"
                                                                         value="{{ $sale_product->total_without_discount }}"
                                                                         readonly>
                                                                 </td>
@@ -374,9 +374,9 @@
             }
 
             if (sale_total_without_discount <= 0) {
-                $('#sale_total_without_discount' + id).val(0);
+                $('#sale_total_without_discount_' + id).val(0);
             } else {
-                $('#sale_total_without_discount' + id).val(sale_total_without_discount.toFixed(2))
+                $('#sale_total_without_discount_' + id).val(sale_total_without_discount.toFixed(2))
             }
             calculateEditEntireSaleTotal(product_ids);
         }

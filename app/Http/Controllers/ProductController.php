@@ -95,6 +95,23 @@ class ProductController extends Controller
                         $white_items .= $white_1_item_qty ;
                         $white_items .= ")</span>";
                         return $white_items;
+                    })->editColumn('unit_sale_price_of_white_cash', function ($row) {
+                        $price = "";
+                        if($row['unit_sale_price_of_white_cash']){
+                            $price = $row['unit_sale_price_of_white_cash'] . " TND";
+                            return $price;
+                        }else{
+                            return $price;
+                        }
+                    })->editColumn('unit_sale_price_of_black_cash', function ($row) {
+                        $price = "";
+                        if($row['unit_sale_price_of_black_cash']){
+                            $price = $row['unit_sale_price_of_black_cash'] . " TND";
+                            return $price;
+                        }else{
+                            return $price;
+                        }
+                        
                     })
                     ->editColumn('black_items', function ($row) {
 
