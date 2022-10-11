@@ -6,13 +6,14 @@
     @endphp
     <div class="container">
         <div class="row">
-            <div class="col mb-1 mt-0 pt-0">
-                <a href="" data-toggle="modal" data-target="#createModal" class="btn btn-danger float-right">+ Add
-                    Expense</a>
-                <div class="col pl-4 pt-1">
-                    <h2>{{ trans('file.Over View') }}</h2>
-                </div>
+            <div class="col-6 pl-4 pt-1">
+                <h2>{{ trans('file.Over View') }}</h2>
             </div>
+            <div class="col-6 mb-1 mt-0 pt-0">
+                <button data-toggle="modal" data-target="#createModal" class="btn btn-danger float-right">+ Add
+                    Expense</button>
+            </div>
+            
         </div>
         <div class="table-responsive">
             @if (session()->has('message'))
@@ -43,28 +44,33 @@
                     <tr>
                         <td>1</td>
                         <td>Cash</td>
-                        <td class="{{$cash_revenue >= 0 ? 'text-success' : 'text-danger'}}"><strong>TND {{ $cash_revenue }}</strong></td>
+                        <td class="{{ $cash_revenue >= 0 ? 'text-success' : 'text-danger' }}"><strong>TND
+                                {{ $cash_revenue }}</strong></td>
                     </tr>
                     <tr>
                         <td>2</td>
                         <td>Cheque</td>
-                        <td class="{{$cheque_revenue >= 0 ? 'text-success' : 'text-danger'}}"><strong>TND {{ $cheque_revenue }}</strong></td>
+                        <td class="{{ $cheque_revenue >= 0 ? 'text-success' : 'text-danger' }}"><strong>TND
+                                {{ $cheque_revenue }}</strong></td>
                     </tr>
                     <tr>
                         <td>3</td>
                         <td>Draft</td>
-                        <td class="{{$draft_revenue >= 0 ? 'text-success' : 'text-danger'}}"><strong>TND {{ $draft_revenue }}</strong></td>
+                        <td class="{{ $draft_revenue >= 0 ? 'text-success' : 'text-danger' }}"><strong>TND
+                                {{ $draft_revenue }}</strong></td>
                     </tr>
                     <tr>
                         <td>4</td>
                         <td>Withholding</td>
-                        <td class="{{$withholding_revenue >= 0 ? 'text-success' : 'text-danger'}}"><strong>TND {{ $withholding_revenue }}</strong></td>
+                        <td class="{{ $withholding_revenue >= 0 ? 'text-success' : 'text-danger' }}"><strong>TND
+                                {{ $withholding_revenue }}</strong></td>
                     </tr>
                     <tr>
                         <td></td>
                         <td></td>
-                        <td><strong>Total = <span class="{{( $withholding_revenue + $draft_revenue + $cash_revenue + $cheque_revenue) >= 0 ? 'text-success' : 'text-danger'}}">TND
-                                {{ $withholding_revenue + $draft_revenue + $cash_revenue + $cheque_revenue }}</span></strong>
+                        <td><strong>Total = <span
+                                    class="{{ $withholding_revenue + $draft_revenue + $cash_revenue + $cheque_revenue >= 0 ? 'text-success' : 'text-danger' }}">TND
+                                    {{ $withholding_revenue + $draft_revenue + $cash_revenue + $cheque_revenue }}</span></strong>
                         </td>
                     </tr>
                 </tbody>
@@ -83,7 +89,8 @@
             </div>
             <div class="modal-body pr-5 pl-5">
                 <p class="italic">
-                    <small>{{ trans('file.The field labels marked with * are required input fields') }}.</small></p>
+                    <small>{{ trans('file.The field labels marked with * are required input fields') }}.</small>
+                </p>
                 <form action="{{ route('balanceSheet.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
