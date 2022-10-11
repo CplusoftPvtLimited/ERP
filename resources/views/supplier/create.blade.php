@@ -153,7 +153,7 @@
                                             <th>Address</th>
                                             <th>City</th>
                                             <th>Country</th>
-                                            <th>Action</th>
+                                            {{-- <th>Action</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -298,17 +298,17 @@
                     "data": "country",
                     name: 'country'
                 },
-                {
-                    "data": 'action',
-                    name: 'action',
-                    orderable: false,
-                    searchable: false
-                }
+                // {
+                //     "data": 'action',
+                //     name: 'action',
+                //     orderable: false,
+                //     searchable: false
+                // }
             ],
         });
         setInterval(() => {
             $('.edit_supplier').on('click', function(e) {
-            e.preventDefault();
+                e.preventDefault();
                 let id = $(this).data('id');
                 let name = $(this).data('name');
                 let email = $(this).data('email');
@@ -330,39 +330,5 @@
         }, 1000);
        
     });
-
-    
-
-    //////// sweet alert ///////////
-    function deleteStock(id) {
-        console.log(id);
-        // href="deletePurchase/' . $row['id'] . '"
-        var form = $(this).closest("form");
-        var name = $(this).data("name");
-        event.preventDefault();
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((willDelete) => {
-            if (willDelete.isConfirmed) {
-                $.ajax({
-                    method: "GET",
-                    url: "/product/deleteStock/" + id,
-                    data: {
-                        id: id
-                    },
-                    success: function($data) {
-                        location.reload();
-                    }
-                });
-            }
-        });
-
-    }
 </script>
 @endpush

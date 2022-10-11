@@ -41,54 +41,52 @@
 
             <div class="col-sm-12">
                 <div class="card">
+                    <div class="card-header">
+                        <h3>Purchases</h3>
+                    </div>
                     <div class="card-body">
-                        <div class="container">
-                            <div>
-                                <h4>Purchases</h4>
-                            </div>
-                            <div class="d-flex flex-row-reverse mb-3">
-                                <a class="p-1" href="{{ route('purchasesPdfDownload') }}"><button
-                                        class="btn btn-primary"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                                        Pdf</button></a>
-                                <a class="p-1" href="{{ route('exportPurchases') }}"><button
-                                        class="btn btn-warning">Export</button></a>
-                                <a class="p-1" href="{{ route('purchases.create') }}"><button class="btn btn-success"><i
-                                            class="fa fa-plus"></i> Add</button></a>
-                            </div>
+                        <div class="d-flex flex-row-reverse mb-3">
+                            <a class="p-1" href="{{ route('purchasesPdfDownload') }}"><button
+                                    class="btn btn-primary"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                    Pdf</button></a>
+                            <a class="p-1" href="{{ route('exportPurchases') }}"><button
+                                    class="btn btn-warning">Export</button></a>
+                            <a class="p-1" href="{{ route('purchases.create') }}"><button class="btn btn-success"><i
+                                        class="fa fa-plus"></i> Add</button></a>
+                        </div>
 
-                            <div class="product-table">
-                                @if ($message = Session::get('success'))
-                                    <div class="alert alert-success">
-                                        <p>{{ $message }}</p>
-                                    </div>
-                                @endif
-                                @if ($message = Session::get('error'))
-                                    <div class="alert alert-danger">
-                                        <p>{{ $message }}</p>
-                                    </div>
-                                @endif
+                        <div class="product-table">
+                            @if ($message = Session::get('success'))
+                                <div class="alert alert-success">
+                                    <p>{{ $message }}</p>
+                                </div>
+                            @endif
+                            @if ($message = Session::get('error'))
+                                <div class="alert alert-danger">
+                                    <p>{{ $message }}</p>
+                                </div>
+                            @endif
 
-                                <table class="display" id="data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Date</th>
-                                            <th>Supplier</th>
-                                            <th>Items</th>
-                                            <th>Total Quantity</th>
-                                            <th>Purchase Status</th>
-                                            <th>Cash Type</th>
-                                            {{-- <th>Paid</th>
-                                            <th>Due</th> --}}
-                                            <th>Grand Total</th>
-                                            <th width="150px">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                            <table class="display" id="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Date</th>
+                                        <th>Supplier</th>
+                                        <th>Items</th>
+                                        <th>Total Quantity</th>
+                                        <th>Purchase Status</th>
+                                        <th>Cash Type</th>
+                                        {{-- <th>Paid</th>
+                                        <th>Due</th> --}}
+                                        <th>Grand Total</th>
+                                        <th width="150px">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
 
-                            </div>
                         </div>
                     </div>
                 </div>
