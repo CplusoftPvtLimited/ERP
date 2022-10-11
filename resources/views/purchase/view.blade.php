@@ -34,7 +34,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for=""><b>Grand Total</b></label>
-                                    <p>{{ $purchase->grand_total }}</p>
+                                    <p>{{ $purchase->grand_total }} TND</p>
                                     
                                 </div>
                                 <div class="col-md-4">
@@ -110,7 +110,7 @@
                                                             <label for="" class="view-edit-purchase">Actual Cost Per Product</label>
                                                             <input type="text"
                                                                 class="form-control view-edit-purchase-input"
-                                                                value="{{ "€ ". $product->actual_cost_per_product }}" readonly>
+                                                                value="{{ "TND ". $product->actual_cost_per_product }}" readonly>
                                                         </div>
                                                     </div>
                                                     <div class="row">
@@ -118,21 +118,21 @@
                                                             <label for="" class="view-edit-purchase">Total Cost (excluding VAT)</label>
                                                             <input type="text"
                                                                 class="form-control view-edit-purchase-input"
-                                                                value="{{ "€ ".$product->total_excluding_vat }}" readonly>
+                                                                value="{{ "TND ".$product->total_excluding_vat }}" readonly>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <label for="" class="view-edit-purchase">Purchase
                                                                 Price</label>
                                                             <input type="text"
                                                                 class="form-control view-edit-purchase-input"
-                                                                value="{{ "€ ".$product->actual_price }}" readonly>
+                                                                value="{{ "TND ".$product->actual_price }}" readonly>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <label for="" class="view-edit-purchase">Sale
                                                                 Price</label>
                                                             <input type="text"
                                                                 class="form-control view-edit-purchase-input"
-                                                                value="{{ "€ ".$product->sell_price }}" readonly>
+                                                                value="{{ "TND ".$product->sell_price }}" readonly>
                                                         </div>
                                                     </div>
                                                     <div class="row">

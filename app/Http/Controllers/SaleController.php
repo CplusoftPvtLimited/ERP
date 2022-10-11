@@ -1524,10 +1524,16 @@ class SaleController extends Controller
             FacadesDB::beginTransaction();
             $sale = $this->saleRepository->update($data,$id);
             FacadesDB::commit();
-            if ($sale) {
-                toastr()->success('Sale Updated successfully');
-                return redirect()->route('sales.index')->with('message', 'Sale Updated successfully');
+            if ($sale && !isset($sale['message'])) {
+                toastr()->success('Sale updated successfully');
+                return redirect()->route('sales.index')->with('message', 'Sales Updated successfully');
             }
+            if($sale && isset($sale['message']) && $sale['message'] == "quantity-exceeded"){
+                FacadesDB::rollBack();
+                toastr()->info('Your Requested Quantity is not available for Reference No. '.$sale['reference_no']);
+                return redirect()->back();
+            }
+            // dd($sale);
             toastr()->error($sale);
             return redirect()->back()->withErrors($sale);
         } catch (\Exception $e) {
