@@ -81,8 +81,12 @@
                                         <div class="col-4">
                                             <div class="form-group">
                                                 <strong>Amount</strong>
-                                                <input type="text" class="form-control" readonly
+                                                <div class="input-group">
+                                                    <div class="input-group-text">TND</div>
+                                                    <input type="text" class="form-control" readonly
                                                     value="{{ $regulation->amount }}">
+                                                  </div>
+                                               
                                             </div>
                                         </div>
                                         <div class="col-4">
