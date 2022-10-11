@@ -102,9 +102,7 @@
                 }
             });
             $('#data-table').DataTable({
-                "order": [
-                    [1, "DESC"]
-                ],
+                "ordering": false,
                 "processing": true,
                 "serverside": true,
                 // "scrollX": true,

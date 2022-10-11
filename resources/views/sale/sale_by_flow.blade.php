@@ -380,10 +380,10 @@
         var section_id = $('#section_id').find(":selected").val();
         var section_part_id = $('#section_part_id').find(":selected").val();
         // var status = $('#status').find(":selected").val();
-        // var date = $('#product_purchase_date').val();
+        var date = $('#product_sale_date').val();
         var cashType = $('#cash_type').find(":selected").val();
 
-        checkIfExists(engine_type, engine_sub_type, manufacturer_id, model_id, engine_id, section_id,
+        checkIfExists(date, engine_type, engine_sub_type, manufacturer_id, model_id, engine_id, section_id,
             section_part_id, cashType);
 
         $.ajax({
@@ -475,7 +475,7 @@
                     
                     <th>{{ trans('file.Total (With Discount) Excluding Vat') }} </th>
                     
-                    <th><i class="dripicons-trash"></i></th>
+                    <th>Action</th>
                 </tr>`;
                 // sale price => editable for white but non-editable for black
                 black_cash_head += `<tr id="">
@@ -486,7 +486,7 @@
                     
                     <th>{{ trans('file.Total (Without Discount)') }}</th>
                     <th>{{ trans('file.Total (With Discount)') }}</th>
-                    <th><i class="dripicons-trash"></i></th>
+                    <th>Action</th>
                 </tr>`;
 
                 var length = document.getElementById("myTable").rows.length;
@@ -609,10 +609,10 @@
                     data.data.legacyArticleId +
                     '" name="sale_total_with_discount[]" readonly></td>';
 
-                markup += '<td><i id="article_delete_' +
+                markup += '<td><button class="btn btn-danger btn-sm"><i id="article_delete_' +
                     data.data.legacyArticleId + '" onclick="deleteSaleArticle(' + data.data
                     .legacyArticleId +
-                    ')" class="fa fa-trash"></i></td>';
+                    ')" class="fa fa-trash"></i></button></td>';
 
                 markup += '<td style="display:none;">' + html +
                     '</td></tr>';
@@ -654,7 +654,7 @@
         });
     });
 
-    function checkIfExists(engine_type, engine_sub_type, manufacturer_id, model_id, engine_id, section_id,
+    function checkIfExists(date, engine_type, engine_sub_type, manufacturer_id, model_id, engine_id, section_id,
         section_part_id, cashType) {
         if (!engine_type) {
             Swal.fire({
@@ -719,15 +719,15 @@
             exit();
         }
 
-        if (!status) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please select a status',
+        // if (!status) {
+        //     Swal.fire({
+        //         icon: 'error',
+        //         title: 'Oops...',
+        //         text: 'Please select a status',
 
-            });
-            exit();
-        }
+        //     });
+        //     exit();
+        // }
         if (!date) {
             Swal.fire({
                 icon: 'error',

@@ -31,23 +31,8 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ProductController extends Controller
 {
-    // public function index()
-    // {
-    //     $role = Role::find(Auth::user()->role_id);
-    //     if($role->hasPermissionTo('products-index')){            
-    //         $permissions = Role::findByName($role->name)->permissions;
-    //         foreach ($permissions as $permission)
-    //             $all_permission[] = $permission->name;
-    //         if(empty($all_permission))
-    //             $all_permission[] = 'dummy text';
-    //         return view('product.index', compact('all_permission'));
-    //     }
-    //     else
-    //         return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
-    // }
     public function viewProduct($id)
     {
-
         Log::debug($id);
         try {
             $get_product = StockManagement::where('id', $id)->with(['purchaseProduct' => function ($query) {
@@ -64,12 +49,11 @@ class ProductController extends Controller
     {
         try {
             if ($request->ajax()) {
-                $all_stocks = StockManagement::where('retailer_id', Auth::user()->id)->orderBy('id', 'desc')
+                $all_stocks = StockManagement::where('retailer_id', Auth::user()->id)->orderBy('created_at', 'desc')
                 ->with('purchase', function($query) {
                     $query->where('status', 'ordered');
                 })
                 ->skip(0)->take(100)->get();
-                // dd($all_stocks);
                 return DataTables::of($all_stocks)
                     ->addIndexColumn('id')
                     ->editColumn('white_items', function ($row) {
