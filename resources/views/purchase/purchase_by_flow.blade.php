@@ -469,7 +469,7 @@
                     <th>{{ trans('file.Profit Margin') }} %</th>
                     <th>{{ trans('file.Total Excluding Vat') }}</th>
                     <th>{{ trans('file.Actual Cost Per Product') }}</th>
-                    <th>Action</th>
+                    <th>Action</th> 
                 </tr>`;
 
                 black_cash_head += `<tr id="">

@@ -49,10 +49,10 @@
                             <td>{{ $item->balanceCategory->category }}</td>
                             <td>{{ $item->mode_payment }}</td>
                             <td style="color: red">
-                                TND {{ $item->transaction_type == 'debit' ? '- ' . $item->amount : '00' }}
+                                 {{ $item->transaction_type == 'debit' ? ' - ' . $item->amount . " TND " : '--' }}
                             </td>
                             <td style="color: green">
-                                TND {{ $item->transaction_type == 'credit' ? '+ ' . $item->amount : '00' }}</td>
+                                 {{ ($item->transaction_type == 'credit') ? ' + ' . $item->amount . " TND " : '--' }}</td>
                             <td><a href="{{ route('cash.managemnt.regulation', $item->id) }}"
                                     class="btn btn-primary text-white"><i class="fa fa-eye"></i></a></td>
                         </tr>
