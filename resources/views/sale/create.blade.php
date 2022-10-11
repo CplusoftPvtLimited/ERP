@@ -32,8 +32,8 @@
                                             <div class="form-group">
                                                 <label>{{ trans('file.Customer') }}</label>
                                                 <select name="customer_id" id="customer_id" class="form-control">
-                                                    <option value="" disabled selected>select customer</option>
-                                                    <option value="1">walk In</option>
+                                                    {{-- <option value="" disabled selected>select customer</option> --}}
+                                                    <option value="1">Walkin</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -66,7 +66,7 @@
                                                     step="any" />
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        {{-- <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.Attach Document') }}</label> <i
                                                     class="dripicons-question" data-toggle="tooltip"
@@ -78,7 +78,7 @@
                                                     </span>
                                                 @endif
                                             </div>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                     {{-- <div class="row">
                                         <div class="col-md-4">
@@ -138,12 +138,14 @@
                                             </div>
 
                                             <div id="Paris" class="tabcontent">
-                                                @include('purchase.purchase_by_article_number')
+                                                <h3>Product Number</h3>
+                                                <p>Coming Soon.</p>
+                                                {{-- @include('sale.purchase_by_article_number') --}}
                                             </div>
 
                                             <div id="Tokyo" class="tabcontent">
-                                                <h3>Tokyo</h3>
-                                                <p>Tokyo is the capital of Japan.</p>
+                                                <h3>Chesis Number</h3>
+                                                <p>Coming Soon.</p>
                                             </div>
                                         </div>
                                     </div>
@@ -186,15 +188,23 @@
         // Get the element with id="defaultOpen" and click on it
         document.getElementById("defaultOpen").click();
         $('#sale_submit_button').on('click', function() {
-            var table_body_rows = $("table tbody tr").length;
-            if(table_body_rows <= 0){
-                Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Please add atleast one Item for Sale in table to proceed further',
-                    });
-                    exit();
-            }
+            if (selected_cash_type.length > 0) {
+                var cashType = $('#cash_type').find(":selected").val();
+                    selected_cash_type.forEach(checkCashType);
+
+                    function checkCashType(element, index, data) {
+                        console.log(element, index, data, )
+                        if (element != cashType) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'you can not able to change the cash type for a purchase once you selected',
+                            });
+                            exit();
+                        }
+                    }
+
+                }
             document.getElementById("sale_form").submit();
         });
 

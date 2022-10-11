@@ -56,6 +56,12 @@ class SaleRepository implements SaleInterface
             $quantity_management_true = false;
             if($data['cash_type'] == "white"){
                 if($data['item_qty'][$i] <= $stock->white_items){
+                    $quantity_management_true = true;
+                    $quantity_management = WhiteBlackQuantityManagement::create([
+                        'sale_id' => $newSale->id,
+                        'black_quantity' => 0,
+                        'white_quantity' => 0
+                    ]);
                     $stock->white_items = $stock->white_items - $data['item_qty'][$i];
                     $stock->update();
                 }else{
@@ -294,6 +300,7 @@ class SaleRepository implements SaleInterface
 
             for ($i = 0; $i < count($sale_products); $i++) {
                 $manage_quantity = WhiteBlackQuantityManagement::where('sale_id',$id)->first();
+                
                 $sale_product = NewSaleProduct::find($manage_quantity->sale_item_id);
                 $stock = StockManagement::where('retailer_id',auth()->user()->id)->where('reference_no',$sale_product->reference_no)->first();
                 
@@ -312,6 +319,12 @@ class SaleRepository implements SaleInterface
                 $manage_quantity->delete();
                 
                 if($data['sale_item_qty'][$i] <= $stock->white_items){
+                    $quantity_management = WhiteBlackQuantityManagement::create([
+                        'sale_id' => $sale->id,
+                        'sale_item_id' => $sale_product->id,
+                        'black_quantity' => 0,
+                        'white_quantity' => 0
+                    ]);
                     $stock->white_items = $stock->white_items - $data['sale_item_qty'][$i];
                     $stock->save();
                 }else{

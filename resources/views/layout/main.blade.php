@@ -183,6 +183,9 @@
                     ->where([['permission_id', $index_permission->id], ['role_id', $role->id]])
                     ->first();
                 ?>
+                <li id="" class="{{ $route == 'products.index' ? 'active' : '' }}"><a
+                    href="{{ route('products.index') }}"><i class="dripicons-list"></i>
+                    {{ trans('file.Products') }}</a></li>
                 @if ($index_permission_active)
                     <li>
                         <a href="#purchase" aria-expanded="false" data-toggle="collapse">
@@ -231,55 +234,53 @@
                     ->where([['permission_id', $sale_add_permission->id], ['role_id', $role->id]])
                     ->first();
                 ?>
-                @if ($sale_index_permission_active ||
-                    $gift_card_permission_active ||
-                    $coupon_permission_active ||
-                    $delivery_permission_active)
-                    <li><a href="#sale" aria-expanded="false" data-toggle="collapse"> <i
-                                class="dripicons-cart"></i><span>{{ trans('file.Sale') }}</span></a>
-                        <ul id="sale" class="collapse list-unstyled ">
-                            {{-- @if ($sale_index_permission_active) --}}
-                            <!-- <li id="sale-list-menu"><a href="{{ route('sales.index') }}">{{ trans('file.Sale List') }}</a></li> -->
-                            {{-- @if ($sale_add_permission_active) --}}
-                            <!-- <li><a href="{{ route('sale.pos') }}">POS</a></li> -->
-                            <!-- <li id="sale-create-menu"><a href="{{ route('sales.create') }}">{{ trans('file.Add Sale') }}</a></li> -->
-                            <!-- <li id="sale-import-menu"><a href="{{ url('sales/sale_by_csv') }}">{{ trans('file.Import Sale By CSV') }}</a></li> -->
-                            {{-- @endif --}}
-                            {{-- @endif --}}
-                            <li id="sale-list-menu"><a
-                                    href="{{ route('sales.index') }}">{{ trans('file.Estimate List') }}</a></li>
-                            <li id="invoices-list-menu"><a
-                                    href="{{ route('invoices.index') }}">{{ trans('file.Invoice List') }}</a>
-                            </li>
-                            <li id="pre-invoices-list-menu"><a href="{{ route('delivery_slips') }}">{{ trans('file.Delivery Slips') }}</a>
-                            </li>
-
-
-                            <?php
-                            $add_permission = DB::table('permissions')
-                                ->where('name', 'quotes-add')
-                                ->first();
-                            $add_permission_active = DB::table('role_has_permissions')
-                                ->where([['permission_id', $add_permission->id], ['role_id', $role->id]])
-                                ->first();
-                            ?>
-
-                            @if ($gift_card_permission_active)
-                                <!-- <li id="gift-card-menu"><a href="{{ route('gift_cards.index') }}">{{ trans('file.Gift Card List') }}</a> </li> -->
-                            @endif
-                            @if ($coupon_permission_active)
-                                <!-- <li id="coupon-menu"><a href="{{ route('coupons.index') }}">{{ trans('file.Coupon List') }}</a> </li> -->
-                            @endif
-                            @if ($delivery_permission_active)
-                                <!-- <li id="delivery-menu"><a href="{{ route('delivery.index') }}">{{ trans('file.Delivery List') }}</a></li> -->
-                            @endif
-                        </ul>
-                    </li>
-                @endif
-                <li id="" class="{{ $route == 'products.index' ? 'active' : '' }}"><a
-                        href="{{ route('products.index') }}"><i class="dripicons-list"></i>
-                        {{ trans('file.Products') }}</a></li>
-
+                
+                
+                    @if ($sale_index_permission_active ||
+                        $gift_card_permission_active ||
+                        $coupon_permission_active ||
+                        $delivery_permission_active)
+                        <li><a href="#sale" aria-expanded="false" data-toggle="collapse"> <i
+                                    class="dripicons-cart"></i><span>{{ trans('file.Sale') }}</span></a>
+                            <ul id="sale" class="collapse list-unstyled ">
+                                {{-- @if ($sale_index_permission_active) --}}
+                                <!-- <li id="sale-list-menu"><a href="{{ route('sales.index') }}">{{ trans('file.Sale List') }}</a></li> -->
+                                {{-- @if ($sale_add_permission_active) --}}
+                                <!-- <li><a href="{{ route('sale.pos') }}">POS</a></li> -->
+                                <!-- <li id="sale-create-menu"><a href="{{ route('sales.create') }}">{{ trans('file.Add Sale') }}</a></li> -->
+                                <!-- <li id="sale-import-menu"><a href="{{ url('sales/sale_by_csv') }}">{{ trans('file.Import Sale By CSV') }}</a></li> -->
+                                {{-- @endif --}}
+                                {{-- @endif --}}
+                                <li id="sale-list-menu"><a
+                                        href="{{ route('sales.index') }}">{{ trans('file.Estimate List') }}</a></li>
+                                <li id="invoices-list-menu"><a
+                                        href="{{ route('invoices.index') }}">{{ trans('file.Invoice List') }}</a>
+                                </li>
+                                <li id="pre-invoices-list-menu"><a href="{{ route('delivery_slips') }}">{{ trans('file.Delivery Slips') }}</a>
+                                </li>
+    
+    
+                                <?php
+                                $add_permission = DB::table('permissions')
+                                    ->where('name', 'quotes-add')
+                                    ->first();
+                                $add_permission_active = DB::table('role_has_permissions')
+                                    ->where([['permission_id', $add_permission->id], ['role_id', $role->id]])
+                                    ->first();
+                                ?>
+    
+                                @if ($gift_card_permission_active)
+                                    <!-- <li id="gift-card-menu"><a href="{{ route('gift_cards.index') }}">{{ trans('file.Gift Card List') }}</a> </li> -->
+                                @endif
+                                @if ($coupon_permission_active)
+                                    <!-- <li id="coupon-menu"><a href="{{ route('coupons.index') }}">{{ trans('file.Coupon List') }}</a> </li> -->
+                                @endif
+                                @if ($delivery_permission_active)
+                                    <!-- <li id="delivery-menu"><a href="{{ route('delivery.index') }}">{{ trans('file.Delivery List') }}</a></li> -->
+                                @endif
+                            </ul>
+                        </li>
+                    @endif
                 {{-- <ul id="" class="collapse list-unstyled ">
                 <li id=""><a href="{{route('products.index')}}">{{trans('file.Product List')}}</a></li>
             </ul> --}}
@@ -1065,6 +1066,7 @@
                                 ->user()
                                 ->notifications()
                                 ->get();
+                                // dd($user_notifications);
                         @endphp
                         <ul class="right-sidebar" id="notify">
                             @foreach ($user_notifications as $noti)
@@ -1090,14 +1092,21 @@
                                     </li>
                                 @elseif($noti->noti_type == 'formresubmit' && $noti->read_at != null)
                                     <li style="background-color: white"><a
-                                            href="{{ url('reShowSubmitForm', $noti->id) }}">{{ Str::limit($noti->data['message'], 30) }}</a>
+                                            >{{ Str::limit($noti->data['message'], 30) }}</a>
                                     </li>
+                                @else
+                                    <li style="background-color: white">
+                                       
+                                        <a href="{{ $noti->data['message'] }}"> Import CSV rejected Items</a>
+                                        {{-- <span style="font-size: 12px; display:flex; justify-content: end"> {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $noti->created_at) }}</span> --}}
+                            </li>
                                 @endif
                             @endforeach
                         </ul>
                     </li>
+                    
 
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a rel="nofollow" title="{{ trans('file.language') }}" data-toggle="tooltip"
                             class="nav-link dropdown-item"><i class="dripicons-web"></i></a>
                         <ul class="right-sidebar">
@@ -1153,7 +1162,7 @@
                             <!--<a href="{{ url('language_switch/lao') }}" class="btn btn-link"> Lao</a>-->
                             <!--</li>-->
                         </ul>
-                    </li>
+                    </li> --}}
                     <li class="nav-item">
                         <a rel="nofollow" data-target="#" href="#" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-item"><i

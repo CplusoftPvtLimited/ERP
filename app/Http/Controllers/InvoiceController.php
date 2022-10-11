@@ -40,7 +40,7 @@ class InvoiceController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            return DataTables::of(ERPInvoice::where('retailer_id', FacadesAuth::user()->id)->orderBy('id', 'DESC'))
+            return DataTables::of(ERPInvoice::where('retailer_id', FacadesAuth::user()->id)->orderBy('created_at', 'DESC'))
                 ->addIndexColumn('id')
                
                 ->addColumn('action', function ($row) {
@@ -119,9 +119,39 @@ class InvoiceController extends Controller
     
                 return redirect()->route('invoices.index');
             }else{
-                toastr()->info('Invoice Already Exists');
+
+                $invoice->update([
+                    'date' => date('Y-m-d'),
+                    // 'sale_id' => $sale->id,
+                    'customer_id' => $sale->customer_id,
+                    // 'retailer_id' => auth()->user()->id,
+                    'cash_type' => $sale->cash_type,
+                    'entire_vat' => $sale->entire_vat,
+                    'shipping_cost' => $sale->shipping_cost,
+                    'discount' => $sale->discount,
+                    'tax_stamp' => $sale->tax_stamp,
+                    'sale_entire_total_exculding_vat' => $sale->sale_entire_total_exculding_vat,
+                    'total_qty' => $sale->total_qty,
+                    'total_bill' => $sale->total_bill,
+                ]);
+                $sale_products = NewSaleProduct::where('sale_id',$sale->id)->get();
+
+                foreach($sale_products as $product){
+                    ERPInvoiceProduct::updateOrCreate([
+                        'invoice_id' => $invoice->id,
+                    ], [
+                        'reference_no' => $product->reference_no,
+                        'quantity' => $product->quantity,
+                        'sale_price' => $product->sale_price,
+                        'discount' => $product->discount,
+                        'vat' => $product->vat,
+                        'total_with_discount' => $product->total_with_discount,
+                        'total_without_discount' => $product->total_without_discount,
+                    ]);
+                }
+                toastr()->success('Invoice created successfully');
     
-                return redirect()->route('sales.index');
+                return redirect()->route('invoices.index');
             }
            
             

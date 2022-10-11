@@ -124,30 +124,13 @@ class SaleController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            return DataTables::of(NewSale::where('retailer_id', Auth::user()->id)->orderBy('id', 'DESC'))
+            return DataTables::of(NewSale::where('retailer_id', Auth::user()->id)->orderBy('created_at', 'DESC'))
                 ->addIndexColumn('id')
-                // ->addColumn('supplier', function ($row) {
-                //     return isset($row->afterMarkitSupplier->name) ? $row->afterMarkitSupplier->name : null;
-                // })
-                // ->addColumn('due_amount', function ($row) {
-                //     $due_amount = $row->grand_total - $row->paid_amount;
-                //     return $due_amount;
-                // })
-                // ->addColumn('purchase_status', function ($row) {
-                //     $check_odd_one = [];
-                //     foreach ($row->productPurchases as $product) {
-                //         if ($product->status == "ordered") {
-                //             array_push($check_odd_one, $product->status);
-                //         }
-                //     }
-                //     $purchase_status = "";
-                //     if (count($check_odd_one) > 0) {
-                //         $purchase_status = "Pending";
-                //     } else {
-                //         $purchase_status = "Completed";
-                //     }
-                //     return $purchase_status;
-                // })
+                ->editColumn('customer_id', function ($row) {
+                    
+
+                    return 'Walkin';
+                })
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="row">
                      
@@ -580,20 +563,11 @@ class SaleController extends Controller
 
     public function getSectionPartsForSale(Request $request)
     {
-        $stocks = StockManagement::where('retailer_id', auth()->user()->id)->get();
-        $articles = [];
-
-        if (count($stocks) > 0) {
-            foreach ($stocks as $stock) {
-                $article = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')->where('legacyArticleId', $stock->product_id)->whereHas('articleVehicleTree', function ($query) use ($request) {
-                    $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
-                })->first();
-                if (!empty($article)) {
-
-                    array_push($articles, $article);
-                }
-            }
-
+        $articles = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')->whereHas('stock', function($query) {
+        })->whereHas('articleVehicleTree', function ($query) use ($request) {
+            $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
+        })->get();
+        if(!empty($articles)) {
             return response()->json([
                 'data' => $articles,
                 'message' => 1

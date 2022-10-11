@@ -161,7 +161,7 @@
                 }
             });
             $('#data-table').DataTable({
-                "ordering": true,
+                "ordering": false,
                 // "scrollX": true,
                 "processing": true,
                 "serverside": true,

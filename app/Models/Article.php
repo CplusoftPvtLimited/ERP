@@ -57,4 +57,8 @@ class Article extends Model
         return $this->belongsTo(AssemblyGroupNode::class,'assemblyGroupNodeId', 'assemblyGroupNodeId');
     }
 
+    public function stock() { 
+        return $this->belongsTo(StockManagement::class,'legacyArticleId', 'product_id');
+    }
+
 }

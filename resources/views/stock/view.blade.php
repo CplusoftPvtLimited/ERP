@@ -10,7 +10,7 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header d-flex align-items-center">
-                            <h4><b>{{ trans('file.Purchase') }}</b></h4>
+                            <h3>Stock Item</h3>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -19,7 +19,7 @@
                                     <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->purchaseProduct->purchase->brand->brandName) ? $get_product->purchaseProduct->purchase->brand->brandName : 'N/A' }}" readonly>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Purchase Created At</label>
+                                    <label for="" class="view-edit-purchase">Created At</label>
                                     <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->purchaseProduct->purchase->date) ? $get_product->purchaseProduct->purchase->date : 'N/A' }}" readonly>
 
                                 </div>
@@ -49,7 +49,7 @@
                                     <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->purchaseProduct->manufacture->manuName) ? $get_product->purchaseProduct->manufacture->manuName : 'N/A' }}" readonly>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">product Supplier Name</label>
+                                    <label for="" class="view-edit-purchase">Product Supplier Name</label>
                                     <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->purchaseProduct->supplier->brandName) ? $get_product->purchaseProduct->supplier->brandName : 'N/A' }}" readonly>
                                 </div>
                             </div> 
@@ -93,7 +93,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Unit Actual price (Black Cash)</label>
+                                    <label for="" class="view-edit-purchase">Unit Actual Price (Black Cash)</label>
                                     <div class="input-group mb-3">         
                                         <input type="text" value="{{ isset($get_product->unit_purchase_price_of_black_cash) ? $get_product->unit_purchase_price_of_black_cash : '' }}" class="form-control view-edit-purchase-input"
                                             aria-label="Amount (to the nearest dollar)" readonly>
@@ -112,7 +112,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Unit Sale price (Black Cash)</label>
+                                    <label for="" class="view-edit-purchase">Unit Sale Price (Black Cash)</label>
                                     <div class="input-group mb-3">         
                                         <input type="text" value="{{ isset($get_product->unit_sale_price_of_black_cash) ? $get_product->unit_sale_price_of_black_cash : '' }}" class="form-control view-edit-purchase-input"
                                             aria-label="Amount (to the nearest dollar)" readonly>

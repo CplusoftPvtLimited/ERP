@@ -217,7 +217,6 @@ class StockManagementController extends Controller
             $count = 0;
             $records[0] = $record_header_in_underscore_case;
             array_shift($records);
-
             $article_with_reference_no = Article::select('articleNumber')->get();
             foreach ($records as $record) {
                 if (count($record_header_in_underscore_case) != count($record)) {
@@ -238,7 +237,6 @@ class StockManagementController extends Controller
             foreach ($this->rows as $data) {
                 $reference_exist = false;
                 $record_repeat = false;
-
                 if ($data['cash_type'] == "white") {   // checks on white cash
                     if ($data['reference_no'] == null || $data['reference_no'] == ""  || $data['unit_purchase_price_of_white_cash'] < 0 || $data['unit_sale_price_of_white_cash'] < 0 ||  $data['quantity'] < 0 || $data['quantity'] == null) {
                         array_push($revert_data, $data);
@@ -269,25 +267,28 @@ class StockManagementController extends Controller
                 $legacy_article_id = Article::select('legacyArticleId')->where('articleNumber', $data['reference_no'])->first();
                 $white_items_qty = $black_items_qty = 0;
                     if($data['cash_type'] == "white"){
-                        $white_items_qty = $data['quantity'];
+                        $white_items_qty = (int) $data['quantity'];
                     }elseif ($data['cash_type'] == "black") {
-                        $black_items_qty = $data['quantity'];
+                        $black_items_qty = (int)  $data['quantity'];
                     }
-                if ($record_repeat == true && $reference_exist == true) {   /// incase some product (reference no is already exists in the table then we can ignore the record from the csv in storage procedure)
+                if ($record_repeat == true && $reference_exist == true) {   
+                    /// incase some product (reference no is already exists in the table then we can ignore the record from the csv in storage procedure)
                     $find_stock_on_existing_reference = StockManagement::where('retailer_id', Auth::user()->id)->where('reference_no', $data['reference_no'])->with(['purchaseProduct'])->first();
+                    
                     $find_stock_on_existing_reference->update([
                         'purchase_product_id' => !empty($find_stock_on_existing_reference->purchaseProduct) ? $find_stock_on_existing_reference->purchaseProduct->id : null,
                         'white_items' => (int) ($find_stock_on_existing_reference->white_items) + (($white_items_qty > 0) ? ($white_items_qty): 0),
                         'black_items' => (int) ($find_stock_on_existing_reference->black_items) + (($black_items_qty > 0) ? ($black_items_qty): 0),
-                        'unit_purchase_price_of_white_cash' => isset($data['unit_purchase_price_of_white_cash']) ? $data['unit_purchase_price_of_white_cash'] : (!empty($find_stock_on_existing_reference->purchaseProduct) ? $find_stock_on_existing_reference->purchaseProduct->unit_purchase_price_of_white_cash : 0),
-                        'unit_sale_price_of_white_cash' => isset($data['unit_sale_price_of_white_cash']) ? $data['unit_sale_price_of_white_cash'] : (!empty($find_stock_on_existing_reference->purchaseProduct) ? $find_stock_on_existing_reference->purchaseProduct->unit_sale_price_of_white_cash : 0),
-                        'unit_purchase_price_of_black_cash' => isset($data['unit_purchase_price_of_black_cash']) ? $data['unit_purchase_price_of_black_cash'] : (!empty($find_stock_on_existing_reference->purchaseProduct) ? $find_stock_on_existing_reference->purchaseProduct->unit_purchase_price_of_black_cash : 0),
-                        'unit_sale_price_of_black_cash' => isset($data['unit_sale_price_of_black_cash']) ? $data['unit_sale_price_of_black_cash'] : (!empty($find_stock_on_existing_reference->purchaseProduct) ? $find_stock_on_existing_reference->purchaseProduct->unit_sale_price_of_black_cash : 0),
+                        'unit_purchase_price_of_white_cash' => (isset($data['unit_purchase_price_of_white_cash']) && !empty( (int) $data['unit_purchase_price_of_white_cash'])) ? $data['unit_purchase_price_of_white_cash'] : (!empty($find_stock_on_existing_reference->unit_purchase_price_of_white_cash) ? $find_stock_on_existing_reference->unit_purchase_price_of_white_cash : 0),
+                        'unit_sale_price_of_white_cash' => (isset($data['unit_sale_price_of_white_cash']) &&  !empty((int) ($data['unit_sale_price_of_white_cash']))) ? $data['unit_sale_price_of_white_cash'] : (!empty($find_stock_on_existing_reference->unit_sale_price_of_white_cash) ? $find_stock_on_existing_reference->unit_sale_price_of_white_cash : 0),
+                        'unit_purchase_price_of_black_cash' => (isset($data['unit_purchase_price_of_black_cash']) && !empty((int) $data['unit_purchase_price_of_black_cash'])) ? $data['unit_purchase_price_of_black_cash'] : (!empty($find_stock_on_existing_reference->unit_purchase_price_of_black_cash) ? $find_stock_on_existing_reference->unit_purchase_price_of_black_cash : 0),
+                        'unit_sale_price_of_black_cash' => (isset($data['unit_sale_price_of_black_cash']) && !empty((int) $data['unit_sale_price_of_black_cash'])) ? $data['unit_sale_price_of_black_cash'] : (!empty($find_stock_on_existing_reference->unit_sale_price_of_black_cash) ? $find_stock_on_existing_reference->unit_sale_price_of_black_cash : 0),
                         'total_qty' =>  (int) $find_stock_on_existing_reference->total_qty + (($data['cash_type'] == "white") ? (int)$white_items_qty  : 0)  + (($data['cash_type'] == "black") ? (int) $black_items_qty : 0),
                         'vat' => isset($data['vat']) ? $data['vat'] : (!empty($find_stock_on_existing_reference->vat) ? $find_stock_on_existing_reference->vat : 0),
                         'profit_margin' => isset($data['margin_rate']) ? $data['margin_rate'] :  (!empty($find_stock_on_existing_reference->margin_rate) ? $find_stock_on_existing_reference->margin_rate : 0),
                     ]);
                     $record_save = true;
+                    DB::commit();
                 } elseif ($reference_exist == true) {
                     StockManagement::create([
                         'retailer_id' => Auth::user()->id,
@@ -304,8 +305,10 @@ class StockManagementController extends Controller
                         'product_id' => !empty($legacy_article_id->legacyArticleId) ? $legacy_article_id->legacyArticleId : null,
                     ]);
                     $record_save = true;
+                    DB::commit();
                 } else {
                     array_push($revert_data, $data);
+                    DB::commit();
                 }
             }
             
