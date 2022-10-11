@@ -13,7 +13,7 @@
                 <button data-toggle="modal" data-target="#createModal" class="btn btn-danger float-right">+ Add
                     Expense</button>
             </div>
-            
+
         </div>
         <div class="table-responsive">
             @if (session()->has('message'))
@@ -133,8 +133,11 @@
                         </div>
                         <div class="col-9">
                             <div class="form-group">
-                                <input type="number" name="amount" id="overview_amount" step="any" maxlength="191"
-                                    class="form-control">
+                                <div class="input-group">
+                                    <div class="input-group-text">TND</div>
+                                    <input type="number" name="amount" id="overview_amount" step="any"
+                                        maxlength="191" class="form-control">
+                                </div>
                             </div>
                         </div>
                     </div>
