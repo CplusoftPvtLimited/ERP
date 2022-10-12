@@ -192,6 +192,12 @@ class InvoiceController extends Controller
                                  class="btn btn-info btn-sm " type="button"
                                  data-original-title="btn btn-success btn-xs"
                                  title=""><i class="fa fa-eye"></i></button></a>
+                     </div>
+                     <div class="col-sm-3">
+                     <a href="/delivery-slip-pdf/'.$row["id"].'"> <button
+                                 class="btn btn-primary btn-sm " type="button"
+                                 data-original-title="btn btn-success btn-xs"
+                                 title=""><i class="fa fa-file"></i></button></a>
                      </div>';
                      
                  $btn .= '</div>

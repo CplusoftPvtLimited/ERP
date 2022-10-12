@@ -59,6 +59,7 @@ use App\Models\NewSaleProduct;
 use App\Models\StockManagement;
 use App\Repositories\Interfaces\SaleInterface;
 use App\Supplier;
+use Barryvdh\DomPDF\PDF as DomPDFPDF;
 use Illuminate\Support\Facades\Mail;
 use Srmklive\PayPal\Services\ExpressCheckout;
 use Srmklive\PayPal\Services\AdaptivePayments;
@@ -2820,6 +2821,25 @@ class SaleController extends Controller
         // $pdf = PDF::loadView('sale.preinvoice_view', $data);
 
         return view('sale.preinvoice_view', $data);
+    }
+
+    public function deliverySlipPDF($id)
+    {
+
+        $sale = ERPInvoice::Find($id);
+        // dd($customer);
+        $products = ERPInvoiceProduct::where('invoice_id', $id)->get();
+        // dd($products);
+        $data = [
+            'sale' => $sale,
+            'products' => $products
+        ];
+
+        $pdf = PDF::loadView('sale.delivery_slip_view', $data);
+
+        return $pdf->download('delivery_slip.pdf');
+
+        // return view('sale.delivery_slip_view', $data);
     }
     public function generatePreInvoicePDF($id)
     {
