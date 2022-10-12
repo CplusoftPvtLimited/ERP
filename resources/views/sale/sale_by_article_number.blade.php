@@ -167,7 +167,12 @@
                                    <h5>Total Exculding Vat (Before Discount)</h5>    
                                 </div>
                                 <div class="col-md-3">
-                                   <input type="number" name="sale_entire_total_exculding_vat" value="0" id="sale_entire_total_exculding_vat" class="form-control" readonly>
+                                   <div class="input-group mb-3">     
+                                        <input type="number" name="sale_entire_total_exculding_vat" value="0" class="form-control"
+                                            aria-label="Amount (to the nearest dollar)" id="sale_entire_total_exculding_vat" 
+                                            class="form-control" min="0" step="any" max="100000000" readonly>
+                                        <span class="input-group-text"><b>TND</b></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row total-calculations"> 
@@ -175,7 +180,12 @@
                                    <h5>Discount</h5>    
                                 </div>
                                 <div class="col-md-3">
-                                   <input type="number" name="sale_discount" id="sale_discount" onkeyup="calculateSaleTotal()" value="0" class="form-control">
+                                    <div class="input-group mb-3">     
+                                        <input type="number" name="sale_discount" value="0" class="form-control"
+                                            aria-label="Amount (to the nearest dollar)" id="sale_discount" 
+                                            class="form-control" min="0" step="any" max="100000000" onkeyup="calculateSaleTotal()">
+                                        <span class="input-group-text"><b>TND</b></span>
+                                    </div>
                                 </div>
                             </div> 
                             <div class="row total-calculations"> 
@@ -183,7 +193,12 @@
                                    <h5>Vat</5>    
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="number" name="entire_vat" value="1" min="1" onkeyup="calculateSaleTotal()"  id="sale_entire_vat" class="form-control">
+                                    <div class="input-group mb-3">     
+                                        <input type="number" name="entire_vat" value="0" class="form-control"
+                                            aria-label="Amount (to the nearest dollar)" id="sale_entire_vat" 
+                                            class="form-control" min="0" step="any" max="100000000" onkeyup="calculateSaleTotal()">
+                                        <span class="input-group-text"><b>TND</b></span>
+                                    </div>
                                 </div>
                             </div> 
                             <div class="row total-calculations"> 
@@ -191,7 +206,12 @@
                                    <h5>Tax Stamp</h5>    
                                 </div> 
                                 <div class="col-md-3">
-                                    <input type="number" name="tax_stamp" id="sale_tax_stamp" onkeyup="calculateSaleTotal()" class="form-control" min="0" value="0" step="any">    
+                                    <div class="input-group mb-3">     
+                                        <input type="number" name="tax_stamp" value="0" class="form-control"
+                                            aria-label="Amount (to the nearest dollar)" id="sale_tax_stamp" 
+                                            class="form-control" min="0" step="any" max="100000000" onkeyup="calculateSaleTotal()">
+                                        <span class="input-group-text"><b>TND</b></span>
+                                    </div>
                                 </div>
                             </div> 
                             <div class="row total-calculations"> 
@@ -199,7 +219,12 @@
                                    <h5>Total To Be Paid</h5>    
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="number" name="total_to_be_paid" id="total_to_be_paid" class="form-control" readonly> 
+                                    <div class="input-group mb-3">     
+                                        <input type="number" name="total_to_be_paid" value="0" class="form-control"
+                                            aria-label="Amount (to the nearest dollar)" id="total_to_be_paid" 
+                                            class="form-control" min="0" step="any" max="100000000" readonly>
+                                        <span class="input-group-text"><b>TND</b></span>
+                                    </div>
                                 </div> 
                             </div>
                        </div>
@@ -495,8 +520,11 @@
             var discount = parseFloat($('#sale_discount').val());
             $('#sale_entire_total_exculding_vat').val(total_before_discount.toFixed(2));
             total_to_be_paid = (parseFloat(total_before_discount.toFixed(2)) - parseFloat(discount.toFixed(2))) * parseFloat(entire_vat.toFixed(2)) + parseFloat(tax_stamp.toFixed(2)) ;
-           
-            $('#total_to_be_paid').val(total_to_be_paid);
+            if(total_to_be_paid < 0){
+                $('#total_to_be_paid').val(0);
+            }else{
+                $('#total_to_be_paid').val(total_to_be_paid);
+            }
            
             
         }
@@ -526,7 +554,11 @@
             $('#sale_entire_total_exculding_vat').val(total_before_discount.toFixed(2));
             total_to_be_paid = (parseFloat(total_before_discount.toFixed(2)) - parseFloat(discount.toFixed(2))) * parseFloat(entire_vat.toFixed(2)) + parseFloat(tax_stamp.toFixed(2)) ;
            
-            $('#total_to_be_paid').val(total_to_be_paid);
+            if(total_to_be_paid < 0){
+                $('#total_to_be_paid').val(0);
+            }else{
+                $('#total_to_be_paid').val(total_to_be_paid);
+            }
            
             
         }
