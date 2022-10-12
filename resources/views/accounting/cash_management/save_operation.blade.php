@@ -114,7 +114,7 @@
                     <div class="col-4" id="check_number">
                         <div class="form-group">
                             <h6>Cheque Number *</h6>
-                            <input type="text" name="cheque_number" id="cheque_number" class="form-control">
+                            <input type="text" name="cheque_number" maxlength="20" id="cheque_number" class="form-control">
                         </div>
                     </div>
                     <div class="col-4" id="due_date">

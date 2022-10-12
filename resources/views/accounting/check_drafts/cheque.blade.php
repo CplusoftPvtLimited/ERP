@@ -276,7 +276,7 @@
                                         <div class="input-group">
                                             <div class="input-group-text">TND</div>
                                             <input type="number" name="amount" id="cheque_amount" step="any"
-                                                maxlength="191" min="1" class="form-control">
+                                                maxlength="191" min="0.1" class="form-control">
                                         </div>
                                     </div>
                                 </div>
@@ -344,7 +344,7 @@
                                 </div>
                                 <div class="col-9">
                                     <div class="form-group">
-                                        <input type="text" name="carrier" id="chequecarrier" class="form-control">
+                                        <input type="text" name="carrier" maxlength="50" id="chequecarrier" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -369,7 +369,7 @@
                                 </div>
                                 <div class="col-9">
                                     <div class="form-group">
-                                        <input type="text" name="cheque_number" id="cheque_cheque_number"
+                                        <input type="text" maxlength="20" name="cheque_number" id="cheque_cheque_number"
                                             class="form-control">
                                     </div>
                                 </div>
@@ -380,7 +380,7 @@
                                 </div>
                                 <div class="col-9">
                                     <div class="form-group">
-                                        <input type="text" name="draft_number" id="cheque_draft_number"
+                                        <input type="text" name="draft_number" maxlength="20" id="cheque_draft_number"
                                             class="form-control">
                                     </div>
                                 </div>
