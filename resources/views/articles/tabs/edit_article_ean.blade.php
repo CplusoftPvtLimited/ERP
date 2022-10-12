@@ -26,9 +26,13 @@
         </ul>
     </div>
     @endif
-    <form action="{{ route('articleEan.update', $art_ean->id) }}" method="post" id="eanForm" enctype="multipart/form-data">
+    <form action="{{ isset($art_ean->id) ? route('articleEan.update', $art_ean->id) : route('articleEan.store') }}" method="post" id="eanForm" enctype="multipart/form-data">
         @csrf
-        @method('PUT')
+        @if (isset($art_ean->id))
+            @method('PUT')
+        @else
+            @method('POST')
+        @endif
         <div class="row">
             <div class="col-12">
                 <div class="other_data"></div>
@@ -36,13 +40,13 @@
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Article Id *</h6>
-                            <input type="text" name="legacyArticleId" id="ean_articleId" class="form-control" value="{{$art_ean->legacyArticleId}}" readonly required>
+                            <input type="text" name="legacyArticleId" id="ean_articleId" class="form-control" value="{{isset($article->id) ? $article->legacyArticleId : ""}}" readonly required>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
                             <h6>EAN Code *</h6>
-                            <input type="text" name="eancode" id="eancode" class="form-control" maxlength="25" value="{{$art_ean->eancode}}" required>
+                            <input type="text" name="eancode" id="eancode" class="form-control" maxlength="25" value="{{isset($art_ean->id) ? $art_ean->eancode : ""}}" required>
                         </div>
                     </div>
                 </div>
@@ -71,9 +75,10 @@
                     confirmButtonText: 'Ok'
                 });
             } else {
+                var method = "{{isset($art_ean->id) ? 'PUT' : 'POST' }}";
                 $.ajax({
-                    url: "{{ route('articleEan.update', $art_ean->id) }}",
-                    type: "PUT",
+                    url: "{{ isset($art_ean->id) ? route('articleEan.update', $art_ean->id) : route('articleEan.store') }}",
+                    type: method,
                     data: {
                         legacyArticleId: legacyArticleId,
                         eancode: eancode,

@@ -26,23 +26,27 @@
         </ul>
     </div>
     @endif
-    <form action="{{ route('articleCrosses.update', $art_crosses->id) }}" method="post" id="crossesForm" enctype="multipart/form-data">
+    <form action="{{ isset($art_crosses->id) ? route('articleCrosses.update', $art_crosses->id) : route('articleCrosses.store')  }}" method="post" id="crossesForm" enctype="multipart/form-data">
         @csrf
-        @method('PUT')
+        @if (isset($art_crosses->id))
+            @method('PUT')
+        @else
+            @method('POST')
+        @endif
         <div class="row">
             <div class="col-12">
                 <div class="other_data"></div>
                 <div class="row">
                     <div class="col-4">
                         <h6>Oem Number *</h6>
-                        <input type="text" name="oemNumber" id="crossesOemNumber" maxlength="255" class="form-control" value="{{$art_crosses->oemNumber}}" required>
+                        <input type="text" name="oemNumber" id="crossesOemNumber" maxlength="255" class="form-control" value="{{isset($art_crosses->id) ? $art_crosses->oemNumber : ""}}" required>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Manufacturer</h6>
                             <select name="mfrId" id="crossmfrId" class="form-control">
                                 @foreach ($manufacturers as $manufacturer)
-                                <option value="{{ $manufacturer->manuId }}" {{$art_crosses->mfrId ==  $manufacturer->manuId ? 'selected' : ""}}>
+                                <option value="{{ $manufacturer->manuId }}" {{isset($art_crosses->id) ?  ($art_crosses->mfrId ==  $manufacturer->manuId ? 'selected' : "") : ""}}>
                                     {{ $manufacturer->manuName }}
                                 </option>
                                 @endforeach
@@ -54,7 +58,7 @@
                             <h6>Assembly Group Node</h6>
                             <select name="assemblyGroupNodeId" id="crossesAssemblyGroupNodeId" class="form-control">
                                 @foreach ($sections as $section)
-                                <option value="{{ $section->assemblyGroupNodeId }}" {{$art_crosses->assemblyGroupNodeId ==  $section->assemblyGroupNodeId ? 'selected' : ""}}>
+                                <option value="{{ $section->assemblyGroupNodeId }}" {{isset($art_crosses->id) ?  ($art_crosses->assemblyGroupNodeId ==  $section->assemblyGroupNodeId ? 'selected' : "") : ""}}>
                                     {{ $section->assemblyGroupName }}
                                 </option>
                                 @endforeach
@@ -67,7 +71,7 @@
                         <h6>Brand Name</h6>
                         <select name="brandName" id="crossesBrandName" class="form-control">
                             @foreach ($suppliers as $supplier)
-                            <option value="{{ $supplier->brandName }}" {{$supplier->brandName == $art_crosses->brandName ? 'selected' : ""}}>
+                            <option value="{{ $supplier->brandName }}" {{ isset($art_crosses->id) ? ($supplier->brandName == $art_crosses->brandName ? 'selected' : "") : ""}}>
                                 {{ $supplier->brandName }}
                             </option>
                             @endforeach
@@ -76,7 +80,7 @@
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Article Id</h6>
-                            <input type="text" name="legacyArticleId" id="crosses_articleId" class="form-control" value="{{$art_crosses->legacyArticleId}}" readonly required>
+                            <input type="text" name="legacyArticleId" id="crosses_articleId" class="form-control" value="{{isset($article->id) ? $article->legacyArticleId : ""}}" readonly required>
                         </div>
                     </div>
                 </div>
@@ -116,9 +120,10 @@
                     confirmButtonText: 'Ok'
                 });
             } else {
+                var method = "{{isset($art_crosses->id) ? 'PUT' : 'POST' }}";
                 $.ajax({
-                    url: "{{ route('articleCrosses.update', $art_crosses->id) }}",
-                    type: "PUT",
+                    url: "{{ isset($art_crosses->id) ? route('articleCrosses.update', $art_crosses->id) : route('articleCrosses.store')  }}",
+                    type: method,
                     data: {
                         legacyArticleId: legacyArticleId,
                         oemNumber: oemNumber,

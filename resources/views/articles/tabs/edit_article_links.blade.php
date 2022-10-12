@@ -9,26 +9,33 @@
     </div>
 </div>
 <div class="card-body">
-    <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
+    <p class="italic"><small>{{ trans('file.The field labels marked with * are required input fields') }}.</small></p>
     @if (Session::has('error'))
-    <p class="bg-danger text-white p-2 rounded">{{ Session::get('error') }}</p>
+        <p class="bg-danger text-white p-2 rounded">{{ Session::get('error') }}</p>
     @endif
     @if (Session::has('success'))
-    <p class="bg-success text-white p-2 rounded">{{ Session::get('success') }}</p>
+        <p class="bg-success text-white p-2 rounded">{{ Session::get('success') }}</p>
     @endif
     @if (count($errors) > 0)
-    <div class="alert alert-danger">
-        <strong>Whoops!</strong> There were some problems with your input.<br><br>
-        <ul>
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
+        <div class="alert alert-danger">
+            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
     @endif
-    <form action="{{ route('articleLinks.update', $art_link->id) }}" method="post"  id ="linksForm"enctype="multipart/form-data">
+    <form
+        action="{{ isset($art_link->id) ? route('articleLinks.update', $art_link->id) : route('articleLinks.store') }}"
+        method="post" id="linksForm" enctype="multipart/form-data">
         @csrf
-        @method('PUT')
+        @if (isset($art_link->id))
+            @method('PUT')
+        @else
+            @method('POST')
+        @endif
+
         <div class="row">
             <div class="col-12">
                 <div class="other_data"></div>
@@ -36,13 +43,15 @@
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Url *</h6>
-                            <input type="url" name="url" id="linkUrl" class="form-control" value="{{$art_link->url}}" required>
+                            <input type="url" name="url" id="linkUrl" class="form-control"
+                                value="{{ isset($art_link->id) ? $art_link->url : '' }}" required>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Article Id *</h6>
-                            <input type="text" name="legacyArticleId" id="links_articleId" class="form-control" value="{{$art_link->legacyArticleId}}" readonly required>
+                            <input type="text" name="legacyArticleId" id="links_articleId" class="form-control"
+                                value="{{ isset($article->id) ? $article->legacyArticleId : '' }}" readonly required>
                         </div>
                     </div>
                     <div class="col-4">
@@ -51,9 +60,10 @@
                             <select name="lang" id="linkLang" class="form-control">
                                 <option value="">--Select One--</option>
                                 @foreach ($languages as $language)
-                                <option value="{{ $language->lang }}" {{$language->lang == $art_link->lang ? 'selected' : ""}}>
-                                    {{ $language->lang }}
-                                </option>
+                                    <option value="{{ $language->lang }}"
+                                        {{ isset($art_link->id) ? ($language->lang == $art_link->lang ? 'selected' : '') : '' }}>
+                                        {{ $language->lang }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -62,7 +72,7 @@
                 <div class="row">
                     <div class="col-4">
                         <h6>Description</h6>
-                        <textarea name="description" id="linkDescription" cols="10" rows="5 " class="form-control" >{{$art_link->description}}</textarea>
+                        <textarea name="description" id="linkDescription" cols="10" rows="5 " class="form-control">{{ isset($art_link->id) ? $art_link->description : '' }}</textarea>
                     </div>
                 </div>
                 <div class="d-flex flex-row-reverse">
@@ -73,5 +83,6 @@
         </div>
     </form>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
