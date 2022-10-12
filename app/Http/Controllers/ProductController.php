@@ -57,6 +57,7 @@ class ProductController extends Controller
                     $query->where('status', 'ordered');
                 })
                 ->skip(0)->take(100)->get();
+                // dd($all_stocks);
                 return DataTables::of($all_stocks)
                     ->addIndexColumn('id')
                     ->editColumn('white_items', function ($row) {
