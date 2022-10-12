@@ -62,8 +62,13 @@
                                                 <label>
                                                     {{ trans('file.Shipping Cost') }}
                                                 </label>
-                                                <input type="number" name="shipping_cost" min="0" value="0" id="shipping_cost" class="form-control"
-                                                    step="any" />
+                                                
+                                                    <div class="input-group mb-3">     
+                                                        <input type="number" name="shipping_cost" value="0" min="0" class="form-control"
+                                                            aria-label="Amount (to the nearest dollar)" id="shipping_cost"
+                                                            class="form-control">
+                                                        <span class="input-group-text"><b>TND</b></span>
+                                                    </div>
                                             </div>
                                         </div>
                                         {{-- <div class="col-md-4">
@@ -138,9 +143,9 @@
                                             </div>
 
                                             <div id="Paris" class="tabcontent">
-                                                <h3>Product Number</h3>
-                                                <p>Coming Soon.</p>
-                                                {{-- @include('sale.purchase_by_article_number') --}}
+                                                
+                                                
+                                                @include('sale.sale_by_article_number')
                                             </div>
 
                                             <div id="Tokyo" class="tabcontent">

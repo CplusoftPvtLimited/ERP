@@ -863,8 +863,11 @@
         }
         console.log(all_product_ids);
         if(all_product_ids.length <= 0){
-            $('#total_sale_calculations').css('display','none');
+            $('#total_calculations').css('display','none');
             $('#submit-button').css('display','none');
+            $("table thead").css('display','none');
+
+
         }
         calculateEntireTotal(all_product_ids);
         // article_ids_array = [];

@@ -284,6 +284,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('show_section_parts_in_table', 'PurchaseController@showSectionParts')->name('show_section_parts_in_table'); 
 	Route::get('getArticleInfo', 'PurchaseController@getArticleInfo')->name('article.info.get');
 	Route::get('articlesByReferenceNo', 'PurchaseController@articlesByReferenceNo')->name('article.reference');
+	Route::get('sale_products_by_product_number', 'SaleController@productByArticleNumber')->name('sale_products_by_product_number');
     ///////////////////  end //////////////////////
 	///////////////////////// Sale-unique ////////////////////////
 	///////////////////////// Sale-unique ////////////////////////

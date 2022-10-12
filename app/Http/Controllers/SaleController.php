@@ -2775,6 +2775,14 @@ class SaleController extends Controller
         return redirect('sales/invoices');
     }
 
+    public function productByArticleNumber(Request $request){
+        $stocks = StockManagement::where('retailer_id',auth()->user()->id)
+                                ->where('reference_no','like', '%'. $request->name . '%')->get();
+        // dd($stocks);
+        return response()->json([
+            'data' => $stocks,
+        ],200);
+    }
     public function changeInvoiceStatus($id, $val)
     {
         $invoice = SalesInvoice::find($id);

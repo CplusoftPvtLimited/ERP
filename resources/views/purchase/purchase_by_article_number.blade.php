@@ -381,10 +381,10 @@
                         data.data.legacyArticleId +
                         '" name="actual_cost_per_product[]" readonly></td>';
 
-                    markup += '<td><i id="article_delete_' +
-                        data.data.legacyArticleId + '" onclick="deleteArticle(' + data.data
-                        .legacyArticleId +
-                        ')" class="fa fa-trash"></i></td>';
+                    markup += '<td><button class="btn btn-danger"><i id="article_delete_' +
+                    data.data.legacyArticleId + '" onclick="deleteArticle(' + data.data
+                    .legacyArticleId +
+                    ')" class="fa fa-trash"></i></button></td>';
 
                     markup += '<td style="display:none;">' + html +
                         '</td></tr>';
@@ -499,7 +499,13 @@
             }
 
         }
-        console.log(all_product_ids);
+        if(all_product_ids.length <= 0){
+            $('#total_calculations').css('display','none');
+            $('#submit-button').css('display','none');
+            $("table thead").css('display','none');
+
+
+        }
         calculateEntireTotal(all_product_ids);
         // article_ids_array = [];
         if ($('#myTable tr').length == 0) {

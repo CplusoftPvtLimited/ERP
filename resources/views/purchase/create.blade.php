@@ -76,9 +76,13 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.Additional Cost') }}</label>
-                                                <input type="number" name="purchase_additional_cost" value="0"
-                                                    id="purchase_additional_cost" onkeyup="calculatePurchasePrice()"
-                                                    class="form-control" min="0" max="100000000">
+                                                <div class="input-group mb-3">     
+                                                    <input type="number" name="purchase_additional_cost" value="0" class="form-control"
+                                                        aria-label="Amount (to the nearest dollar)" id="purchase_additional_cost" onkeyup="calculatePurchasePrice()"
+                                                        class="form-control" min="0" max="100000000">
+                                                    <span class="input-group-text"><b>TND</b></span>
+                                                </div>
+                                                
                                             </div>
                                         </div>
                                     </div>

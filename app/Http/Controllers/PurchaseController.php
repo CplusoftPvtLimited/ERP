@@ -25,6 +25,7 @@ use App\Models\Ambrand;
 use DB;
 use App\GeneralSetting;
 use App\Models\AfterMarkitSupplier;
+use App\Models\StockManagement;
 use Stripe\Stripe;
 use Auth;
 use App\User;
@@ -1543,9 +1544,11 @@ class PurchaseController extends Controller
             }else{
                 $type = "O";
             }
+            $stock = StockManagement::where('retailer_id',auth()->user()->id)->where('reference_no',$section_part->articleNumber)->first();
             
             return response()->json([
                 'data' => $section_part,
+                'stock' => $stock,
                 'supplier' => $request->supplier_id,
                 'linkage_target_type' => $type, // engine_type
                 'linkage_target_sub_type' => $section_part->section->request__linkingTargetType, //

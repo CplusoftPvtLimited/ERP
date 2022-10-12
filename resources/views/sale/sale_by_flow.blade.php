@@ -492,21 +492,7 @@
                 var length = document.getElementById("myTable").rows.length;
 
                 var html = '';
-                // html += '<input type="hidden" name="manufacturer_id[]" value="' + data
-                //     .manufacturer_id + '">';
-                // html += '<input type="hidden" name="linkage_target_type[]" value="' + data
-                //     .linkage_target_type + '">';
-                // html += '<input type="hidden" name="linkage_target_sub_type[]" value="' + data
-                //     .linkage_target_sub_type + '">';
-                // html += '<input type="hidden" name="modell_id[]" value="' + data.model_id + '">';
-                // html += '<input type="hidden" name="enginee_id[]" value="' + data.engine_id + '">';
-                // html += '<input type="hidden" name="sectionn_id[]" value="' + data.section_id +
-                //     '">';
-                // html += '<input type="hidden" name="sectionn_part_id[]" value="' + data
-                //     .section_part_id + '">';
-                // html += '<input type="hidden" name="statuss[]" value="' + data.status + '">';
-                // html += '<input type="hidden" name="datee[]" value="' + data.date + '">';
-                // html += '<input type="hidden" name="cash_type" value="' + data.cash_type + '">';
+               
                 html += '<input type="hidden" name="article_number[]" value="' + data.data.articleNumber + '">';
                 calculateEntireSaleTotal(all_product_ids);
                 $('#myTable tr').each(function() {
@@ -751,23 +737,14 @@
     var t_qty = 0;
     let w_qty = 0;
     let b_qty = 0;
-    var id_array = [];
+    var id_array = []; 
     var total_quantity_of_all_row_products = 0;
 
     function alterSaleQty(id) {
 
         var item_qty = parseInt($("#sale_item_qty" + id).val());
         var stock = parseInt($("#stock_items_" + id).val());
-        // if (item_qty > stock) {
-        //     Swal.fire({
-        //         icon: 'error',
-        //         title: 'Oops...',
-        //         text: 'Quantity must not be greater than Stock',
-
-        //     });
-        //     $("#sale_item_qty" + id).val(stock - parseInt(1));
-        //     exit();
-        // }
+       
 
         var sale_price = parseFloat($("#sale_sale_price_" + id).val());
         var discount = (parseFloat(1) - (parseFloat($("#sale_discount_" + id).val() / 100)));
