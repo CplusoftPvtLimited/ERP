@@ -136,7 +136,7 @@
                                 <div class="input-group">
                                     <div class="input-group-text">TND</div>
                                     <input type="number" name="amount" id="overview_amount" step="any"
-                                        maxlength="191" class="form-control">
+                                        maxlength="191" min="1" class="form-control">
                                 </div>
                             </div>
                         </div>
