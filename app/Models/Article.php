@@ -32,7 +32,7 @@ class Article extends Model
     }
 
     public function articleVehicleTree(){
-        return $this->hasOne(ArticleVehicleTree::class);
+        return $this->hasOne(ArticleVehicleTree::class, 'legacyArticleId', 'legacyArticleId');
     }
 
     public function articleText(){

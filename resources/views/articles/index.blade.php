@@ -118,6 +118,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             console.log('here');
+            var article_id = engine_sub_type = section_id = null;
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -130,9 +131,9 @@
                 ajax: {
                     "url": "{{ route('article.index') }}",
                     "data": (d) => {
-                        d.article_id =  $('#automplete-1').val(),
-                        d.engine_sub_type = $('#subLinkageTarget').val(),
-                        d.section_id = $('#section_id').val()
+                        d.article_id =  article_id,
+                        d.engine_sub_type = engine_sub_type,
+                        d.section_id = section_id
                     }
                 },
                 columns: [{
@@ -169,10 +170,17 @@
             });
 
             $('.purchase-save-btn').on('click', (e) => {
+                article_id =  $('#automplete-1').val(),
+                engine_sub_type = null;
+                section_id = null;
                 oTable.ajax.reload();
+                
             });
 
             $('#save-btn').on('click', (e) => {
+                engine_sub_type = $('#subLinkageTarget').val();
+                section_id = $('#section_id').val();
+                article_id = null;
                 oTable.ajax.reload();
             });
         });

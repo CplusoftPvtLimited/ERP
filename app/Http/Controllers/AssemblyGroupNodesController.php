@@ -167,7 +167,7 @@ class AssemblyGroupNodesController extends Controller
     {
         // dd($request->all());
         try {
-            $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function($query) use ($request){
+            $sections = AssemblyGroupNode::whereHas('articleVehicleTree', function($query) use ($request){
                     $query->where('linkingTargetId', $request->engine_id)
                     ->where('linkingTargetType', $request->engine_sub_type);
                 })

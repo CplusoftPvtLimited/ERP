@@ -40,9 +40,9 @@ class ArticlesController extends Controller
             if ($request->ajax()) {
                 $articles = Article::select('id', 'legacyArticleId', 'articleNumber', 'mfrId', 'additionalDescription', 'assemblyGroupNodeId', 'created_at');
                 if (isset( $request['article_id']) && $request['article_id'] != null) {
-                    $articles =  $articles->where('articleNumber', $request['article_id']);
-                }
-                if (isset($request['engine_sub_type']) && !empty($request['engine_sub_type']) && !empty($request['section_id']) && isset($request['section_id'])) {
+                    $articles =  $articles->where('articleNumber', 'LIKE',  '%' . $request['article_id'] . '%');
+                } elseif (isset($request['engine_sub_type']) && !empty($request['engine_sub_type']) && !empty($request['section_id']) && isset($request['section_id'])) {
+                    
                     $articles =  $articles->whereHas('articleVehicleTree', function ($query) use ($request) {
                         $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
                     });
