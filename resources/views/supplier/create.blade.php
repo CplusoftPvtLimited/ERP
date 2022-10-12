@@ -153,7 +153,7 @@
                                             <th>Address</th>
                                             <th>City</th>
                                             <th>Country</th>
-                                            {{-- <th>Action</th> --}}
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -258,7 +258,6 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
-        $('#name').val('12');
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -298,12 +297,12 @@
                     "data": "country",
                     name: 'country'
                 },
-                // {
-                //     "data": 'action',
-                //     name: 'action',
-                //     orderable: false,
-                //     searchable: false
-                // }
+                {
+                    "data": 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                }
             ],
         });
         setInterval(() => {
@@ -325,7 +324,7 @@
                 $('#supplier-address').val(address);
                 $('#supplier-city').val(city);
                 $('#supplier-country').val(country);
-                $('#edit_supplier').modal('show');
+                // $('#edit_supplier').modal('show');
         });
         }, 1000);
        

@@ -69,9 +69,11 @@ class BalanceSheetController extends Controller
             }
         } else {
             if (isset($item->id)) {
-                return redirect()->back()->withSuccess(__('Payment has been done Successfully !'));
+                toastr()->success('Payment has been done Successfully !');
+                return redirect()->back();
             } else {
-                return redirect()->back()->with('error',$item);
+                toastr()->error($item());
+                return redirect()->back();
             }
         }
     }

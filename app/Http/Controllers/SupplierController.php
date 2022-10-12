@@ -49,7 +49,8 @@ class SupplierController extends Controller
                     ->addColumn('action', function ($row) {
                         $btn = '<div class="row">
                         <div class="col-sm-4">
-                             <button class="btn btn-primary btn-sm edit_supplier" type="button"
+                             <button class="btn btn-primary btn-sm edit_supplier" data-toggle="modal"
+                             data-target="#edit_supplier"
                                          data-original-title="btn btn-danger btn-xs"
                                          data-id="'. $row["id"] .'" data-name="'. $row["name"] .'" 
                                          data-email="'. $row["email"] .'" data-image="'. $row["image"] .'"
