@@ -51,6 +51,9 @@ class ProductController extends Controller
             if ($request->ajax()) {
                 $all_stocks = StockManagement::where('retailer_id', Auth::user()->id)->orderBy('created_at', 'desc')
                 ->with('purchase', function($query) {
+                    $query->whereHas('purchase', function($sub_query) {
+                        $sub_query->where('user_id', Auth::user()->id);
+                    });
                     $query->where('status', 'ordered');
                 })
                 ->skip(0)->take(100)->get();
