@@ -625,7 +625,22 @@ class SaleController extends Controller
         $stock = StockManagement::where('retailer_id', auth()->user()->id)
             ->where('product_id', $id[1])->first();
 
-        // dd($product);
+            // $dat = [
+            //     'data' => $product,
+            // // 'supplier' => $request->supplier_id,
+            // 'linkage_target_type' => $request->engine_type, // engine_type
+            // 'linkage_target_sub_type' => $request->engine_sub_type, //
+            // 'manufacturer_id' => $request->manufacturer_id,
+            // 'model_id' => $request->model_id,
+            // 'engine_id' => $request->engine_id,
+            // 'section_id' => $request->section_id,
+            // 'section_part_id' => $section_part_id[1],
+            // 'status' => $request->status,
+            // 'date' => $request->date,
+            // 'cash_type' => $request->cash_type,
+            // 'stock' => $stock,
+            // ];
+        // dd($dat);
         return response()->json([
             'data' => $product,
             // 'supplier' => $request->supplier_id,

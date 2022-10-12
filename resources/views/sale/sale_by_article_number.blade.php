@@ -148,6 +148,15 @@
                 name: product_name
             },
             success: function(data) {
+                if (data.data == 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.message,
+
+                    });
+                    exit();
+                }
                 $('#submit-button').css("display", "block");
                 $('#order-table-header').text(`{{ trans('file.Order Table') }} *`);
                 var tableBody = $("table tbody");
@@ -491,7 +500,7 @@
             $('#total_sale_calculations').css('display','none');
             $('#submit-button').css('display','none');
         }
-        calculateEntireTotal(all_product_ids);
+        calculateEntireSaleTotal(all_product_ids);
         // article_ids_array = [];
         if ($('#myTable tr').length == 0) {
             selected_cash_type = [];

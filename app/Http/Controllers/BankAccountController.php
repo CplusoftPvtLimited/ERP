@@ -118,10 +118,11 @@ class BankAccountController extends Controller
      */
     public function update(Request $request, BankAccount $bankAccount)
     {
-        // dd($bankAccount);
+        
         $validated = $request->validate([
-            'account_number' => 'required|max:191|unique:bank_accounts,account_number,' . $bankAccount->id,
-            'account_title' => 'required|max:191'
+            'account_number' => 'required|max:14|unique:bank_accounts,account_number,' . $bankAccount->id,
+            'account_title' => 'required|max:50',
+            // ''
         ]);
         $item = $this->bankAccount->update($request, $bankAccount);
         if ($item == true) {
