@@ -223,7 +223,15 @@
             var balance_type = $('#balance_type').val();
             var ajax = 1;
             if (mode_payment == "cash") {
-                if (category_id != "" && amount != "" && settlement_date != "") {
+                if (amount != "" && amount <= 0) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: "Amount Must be greater Than 0",
+                        icon: 'warning',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Ok'
+                    });
+                } else if (category_id != "" && amount != "" && settlement_date != "") {
                     $.ajax({
                         url: "{{ route('balanceSheet.store') }}",
                         type: "POST",
@@ -267,7 +275,6 @@
                                     title: 'Error',
                                     text: "Something Went Wrong",
                                     icon: 'warning',
-                                    showCancelButton: true,
                                     confirmButtonColor: '#3085d6',
                                     confirmButtonText: 'Ok'
                                 });
@@ -295,8 +302,16 @@
 
 
             } else if (mode_payment == "cheque" && transaction_type == "debit") {
-
-                if (category_id != "" && amount != "" && settlement_date != "" && account_source !=
+                if (amount != "" && amount <= 0) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: "Amount Must be greater Than 0",
+                        icon: 'warning',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Ok'
+                    });
+                } else if (category_id != "" && amount != "" && settlement_date != "" &&
+                    account_source !=
                     "" && cheque_number != "" && due_date != "") {
                     $.ajax({
                         url: "{{ route('balanceSheet.store') }}",
@@ -341,7 +356,6 @@
                                     title: 'Error',
                                     text: "Something Went Wrong",
                                     icon: 'warning',
-                                    showCancelButton: true,
                                     confirmButtonColor: '#3085d6',
                                     confirmButtonText: 'Ok'
                                 });
@@ -369,7 +383,16 @@
 
 
             } else if (mode_payment == "cheque" && transaction_type == "credit") {
-                if (category_id != "" && amount != "" && settlement_date != "" && carrier != "" &&
+                if (amount != "" && amount <= 0) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: "Amount Must be greater Than 0",
+                        icon: 'warning',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Ok'
+                    });
+                } else if (category_id != "" && amount != "" && settlement_date != "" && carrier !=
+                    "" &&
                     cheque_number != "" && due_date != "" && bank_id != "'") {
                     $.ajax({
                         url: "{{ route('balanceSheet.store') }}",
@@ -414,7 +437,6 @@
                                     title: 'Error',
                                     text: "Something Went Wrong",
                                     icon: 'warning',
-                                    showCancelButton: true,
                                     confirmButtonColor: '#3085d6',
                                     confirmButtonText: 'Ok'
                                 });
