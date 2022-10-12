@@ -37,17 +37,16 @@
                         <form action="{{ route('form.store') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-3">
                                     <div class="form-group">
                                         <strong>Role: *</strong>
                                         <select name="role" id="" class="form-control" required>
-                                            <option value="" selected disabled>--Select One--</option>
-                                            <option value="10">Dealer</option>
-                                            <option value="11">Refactor</option>
+                                            <option value="10">Retailer</option>
+                                            {{-- <option value="11">Refactor</option> --}}
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-3">
                                     <div class="form-group">
                                         <strong>Form Name: *</strong>
                                         <input type="text" name="name" class="form-control" required>

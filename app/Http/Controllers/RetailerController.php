@@ -27,7 +27,7 @@ class RetailerController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $retailers = Retailer::where('role_id', 15)->orderBy('id','desc')->get();
+            $retailers = Retailer::where('role_id', 10)->orderBy('id','desc')->get();
             return DataTables::of($retailers)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
@@ -37,6 +37,12 @@ class RetailerController extends Controller
                                 class="btn btn-primary btn-sm " type="button"
                                 data-original-title="btn btn-danger btn-xs"
                                 title=""><i class="fa fa-edit"></i></button></a>
+                            </div>
+                            <div class="col-md-2 mr-1">
+                                <a href="show_forms/' . $row["id"] . '"> <button
+                                class="btn btn-info btn-sm " type="button"
+                                data-original-title="btn btn-danger btn-xs"
+                                title=""><i class="fa fa-eye"></i></button></a>
                             </div>
                             <div class="col-md-2">
                                 <button class="btn btn-danger btn-sm" onclick="deleteRetailer(\'' . $row["id"] . '\')"><i class="fa fa-trash"></i></button>

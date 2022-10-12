@@ -433,16 +433,16 @@
   'mail' => 
   array (
     'driver' => 'smtp',
-    'host' => 'smtp.mailtrap.io',
-    'port' => '2525',
+    'host' => 'smtp.gmail.com',
+    'port' => '587',
     'from' => 
     array (
-      'address' => NULL,
-      'name' => 'Laravel',
+      'address' => 'tes54651@gmail.com',
+      'name' => 'ERP',
     ),
-    'encryption' => NULL,
-    'username' => NULL,
-    'password' => NULL,
+    'encryption' => 'tls',
+    'username' => 'tes54651@gmail.com',
+    'password' => 'mfgeulatjveuxudn',
     'sendmail' => '/usr/sbin/sendmail -bs',
     'markdown' => 
     array (

@@ -21,7 +21,7 @@ class RetailerRepository implements RetailerInterface
         $input['is_active'] = $is_active;
         $is_deleted = 0;
         $input['is_deleted'] = $is_deleted;
-        $role_id = 15;
+        $role_id = 10;
         $input['role_id'] = $role_id;
         DB::beginTransaction();
         try {
@@ -46,9 +46,9 @@ class RetailerRepository implements RetailerInterface
         $input = $data->except('_token');
         DB::beginTransaction();
         try {
-                $data = $item->update($input);
-                DB::commit();
-                return $item;
+            $data = $item->update($input);
+            DB::commit();
+            return $item;
             
         } catch (\Exception $e) {
             DB::rollBack();
