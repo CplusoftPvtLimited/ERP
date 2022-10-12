@@ -72,7 +72,7 @@ class BalanceSheetController extends Controller
                 toastr()->success('Payment has been done Successfully !');
                 return redirect()->back();
             } else {
-                toastr()->error($item());
+                toastr()->error($item);
                 return redirect()->back();
             }
         }

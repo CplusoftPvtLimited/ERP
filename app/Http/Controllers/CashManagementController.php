@@ -124,7 +124,8 @@ class CashManagementController extends Controller
             if (count($regulations) > 0) {
                 return view('accounting.check_drafts.cheque', compact('banks', 'suppliers', 'source_accounts', 'bal_categories', 'regulations'));
             } else {
-                return redirect()->route('cash.management.cheque')->with('error', 'No Record Found');
+                toastr()->error('No Record Found');
+                return redirect()->route('cash.management.cheque');
             }
         } elseif ($request->radiodueDate == "due_date") {
             $regulations = BalanceSheet::where('retailer_id', $auth_id)->where('mode_payment', $request->payment_method)->Where('transaction_type', $request->transaction_type)->Where('balance_type', $request->balance_type)->whereBetween('due_date', array($request->start_date, $request->end_date))->orderBy('due_date', 'desc')->with('balanceCategory')->with('afterMarketSupplier')->with('bankList')->with('bankAccount')->get();
@@ -132,7 +133,8 @@ class CashManagementController extends Controller
             if (count($regulations) > 0) {
                 return view('accounting.check_drafts.cheque', compact('banks', 'suppliers', 'source_accounts', 'bal_categories', 'regulations'));
             } else {
-                return redirect()->back()->with('error', 'No Record Found');
+                toastr()->error('No Record Found');
+                return redirect()->back();
             }
         } else {
             $regulations = BalanceSheet::where('retailer_id', $auth_id)->where('mode_payment', 'cheque')->orWhere('mode_payment', 'draft')->orderBy('settlement_date', 'desc')->with('balanceCategory')->with('afterMarketSupplier')->with('bankList')->with('bankAccount')->get();
@@ -201,7 +203,8 @@ class CashManagementController extends Controller
         if ($regulation) {
             return view('accounting.cash_management.regulation_view', compact('regulation'));
         }else{
-            return redirect(url()->previous())->with('error', 'No Record Found');
+            toastr()->error('No Record Found');
+            return redirect(url()->previous());
         }
     }
 }
