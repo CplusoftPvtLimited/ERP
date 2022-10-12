@@ -62,10 +62,8 @@
               <!-- <label for="register-username" class="label-material">{{trans('file.Role')}} *</label> -->
               <div class="input-group">
                                             <select required class="form-control selectpicker" name="role">
-                                                <option value="">Select Role</option>
-                                                @foreach($roles as $role)
-                                                <option value="{{$role->id}}">{{$role->name}}</option>
-                                                @endforeach
+                                              <option value="10">Retailer</option>
+                                                
                                                 
                                             </select>
                                         </div>

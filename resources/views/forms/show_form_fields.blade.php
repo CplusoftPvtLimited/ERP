@@ -206,7 +206,7 @@
         <div class="col-lg-12">
               <div class="row card p-2">
                         <div class="pull-left">
-                          <h2 class="text-center">{{$form->form_name}}</h2>
+                          <h2 class="text-center">Retailer Registration Form</h2>
                        </div>
                     </div>
                </div>

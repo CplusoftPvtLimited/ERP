@@ -231,9 +231,9 @@ catch(\Exception $e){
                     }
                     else
                     {
-                        $validated = $request->validate([
-                            $implode => 'required|max:255',
-                        ]);
+                        // $validated = $request->validate([
+                        //     $implode => 'required|max:255',
+                        // ]);
                         $f_data->field_value = $request[$implode];
                     }  
                         // $f_data = new FormFieldData();
