@@ -52,8 +52,10 @@
                                     <div class="row">
 
                                         <div class="col-md-12">
-                                            <a class="p-3"><button class="btn btn-primary" data-toggle="modal"
-                                                    data-target="#exampleModal">Import</button></a>
+                                            <a class="p-3">
+                                                <button class="btn btn-primary" data-toggle="modal"
+                                                    data-target="#exampleModal">Import</button>
+                                            </a>
                                             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
                                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog" role="document">
