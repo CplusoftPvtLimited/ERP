@@ -418,7 +418,7 @@
             ?>
 
             @if(Auth::user()->role_id != 5)
-            <li class=""><a href="#hrm" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-user-group"></i><span>HRM</span></a>
+            {{-- <li class=""><a href="#hrm" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-user-group"></i><span>HRM</span></a> --}}
                 <ul id="hrm" class="collapse list-unstyled ">
                     @if($department_active)
                     <li id="dept-menu"><a href="{{route('departments.index')}}">{{trans('file.Department')}}</a></li>
@@ -467,7 +467,7 @@
             ])->first();
             ?>
             @if($user_index_permission_active || $customer_index_permission_active || $biller_index_permission_active || $supplier_index_permission_active)
-            <li><a href="#people" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-user"></i><span>{{trans('file.Customer')}}</span></a>
+            {{-- <li><a href="#people" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-user"></i><span>{{trans('file.Customer')}}</span></a> --}}
                 <ul id="people" class="collapse list-unstyled ">
 
                     @if($user_index_permission_active)
