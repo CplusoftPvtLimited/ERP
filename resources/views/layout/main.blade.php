@@ -1041,9 +1041,9 @@
                         ->first();
                     ?>
                     @if ($add_permission_active)
-                        <li class="nav-item"><a class="dropdown-item btn-pos btn-sm"
+                        {{-- <li class="nav-item"><a class="dropdown-item btn-pos btn-sm"
                                 href="{{ route('sale.pos') }}"><i class="dripicons-shopping-bag"></i><span>
-                                    POS</span></a></li>
+                                    POS</span></a></li> --}}
                     @endif
                     <li class="nav-item"><a id="switch-theme" data-toggle="tooltip"
                             title="{{ trans('file.Switch Theme') }}"><i class="dripicons-brightness-max"></i></a>
