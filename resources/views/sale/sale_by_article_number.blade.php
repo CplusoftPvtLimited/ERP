@@ -186,7 +186,7 @@
                             </div>
                             <div class="row total-calculations"> 
                                 <div class="col-md-4">
-                                   <h5>Discount</h5>    
+                                   <h5>Discount <span style="font-size:10px;color:#98AFC7">(value)</span></h5>    
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group mb-3">     
@@ -199,7 +199,7 @@
                             </div> 
                             <div class="row total-calculations"> 
                                 <div class="col-md-4">
-                                   <h5>VAT</5>    
+                                   <h5>VAT <span style="font-size:10px;color:#98AFC7">(value)</span></5>    
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group mb-3">     
@@ -324,7 +324,7 @@
                         white_price = data.stock.unit_sale_price_of_white_cash;
                     }
                     markup +=
-                        '<td><input style="width:100px" onkeyup="alterSaleQty(' +
+                        '<td><input style="width:150px" onkeyup="alterSaleQty(' +
                         data.data.legacyArticleId + ')" type="number" value="' + white_price +
                         '" step="any" class="form-control"  id="sale_sale_price_' +
                         data.data.legacyArticleId +
@@ -393,7 +393,7 @@
                     });
 
                 } else {
-                    if (!article_ids_array.includes("article_" + data.data.legacyArticleId)) {
+                    if (!all_product_ids.includes("article_" + data.data.legacyArticleId)) {
                         tableBody.append(markup);
                     } else {
                         Swal.fire({

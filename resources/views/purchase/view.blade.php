@@ -73,7 +73,7 @@
                                     <td>{{ $product->manufacturer }}</td>
                                     <td>{{ $product->model }}</td>
                                     <td>{{ $product->section }}</td>
-                                    <td>{{ $product->supplier }}</td>
+                                    <td>{{ $product->brand }}</td>
                                     <td><button type="button" class="btn btn-info btn-sm" data-toggle="modal"
                                             data-target="#viewPurchaseProduct_{{ $product->id }}"><i class="fa fa-eye"></i></button></td>
                                     <!-- Modal -->

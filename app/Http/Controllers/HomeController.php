@@ -25,6 +25,10 @@ use Rawilk\Printing\Contracts\Printer;
 use Spatie\Permission\Models\Role;
 use Session;
 use App\FormUser;
+use App\Models\AfterMarkitSupplier;
+use App\Models\NewSale;
+use App\Models\StockManagement;
+
 /*use vendor\autoload;
 use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
 use Mike42\Escpos\Printer;*/
@@ -48,6 +52,7 @@ class HomeController extends Controller
         if($user->is_active != 1){
             return redirect('logout')->with('message','You are not Allowed to access the system');
         }
+        
         return view('home');
         
     }
@@ -95,7 +100,7 @@ class HomeController extends Controller
 
     public function index()
     {
-        // dd('index');
+        
         //return phpinfo();
         //return Printing::printers();
         /*$printerId = '69993185';
@@ -373,7 +378,12 @@ class HomeController extends Controller
                 return redirect('formMessage');
             }
         }
-        return view('index', compact('revenue', 'purchase', 'expense', 'purchase_return','return', 'profit', 'payment_recieved', 'payment_sent', 'month', 'yearly_sale_amount', 'yearly_purchase_amount', 'recent_sale', 'recent_purchase', 'recent_quotation', 'recent_payment', 'best_selling_qty', 'yearly_best_selling_qty', 'yearly_best_selling_price', 'all_permission'));
+        $supplier_count = AfterMarkitSupplier::where('retailer_id',auth()->user()->id)->count();
+        $purchase_count = Purchase::where('user_id',auth()->user()->id)->whereNULL('deleted_at')->count();
+        $sale_count = NewSale::where('retailer_id',auth()->user()->id)->whereNULL('deleted_at')->count();
+        $stock_count = StockManagement::where('retailer_id',auth()->user()->id)->whereNULL('deleted_at')->count();
+
+        return view('index', compact('stock_count','sale_count','purchase_count','supplier_count','revenue', 'purchase', 'expense', 'purchase_return','return', 'profit', 'payment_recieved', 'payment_sent', 'month', 'yearly_sale_amount', 'yearly_purchase_amount', 'recent_sale', 'recent_purchase', 'recent_quotation', 'recent_payment', 'best_selling_qty', 'yearly_best_selling_qty', 'yearly_best_selling_price', 'all_permission'));
     }
 
     public function approvedDashboard($noti_id=null)

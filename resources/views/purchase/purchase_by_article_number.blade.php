@@ -186,7 +186,7 @@
                             </div> 
                             <div class="row total-calculations"> 
                                 <div class="col-md-3">
-                                   <h5>VAT</h5>    
+                                   <h5>VAT <span style="font-size:10px;color:#98AFC7">(value)</span></h5>    
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group mb-3">     
@@ -355,14 +355,14 @@
                         '" value="0" min="0" name="item_qty[]" required></td>';
 
                     markup +=
-                        '<td><input style="width:100px" type="number" class="form-control" onkeyup="alterQty(' +
+                        '<td><input style="width:150px" type="number" class="form-control" onkeyup="alterQty(' +
                         data.data.legacyArticleId +
                         ')" value="1" min="0" step="any" id="purchase_price_' +
                         data.data.legacyArticleId +
                         '" name="purchase_price[]" required></td>';
 
                     markup +=
-                        '<td><input style="width:100px" type="number" class="form-control"  id="sale_price_' +
+                        '<td><input style="width:150px" type="number" class="form-control"  id="sale_price_' +
                         data.data.legacyArticleId +
                         '" name="sale_price[]" readonly></td>';
 
@@ -403,7 +403,7 @@
                         '" name="total_excluding_vat[]" readonly></td>';
 
                     markup +=
-                        '<td><input type="number" style="width:100px" class="form-control" value="0" min="0"   id="actual_cost_per_product_' +
+                        '<td><input type="number" style="width:150px" class="form-control" value="0" min="0"   id="actual_cost_per_product_' +
                         data.data.legacyArticleId +
                         '" name="actual_cost_per_product[]" readonly></td>';
 

@@ -26,22 +26,7 @@ use Illuminate\Support\Facades\Response;
 |
 */
 
-Route::post('checkFile',function(Request $request){
-	$f = explode('8000/',$request->url);
-	$notis = auth()->user()->unreadNotifications;
-        foreach($notis as $n){
-            if($n->id == $request->id){
-                $n->markAsRead();
-            }
-        }
-	// dd($f);
-	$file = public_path()."/". $f[1];
-    $headers = array(
-              'Content-Type: application/CSV',
-            );
-
-    return Response::download($file, 'rejected_items.csv', $headers);
-})->name('checkFile');
+Route::post('checkFile', 'StockManagementController@getRejectedItemCSV')->name('checkFile');
 
 Route::get('preinvoice-pdf/{id}', 'salecontroller@preinvoicepdf')->name('sales.preinvoicepdf');
 Route::get('delivery-slip-pdf/{id}', 'salecontroller@deliverySlipPDF')->name('sales.delivery-slip');

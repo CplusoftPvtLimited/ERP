@@ -74,7 +74,7 @@
                                             {{-- <th>Shipping Cost</th>
                     <th>Discount</th> --}}
                                             {{-- <th>Total Bill</th> --}}
-                                            <th width="100px">Status</th>
+                                            <th width="150px">Status</th>
                                             <th width="180px">Action</th>
                                         </tr>
                                     </thead>

@@ -34,40 +34,40 @@
                 <!-- Count item widget-->
                 <div class="col-sm-3">
                   <div class="wrapper count-title">
-                    <div class="icon"><i class="dripicons-graph-bar" style="color: #733686"></i></div>
+                    <div class="icon"><i class="dripicons-user-group" style="color: #733686"></i></div>
                     <div>
-                        <div class="count-number revenue-data">{{number_format((float)$revenue, 2, '.', '')}}</div>
-                        <div class="name"><strong style="color: #733686">{{ trans('file.revenue') }}</strong></div>
+                        <div class="count-number revenue-data">{{ $supplier_count }}</div>
+                        <div class="name"><strong style="color: #733686">Suppliers</strong></div>
                     </div>
                   </div>
                 </div>
                 <!-- Count item widget-->
                 <div class="col-sm-3">
                   <div class="wrapper count-title">
-                    <div class="icon"><i class="dripicons-return" style="color: #ff8952"></i></div>
+                    <div class="icon"><i class="dripicons-card" style="color: #ff8952"></i></div>
                     <div>
-                        <div class="count-number return-data">{{number_format((float)$return, 2, '.', '')}}</div>
-                        <div class="name"><strong style="color: #ff8952">{{trans('file.Sale Return')}}</strong></div>
+                        <div class="count-number return-data">{{ $purchase_count }}</div>
+                        <div class="name"><strong style="color: #ff8952">Purchases</strong></div>
                     </div>
                   </div>
                 </div>
                 <!-- Count item widget-->
                 <div class="col-sm-3">
                   <div class="wrapper count-title">
-                    <div class="icon"><i class="dripicons-media-loop" style="color: #00c689"></i></div>
+                    <div class="icon"><i class="dripicons-cart" style="color: #00c689"></i></div>
                     <div>
-                        <div class="count-number purchase_return-data">{{number_format((float)$purchase_return, 2, '.', '')}}</div>
-                        <div class="name"><strong style="color: #00c689">{{trans('file.Purchase Return')}}</strong></div>
+                        <div class="count-number purchase_return-data">{{ $sale_count }}</div>
+                        <div class="name"><strong style="color: #00c689">Sales</strong></div>
                     </div>
                   </div>
                 </div>
                 <!-- Count item widget-->
                 <div class="col-sm-3">
                   <div class="wrapper count-title">
-                    <div class="icon"><i class="dripicons-trophy" style="color: #297ff9"></i></div>
+                    <div class="icon"><i class="dripicons-list" style="color: #297ff9"></i></div>
                     <div>
-                        <div class="count-number profit-data">{{number_format((float)$profit, 2, '.', '')}}</div>
-                        <div class="name"><strong style="color: #297ff9">{{trans('file.profit')}}</strong></div>
+                        <div class="count-number profit-data">{{ $stock_count }}</div>
+                        <div class="name"><strong style="color: #297ff9">Stock Products</strong></div>
                     </div>
                   </div>
                 </div>

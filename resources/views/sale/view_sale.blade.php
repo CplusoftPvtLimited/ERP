@@ -220,7 +220,7 @@
                                             </div>
                                             <div class="row total-calculations">
                                                 <div class="col-md-4">
-                                                    <h5>Discount</h5>
+                                                    <h5>Discount <span style="font-size:10px;color:#98AFC7">(value)</span></h5>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group mb-3">
@@ -233,7 +233,7 @@
                                             </div>
                                             <div class="row total-calculations">
                                                 <div class="col-md-4">
-                                                    <h5>VAT</h5>
+                                                    <h5>VAT <span style="font-size:10px;color:#98AFC7">(value)</span></h5>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group mb-3">

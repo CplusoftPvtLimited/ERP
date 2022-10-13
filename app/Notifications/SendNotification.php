@@ -59,6 +59,8 @@ class SendNotification extends Notification
     {
         return ['message'=>$this->data['message'],
                 'sender_id'=> $this->data['sender'],
+                'type'=> $this->data['type'],
+                'file_name'=> $this->data['file_name'],
             ];
     }
 }

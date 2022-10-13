@@ -164,13 +164,17 @@ class PurchaseRepository implements PurchaseInterface
                 $section = AssemblyGroupNode::where('assemblyGroupNodeId', $lims_purchase_data->assembly_group_node_id)->first();
                 $section_part = Article::where('legacyArticleId', $lims_purchase_data->legacy_article_id)->first();
                 // dd($lims_purchase_data->legacy_article_id);
+                $brand = Ambrand::where('BrandId',$section_part ? $section_part->dataSupplierId : 0)->first();
+
                 $supplier = Ambrand::where('BrandId', $lims_purchase_data->supplier_id)->first();
                 $lims_purchase_data['manufacturer'] = isset($manufacturer) ? $manufacturer->manuName : '';
                 $lims_purchase_data['model'] = isset($model) ? $model->modelname : '';
                 $lims_purchase_data['engine'] = isset($engine) ? $engine->description : '';
                 $lims_purchase_data['section'] = isset($section) ? $section->assemblyGroupName : '';
                 $lims_purchase_data['section_part'] = isset($section_part) ? $section_part->articleNumber : '';
-                $lims_purchase_data['supplier'] = isset($supplier) ? $supplier->brandName : '';
+                $lims_purchase_data['supplier'] = isset($supplier) ? $supplier->name : '';
+                $lims_purchase_data['brand'] = isset($brand) ? $brand->brandName : '';
+
                 array_push($purchase_products, $lims_purchase_data);
             }
             $purchase = [
