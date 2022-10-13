@@ -9,24 +9,24 @@
     </div>
 </div>
 <div class="card-body" style="margin: 0px;">
-    <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
+    <p class="italic"><small>{{ trans('file.The field labels marked with * are required input fields') }}.</small></p>
     @if (Session::has('error'))
-    <p class="bg-danger text-white p-2 rounded">{{ Session::get('error') }}</p>
+        <p class="bg-danger text-white p-2 rounded">{{ Session::get('error') }}</p>
     @endif
     @if (Session::has('success'))
-    <p class="bg-success text-white p-2 rounded">{{ Session::get('success') }}</p>
+        <p class="bg-success text-white p-2 rounded">{{ Session::get('success') }}</p>
     @endif
     @if (count($errors) > 0)
-    <div class="alert alert-danger">
-        <strong>Whoops!</strong> There were some problems with your input.<br><br>
-        <ul>
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
+        <div class="alert alert-danger">
+            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
     @endif
-    <form action="{{ route('article.update', $article->id)}}" method="post" enctype="multipart/form-data">
+    <form action="{{ route('article.update', $article->id) }}" method="post" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="row">
@@ -37,11 +37,14 @@
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Manufacturers *</h6>
-                            <select name="mfrId" id="mfrId" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select Manufacturer..." data-href="{{ route('get_models_by_manufacturer') }}" required>
+                            <select name="mfrId" id="mfrId" class="selectpicker form-control"
+                                data-live-search="true" data-live-search-style="begins" title="Select Manufacturer..."
+                                data-href="{{ route('get_models_by_manufacturer') }}" required>
                                 @foreach ($manufacturers as $manufacturer)
-                                <option value="{{ $manufacturer->manuId }}" {{ $manufacturer->manuId == $article->mfrId ? 'selected' : ''}}>
-                                    {{ $manufacturer->manuName }}
-                                </option>
+                                    <option value="{{ $manufacturer->manuId }}"
+                                        {{ $manufacturer->manuId == $article->mfrId ? 'selected' : '' }}>
+                                        {{ $manufacturer->manuName }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -49,16 +52,19 @@
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Model *</h6>
-                            <select name="modelSeries" id="modelSeries" data-href="{{ route('get_engines_by_model') }}" class="form-control" required>
-                                <option value="{{$model->modelId}}">{{$model->modelname}}</option>
+                            <select name="modelSeries" id="modelSeries" data-href="{{ route('get_engines_by_model') }}"
+                                class="form-control" required>
+                                <option value="{{ $model->modelId }}">{{ $model->modelname }}</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Engine *</h6>
-                            <select name="linkingTargetId" id="linkingTargetId" data-href="{{ route('get_sections_by_engine') }}" class="form-control" required>
-                                <option value="{{$engine->linkageTargetId}}">{{$engine->description}} ( {{$engine->beginYearMonth}} - {{$engine->endYearMonth}} ) </option>
+                            <select name="linkingTargetId" id="linkingTargetId"
+                                data-href="{{ route('get_sections_by_engine') }}" class="form-control" required>
+                                <option value="{{ $engine->linkageTargetId }}">{{ $engine->description }} (
+                                    {{ $engine->beginYearMonth }} - {{ $engine->endYearMonth }} ) </option>
                             </select>
                         </div>
                     </div>
@@ -69,9 +75,10 @@
                             <h6>Supplier *</h6>
                             <select name="dataSupplierId" id="dataSupplierId" class="form-control" required>
                                 @foreach ($suppliers as $supplier)
-                                <option value="{{ $supplier->brandId }}" {{$supplier->brandId == $article->dataSupplierId ? 'selected' : ''}}>
-                                    {{ $supplier->brandName }}
-                                </option>
+                                    <option value="{{ $supplier->brandId }}"
+                                        {{ $supplier->brandId == $article->dataSupplierId ? 'selected' : '' }}>
+                                        {{ $supplier->brandName }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -80,26 +87,34 @@
                         <div class="form-group">
                             <h6>Sections *</h6>
                             <select name="assemblyGroupNodeId" id="assemblyGroupNodeId" class="form-control" required>
-                                <option value="{{$section->assemblyGroupNodeId}}">{{$section->assemblyGroupName}}</option>
+                                <option value="{{ $section->assemblyGroupNodeId }}">{{ $section->assemblyGroupName }}
+                                </option>
                             </select>
                         </div>
                     </div>
                     <div class="col-4">
                         <h6>Product Number *</h6>
-                        <input type="number" name="articleNumber" id="articleNumber" max="9999999999999999999" class="form-control" value="{{$article->articleNumber}}" required>
+                        <input type="text" name="articleNumber" id="articleNumber" maxlength="150"
+                            pattern="([^\s][0-9\s]+)" class="form-control" value="{{ $article->articleNumber }}"
+                            required>
+                        <p class="italic text-info"><small>{{ trans('file.Only numbers and spaces are allowed') }}.</small></p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Quantity per Package</h6>
-                            <input type="number" name="quantityPerPackage" id="quantityPerPackage" max="9999999999999999999" class="form-control" value="{{$article->quantityPerPackage}}" required>
+                            <input type="number" name="quantityPerPackage" id="quantityPerPackage"
+                                max="9999999999999999999" class="form-control"
+                                value="{{ $article->quantityPerPackage }}" required>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Quantity/Package/Package</h6>
-                            <input type="number" id="quantityPerPartPerPackage" name="quantityPerPartPerPackage" max="9999999999999999999" class="form-control" value="{{$article->quantityPerPartPerPackage}}" required>
+                            <input type="number" id="quantityPerPartPerPackage" name="quantityPerPartPerPackage"
+                                max="9999999999999999999" class="form-control"
+                                value="{{ $article->quantityPerPartPerPackage }}" required>
                         </div>
                     </div>
 
@@ -107,25 +122,28 @@
                 <div class="row">
                     <div class="col-4">
                         <h6>Additional Description</h6>
-                        <textarea name="additionalDescription" id="additionalDescription" cols="10" rows="10" class="form-control">{{$article->additionalDescription}}</textarea>
+                        <textarea name="additionalDescription" id="additionalDescription" cols="10" rows="10" class="form-control">{{ $article->additionalDescription }}</textarea>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Generic Product Description</h6>
-                            <textarea name="genericArticleDescription" id="genericArticleDescription" cols="10" rows="10" class="form-control">{{$article->genericArticleDescription}}</textarea>
+                            <textarea name="genericArticleDescription" id="genericArticleDescription" cols="10" rows="10"
+                                class="form-control">{{ $article->genericArticleDescription }}</textarea>
                         </div>
-                        <input type="hidden" id="avt_id" name = "avt_id" value ="{{$avt->id}}">
+                        <input type="hidden" id="avt_id" name="avt_id" value="{{ $avt->id }}">
                     </div>
                 </div>
                 <div class="d-flex flex-row-reverse">
                     <button type="submit" class="btn btn-success" style="width:100px">Update</button>
-                    <button type="button" class="btn btn-primary mr-2" style="width:100px" id="nxtEditProduct">Next</button>
+                    <button type="button" class="btn btn-primary mr-2" style="width:100px"
+                        id="nxtEditProduct">Next</button>
                 </div>
             </div>
         </div>
     </form>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function() {
@@ -135,15 +153,16 @@
             let url = $(this).attr('data-href');
             getModels(url, manufacturer_id);
         });
+
         function getModels(url, manufacturer_id) {
             $.get(url + '?manufacturer_id=' + manufacturer_id, function(data) {
                 let response = data.data;
-                if(response.length == 0){
+                if (response.length == 0) {
                     Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Selected Manufacturer do not have any Model. Please Change the Manufacturer',
-                });
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Selected Manufacturer do not have any Model. Please Change the Manufacturer',
+                    });
                 }
                 let view_html = `<option value="">Select One</option>`;
                 $.each(response, function(key, value) {
@@ -167,12 +186,12 @@
         function getEngines(url, model_id) {
             $.get(url + '?model_id=' + model_id, function(data) {
                 let response = data.data;
-                if(response.length == 0){
+                if (response.length == 0) {
                     Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Selected Model do not have any engine. Please Change the Model',
-                });
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Selected Model do not have any engine. Please Change the Model',
+                    });
                 }
                 let view_html = `<option value="">Select One</option>`;
                 $.each(response, function(key, value) {
@@ -184,20 +203,21 @@
                 $("#linkingTargetId").selectpicker("refresh");
             })
         }
-        $('#linkingTargetId').on('change',function(){
+        $('#linkingTargetId').on('change', function() {
             let engine_id = $(this).val();
             let url = $(this).attr('data-href');
             getSections(url, engine_id);
         });
-        function getSections(url,engine_id){
-            $.get(url + '?engine_id=' + engine_id, function(data){
+
+        function getSections(url, engine_id) {
+            $.get(url + '?engine_id=' + engine_id, function(data) {
                 let response = data.data;
-                if(response.length == 0){
+                if (response.length == 0) {
                     Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Selected Engine do not have any Section. Please Change the Engine',
-                });
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Selected Engine do not have any Section. Please Change the Engine',
+                    });
                 }
                 let view_html = `<option value="">Select One</option>`;
                 $.each(response, function(key, value) {
@@ -223,7 +243,17 @@
             var avt_id = $('#avt_id').val();
             var ajax = 1;
             console.log(articleNumber);
-            if (mfrId != "" && dataSupplierId != "" && assemblyGroupNodeId != "" && articleNumber != "" && model_id != ""  && linkingTargetId != "" ) {
+            if (/[a-z]/i.test(articleNumber)) {
+                Swal.fire({
+                    title: 'Error',
+                    text: "Product Number Must Not Contain any Alphabet",
+                    icon: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Ok'
+                });
+            } else if (mfrId != "" && dataSupplierId != "" && assemblyGroupNodeId != "" &&
+                articleNumber !=
+                "" && model_id != "" && linkingTargetId != "") {
                 $.ajax({
                     url: "{{ route('article.update', $article->id) }}",
                     type: "PUT",
@@ -253,16 +283,19 @@
                             var legacy_id = response.data.legacyArticleId;
                             var product_name = response.data;
                             if (legacy_id != null) {
-                                document.getElementById('editArticles').style.display = "none";
+                                document.getElementById('editArticles').style.display =
+                                    "none";
                                 var tablinks = document.getElementsByClassName("tablinks");
                                 for (i = 0; i < tablinks.length; i++) {
                                     if (tablinks[i].id != "editcriteriaTab") {
-                                        tablinks[i].className = tablinks[i].className.replace(" active", "");
+                                        tablinks[i].className = tablinks[i].className
+                                            .replace(" active", "");
                                     }
                                 }
                                 var tablink = document.getElementById("editcriteriaTab");
                                 tablink.className = tablink.className += " active"
-                                document.getElementById('editArticleCrteria').style.display = "block";
+                                document.getElementById('editArticleCrteria').style
+                                    .display = "block";
                             }
                         } else {
                             Swal.fire({
