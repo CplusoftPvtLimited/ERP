@@ -103,7 +103,7 @@ class PurchaseRepository implements PurchaseInterface
             DB::commit();
             return "true";
         } catch (\Exception $e) {
-            dd($e);
+            
             DB::rollback();
             return $e->getMessage();
         }
