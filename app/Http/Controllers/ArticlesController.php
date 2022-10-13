@@ -210,17 +210,17 @@ class ArticlesController extends Controller
         $manufacturers = Manufacturer::withTrashed()->get();
 
         if ($article) {
-            $manufacturer = Manufacturer::where('manuId', $article->mfrId)->first();
-            $avt = ArticleVehicleTree::where('legacyArticleId', $article->legacyArticleId)->first();
-            $engine = LinkageTarget::where('linkageTargetId', $avt->linkingTargetId)->first();
-            $model = ModelSeries::where('modelId', $engine->vehicleModelSeriesId)->first();
-            $section = AssemblyGroupNode::where('assemblyGroupNodeId', $article->assemblyGroupNodeId)->first();
+            $manufacturer = Manufacturer::where('manuId', $article->mfrId)->withTrashed()->first();
+            $avt = ArticleVehicleTree::where('legacyArticleId', $article->legacyArticleId)->withTrashed()->first();
+            $engine = LinkageTarget::where('linkageTargetId', $avt->linkingTargetId)->withTrashed()->first();
+            $model = ModelSeries::where('modelId', $engine->vehicleModelSeriesId)->withTrashed()->first();
+            $section = AssemblyGroupNode::where('assemblyGroupNodeId', $article->assemblyGroupNodeId)->withTrashed()->first();
             $keyValues = KeyValue::all();
             $languages = Language::select('lang')->distinct()->get();
-            $art_criteria = ArticleCriteria::where('legacyArticleId', $article->legacyArticleId)->first();
-            $art_crosses = ArticleCross::where('legacyArticleId', $article->legacyArticleId)->first();
-            $art_ean = ArticleEAN::where('legacyArticleId', $article->legacyArticleId)->first();
-            $art_link = ArticleLinks::where('legacyArticleId', $article->legacyArticleId)->first();
+            $art_criteria = ArticleCriteria::where('legacyArticleId', $article->legacyArticleId)->withTrashed()->first();
+            $art_crosses = ArticleCross::where('legacyArticleId', $article->legacyArticleId)->withTrashed()->first();
+            $art_ean = ArticleEAN::where('legacyArticleId', $article->legacyArticleId)->withTrashed()->first();
+            $art_link = ArticleLinks::where('legacyArticleId', $article->legacyArticleId)->withTrashed()->first();
             return view('articles.edit', compact('suppliers', 'sections', 'manufacturers', 'manufacturer', 'article', 'keyValues', 'languages', 'engine', 'model', 'section', 'art_criteria', 'art_crosses', 'art_ean', 'art_link', 'avt'));
         } else {
             return redirect(url()->previous());
