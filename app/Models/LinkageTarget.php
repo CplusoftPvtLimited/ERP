@@ -14,4 +14,8 @@ class LinkageTarget extends Model
     public function model() {
         return $this->belongsTo(ModelSeries::class, 'vehicleModelSeriesId', 'modelId');
     }
+
+    public function section() {
+        return $this->hasMany(AssemblyGroupNode::class, 'request__linkingTargetType', 'linkageTargetId');
+    }
 }

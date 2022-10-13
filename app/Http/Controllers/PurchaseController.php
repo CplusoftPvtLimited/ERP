@@ -1415,7 +1415,6 @@ class PurchaseController extends Controller
             $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
                 ->where('vehicleModelSeriesId', $request->model_id)
                 ->where('linkageTargetType', $request->engine_sub_type)->get();
-            // dd($models);
             return response()->json([
                 'data' => $engines
             ], 200);
@@ -1431,6 +1430,7 @@ class PurchaseController extends Controller
                     $query->where('linkingTargetId', $request->engine_id)
                     ->where('linkingTargetType', $request->engine_sub_type);
                 })
+                // ->whereNotNull('request__linkingTargetId')
                ->groupBy('assemblyGroupNodeId')
                ->limit(100)
                 ->get();
@@ -1445,13 +1445,14 @@ class PurchaseController extends Controller
     public function getSectionParts(Request $request)
     {
         try {
-            $section_parts = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')->whereHas('articleVehicleTree', function ($query) use ($request) {
+            $section_parts = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')
+            ->whereHas('section', function($query) {
+                $query->whereNotNull('request__linkingTargetId');
+            })->whereHas('articleVehicleTree', function ($query) use ($request) {
                 $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
             })
             ->limit(100)
             ->get();
-
-            // dd($section_parts);
             return response()->json([
                 'data' => $section_parts
             ], 200);
@@ -1527,8 +1528,8 @@ class PurchaseController extends Controller
                 $query->select(['assemblyGroupNodeId', 'assemblyGroupName', 'request__linkingTargetId', 'request__linkingTargetType']);
                 $query->whereHas('linkageTarget');
             }])->first();
-            
-            if(empty($section_part->section)){
+            // dd($section_part);
+            if(empty($section_part->section)) {
                 return response()->json([
                     'data' => 0,
                     "message" => "section not available for this product"
