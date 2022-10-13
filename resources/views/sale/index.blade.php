@@ -63,7 +63,7 @@
                                     </div>
                                 @endif
 
-                                <table class="table" id="data-table">
+                                <table class="table" id="data-table" style="width: 100%">
                                     <thead>
                                         <tr>
                                             <th>#</th>
