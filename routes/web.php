@@ -53,7 +53,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::post('model/delete', [ModelSeriesController::class,'delete']);
 
 	Route::resource('engine', 'LinkageTargetsController');
-	Route::get('engine/delete', [LinkageTargetsController::class,'delete']);
+	Route::post('engine/delete', [LinkageTargetsController::class,'delete']);
 
 
 	Route::resource('section', 'AssemblyGroupNodesController');
