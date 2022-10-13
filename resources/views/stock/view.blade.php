@@ -15,117 +15,78 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Supplier/Brand name</label>
-                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->purchaseProduct->purchase->brand->brandName) ? $get_product->purchaseProduct->purchase->brand->brandName : 'N/A' }}" readonly>
+                                    <label for="" class="view-edit-purchase">Reference No</label>
+                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->stock->reference_no) ? $get_product->stock->reference_no : 'N/A' }}" readonly>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Created At</label>
-                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->purchaseProduct->purchase->date) ? $get_product->purchaseProduct->purchase->date : 'N/A' }}" readonly>
-
+                                    <label for="" class="view-edit-purchase">White Items</label>
+                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->stock->white_items) ? $get_product->stock->white_items : 'N/A' }}" readonly>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Product Purchase Reference No</label>
-                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->purchaseProduct->purchase->purchaseProduct->reference_no) ? $get_product->purchaseProduct->purchase->purchaseProduct->reference_no : 'N/A' }}" readonly>
-
+                                    <label for="" class="view-edit-purchase">Balck Items</label>
+                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->stock->black_items) ? $get_product->stock->black_items : 'N/A' }}" readonly>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Product Id</label>
-                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->purchaseProduct->purchase->purchaseProduct->product_id) ? $get_product->purchaseProduct->purchase->purchaseProduct->product_id : 'N/A' }}" readonly>
+                                    <label for="" class="view-edit-purchase">Total Qunatity</label>
+                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ (isset($get_product->stock->white_items) ? $get_product->stock->white_items : 0)  + (isset($get_product->stock->black_items) ? $get_product->stock->black_items : 0)}}" readonly>
                                 </div>
                             </div> 
                             <hr>
                             <div class="row">
-                                <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Total Quntity</label>
-                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->purchaseProduct->qty) ? $get_product->purchaseProduct->qty : 'N/A' }}" readonly>
+                                 <div class="col-md-3">
+                                    <label for="" class="view-edit-purchase">Unit Purchase Price Of White Cash</label>
+                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->stock->unit_purchase_price_of_white_cash) ? $get_product->stock->unit_purchase_price_of_white_cash : 'N/A' }}" readonly>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Purchase Status</label>
-                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->purchaseProduct->status) ? $get_product->purchaseProduct->status : 'N/A' }}" readonly>
-
+                                    <label for="" class="view-edit-purchase">Unit Sale Price Of White Cash</label>
+                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->stock->unit_sale_price_of_white_cash) ? $get_product->stock->unit_sale_price_of_white_cash : 'N/A' }}" readonly>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Manufacturer Name</label>
-                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->purchaseProduct->manufacture->manuName) ? $get_product->purchaseProduct->manufacture->manuName : 'N/A' }}" readonly>
+                                    <label for="" class="view-edit-purchase">Unit Purchase Price Of Black Cash</label>
+                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->stock->unit_purchase_price_of_black_cash) ? $get_product->stock->unit_purchase_price_of_black_cash : 'N/A' }}" readonly>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Product Supplier Name</label>
-                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->purchaseProduct->supplier->brandName) ? $get_product->purchaseProduct->supplier->brandName : 'N/A' }}" readonly>
+                                    <label for="" class="view-edit-purchase">Unit Sale Price Of Black Cash</label>
+                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->stock->unit_sale_price_of_black_cash) ? $get_product->stock->unit_sale_price_of_black_cash : 'N/A' }}" readonly>
                                 </div>
+                           
+                                
                             </div> 
                             <hr>
                             <div class="row">
                                 <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Model Id</label>
-                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->purchaseProduct->model_id) ? $get_product->purchaseProduct->model_id : 'N/A' }}" readonly>
+                                    <label for="" class="view-edit-purchase">Supplier Name <span> (Brand Name) </span></label>
+                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->brand->brandName) ? $get_product->brand->brandName : 'N/A' }}" readonly>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Engine Details</label>
-                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->purchaseProduct->engine_details) ? $get_product->purchaseProduct->engine_details : 'N/A' }}" readonly>
-
+                                    <label for="" class="view-edit-purchase">Section Name</label>
+                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->section->assemblyGroupName) ? $get_product->section->assemblyGroupName : 'N/A' }}" readonly>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Engine Linkage Target Id</label>
-                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->purchaseProduct->eng_linkage_target_id) ? $get_product->purchaseProduct->eng_linkage_target_id : 'N/A' }}" readonly>
+                                    <label for="" class="view-edit-purchase">Engine Sub Type</label>
+                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->section->linkageTarget->linkageTargetType) ? $get_product->section->linkageTarget->linkageTargetType : 'N/A' }}" readonly>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Assembly Group Node Id</label>
-                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->purchaseProduct->assembly_group_node_id) ? $get_product->purchaseProduct->assembly_group_node_id : 'N/A' }}" readonly>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">White Cash Items</label>
-                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->white_items) ? $get_product->white_items : 'N/A' }}" readonly>
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Black Cash Items</label>
-                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->black_items) ? $get_product->black_items : 'N/A' }}" readonly>
-
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Unit Actual Price (White Cash)</label>
-                                    <div class="input-group mb-3">         
-                                        <input type="text" value="{{ isset($get_product->unit_purchase_price_of_white_cash) ? $get_product->unit_purchase_price_of_white_cash : '' }}" class="form-control view-edit-purchase-input"
-                                            aria-label="Amount (to the nearest dollar)" readonly>
-                                        <span class="input-group-text"><b>TND</b></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Unit Actual Price (Black Cash)</label>
-                                    <div class="input-group mb-3">         
-                                        <input type="text" value="{{ isset($get_product->unit_purchase_price_of_black_cash) ? $get_product->unit_purchase_price_of_black_cash : '' }}" class="form-control view-edit-purchase-input"
-                                            aria-label="Amount (to the nearest dollar)" readonly>
-                                        <span class="input-group-text"><b>TND</b></span>
-                                    </div>
+                                    <label for="" class="view-edit-purchase">Engine Description</label>
+                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->section->linkageTarget->description) ? $get_product->section->linkageTarget->description : 'N/A' }}" readonly>
                                 </div>
                             </div>
                             <hr>
                             <div class="row">
                                 <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Unit Sale Price (White Cash)</label>
-                                    <div class="input-group mb-3">         
-                                        <input type="text" value="{{ isset($get_product->unit_sale_price_of_white_cash) ? $get_product->unit_sale_price_of_white_cash : '' }}" class="form-control view-edit-purchase-input"
-                                            aria-label="Amount (to the nearest dollar)" readonly>
-                                        <span class="input-group-text"><b>TND</b></span>
-                                    </div>
+                                    <label for="" class="view-edit-purchase">Manufatrer</label>
+                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->section->linkageTarget->mfrName) ? $get_product->section->linkageTarget->mfrName : 'N/A' }}" readonly>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Unit Sale Price (Black Cash)</label>
-                                    <div class="input-group mb-3">         
-                                        <input type="text" value="{{ isset($get_product->unit_sale_price_of_black_cash) ? $get_product->unit_sale_price_of_black_cash : '' }}" class="form-control view-edit-purchase-input"
-                                            aria-label="Amount (to the nearest dollar)" readonly>
-                                        <span class="input-group-text"><b>TND</b></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="" class="view-edit-purchase">Total Product Quantity</label>
-                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->total_qty) ? $get_product->total_qty : 'N/A' }}" readonly>
+                                    <label for="" class="view-edit-purchase">Vehicle Model Series Name</label>
+                                    <input type="text" class="form-control view-edit-purchase-input" value="{{ isset($get_product->section->linkageTarget->vehicleModelSeriesName) ? $get_product->section->linkageTarget->vehicleModelSeriesName : 'N/A' }}" readonly>
                                 </div>
                             </div>
+                            <hr>
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-9">
+                                </div>
+                                <div class="col-md-3 text-right">
                                     <a href="{{ url('product/list') }}" class="btn btn-primary">Back</a>
                                 </div>
                             </div>

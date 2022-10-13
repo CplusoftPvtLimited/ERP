@@ -49,7 +49,8 @@ class Article extends Model
         return $this->belongsTo(Ambrand::class,'dataSupplierId', 'brandId');
     }
 
-    public function brands() : hasMany{
+    public function brands()
+    {
         return $this->hasMany(Ambrand::class,'brandId','dataSupplierId');
     }
 

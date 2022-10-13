@@ -88,7 +88,7 @@
 
                                                             </div>
                                                             <div class="modal-footer">
-                                                                <button type="button" id="upload_btn"
+                                                                <button type="submit" id="upload_btn"
                                                                     class="btn btn-primary">Upload</button>
                                                                 <button type="button" class="btn btn-secondary"
                                                                     data-dismiss="modal">Close</button>

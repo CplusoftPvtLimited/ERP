@@ -190,6 +190,12 @@ class StockManagementController extends Controller
             Log::debug($request->all());
             DB::beginTransaction();
             $path = $request->file('file')->getRealPath();
+            $mim_type = $request->file('file')->getMimeType();
+            if($mim_type != "text/csv"){
+                toastr()->error('please upload csv file only');
+                return redirect()->back();
+            }
+            
             $records = array_map('str_getcsv', file($path));
             if(count($records[0]) != 9){
                 toastr()->error('you are not uploading the csv with Proper Columns please check the given sample CSV file!');
