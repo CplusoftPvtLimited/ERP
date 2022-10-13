@@ -43,7 +43,7 @@ class SaleRepository implements SaleInterface
         ]);
         $loop_iterations = count($data['item_qty']);
         for ($i = 0; $i < $loop_iterations; $i++) {
-            $stock = StockManagement::where('retailer_id',auth()->user()->id)->where('reference_no',$data['article_number'][$i])->first();
+            $stock = StockManagement::where('retailer_id',auth()->user()->id)->where('reference_no',$data['article_number'][$i])->withTrashed()->first();
             $sum_of_black_white = $stock->white_items + $stock->black_items;
             if($sum_of_black_white < $data['item_qty'][$i]){
                 $res = [
@@ -106,12 +106,12 @@ class SaleRepository implements SaleInterface
                     $purchase->date = date('Y-m-d');
                     $purchase->save();
 
-                    $article = Article::where('articleNumber',$data['article_number'][$i])->first();
-                    $section = AssemblyGroupNode::where('assemblyGroupNodeId',$article->assemblyGroupNodeId)->first();
-                    $engine = LinkageTarget::where('linkageTargetId',isset($section) ? $section->request__linkingTargetId : 0)->first();
-                    $model = ModelSeries::where('modelId',isset($engine) ? $engine->vehicleModelSeriesId : 0)->first();
-                    $manufacturer = Manufacturer::where('manuId',isset($model) ? $model->manuId : 0)->first();
-                    $brand = Ambrand::where('brandId',$article->dataSupplierid)->first();
+                    $article = Article::where('articleNumber',$data['article_number'][$i])->withTrashed()->first();
+                    $section = AssemblyGroupNode::where('assemblyGroupNodeId',$article->assemblyGroupNodeId)->withTrashed()->first();
+                    $engine = LinkageTarget::where('linkageTargetId',isset($section) ? $section->request__linkingTargetId : 0)->withTrashed()->first();
+                    $model = ModelSeries::where('modelId',isset($engine) ? $engine->vehicleModelSeriesId : 0)->withTrashed()->first();
+                    $manufacturer = Manufacturer::where('manuId',isset($model) ? $model->manuId : 0)->withTrashed()->first();
+                    $brand = Ambrand::where('brandId',$article->dataSupplierid)->withTrashed()->first();
                     // creating purchase product
                     $product_purchase = new ProductPurchase();
                     $product_purchase->purchase_id = $purchase->id;
@@ -189,12 +189,12 @@ class SaleRepository implements SaleInterface
             ]);
            
             for ($i = 0; $i < count($sale_products); $i++) {
-                $purchase = Purchase::where('sale_id',$id)->first();
-                $product_purchase = ProductPurchase::where('purchase_id',$purchase->id)->first();
-                $sale_product = NewSaleProduct::where('sale_id',$id)->where('reference_no',$product_purchase->reference_no)->first();
+                $purchase = Purchase::where('sale_id',$id)->withTrashed()->first();
+                $product_purchase = ProductPurchase::where('purchase_id',$purchase->id)->withTrashed()->first();
+                $sale_product = NewSaleProduct::where('sale_id',$id)->where('reference_no',$product_purchase->reference_no)->withTrashed()->first();
                 $white_item_quantity_for_black_sale = $purchase->total_qty;
                 $black_item_quantity_for_black_sale = $sale_product->quantity - $white_item_quantity_for_black_sale;
-                $stock = StockManagement::where('reference_no',$sale_product->reference_no)->first();
+                $stock = StockManagement::where('reference_no',$sale_product->reference_no)->withTrashed()->first();
                 $sum_of_quantities = $stock->white_items + $stock->black_items 
                                         + $white_item_quantity_for_black_sale + $black_item_quantity_for_black_sale;
                 if($data['sale_item_qty'][$i] > $sum_of_quantities){
@@ -238,12 +238,12 @@ class SaleRepository implements SaleInterface
                     $purchase->date = date('Y-m-d');
                     $purchase->save();
 
-                    $article = Article::where('articleNumber',$stock->reference_no)->first();
-                    $section = AssemblyGroupNode::where('assemblyGroupNodeId',$article->assemblyGroupNodeId)->first();
-                    $engine = LinkageTarget::where('linkageTargetId',isset($section) ? $section->request__linkingTargetId : 0)->first();
-                    $model = ModelSeries::where('modelId',isset($engine) ? $engine->vehicleModelSeriesId : 0)->first();
-                    $manufacturer = Manufacturer::where('manuId',isset($model) ? $model->manuId : 0)->first();
-                    $brand = Ambrand::where('brandId',$article->dataSupplierid)->first();
+                    $article = Article::where('articleNumber',$stock->reference_no)->withTrashed()->first();
+                    $section = AssemblyGroupNode::where('assemblyGroupNodeId',$article->assemblyGroupNodeId)->withTrashed()->first();
+                    $engine = LinkageTarget::where('linkageTargetId',isset($section) ? $section->request__linkingTargetId : 0)->withTrashed()->first();
+                    $model = ModelSeries::where('modelId',isset($engine) ? $engine->vehicleModelSeriesId : 0)->withTrashed()->first();
+                    $manufacturer = Manufacturer::where('manuId',isset($model) ? $model->manuId : 0)->withTrashed()->first();
+                    $brand = Ambrand::where('brandId',$article->dataSupplierid)->withTrashed()->first();
                     // creating purchase product
                     $product_purchase = new ProductPurchase();
                     $product_purchase->purchase_id = $purchase->id;
@@ -299,10 +299,10 @@ class SaleRepository implements SaleInterface
             
 
             for ($i = 0; $i < count($sale_products); $i++) {
-                $manage_quantity = WhiteBlackQuantityManagement::where('sale_id',$id)->first();
+                $manage_quantity = WhiteBlackQuantityManagement::where('sale_id',$id)->withTrashed()->first();
                 
                 $sale_product = NewSaleProduct::find($manage_quantity->sale_item_id);
-                $stock = StockManagement::where('retailer_id',auth()->user()->id)->where('reference_no',$sale_product->reference_no)->first();
+                $stock = StockManagement::where('retailer_id',auth()->user()->id)->where('reference_no',$sale_product->reference_no)->withTrashed()->first();
                 
                 $overall_qty = $manage_quantity->white_quantity + $manage_quantity->black_quantity + $stock->white_items + $stock->black_items;
                 $stock->white_items = $stock->white_items + $manage_quantity->white_quantity;

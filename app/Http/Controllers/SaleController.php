@@ -558,7 +558,7 @@ class SaleController extends Controller
     public function viewSale($id)
     {
         $sale = NewSale::find($id);
-        $sale_products = NewSaleProduct::where('sale_id', $id)->get();
+        $sale_products = NewSaleProduct::where('sale_id', $id)->withTrashed()->get();
         // dd($lims_quotation_data);
         return view('sale.view_sale', compact('sale', 'sale_products'));
     }

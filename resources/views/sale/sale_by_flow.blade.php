@@ -415,7 +415,7 @@
                 var other_data_div = $('#other_data');
 
                 var total_calculations = $('#total_sale_calculations');
-
+                $('#total_sale_calculations').css('display','block');
                 var white_cash_head = "";
                 var black_cash_head = "";
                 var white_cash_calculations_head = "";
@@ -637,7 +637,7 @@
                     });
 
                 } else {
-                    if (!all_product_ids.includes("article_" + data.data.legacyArticleId)) {
+                    if (!article_ids_array.includes("article_" + data.data.legacyArticleId)) {
                         tableBody.append(markup);
                     } else {
                         Swal.fire({

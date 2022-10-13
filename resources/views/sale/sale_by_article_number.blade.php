@@ -158,6 +158,7 @@
                     exit();
                 }
                 $('#submit-button').css("display", "block");
+                $('#total_sale_calculations').css('display','block');
                 $('#order-table-header').text(`{{ trans('file.Order Table') }} *`);
                 var tableBody = $("table tbody");
                 var tableHead = $("table thead");
@@ -393,7 +394,7 @@
                     });
 
                 } else {
-                    if (!all_product_ids.includes("article_" + data.data.legacyArticleId)) {
+                    if (!article_ids_array.includes("article_" + data.data.legacyArticleId)) {
                         tableBody.append(markup);
                     } else {
                         Swal.fire({

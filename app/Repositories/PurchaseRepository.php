@@ -61,8 +61,8 @@ class PurchaseRepository implements PurchaseInterface
             // dd($request->vat);
             for ($i = 0; $i < count($request->item_qty); $i++) {
                 $product_purchase = new ProductPurchase();
-                $artcle = Article::where('legacyArticleId', $request->sectionn_part_id[$i])->first();
-                $linkage = LinkageTarget::where('linkageTargetId', $request->enginee_id[$i])->first();
+                $artcle = Article::where('legacyArticleId', $request->sectionn_part_id[$i])->withTrashed()->first();
+                $linkage = LinkageTarget::where('linkageTargetId', $request->enginee_id[$i])->withTrashed()->first();
                 if ($request->item_qty[$i] <= 0) {
                     continue;
                 }
@@ -110,7 +110,7 @@ class PurchaseRepository implements PurchaseInterface
     }
 
     public static function createStock($purchase,$product_purchase,$cash_type){
-        $stock_exists = StockManagement::where('reference_no',$product_purchase->reference_no)->where('retailer_id',$purchase->user_id)->first();
+        $stock_exists = StockManagement::where('reference_no',$product_purchase->reference_no)->where('retailer_id',$purchase->user_id)->withTrashed()->first();
         if(!empty($stock_exists)){
             $stock_exists->update([
                 'white_items' => ($cash_type == "white") ? $product_purchase->qty+$stock_exists->white_items : $stock_exists->white_items, 
@@ -156,17 +156,17 @@ class PurchaseRepository implements PurchaseInterface
         $purchase_get = Purchase::find($id);
         if ($purchase_get) {
             $purchase_products = [];
-            $purchases_products = ProductPurchase::where('purchase_id', $purchase_get->id)->get();
+            $purchases_products = ProductPurchase::where('purchase_id', $purchase_get->id)->withTrashed()->get();
             foreach ($purchases_products as $lims_purchase_data) {
-                $manufacturer = Manufacturer::where('manuId', $lims_purchase_data->manufacture_id)->first();
-                $model = ModelSeries::where('modelId', $lims_purchase_data->model_id)->first();
-                $engine = LinkageTarget::where('linkageTargetId', $lims_purchase_data->eng_linkage_target_id)->first();
-                $section = AssemblyGroupNode::where('assemblyGroupNodeId', $lims_purchase_data->assembly_group_node_id)->first();
-                $section_part = Article::where('legacyArticleId', $lims_purchase_data->legacy_article_id)->first();
+                $manufacturer = Manufacturer::where('manuId', $lims_purchase_data->manufacture_id)->withTrashed()->first();
+                $model = ModelSeries::where('modelId', $lims_purchase_data->model_id)->withTrashed()->first();
+                $engine = LinkageTarget::where('linkageTargetId', $lims_purchase_data->eng_linkage_target_id)->withTrashed()->first();
+                $section = AssemblyGroupNode::where('assemblyGroupNodeId', $lims_purchase_data->assembly_group_node_id)->withTrashed()->first();
+                $section_part = Article::where('legacyArticleId', $lims_purchase_data->legacy_article_id)->withTrashed()->first();
                 // dd($lims_purchase_data->legacy_article_id);
-                $brand = Ambrand::where('BrandId',$section_part ? $section_part->dataSupplierId : 0)->first();
+                $brand = Ambrand::where('BrandId',$section_part ? $section_part->dataSupplierId : 0)->withTrashed()->first();
 
-                $supplier = Ambrand::where('BrandId', $lims_purchase_data->supplier_id)->first();
+                $supplier = Ambrand::where('BrandId', $lims_purchase_data->supplier_id)->withTrashed()->first();
                 $lims_purchase_data['manufacturer'] = isset($manufacturer) ? $manufacturer->manuName : '';
                 $lims_purchase_data['model'] = isset($model) ? $model->modelname : '';
                 $lims_purchase_data['engine'] = isset($engine) ? $engine->description : '';
@@ -193,17 +193,17 @@ class PurchaseRepository implements PurchaseInterface
         // dd($purchase_get);
         if (!empty($purchase_get)) {
             $purchase_products = [];
-            $purchases_products = ProductPurchase::where('purchase_id', $purchase_get->id)->get();
+            $purchases_products = ProductPurchase::where('purchase_id', $purchase_get->id)->withTrashed()->get();
             // dd($purchases_products);
             
             foreach ($purchases_products as $lims_purchase_data) {
-                $manufacturer = Manufacturer::where('manuId', $lims_purchase_data->manufacture_id)->first();
-                $model = ModelSeries::where('modelId', $lims_purchase_data->model_id)->first();
-                $engine = LinkageTarget::where('linkageTargetId', $lims_purchase_data->eng_linkage_target_id)->first();
-                $section = AssemblyGroupNode::where('assemblyGroupNodeId', $lims_purchase_data->assembly_group_node_id)->first();
-                $section_part = Article::where('legacyArticleId', $lims_purchase_data->legacy_article_id)->first();
-                $brand = Ambrand::where('BrandId',$section_part ? $section_part->dataSupplierId : 0)->first();
-                $supplier = AfterMarkitSupplier::where('id', $lims_purchase_data->supplier_id)->first();
+                $manufacturer = Manufacturer::where('manuId', $lims_purchase_data->manufacture_id)->withTrashed()->first();
+                $model = ModelSeries::where('modelId', $lims_purchase_data->model_id)->withTrashed()->first();
+                $engine = LinkageTarget::where('linkageTargetId', $lims_purchase_data->eng_linkage_target_id)->withTrashed()->first();
+                $section = AssemblyGroupNode::where('assemblyGroupNodeId', $lims_purchase_data->assembly_group_node_id)->withTrashed()->first();
+                $section_part = Article::where('legacyArticleId', $lims_purchase_data->legacy_article_id)->withTrashed()->first();
+                $brand = Ambrand::where('BrandId',$section_part ? $section_part->dataSupplierId : 0)->withTrashed()->first();
+                $supplier = AfterMarkitSupplier::where('id', $lims_purchase_data->supplier_id)->withTrashed()->first();
                 $lims_purchase_data['manufacturer'] = isset($manufacturer) ? $manufacturer->manuName : '';
                 $lims_purchase_data['model'] = isset($model) ? $model->modelname : '';
                 $lims_purchase_data['engine'] = isset($engine) ? $engine->description : '';
@@ -237,7 +237,7 @@ class PurchaseRepository implements PurchaseInterface
                 // $product_purchase->save();
                 // dd($product_purchase);
                 $purchase = Purchase::find($product_purchase->purchase_id);
-                $stock = StockManagement::where('retailer_id', auth()->user()->id)->where('reference_no', $product_purchase->reference_no)->first();
+                $stock = StockManagement::where('retailer_id', auth()->user()->id)->where('reference_no', $product_purchase->reference_no)->withTrashed()->first();
                 // dd($purchase,$product_purchase,$stock);
                 $product_purchase->update([
                     'status' => $request->status
@@ -293,7 +293,7 @@ class PurchaseRepository implements PurchaseInterface
             
                 $purchase = Purchase::where('id',$product_purchase->purchase_id)->with(['productPurchases'=>function($query) use ($product_purchase){
                     $query->select(['qty','purchase_id','actual_cost_per_product'])->where('id','!=',$product_purchase->id);
-                }])->first();
+                }])->withTrashed()->first();
 
                 if(!empty($purchase)){
                     $sum = 0;
@@ -349,7 +349,7 @@ class PurchaseRepository implements PurchaseInterface
             $purchase->save();
             
             $product_purchase->delete();
-            $product_purchases = ProductPurchase::where('purchase_id', $purchase_id)->get();
+            $product_purchases = ProductPurchase::where('purchase_id', $purchase_id)->withTrashed()->get();
 
             if (count($product_purchases) <= 0) {
 
@@ -365,7 +365,7 @@ class PurchaseRepository implements PurchaseInterface
 
     public function deleteParentPurchase($purchase_id)
     {
-        $purchase_with_products = Purchase::where('id', $purchase_id)->with(['productPurchases'])->first();
+        $purchase_with_products = Purchase::where('id', $purchase_id)->with(['productPurchases'])->withTrashed()->first();
         // dd($purchase_with_products);
         if (!empty($purchase_with_products)) {
             foreach ($purchase_with_products->productPurchases as $key => $product) {
@@ -395,12 +395,12 @@ class PurchaseRepository implements PurchaseInterface
                 $purchase_data['Total Items'] = $purchase->item;
                 $purchase_data['Grand Total'] = $purchase->grand_total;
                 foreach ($purchase->productPurchases as $key => $lims_purchase_data) {
-                    $manufacturer = Manufacturer::where('manuId', $lims_purchase_data->manufacture_id)->first();
-                    $model = ModelSeries::where('modelId', $lims_purchase_data->model_id)->first();
-                    $engine = LinkageTarget::where('linkageTargetId', $lims_purchase_data->eng_linkage_target_id)->first();
-                    $section = AssemblyGroupNode::where('assemblyGroupNodeId', $lims_purchase_data->assembly_group_node_id)->first();
-                    $section_part = Article::where('legacyArticleId', $lims_purchase_data->legacy_article_id)->first();
-                    $supplier = Ambrand::where('BrandId', $lims_purchase_data->supplier_id)->first();
+                    $manufacturer = Manufacturer::where('manuId', $lims_purchase_data->manufacture_id)->withTrashed()->first();
+                    $model = ModelSeries::where('modelId', $lims_purchase_data->model_id)->withTrashed()->first();
+                    $engine = LinkageTarget::where('linkageTargetId', $lims_purchase_data->eng_linkage_target_id)->withTrashed()->first();
+                    $section = AssemblyGroupNode::where('assemblyGroupNodeId', $lims_purchase_data->assembly_group_node_id)->withTrashed()->first();
+                    $section_part = Article::where('legacyArticleId', $lims_purchase_data->legacy_article_id)->withTrashed()->first();
+                    $supplier = Ambrand::where('BrandId', $lims_purchase_data->supplier_id)->withTrashed()->first();
 
                     $purchase_data['Manufacturer ID'] = isset($manufacturer) ? $manufacturer->manuId : '';
                     $purchase_data['Manufacturer'] = isset($manufacturer) ? $manufacturer->manuName : '';
@@ -443,13 +443,13 @@ class PurchaseRepository implements PurchaseInterface
                     $purchase_products = [];
                     $purchases_products = ProductPurchase::where('purchase_id', $purchase_get->id)->get();
                     foreach ($purchases_products as $lims_purchase_data) {
-                        $manufacturer = Manufacturer::where('manuId', $lims_purchase_data->manufacture_id)->first();
-                        $model = ModelSeries::where('modelId', $lims_purchase_data->model_id)->first();
-                        $engine = LinkageTarget::where('linkageTargetId', $lims_purchase_data->eng_linkage_target_id)->first();
-                        $section = AssemblyGroupNode::where('assemblyGroupNodeId', $lims_purchase_data->assembly_group_node_id)->first();
-                        $section_part = Article::where('legacyArticleId', $lims_purchase_data->legacy_article_id)->first();
+                        $manufacturer = Manufacturer::where('manuId', $lims_purchase_data->manufacture_id)->withTrashed()->first();
+                        $model = ModelSeries::where('modelId', $lims_purchase_data->model_id)->withTrashed()->first();
+                        $engine = LinkageTarget::where('linkageTargetId', $lims_purchase_data->eng_linkage_target_id)->withTrashed()->first();
+                        $section = AssemblyGroupNode::where('assemblyGroupNodeId', $lims_purchase_data->assembly_group_node_id)->withTrashed()->first();
+                        $section_part = Article::where('legacyArticleId', $lims_purchase_data->legacy_article_id)->withTrashed()->first();
                         // dd($lims_purchase_data->legacy_article_id);
-                        $supplier = Ambrand::where('BrandId', $lims_purchase_data->supplier_id)->first();
+                        $supplier = Ambrand::where('BrandId', $lims_purchase_data->supplier_id)->withTrashed()->first();
 
                         $lims_purchase_data['manufacturer'] = isset($manufacturer) ? $manufacturer->manuName : '';
                         $lims_purchase_data['model'] = isset($model) ? $model->modelname : '';

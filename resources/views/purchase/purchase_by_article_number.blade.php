@@ -158,6 +158,7 @@
                     });
                     exit();
                 } else {
+                    $('#total_calculations').css('display', 'block');
                     $('#submit-button').css("display", "block");
                     $('#order-table-header').text(`{{ trans('file.Order Table') }} *`);
                     var tableBody = $("table tbody");
@@ -425,7 +426,7 @@
                         });
 
                     } else {
-                        if (!all_product_ids.includes("article_" + data.data.legacyArticleId)) {
+                        if (!article_ids_array.includes("article_" + data.data.legacyArticleId)) {
                             tableBody.append(markup);
                         } else {
                             Swal.fire({
@@ -526,14 +527,7 @@
             }
 
         }
-        for (var i = 0; i < article_ids_array.length; i++) {
-
-            if (article_ids_array[i] === id) {
-
-                article_ids_array.splice(i, 1);
-            }
-
-        }
+       
         if (all_product_ids.length <= 0) {
             $('#total_calculations').css('display', 'none');
             $('#submit-button').css('display', 'none');

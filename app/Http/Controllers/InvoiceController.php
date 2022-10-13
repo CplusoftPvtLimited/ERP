@@ -93,7 +93,7 @@ class InvoiceController extends Controller
             $invoice = ERPInvoice::where('sale_id',$sale->id)
             ->where('retailer_id',auth()->user()->id)->first();
             if(empty($invoice)){
-                $sale_products = NewSaleProduct::where('sale_id',$sale->id)->get();
+                $sale_products = NewSaleProduct::where('sale_id',$sale->id)->withTrashed()->get();
                 $invoice = ERPInvoice::create([
                     'date' => date('Y-m-d'),
                     'sale_id' => $sale->id,
@@ -140,7 +140,7 @@ class InvoiceController extends Controller
                     'total_qty' => $sale->total_qty,
                     'total_bill' => $sale->total_bill,
                 ]);
-                $sale_products = NewSaleProduct::where('sale_id',$sale->id)->get();
+                $sale_products = NewSaleProduct::where('sale_id',$sale->id)->withTrashed()->get();
 
                 foreach($sale_products as $product){
                     ERPInvoiceProduct::updateOrCreate([
