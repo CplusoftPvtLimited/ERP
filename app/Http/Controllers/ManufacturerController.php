@@ -206,12 +206,12 @@ class ManufacturerController extends Controller
      }
      public function getManufacturersByEngineType(Request $request)
      {
-         try {
-             $manufacturers = Manufacturer::where('linkingTargetType', $request->engine_sub_type)->get();
-             // dd($manufacturers);
-             return response()->json([
-                 'data' => $manufacturers
-             ], 200);
+        try {
+            $manufacturers = Manufacturer::where('linkingTargetType', $request->engine_sub_type)->get();
+            // dd($manufacturers);
+            return response()->json([
+                'data' => $manufacturers
+            ], 200);
          } catch (\Exception $e) {
              return $e->getMessage();
          }

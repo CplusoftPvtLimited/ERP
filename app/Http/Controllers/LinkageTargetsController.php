@@ -145,11 +145,12 @@ class LinkageTargetsController extends Controller
         $engine = LinkageTarget::find($id);
         $manufacturers = Manufacturer::all();
         $data = $this->checkLinkageTargetType($engine->subLinkageTargetType);
+        $models = ModelSeries::all();
 
         $sub_target_type = isset($data) ? $data['sub_target_type'] : [];
         $target_type = isset($data) ? $data['target_type'] : [];
         $types = isset($data) ? $data['types'] : [];
-        return view('linkage_targets.edit', compact('engine', 'manufacturers', 'sub_target_type', 'target_type', 'types'));
+        return view('linkage_targets.edit', compact('engine', 'manufacturers', 'models','sub_target_type', 'target_type', 'types'));
     }
 
     /**

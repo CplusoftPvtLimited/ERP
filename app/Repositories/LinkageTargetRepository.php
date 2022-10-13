@@ -35,7 +35,8 @@ class LinkageTargetRepository implements LinkageTargetInterface
             }
             $data['mfrName'] = $manufacture_name->manuName;
             $data['vehicleModelSeriesName'] = $model->modelname;
-            // dd($request->all(),$data);
+            $data['linkageTargetType'] = $data['subLinkageTargetType'];
+            // dd($data);
             $LinkageTarget = LinkageTarget::create($data);
             // dd($LinkageTarget);
             DB::commit();
@@ -70,7 +71,7 @@ class LinkageTargetRepository implements LinkageTargetInterface
                 'horsePowerFrom' => $request->horsePowerFrom,
                 'horsePowerTo' => $request->horsePowerTo,
                 'description' => $request->description,
-                'linkageTargetType' => $request->linkageTargetType,
+                'linkageTargetType' => $request->subLinkageTargetType,
                 'subLinkageTargetType' => $request->subLinkageTargetType,
                 'code' => $request->code,
             ];

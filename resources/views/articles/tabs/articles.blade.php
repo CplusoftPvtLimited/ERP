@@ -84,7 +84,7 @@
                         <div class="form-group">
                             <h6>Engine *</h6>
                             <select name="linkingTargetId" id="linkingTargetId"
-                                data-href="{{ route('search_sections_by_engine') }}" class="form-control" required>
+                                data-href="{{ route('get_sections_by_engine') }}" class="form-control" required>
                             </select>
                         </div>
                     </div>

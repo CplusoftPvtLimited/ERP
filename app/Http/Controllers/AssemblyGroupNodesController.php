@@ -53,7 +53,7 @@ class AssemblyGroupNodesController extends Controller
                     $value = ++$this->val;
                     return $value;
                 })
-                ->rawColumns(['action','index'])
+                ->rawColumns(['action', 'index'])
                 ->toJson();
         }
 
@@ -155,7 +155,9 @@ class AssemblyGroupNodesController extends Controller
     {
         try {
             $sections = AssemblyGroupNode::select('assemblyGroupNodeId', 'assemblyGroupName')
-                ->where('request__linkingTargetId', $request->engine_id)->get();
+                ->where('request__linkingTargetId', $request->engine_id)
+                ->where('request__linkingTargetType',  $request->engine_sub_type)
+                ->get();
             return response()->json([
                 'data' => $sections
             ], 200);
@@ -167,12 +169,11 @@ class AssemblyGroupNodesController extends Controller
     {
         // dd($request->all());
         try {
-            $sections = AssemblyGroupNode::whereHas('articleVehicleTree', function($query) use ($request){
-                    $query->where('linkingTargetId', $request->engine_id)
+            $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function ($query) use ($request) {
+                $query->where('linkingTargetId', $request->engine_id)
                     ->where('linkingTargetType', $request->engine_sub_type);
-                })
-               ->groupBy('assemblyGroupNodeId')
-               ->limit(100)
+            })
+                ->limit(100)
                 ->get();
             return response()->json([
                 'data' => $sections
@@ -187,8 +188,8 @@ class AssemblyGroupNodesController extends Controller
             $section_parts = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')->whereHas('articleVehicleTree', function ($query) use ($request) {
                 $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
             })
-            ->limit(100)
-            ->get();
+                ->limit(100)
+                ->get();
 
             // dd($section_parts);
             return response()->json([
@@ -196,6 +197,31 @@ class AssemblyGroupNodesController extends Controller
             ], 200);
         } catch (\Exception $e) {
             return $e->getMessage();
+        }
+    }
+    public function sectionshhh()
+    {
+        // $sections = [];
+        $old_sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function ($query) {
+            $query->where('linkingTargetId', 1)
+                ->where('linkingTargetType', 'V');
+        })
+            ->limit(100)
+            ->get();
+        $new_sections = AssemblyGroupNode::where('request__linkingTargetId', 1)
+            ->where('request__linkingTargetType',  'V')
+            ->get();
+        // dd($old_sections->toArray());
+        $old_sections = $old_sections->toArray();
+        $new_sections = $new_sections->toArray();
+
+        $sections = array_merge($old_sections, $new_sections);
+        dd($sections);
+        $section = array_unique($sections);
+        dd($section);
+        foreach($sections as $key => $value)
+        {
+            dump($value['id']);
         }
     }
 }
