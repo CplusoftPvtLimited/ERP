@@ -565,7 +565,9 @@ class SaleController extends Controller
 
     public function getSectionPartsForSale(Request $request)
     {
-        $articles = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')->whereHas('stock', function($query) {
+        $articles = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')
+        ->whereHas('stock', function($query) {
+            $query->whereNull('deleted_at');
         })->whereHas('articleVehicleTree', function ($query) use ($request) {
             $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
         })->get();
