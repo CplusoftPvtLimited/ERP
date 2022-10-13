@@ -1,5 +1,6 @@
 <?php 
 return [
+	'Manufacturers' => 'Manufacturers',
 	'Only numbers and spaces are allowed' => 'Only numbers and spaces are allowed',
 	'People List' => 'People List',
 	'Add Product Criteria' => 'Add Product Criteria',

@@ -37,29 +37,29 @@ class ArticlesController extends Controller
     public function index(Request $request)
     {
         // dd($request->all());
-            if ($request->ajax()) {
-                $articles = Article::select('id', 'legacyArticleId', 'articleNumber', 'mfrId', 'additionalDescription', 'assemblyGroupNodeId', 'created_at');
-                if (isset( $request['article_id']) && $request['article_id'] != null) {
-                    $articles =  $articles->where('articleNumber', 'LIKE',  '%' . $request['article_id'] . '%');
-                } elseif (isset($request['engine_sub_type']) && !empty($request['engine_sub_type']) && !empty($request['section_id']) && isset($request['section_id'])) {
-                    
-                    $articles =  $articles->whereHas('articleVehicleTree', function ($query) use ($request) {
-                        $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
-                    });
-                }
-                $articles->with(['assemblyGroup' => function ($query) {
-                    $query->select('assemblyGroupNodeId', 'assemblyGroupName')->get();
-                }, 'manufacturer'])->orderBy('id', 'desc');
-                return DataTables::of($articles)
-                    ->addIndexColumn()
-                    ->addColumn('manufacturer', function ($row) {
-                        return isset($row->manufacturer->manuName) ? $row->manufacturer->manuName : "N/A";
-                    })
-                    ->addColumn('section', function ($row) {
-                        return isset($row->assemblyGroup->assemblyGroupName) ? $row->assemblyGroup->assemblyGroupName : "N/A";
-                    })
-                    ->addColumn('action', function ($row) {
-                        $btn = '<div class="row">
+        if ($request->ajax()) {
+            $articles = Article::select('id', 'legacyArticleId', 'articleNumber', 'mfrId', 'additionalDescription', 'assemblyGroupNodeId', 'created_at');
+            if (isset($request['article_id']) && $request['article_id'] != null) {
+                $articles =  $articles->where('articleNumber', 'LIKE',  '%' . $request['article_id'] . '%');
+            } elseif (isset($request['engine_sub_type']) && !empty($request['engine_sub_type']) && !empty($request['section_id']) && isset($request['section_id'])) {
+
+                $articles =  $articles->whereHas('articleVehicleTree', function ($query) use ($request) {
+                    $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
+                });
+            }
+            $articles->with(['assemblyGroup' => function ($query) {
+                $query->select('assemblyGroupNodeId', 'assemblyGroupName')->get();
+            }, 'manufacturer'])->orderBy('id', 'desc');
+            return DataTables::of($articles)
+                ->addIndexColumn()
+                ->addColumn('manufacturer', function ($row) {
+                    return isset($row->manufacturer->manuName) ? $row->manufacturer->manuName : "N/A";
+                })
+                ->addColumn('section', function ($row) {
+                    return isset($row->assemblyGroup->assemblyGroupName) ? $row->assemblyGroup->assemblyGroupName : "N/A";
+                })
+                ->addColumn('action', function ($row) {
+                    $btn = '<div class="row">
                                 <div class="col-md-2 mr-1">
                                     <a href="article/' . $row["id"] . '/edit"> <button
                                     class="btn btn-primary btn-sm " type="button"
@@ -120,14 +120,14 @@ class ArticlesController extends Controller
                                  })
                              }
                          });</script>';
-                        return $btn;
-                    })
-                    ->addColumn('index', function ($row) {
-                        $value = ++$this->val;
-                        return $value;
-                    })
-                    ->rawColumns(['action', 'section', 'manufacturer', 'index'])
-                    ->make(true);
+                    return $btn;
+                })
+                ->addColumn('index', function ($row) {
+                    $value = ++$this->val;
+                    return $value;
+                })
+                ->rawColumns(['action', 'section', 'manufacturer', 'index'])
+                ->make(true);
         }
 
         return view('articles.index');
@@ -206,20 +206,25 @@ class ArticlesController extends Controller
     {
         $suppliers = Ambrand::all();
         $sections = AssemblyGroupNode::all();
-        $manufacturers = Manufacturer::all();
         $article = Article::find($id);
-        $avt = ArticleVehicleTree::where('legacyArticleId', $article->legacyArticleId)->first();
-        $engine = LinkageTarget::where('linkageTargetId', $avt->linkingTargetId)->first();
-        $model = ModelSeries::where('modelId', $engine->vehicleModelSeriesId)->first();
-        $section = AssemblyGroupNode::where('assemblyGroupNodeId', $article->assemblyGroupNodeId)->first();
-        $keyValues = KeyValue::all();
-        $languages = Language::select('lang')->distinct()->get();
-        $art_criteria = ArticleCriteria::where('legacyArticleId', $article->legacyArticleId)->first();
-        $art_crosses = ArticleCross::where('legacyArticleId', $article->legacyArticleId)->first();
-        $art_ean = ArticleEAN::where('legacyArticleId', $article->legacyArticleId)->first();
-        $art_link = ArticleLinks::where('legacyArticleId', $article->legacyArticleId)->first();
+        $manufacturers = Manufacturer::all();
 
-        return view('articles.edit', compact('suppliers', 'sections', 'manufacturers', 'article', 'keyValues', 'languages', 'engine', 'model', 'section', 'art_criteria', 'art_crosses', 'art_ean', 'art_link', 'avt'));
+        if ($article) {
+            $manufacturer = Manufacturer::where('manuId', $article->mfrId)->first();
+            $avt = ArticleVehicleTree::where('legacyArticleId', $article->legacyArticleId)->first();
+            $engine = LinkageTarget::where('linkageTargetId', $avt->linkingTargetId)->first();
+            $model = ModelSeries::where('modelId', $engine->vehicleModelSeriesId)->first();
+            $section = AssemblyGroupNode::where('assemblyGroupNodeId', $article->assemblyGroupNodeId)->first();
+            $keyValues = KeyValue::all();
+            $languages = Language::select('lang')->distinct()->get();
+            $art_criteria = ArticleCriteria::where('legacyArticleId', $article->legacyArticleId)->first();
+            $art_crosses = ArticleCross::where('legacyArticleId', $article->legacyArticleId)->first();
+            $art_ean = ArticleEAN::where('legacyArticleId', $article->legacyArticleId)->first();
+            $art_link = ArticleLinks::where('legacyArticleId', $article->legacyArticleId)->first();
+            return view('articles.edit', compact('suppliers', 'sections', 'manufacturers','manufacturer', 'article', 'keyValues', 'languages', 'engine', 'model', 'section', 'art_criteria', 'art_crosses', 'art_ean', 'art_link', 'avt'));
+        } else {
+            return redirect(url()->previous());
+        }
     }
 
     /**
@@ -282,18 +287,6 @@ class ArticlesController extends Controller
             return response()->json(['data' => "true", 'id' => $id]);
         } else {
             return response()->json("false");
-        }
-    }
-    public function getManufacturersByEngineType(Request $request)
-    {
-        try {
-            $manufacturers = Manufacturer::where('linkingTargetType', $request->engine_sub_type)->get();
-            // dd($manufacturers);
-            return response()->json([
-                'data' => $manufacturers
-            ], 200);
-        } catch (\Exception $e) {
-            return $e->getMessage();
         }
     }
     public function articlesByReferenceNo(Request $request)

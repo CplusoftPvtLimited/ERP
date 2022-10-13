@@ -51,10 +51,10 @@ class ArticleRepository implements ArticleInterface
             } else {
                 $data['legacyArticleId'] = 1;
             }
-            $linkingTargetType = LinkageTarget::select('linkageTargetType')->where('linkageTargetId', $data['linkingTargetId'])->first();
-            $data['linkingTargetType'] = $linkingTargetType->linkageTargetType;
-            $articleData = Arr::except($data, ['modelSeries', 'linkingTargetId', 'linkingTargetType']);
-
+            $linkingTargetType = LinkageTarget::select('subLinkageTargetType')->where('linkageTargetId', $data['linkingTargetId'])->first();
+            $data['linkingTargetType'] = $linkingTargetType->subLinkageTargetType;
+            $articleData = Arr::except($data, ['modelSeries', 'linkingTargetId', 'linkingTargetType','linkageTargetType','subLinkageTargetType']);
+            // dd($articleData);
             $item = Article::create($articleData);
             ArticleVehicleTree::create([
                 'linkingTargetId' => $data['linkingTargetId'],
@@ -78,9 +78,9 @@ class ArticleRepository implements ArticleInterface
         } else {
             $data = $request->except('_token', 'avt_id', '_method');
         }
-        $linkingTargetType = LinkageTarget::select('linkageTargetType')->where('linkageTargetId', $data['linkingTargetId'])->first();
-        $data['linkingTargetType'] = $linkingTargetType->linkageTargetType;
-        $articleData = Arr::except($data, ['modelSeries', 'linkingTargetId', 'linkingTargetType']);
+        $linkingTargetType = LinkageTarget::select('subLinkageTargetType')->where('linkageTargetId', $data['linkingTargetId'])->first();
+        $data['linkingTargetType'] = $linkingTargetType->subLinkageTargetType;
+        $articleData = Arr::except($data, ['modelSeries', 'linkingTargetId', 'linkingTargetType','linkageTargetType','subLinkageTargetType']);
         // dd($data);
         try {
             $avt = ArticleVehicleTree::find($request->avt_id);
