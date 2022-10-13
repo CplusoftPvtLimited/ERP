@@ -145,7 +145,7 @@
 
                                                             <th>{{ trans('file.Total (With Discount) Excluding Vat') }}
                                                             </th>
-                                                            <th><i class="dripicons-trash"></i></th>
+                                                            <th>Action</th>
 
                                                         </tr>
                                                     @else
@@ -204,9 +204,9 @@
                                                                         value="{{ $sale_product->total_with_discount }}"
                                                                         readonly>
                                                                 </td>
-                                                                <td><i id="article_delete"
-                                                                        onclick="deleteSaleArticleItem({{ $sale_product->id }})"
-                                                                        class="fa fa-trash"></i></td>
+                                                                <td>
+                                                                        <button class="btn btn-danger btn-sm"><i id="article_delete" onclick="deleteSaleArticleItem({{ $sale_product->id }})" class="fa fa-trash"></i></button>
+                                                                </td>
                                                             </tr>
                                                         @else
                                                             <tr id="item_row_"{{ $sale_product->id }}>
@@ -270,7 +270,7 @@
                                     <div class="col-md-12">
                                         <div class="row total-calculations">
                                             <div class="col-md-4">
-                                                <h5>Total Exculding Vat (Before Discount)</h5>
+                                                <h5>Total Exculding VAT (Before Discount)</h5>
                                             </div>
                                             <div class="col-md-3">
                                                 <input type="number" name="sale_entire_total_exculding_vat"
@@ -291,7 +291,7 @@
                                         </div>
                                         <div class="row total-calculations">
                                             <div class="col-md-4">
-                                                <h5>Vat</h5>
+                                                <h5>VAT</h5>
                                             </div>
                                             <div class="col-md-3">
                                                 <input type="number" name="entire_vat" value="{{ $sale->entire_vat }}"

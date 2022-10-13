@@ -423,7 +423,7 @@
                        <div class="col-md-12">
                             <div class="row total-calculations"> 
                                 <div class="col-md-4">
-                                   <h5>Total Exculding Vat (Before Discount)</h5>    
+                                   <h5>Total Exculding VAT (Before Discount)</h5>    
                                 </div>
                                 <div class="col-md-3">
                                    <div class="input-group mb-3">     
@@ -449,7 +449,7 @@
                             </div> 
                             <div class="row total-calculations"> 
                                 <div class="col-md-4">
-                                   <h5>Vat</5>    
+                                   <h5>VAT</5>    
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group mb-3">     

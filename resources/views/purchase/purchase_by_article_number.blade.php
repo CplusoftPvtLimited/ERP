@@ -173,7 +173,7 @@
                        <div class="col-md-12">
                             <div class="row total-calculations"> 
                                 <div class="col-md-3">
-                                   <h5>Total Exculding Vat</h5>    
+                                   <h5>Total Exculding VAT</h5>    
                                 </div>
                                 <div class="col-md-3">
                                    <div class="input-group mb-3">     
@@ -186,7 +186,7 @@
                             </div> 
                             <div class="row total-calculations"> 
                                 <div class="col-md-3">
-                                   <h5>Vat</h5>    
+                                   <h5>VAT</h5>    
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group mb-3">     
@@ -254,7 +254,7 @@
                         <th>{{ trans('file.Profit Margin') }} %</th>
                         <th>{{ trans('file.Total Excluding Vat') }}</th>
                         <th>{{ trans('file.Actual Cost Per Product') }}</th>
-                        <th><i class="dripicons-trash"></i></th>
+                        <th>Action</th>
                     </tr>`;
 
                     black_cash_head += `<tr id="">
@@ -267,7 +267,7 @@
                         <th>{{ trans('file.Profit Margin') }} %</th>
                         <th>{{ trans('file.Total Excluding Vat') }}</th>
                         <th>{{ trans('file.Actual Cost Per Product') }}</th>
-                        <th><i class="dripicons-trash"></i></th>
+                        <th>Action</th>
                     </tr>`;
 
                     var length = document.getElementById("myTable").rows.length;
