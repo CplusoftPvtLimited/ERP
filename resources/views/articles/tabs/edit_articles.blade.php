@@ -36,7 +36,7 @@
                 <div class="row">
                     <div class="col-4">
                         <div class="form-group">
-                        <h6><label>Engine Type</label></h6>
+                            <h6><label>Engine Type</label></h6>
                             <select name="linkageTargetType" id="linkageTarget" class="selectpicker form-control"
                                 data-live-search="true" data-live-search-style="begins">
 
@@ -52,7 +52,7 @@
                     </div>
                     <div class="col-4">
                         <div class="form-group">
-                        <h6><label>Engine Sub-Type</label></h6>
+                            <h6><label>Engine Sub-Type</label></h6>
                             <select name="subLinkageTargetType"
                                 data-href="{{ route('get_manufacturers_by_engine_type') }}" id="subLinkageTarget"
                                 class="selectpicker form-control" data-live-search="true"
@@ -102,7 +102,7 @@
                             </select>
                         </div>
                     </div>
-                    
+
                 </div>
                 <div class="row">
                     <div class="col-4">
@@ -131,11 +131,11 @@
                         <div class="form-group">
                             <h6>Quantity per Package</h6>
                             <input type="number" name="quantityPerPackage" id="quantityPerPackage"
-                                max="9999999999999999999" class="form-control"
+                               min="0" max="9999999999999999999" class="form-control"
                                 value="{{ $article->quantityPerPackage }}" required>
                         </div>
                     </div>
-                   
+
 
                 </div>
                 <div class="row">
@@ -143,7 +143,7 @@
                         <div class="form-group">
                             <h6>Quantity/Package/Package</h6>
                             <input type="number" id="quantityPerPartPerPackage" name="quantityPerPartPerPackage"
-                                max="9999999999999999999" class="form-control"
+                               min="0" max="9999999999999999999" class="form-control"
                                 value="{{ $article->quantityPerPartPerPackage }}" required>
                         </div>
                     </div>
@@ -357,6 +357,16 @@
                     confirmButtonColor: '#3085d6',
                     confirmButtonText: 'Ok'
                 });
+            } else if ((quantityPerPackage != "" && quantityPerPackage < 0) || (
+                    quantityPerPartPerPackage != "" && quantityPerPartPerPackage < 0)) {
+                Swal.fire({
+                    title: 'Error',
+                    text: "Quantity can't be in negative number",
+                    icon: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Ok'
+                });
+
             } else if (mfrId != "" && dataSupplierId != "" && assemblyGroupNodeId != "" &&
                 articleNumber !=
                 "" && model_id != "" && linkingTargetId != "") {

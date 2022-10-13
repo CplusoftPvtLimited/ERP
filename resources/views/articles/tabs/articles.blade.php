@@ -35,7 +35,7 @@
                 <div class="row">
                     <div class="col-4">
                         <div class="form-group">
-                        <h6><label>Engine Type</label></h6>
+                            <h6><label>Engine Type</label></h6>
                             <select name="linkageTargetType" id="linkageTarget" class="selectpicker form-control"
                                 data-live-search="true" data-live-search-style="begins">
 
@@ -115,12 +115,13 @@
                         <input type="text" name="articleNumber" id="articleNumber" maxlength="150"
                             pattern="([^\s\-+=!@#$%^&*_|][0-9\s\-+=!@#$%^&*_|]+)" class="form-control" required>
                         <p class="italic text-info">
-                            <small>{{ trans('file.Only numbers and spaces are allowed') }}.</small></p>
+                            <small>{{ trans('file.Only numbers and spaces are allowed') }}.</small>
+                        </p>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Quantity per Package</h6>
-                            <input type="number" name="quantityPerPackage" id="quantityPerPackage"
+                            <input type="number" name="quantityPerPackage" id="quantityPerPackage" min="0"
                                 max="9999999999999999999" class="form-control" required>
                         </div>
                     </div>
@@ -132,12 +133,13 @@
                         <div class="form-group">
                             <h6>Quantity/Package/Package</h6>
                             <input type="number" id="quantityPerPartPerPackage" name="quantityPerPartPerPackage"
-                                max="9999999999999999999" class="form-control" required>
+                                min="0" max="9999999999999999999" class="form-control" required>
                         </div>
                     </div>
                     <div class="col-4">
                         <h6>Additional Description</h6>
-                        <textarea name="additionalDescription" id="additionalDescription" cols="10" rows="5" class="form-control"></textarea>
+                        <textarea name="additionalDescription" id="additionalDescription" cols="10" rows="5"
+                            class="form-control"></textarea>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
@@ -337,6 +339,16 @@
                     confirmButtonColor: '#3085d6',
                     confirmButtonText: 'Ok'
                 });
+            } else if ((quantityPerPackage != "" && quantityPerPackage < 0) || (
+                    quantityPerPartPerPackage != "" && quantityPerPartPerPackage < 0)) {
+                Swal.fire({
+                    title: 'Error',
+                    text: "Quantity can't be in negative number",
+                    icon: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Ok'
+                });
+
             } else if (mfrId != "" && dataSupplierId != "" && assemblyGroupNodeId != "" &&
                 articleNumber != "" && model_id != "" && linkingTargetId != "") {
                 $.ajax({
