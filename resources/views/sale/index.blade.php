@@ -63,7 +63,7 @@
                                     </div>
                                 @endif
 
-                                <table class="display" id="data-table">
+                                <table class="table" id="data-table">
                                     <thead>
                                         <tr>
                                             <th>#</th>
