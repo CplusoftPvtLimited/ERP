@@ -1045,9 +1045,9 @@
                                 href="{{ route('sale.pos') }}"><i class="dripicons-shopping-bag"></i><span>
                                     POS</span></a></li> --}}
                     @endif
-                    <li class="nav-item"><a id="switch-theme" data-toggle="tooltip"
+                    {{-- <li class="nav-item"><a id="switch-theme" data-toggle="tooltip"
                             title="{{ trans('file.Switch Theme') }}"><i class="dripicons-brightness-max"></i></a>
-                    </li>
+                    </li> --}}
                     <li class="nav-item"><a id="btnFullscreen" data-toggle="tooltip"
                             title="{{ trans('file.Full Screen') }}"><i class="dripicons-expand"></i></a></li>
                     @if (\Auth::user()->role_id <= 2)
@@ -1094,12 +1094,22 @@
                                     <li style="background-color: white"><a
                                             >{{ Str::limit($noti->data['message'], 30) }}</a>
                                     </li>
-                                @else
-                                    <li style="background-color: white">
-                                       
+                                @elseif($noti->noti_type == null && $noti->read_at == null)
+                                    <li style="background-color: lightgrey">
+                                        <form action="{{ route('checkFile') }}" method="post" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="hidden" name="url" value="{{ $noti->data['message'] }}">
+                                            <input type="hidden" name="id" value="{{ $noti->id }}">
+                                            <button style="background:transparent;border:none;" type="submit">Import CSV rejected Items</button>
+                                        </form> 
+                                        
+                                        {{-- <span style="font-size: 12px; display:flex; justify-content: end"> {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $noti->created_at) }}</span> --}}
+                                    </li>
+                                @elseif($noti->noti_type == null && $noti->read_at != null)
+                                    <li style="background-color: white"> 
                                         <a href="{{ $noti->data['message'] }}"> Import CSV rejected Items</a>
                                         {{-- <span style="font-size: 12px; display:flex; justify-content: end"> {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $noti->created_at) }}</span> --}}
-                            </li>
+                                    </li>
                                 @endif
                             @endforeach
                         </ul>

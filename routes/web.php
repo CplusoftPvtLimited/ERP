@@ -13,6 +13,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\MakeController;
 use App\Http\Controllers\StockManagementController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,23 @@ use Illuminate\Support\Facades\Auth;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::post('checkFile',function(Request $request){
+	$f = explode('8000/',$request->url);
+	$notis = auth()->user()->unreadNotifications;
+        foreach($notis as $n){
+            if($n->id == $request->id){
+                $n->markAsRead();
+            }
+        }
+	// dd($f);
+	$file = public_path()."/". $f[1];
+    $headers = array(
+              'Content-Type: application/CSV',
+            );
+
+    return Response::download($file, 'rejected_items.csv', $headers);
+})->name('checkFile');
 
 Route::get('preinvoice-pdf/{id}', 'salecontroller@preinvoicepdf')->name('sales.preinvoicepdf');
 Route::get('delivery-slip-pdf/{id}', 'salecontroller@deliverySlipPDF')->name('sales.delivery-slip');
