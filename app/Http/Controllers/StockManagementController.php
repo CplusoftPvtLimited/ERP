@@ -405,12 +405,17 @@ class StockManagementController extends Controller
         }
 	// dd($f);
         $file = public_path()."/". $request->filename;
-        $headers = array(
+        if(file_exists($file)){
+            $headers = array(
                 'Content-Type: application/CSV',
                 );
 
         
-        return Response::download($file, 'rejected_items.csv', $headers);
+            return Response::download($file, 'rejected_items.csv', $headers);
+        }else{
+            return back();
+        }
+        
     }
 
     private function clear_encoding_str($value)
