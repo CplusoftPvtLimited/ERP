@@ -64,7 +64,7 @@
                     <p>{{ $message }}</p>
                   </div>
                 @endif
-                  <table id="data-table" class="table" style="width: 100% !important">
+                  <table id="forms-table" class="table" style="width: 100% !important">
                     <thead>
                       <tr>
                         <th>No</th>
@@ -249,3 +249,14 @@
 </div>
 </section>
 @endsection
+
+<link href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+<script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#forms-table').DataTable({
+            // searching: false,
+            ordering: false
+        });
+    });
+</script>

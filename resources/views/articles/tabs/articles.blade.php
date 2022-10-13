@@ -75,8 +75,8 @@
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Model *</h6>
-                            <select name="modelSeries" id="modelSeries" data-href="{{ route('get_engines_by_model') }}"
-                                class="form-control" required>
+                            <select name="modelSeries" id="modelSeries"
+                                data-href="{{ route('search_engines_by_model') }}" class="form-control" required>
                             </select>
                         </div>
                     </div>
@@ -84,7 +84,7 @@
                         <div class="form-group">
                             <h6>Engine *</h6>
                             <select name="linkingTargetId" id="linkingTargetId"
-                                data-href="{{ route('get_sections_by_engine') }}" class="form-control" required>
+                                data-href="{{ route('search_sections_by_engine') }}" class="form-control" required>
                             </select>
                         </div>
                     </div>
@@ -220,6 +220,13 @@
                 $('#linkingTargetId').selectpicker("refresh");
 
                 let response = data.data;
+                if (response.length == 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'No Manufacturer Found Against the selected Engine Sub-Type. Please Change the Engine Sub-Type',
+                    });
+                }
                 // console.log(response)
                 let view_html = `<option value="">Select One</option>`;
                 $.each(response, function(key, value) {
@@ -236,12 +243,14 @@
         $('#mfrId').on('change', function() {
             let manufacturer_id = $(this).val();
             // alert(manufacturer_id);
+            let engine_sub_type = $('#subLinkageTarget :selected').val();
             let url = $(this).attr('data-href');
-            getModels(url, manufacturer_id);
+            getModels(url, manufacturer_id, engine_sub_type);
         });
 
-        function getModels(url, manufacturer_id) {
-            $.get(url + '?manufacturer_id=' + manufacturer_id, function(data) {
+        function getModels(url, manufacturer_id, engine_sub_type) {
+            $.get(url + '?manufacturer_id=' + manufacturer_id + '&engine_sub_type=' + engine_sub_type, function(
+                data) {
                 let response = data.data;
                 if (response.length == 0) {
                     Swal.fire({
@@ -260,12 +269,13 @@
         }
         $('#modelSeries').on('change', function() {
             let model_id = $(this).val();
+            let engine_sub_type = $('#subLinkageTarget :selected').val();
             let url = $(this).attr('data-href');
-            getEngines(url, model_id);
+            getEngines(url, model_id, engine_sub_type);
         });
 
-        function getEngines(url, model_id) {
-            $.get(url + '?model_id=' + model_id, function(data) {
+        function getEngines(url, model_id, engine_sub_type) {
+            $.get(url + '?model_id=' + model_id + '&engine_sub_type=' + engine_sub_type, function(data) {
                 let response = data.data;
                 if (response.length == 0) {
                     Swal.fire({
@@ -286,12 +296,13 @@
         }
         $('#linkingTargetId').on('change', function() {
             let engine_id = $(this).val();
+            let engine_sub_type = $('#subLinkageTarget :selected').val();
             let url = $(this).attr('data-href');
-            getSections(url, engine_id);
+            getSections(url, engine_id, engine_sub_type);
         });
 
-        function getSections(url, engine_id) {
-            $.get(url + '?engine_id=' + engine_id, function(data) {
+        function getSections(url, engine_id, engine_sub_type) {
+            $.get(url + '?engine_id=' + engine_id + '&engine_sub_type=' + engine_sub_type, function(data) {
                 let response = data.data;
                 if (response.length == 0) {
                     Swal.fire({

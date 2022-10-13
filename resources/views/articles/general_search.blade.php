@@ -139,6 +139,13 @@
             $('#engine_id').html('<option value="">Select One</option>');
             $('#engine_id').selectpicker("refresh");
             let response = data.data;
+            if (response.length == 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'No Manufacturer Found Against the selected Engine Sub-Type. Please Change the Engine Sub-Type',
+                });
+            }
             let view_html = `<option value="">Select One</option>`;
             $.each(response, function(key, value) {
                 view_html += `<option value="${value.manuId}">${value.manuName}</option>`;
@@ -172,6 +179,13 @@
 
 
             let response = data.data;
+            if (response.length == 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Selected Manufacturer do not have any Model. Please Change the Manufacturer',
+                });
+            }
             let view_html = `<option value="">Select One</option>`;
             $.each(response, function(key, value) {
                 view_html += `<option value="${value.modelId}">${value.modelname}</option>`;
@@ -204,6 +218,13 @@
             $('#engine_id').selectpicker("refresh");
 
             let response = data.data;
+            if (response.length == 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Selected Model do not have any engine. Please Change the Model',
+                });
+            }
             let view_html = `<option value="">Select One</option>`;
             $.each(response, function(key, value) {
                 view_html +=
@@ -231,6 +252,13 @@
             $('#section_part_id').html('<option value="">Select One</option>');
             $('#section_part_id').selectpicker("refresh");
             let response = data.data;
+            if (response.length == 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Selected Engine do not have any Section. Please Change the Engine',
+                });
+            }
             let view_html = `<option value="">Select One</option>`;
             $.each(response, function(key, value) {
                 view_html +=
