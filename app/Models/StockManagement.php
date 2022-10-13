@@ -32,4 +32,8 @@ class StockManagement extends Model
     {
         return $this->hasMany(ProductPurchase::class,'product_id','product_id');
     }
+    public function article() :BelongsTo
+    {
+        return $this->belongsTo(Article::class,'product_id','legacyArticleId');
+    }
 }

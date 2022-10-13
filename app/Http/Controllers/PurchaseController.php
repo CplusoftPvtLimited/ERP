@@ -1394,6 +1394,7 @@ class PurchaseController extends Controller
             return $e->getMessage();
         }
     }
+    
     public function getModelsByManufacturer(Request $request)
     {
         try {
