@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Keygen;
 use App\Brand;
 use App\Category;
+use App\Models\Article;
+use App\Models\ArticleLinks;
 use App\Models\ArticleVehicleTree;
 use App\Models\StockManagement;
 use App\Unit;
@@ -33,10 +35,17 @@ class ProductController extends Controller
 {
     public function viewProduct($id)
     {
-        Log::debug($id);
         try {
-            $get_product = StockManagement::where('id', $id)->with(['purchaseProduct' => function ($query) {
-                $query->with(['purchase']);
+            $get_product = Article::whereHas('stock', function($query) use ($id){
+                $query->where('id', $id);
+                $query->whereNull('deleted_at');
+            })->with(['brand'=> function($query){
+                $query->select('id','brandId','brandName');
+            },'section' => function ($query){
+                    $query->select('id','assemblyGroupNodeId','assemblyGroupName','request__linkingTargetId');
+                $query->with(['linkageTarget' => function ($query){
+                    $query->select(['id','linkageTargetId','linkageTargetType','description','mfrName','subLinkageTargetType','vehicleModelSeriesName'],);
+                }]);
             }])->first();
             // dd($get_product);
             return view('stock.view', compact('get_product'));
