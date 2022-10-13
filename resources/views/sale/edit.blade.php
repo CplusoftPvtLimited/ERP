@@ -175,7 +175,7 @@
                                                                         onkeyup="editSaleQty({{ $sale_product->id }})"
                                                                         value="{{ $sale_product->quantity }}">
                                                                 </td>
-                                                                <td>
+                                                                <td width="150px">
                                                                     <input class="form-control" type="number"
                                                                         step="any"
                                                                         id="sale_price_{{ $sale_product->id }}"
@@ -281,7 +281,7 @@
                                         </div>
                                         <div class="row total-calculations">
                                             <div class="col-md-4">
-                                                <h5>Discount</h5>
+                                                <h5>Discount <span style="font-size:10px;color:#98AFC7">(value)</span></h5>
                                             </div>
                                             <div class="col-md-3">
                                                 <input type="number" name="sale_discount" id="sale_discount"
@@ -291,7 +291,7 @@
                                         </div>
                                         <div class="row total-calculations">
                                             <div class="col-md-4">
-                                                <h5>VAT</h5>
+                                                <h5>VAT <span style="font-size:10px;color:#98AFC7">(value)</span></h5>
                                             </div>
                                             <div class="col-md-3">
                                                 <input type="number" name="entire_vat" value="{{ $sale->entire_vat }}"

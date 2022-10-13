@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\CssSelector\Node\FunctionNode;
+use Illuminate\Support\Facades\Response;
 
 class StockManagementController extends Controller
 {
@@ -367,6 +368,8 @@ class StockManagementController extends Controller
                 $data = [
                     'sender' => Auth::user()->id,
                     'message' => $csv_url,
+                    'type' => 'rejected',
+                    'file_name' => $filename
                 ];
                 $user = User::find($data['sender']);
                 // dd($user);
@@ -385,6 +388,23 @@ class StockManagementController extends Controller
             Log::debug($th);
             return $th->getMessage();
         }
+    }
+
+    public function getRejectedItemCSV(Request $request){
+        $notis = auth()->user()->unreadNotifications;
+        foreach($notis as $n){
+            if($n->id == $request->id){
+                $n->markAsRead();
+            }
+        }
+	// dd($f);
+        $file = public_path()."/". $request->filename;
+        $headers = array(
+                'Content-Type: application/CSV',
+                );
+
+        
+        return Response::download($file, 'rejected_items.csv', $headers);
     }
 
     private function clear_encoding_str($value)

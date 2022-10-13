@@ -1094,20 +1094,20 @@
                                     <li style="background-color: white"><a
                                             >{{ Str::limit($noti->data['message'], 30) }}</a>
                                     </li>
-                                @elseif($noti->noti_type == null && $noti->read_at == null)
+                                @elseif(isset($noti->data['type']) && $noti->data['type'] == "rejected" && $noti->read_at == null)
                                     <li style="background-color: lightgrey">
                                         <form action="{{ route('checkFile') }}" method="post" enctype="multipart/form-data">
                                             @csrf
-                                            <input type="hidden" name="url" value="{{ $noti->data['message'] }}">
+                                            <input type="hidden" name="filename" value="{{ $noti->data['file_name'] }}">
                                             <input type="hidden" name="id" value="{{ $noti->id }}">
                                             <button style="background:transparent;border:none;" type="submit">Import CSV rejected Items</button>
                                         </form> 
                                         
                                         {{-- <span style="font-size: 12px; display:flex; justify-content: end"> {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $noti->created_at) }}</span> --}}
                                     </li>
-                                @elseif($noti->noti_type == null && $noti->read_at != null)
+                                @elseif(isset($noti->data['type']) && $noti->data['type'] == "rejected" && $noti->read_at != null)
                                     <li style="background-color: white"> 
-                                        <a href="{{ $noti->data['message'] }}"> Import CSV rejected Items</a>
+                                        <a href="{{ url('/'. $noti->data['file_name'])}}"> Import CSV rejected Items</a>
                                         {{-- <span style="font-size: 12px; display:flex; justify-content: end"> {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $noti->created_at) }}</span> --}}
                                     </li>
                                 @endif

@@ -371,9 +371,108 @@
         var cashType = $('#cash_type').find(":selected").val();
         var brandId = $('#brand_id').find(":selected").val();
 
-        checkIfExists(engine_type, engine_sub_type, manufacturer_id, model_id, engine_id, section_id,
-            section_part_id, supplier_id, status, date, cashType, brandId);
+        // checkIfItemExists(engine_type, engine_sub_type, manufacturer_id, model_id, engine_id, section_id,
+        //     section_part_id, supplier_id, status, date, cashType, brandId);
+        if (!engine_type) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please select an Engine Type',
 
+            });
+            exit();
+        }
+        if (!engine_sub_type) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please select an Engine Type',
+            });
+            exit();
+        }
+        if (!manufacturer_id) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please select a manufacturer',
+
+            });
+            exit();
+        }
+        if (!model_id) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please select a Model',
+
+            });
+            exit();
+        }
+        if (!engine_id) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please select an engine',
+
+            });
+            exit();
+        }
+        if (!section_id) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please select a section',
+
+            });
+            exit();
+        }
+        if (!section_part_id) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please select a section part',
+
+            });
+            exit();
+        }
+
+
+        if (!status) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please select a status',
+
+            });
+            exit();
+        }
+        if (!date) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please select a date',
+
+            });
+            exit();
+        }
+        if (!cashType) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please select Cash Type',
+
+            });
+            exit();
+        }
+        if (brandId == null) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please select Brand',
+
+            });
+            exit();
+        }
         $.ajax({
             method: "GET",
             url: "{{ url('show_section_parts_in_table') }}",
@@ -399,6 +498,16 @@
                 //     "processing": true,
                 //     "searching" : true,
                 // });
+
+                if (data.brand_id == null) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Please select Brand',
+
+                    });
+                    exit();
+                }
                 $('#submit-button').css("display", "block");
                 $('#order-table-header').text(`{{ trans('file.Order Table') }} *`);
                 var tableBody = $("table tbody");
@@ -428,7 +537,7 @@
                             </div> 
                             <div class="row total-calculations"> 
                                 <div class="col-md-3">
-                                   <h5>VAT</h5>    
+                                   <h5>VAT <span style="font-size:10px;color:#98AFC7">(value)</span></h5>    
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group mb-3">     
@@ -593,14 +702,14 @@
                     '" value="0" min="0" name="item_qty[]" required></td>';
 
                 markup +=
-                    '<td><input style="width:100px" type="number" class="form-control" onkeyup="alterPurchaseQty(' +
+                    '<td><input style="width:150px" type="number" class="form-control" onkeyup="alterPurchaseQty(' +
                     data.data.legacyArticleId +
                     ')" value="1" min="1" step="any" id="purchase_price_' +
                     data.data.legacyArticleId +
                     '" name="purchase_price[]" required></td>';
 
                 markup +=
-                    '<td><input style="width:100px" type="number" class="form-control"  id="sale_price_' +
+                    '<td><input style="width:150px" type="number" class="form-control"  id="sale_price_' +
                     data.data.legacyArticleId +
                     '" name="sale_price[]" readonly></td>';
 
@@ -640,7 +749,7 @@
                     '" name="total_excluding_vat[]" readonly></td>';
 
                 markup +=
-                    '<td><input type="text" style="width:100px" class="form-control" value="0" min="0"   id="actual_cost_per_product_' +
+                    '<td><input type="text" style="width:150px" class="form-control" value="0" min="0"   id="actual_cost_per_product_' +
                     data.data.legacyArticleId +
                     '" name="actual_cost_per_product[]" readonly></td>';
 
@@ -683,116 +792,10 @@
         });
     });
 
-    function checkIfExists(engine_type, engine_sub_type, manufacturer_id, model_id, engine_id, section_id,
+    function checkIfItemExists(engine_type, engine_sub_type, manufacturer_id, model_id, engine_id, section_id,
         section_part_id, supplier_id, status, date, cashType, brandId) {
-        if (!engine_type) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please select an Engine Type',
 
-            });
-            exit();
-        }
-        if (!engine_sub_type) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please select an Engine Type',
-            });
-            exit();
-        }
-        if (!manufacturer_id) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please select a manufacturer',
 
-            });
-            exit();
-        }
-        if (!model_id) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please select a Model',
-
-            });
-            exit();
-        }
-        if (!engine_id) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please select an engine',
-
-            });
-            exit();
-        }
-        if (!section_id) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please select a section',
-
-            });
-            exit();
-        }
-        if (!section_part_id) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please select a section part',
-
-            });
-            exit();
-        }
-        console.log(supplier_id);
-        if (!supplier_id) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please select a supplier',
-
-            });
-            exit();
-        }
-        if (!status) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please select a status',
-
-            });
-            exit();
-        }
-        if (!date) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please select a date',
-
-            });
-            exit();
-        }
-        if (!cashType) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please select Cash Type',
-
-            });
-            exit();
-        }
-        if (!brandId) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please select Brand',
-
-            });
-            exit();
-        }
     }
     var t_qty = 0;
     let w_qty = 0;
@@ -896,7 +899,7 @@
             }
 
         }
-        
+
         console.log(all_product_ids);
         if (all_product_ids.length <= 0) {
             $('#total_calculations').css('display', 'none');
