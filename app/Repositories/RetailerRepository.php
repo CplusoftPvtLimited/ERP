@@ -64,7 +64,6 @@ class RetailerRepository implements RetailerInterface
             $data = $item->delete();
             return $data;
         } catch (\Exception $e) {
-            DB::rollBack();
             return $e->getMessage();
         }
     }

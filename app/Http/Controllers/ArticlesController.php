@@ -205,9 +205,9 @@ class ArticlesController extends Controller
     public function edit($id)
     {
         $suppliers = Ambrand::all();
-        $sections = AssemblyGroupNode::all();
+        $sections = AssemblyGroupNode::withTrashed()->get();
         $article = Article::find($id);
-        $manufacturers = Manufacturer::all();
+        $manufacturers = Manufacturer::withTrashed()->get();
 
         if ($article) {
             $manufacturer = Manufacturer::where('manuId', $article->mfrId)->first();
@@ -221,7 +221,7 @@ class ArticlesController extends Controller
             $art_crosses = ArticleCross::where('legacyArticleId', $article->legacyArticleId)->first();
             $art_ean = ArticleEAN::where('legacyArticleId', $article->legacyArticleId)->first();
             $art_link = ArticleLinks::where('legacyArticleId', $article->legacyArticleId)->first();
-            return view('articles.edit', compact('suppliers', 'sections', 'manufacturers','manufacturer', 'article', 'keyValues', 'languages', 'engine', 'model', 'section', 'art_criteria', 'art_crosses', 'art_ean', 'art_link', 'avt'));
+            return view('articles.edit', compact('suppliers', 'sections', 'manufacturers', 'manufacturer', 'article', 'keyValues', 'languages', 'engine', 'model', 'section', 'art_criteria', 'art_crosses', 'art_ean', 'art_link', 'avt'));
         } else {
             return redirect(url()->previous());
         }

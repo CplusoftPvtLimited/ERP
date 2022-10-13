@@ -143,9 +143,9 @@ class LinkageTargetsController extends Controller
     public function edit($id)
     {
         $engine = LinkageTarget::find($id);
-        $manufacturers = Manufacturer::all();
+        $manufacturers = Manufacturer::withTrashed()->get();
         $data = $this->checkLinkageTargetType($engine->subLinkageTargetType);
-        $models = ModelSeries::all();
+        $models = ModelSeries::withTrashed()->get();
 
         $sub_target_type = isset($data) ? $data['sub_target_type'] : [];
         $target_type = isset($data) ? $data['target_type'] : [];

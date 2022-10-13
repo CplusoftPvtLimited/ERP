@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Article extends Model
 {
-    use HasFactory;
+    use HasFactory , SoftDeletes;
     protected $table = "articles";
     protected $guarded = [];
 
@@ -48,7 +49,7 @@ class Article extends Model
         return $this->belongsTo(Ambrand::class,'dataSupplierId', 'brandId');
     }
 
-    public function brands() : hasMany{
+    public function brands(){
         return $this->hasMany(Ambrand::class,'brandId','dataSupplierId');
     }
 

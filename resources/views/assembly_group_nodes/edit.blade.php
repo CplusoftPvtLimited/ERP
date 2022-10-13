@@ -93,7 +93,7 @@
                                                         class="form-control">
                                                         @foreach ($engines as $engine)
                                                             <option value="{{ $engine->linkageTargetId }}" {{ $section->request__linkingTargetId == $engine->linkageTargetId ? 'selected' : '' }}>
-                                                                {{ $engine->linkageTargetType }}</option>
+                                                                {{ $engine->description }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>

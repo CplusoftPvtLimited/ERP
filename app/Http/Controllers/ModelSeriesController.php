@@ -150,7 +150,8 @@ class ModelSeriesController extends Controller
     public function edit($id)
     {
         $modelSeries = ModelSeries::find($id);
-        $manufacturers = Manufacturer::all();
+        $manufacturers = Manufacturer::withTrashed()->get();
+        // dd($manufacturers);
         $earliest_year = 1900;
         $latest_year = date('Y');
         return view('model_series.edit', compact('modelSeries', 'manufacturers', 'latest_year', 'earliest_year'));

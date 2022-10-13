@@ -43,7 +43,7 @@ class LinkageTargetRepository implements LinkageTargetInterface
 
             return true;
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            // dd($e->getMessage());
             DB::rollBack();
             return $e->getMessage();
         }

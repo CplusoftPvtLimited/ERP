@@ -113,7 +113,7 @@ class AssemblyGroupNodesController extends Controller
         $section = AssemblyGroupNode::find($id);
 
         $languages = Language::all();
-        $engines = LinkageTarget::all();
+        $engines = LinkageTarget::withTrashed()->get();
         return view('assembly_group_nodes.edit', compact('languages', 'engines', 'section'));
     }
 
@@ -217,8 +217,6 @@ class AssemblyGroupNodesController extends Controller
 
         $sections = array_merge($old_sections, $new_sections);
         dd($sections);
-        $section = array_unique($sections);
-        dd($section);
         foreach($sections as $key => $value)
         {
             dump($value['id']);
