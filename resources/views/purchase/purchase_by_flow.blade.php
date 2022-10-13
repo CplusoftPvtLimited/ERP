@@ -88,7 +88,8 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="brand">{{ __('Select Supplier') }} (Brand)</label>
-                    <select name="brand_id" id="brand_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" required>
+                    <select name="brand_id" id="brand_id" class="selectpicker form-control" data-live-search="true"
+                        data-live-search-style="begins" required>
                     </select>
                 </div>
             </div>
@@ -537,22 +538,22 @@
                     }
                 })
 
-                if (supplier_ids_array.length > 0) {
-                    supplier_ids_array.forEach(checkSupplier);
+                // if (supplier_ids_array.length > 0) {
+                //     supplier_ids_array.forEach(checkSupplier);
 
-                    function checkSupplier(item, index) {
-                        if (item != data.supplier) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'You have already selected a supplier , you are not to allowed to change the supplier during one purchase',
-                            });
-                            exit();
-                        }
-                    }
-                } else {
-                    supplier_ids_array.push(data.supplier);
-                }
+                //     function checkSupplier(item, index) {
+                //         if (item != data.supplier) {
+                //             Swal.fire({
+                //                 icon: 'error',
+                //                 title: 'Oops...',
+                //                 text: 'You have already selected a supplier , you are not to allowed to change the supplier during one purchase',
+                //             });
+                //             exit();
+                //         }
+                //     }
+                // } else {
+                //     supplier_ids_array.push(data.supplier);
+                // }
                 if (selected_cash_type.length > 0) {
                     selected_cash_type.forEach(checkCashType);
 
@@ -580,7 +581,7 @@
                     tableHead.append(black_cash_head);
                     total_calculations.html(black_cash_calculations_head);
                 }
-                $('#total_calculations').css('display','block');
+                $('#total_calculations').css('display', 'block');
                 markup = '<tr id="article_' + data.data.legacyArticleId + '"><td>' + data.data
                     .genericArticleDescription + '-' + data.data.articleNumber +
                     '</td>';
@@ -643,10 +644,10 @@
                     data.data.legacyArticleId +
                     '" name="actual_cost_per_product[]" readonly></td>';
 
-                markup += '<td><button class="btn btn-danger"><i id="article_delete_' +
+                markup += '<td><button type="button" class="btn btn-danger" id="article_delete_' +
                     data.data.legacyArticleId + '" onclick="deleteArticle(' + data.data
                     .legacyArticleId +
-                    ')" class="fa fa-trash"></i></button></td>';
+                    ')"><i class="fa fa-trash"></i></button></td>';
 
                 markup += '<td style="display:none;">' + html +
                     '</td></tr>';
@@ -658,10 +659,10 @@
                             article_ids_array.push(this.id)
                         }
                     });
-                    
+
 
                 } else {
-                    if (!article_ids_array.includes("article_" + data.data.legacyArticleId)) {
+                    if (!all_product_ids.includes("article_" + data.data.legacyArticleId)) {
                         tableBody.append(markup);
                     } else {
                         Swal.fire({
@@ -675,9 +676,9 @@
                     selected_cash_type = [];
                 }
                 all_product_ids.push(data.data.legacyArticleId);
-                
 
-                
+
+
             }
         });
     });
@@ -825,7 +826,7 @@
         $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
         // console.log(total_actual);
         // if(cashType == "white"){
-            calculateEntireTotal(all_product_ids);
+        calculateEntireTotal(all_product_ids);
         // }else{
         //     $("#total_to_be_paid").val(total_actual);
         // }
@@ -838,12 +839,12 @@
         total_quantity_of_all_row_products = 0;
     }
 
-    
+
 
     function calculatePurchasePrice() {
         if (all_product_ids.length > 0) {
             var entireAditionalCost = parseFloat($("#purchase_additional_cost").val());
-            console.log("kkkkkkkkkkkkkk",all_product_ids)
+            console.log("kkkkkkkkkkkkkk", all_product_ids)
             all_product_ids.forEach(getSalePrice);
             var actual_total = 0.0;
 
@@ -874,7 +875,7 @@
             calculateEntireTotal(all_product_ids);
             total_quantity_of_all_row_products = 0;
         }
-        
+
     }
 
     function deleteArticle(id) {
@@ -887,11 +888,20 @@
             }
 
         }
+        for (var i = 0; i < article_ids_array.length; i++) {
+
+            if (article_ids_array[i] === id) {
+
+                article_ids_array.splice(i, 1);
+            }
+
+        }
+        
         console.log(all_product_ids);
-        if(all_product_ids.length <= 0){
-            $('#total_calculations').css('display','none');
-            $('#submit-button').css('display','none');
-            $("table thead").css('display','none');
+        if (all_product_ids.length <= 0) {
+            $('#total_calculations').css('display', 'none');
+            $('#submit-button').css('display', 'none');
+            $("table thead").empty();
 
 
         }
@@ -902,25 +912,26 @@
         }
     }
 
-    function changeTotalWithVAT(){
+    function changeTotalWithVAT() {
         var total_vat = 0.0;
         var cashType = $('#cash_type').find(":selected").val();
         var id_array = [];
-        id_array =  all_product_ids.filter(onlyUnique);
-       
+        id_array = all_product_ids.filter(onlyUnique);
+
         if (id_array.length > 0) {
             id_array.forEach(getActualProductCost);
 
             function getActualProductCost(id, index) {
-                    
-                    if(cashType == "white"){
-                        total_vat = total_vat + parseFloat($('#vat_' + id).val() / 100) + parseFloat($('#additional_cost_with_vat_' + id).val());
-                    }
 
-               
+                if (cashType == "white") {
+                    total_vat = total_vat + parseFloat($('#vat_' + id).val() / 100) + parseFloat($(
+                        '#additional_cost_with_vat_' + id).val());
+                }
+
+
             }
             total_vat = total_vat + parseFloat($('#purchase_additional_cost').val());
-            
+
             $('#entire_vat').val(total_vat.toFixed(2));
             var tax_stamp = parseFloat($('#tax_stamp').val());
             var total_to_be_paid = total_actual.toFixed(2) + entire_vat.toFixed(2) + tax_stamp.toFixed(2);
@@ -936,36 +947,38 @@
         // console.log(product_ids_array)
         var cashType = $('#cash_type').find(":selected").val();
         var id_array = [];
-        id_array =  product_ids_array.filter(onlyUnique);
-       
+        id_array = product_ids_array.filter(onlyUnique);
+
         if (id_array.length > 0) {
             id_array.forEach(getActualProductCost);
 
             function getActualProductCost(id, index) {
-                    
-                    total_actual += parseFloat($('#actual_cost_per_product_' + id).val());
-                    if(cashType == "white"){
-                        total_vat = total_vat + parseFloat($('#vat_' + id).val() / 100) + parseFloat($('#additional_cost_with_vat_' + id).val());
-                    }
 
-               
+                total_actual += parseFloat($('#actual_cost_per_product_' + id).val());
+                if (cashType == "white") {
+                    total_vat = total_vat + parseFloat($('#vat_' + id).val() / 100) + parseFloat($(
+                        '#additional_cost_with_vat_' + id).val());
+                }
+
+
             }
             total_vat = total_vat + parseFloat($('#purchase_additional_cost').val());
-            
+
             $('#entire_total_exculding_vat').val(total_actual.toFixed(2));
             $('#entire_vat').val(total_vat.toFixed(2));
             var tax_stamp = parseFloat($('#tax_stamp').val());
-            console.log('stamp',tax_stamp)
-            if(tax_stamp == null || tax_stamp == NaN){
+            console.log('stamp', tax_stamp)
+            if (tax_stamp == null || tax_stamp == NaN) {
                 tax_stamp = 0;
             }
-            total_to_be_paid = parseFloat(total_actual.toFixed(2)) + parseFloat(total_vat.toFixed(2)) + parseFloat(tax_stamp.toFixed(2));
-            if(cashType == "white"){
+            total_to_be_paid = parseFloat(total_actual.toFixed(2)) + parseFloat(total_vat.toFixed(2)) + parseFloat(
+                tax_stamp.toFixed(2));
+            if (cashType == "white") {
                 $('#total_to_be_paid').val(total_to_be_paid);
-            }else if(cashType == "black"){
+            } else if (cashType == "black") {
                 $('#total_to_be_paid').val(total_actual);
             }
-            
+
         }
 
     }

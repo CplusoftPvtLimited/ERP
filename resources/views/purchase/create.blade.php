@@ -76,13 +76,14 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.Additional Cost') }}</label>
-                                                <div class="input-group mb-3">     
-                                                    <input type="number" name="purchase_additional_cost" value="0" class="form-control"
-                                                        aria-label="Amount (to the nearest dollar)" id="purchase_additional_cost" onkeyup="calculatePurchasePrice()"
+                                                <div class="input-group mb-3">
+                                                    <input type="number" name="purchase_additional_cost" value="0"
+                                                        class="form-control" aria-label="Amount (to the nearest dollar)"
+                                                        id="purchase_additional_cost" onkeyup="calculatePurchasePrice()"
                                                         class="form-control" min="0" max="100000000">
                                                     <span class="input-group-text"><b>TND</b></span>
                                                 </div>
-                                                
+
                                             </div>
                                         </div>
                                     </div>
@@ -132,8 +133,8 @@
                                 </div>
                             </div>
                             @include('purchase.order-table')
-                            <div class="row p-5"  id="total_calculations" >
-                            
+                            <div class="row p-5" id="total_calculations">
+
                             </div>
                             <div class="row" id="submit-button" style="display: none;">
                                 <div class="col-md-12 form-group text-right">
@@ -171,42 +172,48 @@
         document.getElementById("defaultOpen").click();
 
         $('#submit_button').on('click', function() {
-        var supplier_id = $('#supplier_id').find(":selected").val();
-        if (!supplier_id) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'please select a supplier',
-                            });
-                            exit();
-                        }
-            if (selected_cash_type.length > 0) {
-            var cashType = $('#cash_type').find(":selected").val();
-
-                    selected_cash_type.forEach(checkCashType);
-
-                    function checkCashType(element, index, data) {
-                        console.log(element, index, data )
-                        if (element != cashType) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'you can not able to change the cash type for a purchase once you selected',
-                            });
-                            exit();
-                        }
-                    }
-
-                }
-            var table_body_rows = $("table tbody tr").length;
-            if(table_body_rows <= 0){
+            var check_array = [];
+            var supplier_id = $('#supplier_id').find(":selected").val();
+            if (!supplier_id) {
                 Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Please add atleast one purchase Item in table to proceed further',
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'please select a supplier',
+                });
+                check_array.push('error');
+                exit();
+                
+            }
+            if (selected_cash_type.length > 0) {
+                var cashType = $('#cash_type').find(":selected").val();
 
-                    });
-                    exit();
+                selected_cash_type.forEach(checkCashType);
+
+                function checkCashType(element, index, data) {
+                    console.log(element, index, data)
+                    if (element != cashType) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'you can not able to change the cash type for a purchase once you selected',
+                        });
+                        check_array.push('error');
+                        exit();
+                    }
+                   
+                }
+
+            }
+            var table_body_rows = $("table tbody tr").length;
+            if (table_body_rows <= 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please add atleast one purchase Item in table to proceed further',
+
+                });
+                check_array.push('error');
+                exit();
             }
             all_product_ids.forEach(checkFields);
 
@@ -221,6 +228,7 @@
                         text: 'Sale Price must be greater than zero',
 
                     });
+                    check_array.push('error');
                     exit();
                 }
                 if (actual_cost_per_product == null || actual_cost_per_product <= 0) {
@@ -230,6 +238,7 @@
                         text: 'Actual Cost Per Product must be greater than zero',
 
                     });
+                    check_array.push('error');
                     exit();
                 }
                 if (total_excluding_vat == null || total_excluding_vat <= 0) {
@@ -239,8 +248,13 @@
                         text: 'Total Excluding VAT must be greater than zero',
 
                     });
+                    check_array.push('error');
                     exit();
+
                 }
+
+            }
+            if(check_array.length <= 0){
                 document.getElementById("purchase-form").submit();
             }
         });
@@ -261,12 +275,11 @@
             var selected_year = date_array[2];
             today = mm + '-' + dd + '-' + yyyy;
             selected_date = selected_month + '-' + selected_day + '-' + selected_year;
-           
+
             var selected_date_2 = new Date(selected_date);
             var today_date_2 = new Date(today);
-             
-            if(selected_date_2 > today_date_2)
-                {
+
+            if (selected_date_2 > today_date_2) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
@@ -275,11 +288,10 @@
                 $('#product_purchase_date').val('');
                 exit();
             }
-            
-           
-                   
+
+
+
         });
-        
     </script>
 
     <script type="text/javascript" src="https://js.stripe.com/v3/"></script>

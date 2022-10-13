@@ -226,7 +226,7 @@
                             </div>
                        </div>
                 `;
-                black_cash_calculations_head += `
+                    black_cash_calculations_head += `
                             <div class="row total-calculations"> 
                                 <div class="col-md-3">
                                    <h5>Total To Be Paid</h5>    
@@ -297,26 +297,26 @@
                     $('#myTable tr').each(function() {
                         if (this.id != '') {
                             article_ids_array.push(this.id)
-                            
+
                         }
                     })
 
-                    if (supplier_ids_array.length > 0) {
-                        supplier_ids_array.forEach(checkSupplier);
+                    // if (supplier_ids_array.length > 0) {
+                    //     supplier_ids_array.forEach(checkSupplier);
 
-                        function checkSupplier(item, index) {
-                            if (item != data.supplier) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Oops...',
-                                    text: 'You have already selected a supplier , you are not to allowed to change the supplier during one purchase',
-                                });
-                                exit();
-                            }
-                        }
-                    } else {
-                        supplier_ids_array.push(data.supplier);
-                    }
+                    //     function checkSupplier(item, index) {
+                    //         if (item != data.supplier) {
+                    //             Swal.fire({
+                    //                 icon: 'error',
+                    //                 title: 'Oops...',
+                    //                 text: 'You have already selected a supplier , you are not to allowed to change the supplier during one purchase',
+                    //             });
+                    //             exit();
+                    //         }
+                    //     }
+                    // } else {
+                    //     supplier_ids_array.push(data.supplier);
+                    // }
                     if (selected_cash_type.length > 0) {
                         selected_cash_type.forEach(checkCashType);
 
@@ -407,10 +407,11 @@
                         data.data.legacyArticleId +
                         '" name="actual_cost_per_product[]" readonly></td>';
 
-                    markup += '<td><button class="btn btn-danger"><i id="article_delete_' +
-                    data.data.legacyArticleId + '" onclick="deleteArticle(' + data.data
-                    .legacyArticleId +
-                    ')" class="fa fa-trash"></i></button></td>';
+                    markup +=
+                        '<td><button type="button" class="btn btn-danger" id="article_delete_' +
+                        data.data.legacyArticleId + '" onclick="deleteArticle(' + data.data
+                        .legacyArticleId +
+                        ')"><i class="fa fa-trash"></i></button></td>';
 
                     markup += '<td style="display:none;">' + html +
                         '</td></tr>';
@@ -424,7 +425,7 @@
                         });
 
                     } else {
-                        if (!article_ids_array.includes("article_" + data.data.legacyArticleId)) {
+                        if (!all_product_ids.includes("article_" + data.data.legacyArticleId)) {
                             tableBody.append(markup);
                         } else {
                             Swal.fire({
@@ -525,10 +526,18 @@
             }
 
         }
-        if(all_product_ids.length <= 0){
-            $('#total_calculations').css('display','none');
-            $('#submit-button').css('display','none');
-            $("table thead").css('display','none');
+        for (var i = 0; i < article_ids_array.length; i++) {
+
+            if (article_ids_array[i] === id) {
+
+                article_ids_array.splice(i, 1);
+            }
+
+        }
+        if (all_product_ids.length <= 0) {
+            $('#total_calculations').css('display', 'none');
+            $('#submit-button').css('display', 'none');
+            $("table thead").empty();
 
 
         }
