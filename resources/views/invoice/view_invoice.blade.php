@@ -270,7 +270,7 @@
                                             </div>
                                             <div class="row total-calculations">
                                                 <div class="col-md-4">
-                                                    <h5>Tax Stamp</h5>
+                                                    <h5>TAX Stamp</h5>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group mb-3">

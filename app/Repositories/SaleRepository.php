@@ -299,7 +299,7 @@ class SaleRepository implements SaleInterface
             
 
             for ($i = 0; $i < count($sale_products); $i++) {
-                $manage_quantity = WhiteBlackQuantityManagement::where('sale_id',$id)->withTrashed()->first();
+                $manage_quantity = WhiteBlackQuantityManagement::where('sale_id',$id)->first();
                 
                 $sale_product = NewSaleProduct::find($manage_quantity->sale_item_id);
                 $stock = StockManagement::where('retailer_id',auth()->user()->id)->where('reference_no',$sale_product->reference_no)->withTrashed()->first();
