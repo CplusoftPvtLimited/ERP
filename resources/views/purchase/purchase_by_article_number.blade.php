@@ -555,8 +555,15 @@
             function getActualProductCost(id, index) {
 
                 if (cashType == "white") {
-                    total_vat = total_vat + parseFloat($('#vat_' + id).val() / 100) + parseFloat($(
-                        '#additional_cost_with_vat_' + id).val());
+                    var vat = $('#vat_' + id).val();
+                        if(vat == null || vat == NaN){
+                            vat = 0.0;
+                        }
+                        var add_cost_with_vat = $('#additional_cost_with_vat_' + id).val();
+                        if(add_cost_with_vat == null || add_cost_with_vat == NaN){
+                            add_cost_with_vat = 0.0;
+                        }
+                        total_vat = total_vat + parseFloat(vat / 100) + parseFloat(add_cost_with_vat);
                 }
 
 
@@ -586,8 +593,15 @@
 
                 total_actual += parseFloat($('#actual_cost_per_product_' + id).val());
                 if (cashType == "white") {
-                    total_vat = total_vat + parseFloat($('#vat_' + id).val() / 100) + parseFloat($(
-                        '#additional_cost_with_vat_' + id).val());
+                    var vat = $('#vat_' + id).val();
+                        if(vat == null || vat == NaN){
+                            vat = 0.0;
+                        }
+                        var add_cost_with_vat = $('#additional_cost_with_vat_' + id).val();
+                        if(add_cost_with_vat == null || add_cost_with_vat == NaN){
+                            add_cost_with_vat = 0.0;
+                        }
+                        total_vat = total_vat + parseFloat(vat / 100) + parseFloat(add_cost_with_vat);
                 }
 
 

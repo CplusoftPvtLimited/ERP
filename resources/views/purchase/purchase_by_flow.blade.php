@@ -808,6 +808,9 @@
         item_qty = parseInt($("#item_qty" + id).val());
         var purchasePrice = parseFloat($("#purchase_price_" + id).val());
         var additional_cost_without_vat = parseFloat($("#additional_cost_without_vat_" + id).val());
+        if(additional_cost_without_vat == null || additional_cost_without_vat == NaN){
+            additional_cost_without_vat = 0;
+        }
         var entireAditionalCost = $("#purchase_additional_cost").val();
         var cashType = $('#cash_type').find(":selected").val();
         var total_actual = 0.0;
@@ -832,6 +835,9 @@
         
             $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
             var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
+            if(profit_margin == null || profit_margin == NaN){
+                profit_margin = 0;
+            }
             var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
             sale_price_per_product = parseFloat(sale_price_per_product);
             $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
@@ -858,7 +864,10 @@
                 var purchasePrice = parseFloat($("#purchase_price_" + id).val());
                 var additional_cost_without_vat = parseFloat($("#additional_cost_without_vat_" + id).val());
                 var entireAditionalCost = $("#purchase_additional_cost").val();
-
+                
+                        if(additional_cost_without_vat == null || additional_cost_without_vat == NaN){
+                            additional_cost_without_vat = 0.0;
+                        }
 
                 var total_cost_without_vat = (purchasePrice * item_qty) + additional_cost_without_vat;
                 $("#total_excluding_vat_" + id).val(total_cost_without_vat.toFixed(2));
@@ -871,8 +880,11 @@
 
                 $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
                 actual_total += actual_cost_per_product.toFixed(2);
-                var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
-                var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
+                var profit_margin = $('#profit_margin_' + id).val() / 100;
+                if(profit_margin == null || profit_margin == NaN){
+                    profit_margin = 0.0;
+                }
+                var sale_price_per_product = actual_cost_per_product * (1 + parseFloat(profit_margin));
                 sale_price_per_product = parseFloat(sale_price_per_product);
                 $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
 
@@ -924,8 +936,15 @@
 
                 if (cashType == "white") {
                     
-                    total_vat = total_vat + parseFloat($('#vat_' + id).val() / 100) + parseFloat($(
-                        '#additional_cost_with_vat_' + id).val());
+                    var vat = $('#vat_' + id).val();
+                        if(vat == null || vat == NaN){
+                            vat = 0.0;
+                        }
+                        var add_cost_with_vat = $('#additional_cost_with_vat_' + id).val();
+                        if(add_cost_with_vat == null || add_cost_with_vat == NaN){
+                            add_cost_with_vat = 0.0;
+                        }
+                        total_vat = total_vat + parseFloat(vat / 100) + parseFloat(add_cost_with_vat);
                 }
 
 
@@ -959,8 +978,15 @@
                 if (qty > 0) {
                     total_actual += parseFloat($('#actual_cost_per_product_' + id).val());
                     if (cashType == "white") {
-                        total_vat = total_vat + parseFloat($('#vat_' + id).val() / 100) + parseFloat($(
-                            '#additional_cost_with_vat_' + id).val());
+                        var vat = $('#vat_' + id).val();
+                        if(vat == null || vat == NaN){
+                            vat = 0.0;
+                        }
+                        var add_cost_with_vat = $('#additional_cost_with_vat_' + id).val();
+                        if(add_cost_with_vat == null || add_cost_with_vat == NaN){
+                            add_cost_with_vat = 0.0;
+                        }
+                        total_vat = total_vat + parseFloat(vat / 100) + parseFloat(add_cost_with_vat);
                     }
                 }
 
