@@ -18,6 +18,7 @@ use App\Models\Manufacturer;
 use App\Models\ModelSeries;
 use App\Repositories\Interfaces\ArticleInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
 class ArticlesController extends Controller
@@ -281,19 +282,27 @@ class ArticlesController extends Controller
     }
     public function destroy($id)
     {
+        DB::beginTransaction();
         $article = Article::find($id);
         if ($article) {
+            $article->articleCriteria()->delete();
+            $article->articleCrosses()->delete();
+            $article->articleEAN()->delete();
+            $article->articleLink()->delete();
+            $article->articleVehicleTree()->delete();
             $article->delete();
+            DB::commit();
             return response()->json(['data' => "true", 'id' => $id]);
         } else {
+            DB::rollBack();
             return response()->json("false");
         }
     }
+
     public function articlesByReferenceNo(Request $request)
     {
         try {
             $articles = Article::where('articleNumber', 'LIKE', '%' . $request->name . '%')->paginate(10);
-            // dd($articles);
             return response()->json([
                 'data' => $articles
             ], 200);

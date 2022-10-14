@@ -45,7 +45,7 @@ class ArticleRepository implements ArticleInterface
                 }
                 $data = $request->except('_token');
             }
-            $max_article_id = Article::max('legacyArticleId');
+            $max_article_id = Article::withTrashed()->max('legacyArticleId');
             if (!empty($max_article_id)) {
                 $data['legacyArticleId'] = $max_article_id + 1;
             } else {
