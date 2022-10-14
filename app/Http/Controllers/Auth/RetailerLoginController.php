@@ -23,10 +23,14 @@ class RetailerLoginController extends Controller
             'name' => 'required',
             'password' => 'required',
         ]);
-
+        // dd($request->all());
         $check = User::where('name',$request->name)->where('role_id',1)->first();
-        // dd($check);
-
+        $check1 = User::where('name',$request->name)->where('role_id',10)->first();
+        // dd($check1);
+        if(!empty($check1) && $check1->deleted_at != null){
+            toastr()->info('Your account is deactivated from our system');
+            return redirect()->route('login');
+        }
         if (empty($check)) {
             $fieldType = filter_var($request->name, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
 
