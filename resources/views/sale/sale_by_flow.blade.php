@@ -620,10 +620,10 @@
                     data.data.legacyArticleId +
                     '" name="sale_total_with_discount[]" readonly></td>';
 
-                markup += '<td><button class="btn btn-danger btn-sm"><i id="article_delete_' +
+                markup += '<td><button type="button" id="article_delete_' +
                     data.data.legacyArticleId + '" onclick="deleteSaleArticle(' + data.data
                     .legacyArticleId +
-                    ')" class="fa fa-trash"></i></button></td>';
+                    ')" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button></td>';
 
                 markup += '<td style="display:none;">' + html +
                     '</td></tr>';

@@ -564,7 +564,7 @@
 
             $('#entire_vat').val(total_vat.toFixed(2));
             var tax_stamp = parseFloat($('#tax_stamp').val());
-            var total_to_be_paid = total_actual.toFixed(2) + entire_vat.toFixed(2) + tax_stamp.toFixed(2);
+            var total_to_be_paid = parseFloat($('#total_to_be_paid').val()) + entire_vat.toFixed(2) + tax_stamp.toFixed(2);
             $('#total_to_be_paid').val(total_to_be_paid);
         }
     }

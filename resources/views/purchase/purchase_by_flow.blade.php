@@ -714,7 +714,7 @@
                     '" name="sale_price[]" readonly></td>';
 
                 markup +=
-                    '<td><input type="number" class="form-control" value="0" min="0" step="any" id="discount_' +
+                    '<td><input type="number" class="form-control" value="0" min="0" max="100" step="any" id="discount_' +
                     data.data.legacyArticleId +
                     '" name="discount[]"></td>';
 
@@ -732,7 +732,7 @@
 
                 if (data.cash_type == "white") {
                     markup +=
-                        '<td><input style="width:100px" type="number" onkeyup="changeTotalWithVAT()" class="form-control" value="0" min="0" step="any" id="vat_' +
+                        '<td><input style="width:100px" type="number" onkeyup="changeTotalWithVAT()" class="form-control" max="100" value="0" min="0" step="any" id="vat_' +
                         data.data.legacyArticleId +
                         '" name="vat[]" required></td>';
                 }
@@ -826,19 +826,24 @@
                 total_quantity_of_all_row_products);
 
         }
-        $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
-        // console.log(total_actual);
-        // if(cashType == "white"){
+        if (actual_cost_per_product == null || actual_cost_per_product == NaN) {
+            $('#actual_cost_per_product_' + id).val(0);
+            var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
+            var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
+            sale_price_per_product = parseFloat(sale_price_per_product);
+            $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
+        } else {
+            $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
+            var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
+            var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
+            sale_price_per_product = parseFloat(sale_price_per_product);
+            $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
+        }
+
+       
         calculateEntireTotal(all_product_ids);
-        // }else{
-        //     $("#total_to_be_paid").val(total_actual);
-        // }
+     
 
-
-        var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
-        var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
-        sale_price_per_product = parseFloat(sale_price_per_product);
-        $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
         total_quantity_of_all_row_products = 0;
     }
 
@@ -891,7 +896,7 @@
             }
 
         }
-        
+
 
         console.log(all_product_ids);
         if (all_product_ids.length <= 0) {
@@ -910,6 +915,7 @@
 
     function changeTotalWithVAT() {
         var total_vat = 0.0;
+        var total_actual = 0.0;
         var cashType = $('#cash_type').find(":selected").val();
         var id_array = [];
         id_array = all_product_ids.filter(onlyUnique);
@@ -920,6 +926,7 @@
             function getActualProductCost(id, index) {
 
                 if (cashType == "white") {
+                    
                     total_vat = total_vat + parseFloat($('#vat_' + id).val() / 100) + parseFloat($(
                         '#additional_cost_with_vat_' + id).val());
                 }
@@ -930,13 +937,13 @@
 
             $('#entire_vat').val(total_vat.toFixed(2));
             var tax_stamp = parseFloat($('#tax_stamp').val());
-            var total_to_be_paid = total_actual.toFixed(2) + entire_vat.toFixed(2) + tax_stamp.toFixed(2);
-            console.log(total_to_be_paid)
+            var total_to_be_paid = parseFloat($('#total_to_be_paid').val()) + entire_vat.toFixed(2) + tax_stamp.toFixed(2);
+            
             $('#total_to_be_paid').val(total_to_be_paid);
         }
     }
 
-    
+
 
     function calculateEntireTotal(product_ids_array) {
         var total_actual = 0.0;
@@ -951,12 +958,15 @@
             id_array.forEach(getActualProductCost);
 
             function getActualProductCost(id, index) {
-
-                total_actual += parseFloat($('#actual_cost_per_product_' + id).val());
-                if (cashType == "white") {
-                    total_vat = total_vat + parseFloat($('#vat_' + id).val() / 100) + parseFloat($(
-                        '#additional_cost_with_vat_' + id).val());
+                var qty = parseInt($("#item_qty" + id).val());
+                if (qty > 0) {
+                    total_actual += parseFloat($('#actual_cost_per_product_' + id).val());
+                    if (cashType == "white") {
+                        total_vat = total_vat + parseFloat($('#vat_' + id).val() / 100) + parseFloat($(
+                            '#additional_cost_with_vat_' + id).val());
+                    }
                 }
+
 
 
             }
