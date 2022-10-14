@@ -699,7 +699,7 @@
                     '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterPurchaseQty(' +
                     data.data.legacyArticleId + ')" id="item_qty' + data.data
                     .legacyArticleId +
-                    '" value="0" min="0" name="item_qty[]" required></td>';
+                    '" value="1" min="1" name="item_qty[]" required></td>';
 
                 markup +=
                     '<td><input style="width:150px" type="number" class="form-control" onkeyup="alterPurchaseQty(' +
@@ -785,6 +785,7 @@
                     selected_cash_type = [];
                 }
                 all_product_ids.push(data.data.legacyArticleId);
+                alterPurchaseQty(data.data.legacyArticleId);
 
 
 
@@ -810,35 +811,31 @@
         var entireAditionalCost = $("#purchase_additional_cost").val();
         var cashType = $('#cash_type').find(":selected").val();
         var total_actual = 0.0;
+        
         var total_cost_without_vat = (purchasePrice * item_qty) + additional_cost_without_vat;
+       
         $("#total_excluding_vat_" + id).val(total_cost_without_vat.toFixed(2));
 
         if (all_product_ids.length > 0) {
 
             all_product_ids.forEach(getActualProductCost);
 
-            function getActualProductCost(id, index) {
-                total_actual += parseFloat($('#actual_cost_per_product_' + id).val());
-                total_quantity_of_all_row_products += parseInt($("#item_qty" + id).val());
+            function getActualProductCost(idd, index) {
+                total_actual += parseFloat($('#actual_cost_per_product_' + idd).val());
+                total_quantity_of_all_row_products += parseInt($("#item_qty" + idd).val());
 
             }
             var actual_cost_per_product = (total_cost_without_vat / item_qty) + (entireAditionalCost /
                 total_quantity_of_all_row_products);
-
+                
         }
-        if (actual_cost_per_product == null || actual_cost_per_product == NaN) {
-            $('#actual_cost_per_product_' + id).val(0);
-            var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
-            var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
-            sale_price_per_product = parseFloat(sale_price_per_product);
-            $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
-        } else {
+        
             $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
             var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
             var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
             sale_price_per_product = parseFloat(sale_price_per_product);
             $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
-        }
+      
 
        
         calculateEntireTotal(all_product_ids);
@@ -939,7 +936,7 @@
             var tax_stamp = parseFloat($('#tax_stamp').val());
             var total_to_be_paid = parseFloat($('#total_to_be_paid').val()) + entire_vat.toFixed(2) + tax_stamp.toFixed(2);
             
-            $('#total_to_be_paid').val(total_to_be_paid);
+            $('#total_to_be_paid').val(total_to_be_paid.toFixed(2));
         }
     }
 
@@ -982,9 +979,9 @@
             total_to_be_paid = parseFloat(total_actual.toFixed(2)) + parseFloat(total_vat.toFixed(2)) + parseFloat(
                 tax_stamp.toFixed(2));
             if (cashType == "white") {
-                $('#total_to_be_paid').val(total_to_be_paid);
+                $('#total_to_be_paid').val(total_to_be_paid.toFixed(2));
             } else if (cashType == "black") {
-                $('#total_to_be_paid').val(total_actual);
+                $('#total_to_be_paid').val(total_actual.toFixed(2));
             }
 
         }

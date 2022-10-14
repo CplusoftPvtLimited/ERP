@@ -159,6 +159,11 @@
                             </tbody>
 
                         </table>
+                        <div class="row">
+                            <div class="col-md-3 button-padding">
+                                <a href="{{ route('purchases.index') }}" class="btn btn-primary">Back</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

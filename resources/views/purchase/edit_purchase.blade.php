@@ -5,6 +5,7 @@
             overflow-x: auto;
             white-space: nowrap;
         }
+
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -46,7 +47,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for=""><b>Cash Type</b></label>
-                                    <p>{{ ($purchase->cash_type == "white") ? "white" : "black" }}</p>
+                                    <p>{{ $purchase->cash_type == 'white' ? 'white' : 'black' }}</p>
 
                                 </div>
                                 <div class="col-md-4">
@@ -94,12 +95,13 @@
                                         <td>{{ $product->model }}</td>
                                         <td>{{ $product->section }}</td>
                                         <td>{{ $product->brand }}</td>
-                                       
+
                                         <td>
                                             @if ($product->status == 'received')
-                                                {{$product->qty}}
+                                                {{ $product->qty }}
                                             @else
-                                            <input type="number" id="purchase_product_id_{{$product->id}}" min="1" value="{{$product->qty}}" class="form-control">
+                                                <input type="number" id="purchase_product_id_{{ $product->id }}"
+                                                    min="1" value="{{ $product->qty }}" class="form-control">
                                             @endif
 
                                         </td>
@@ -152,8 +154,6 @@
 
                                                     });
                                                 });
-
-
                                             </script>
                                         </td>
                                         <td>
@@ -198,36 +198,39 @@
                                                                     Quantity</label>
                                                                 <input type="text"
                                                                     class="form-control view-edit-purchase-input"
-                                                                    value="{{ $product->qty }}"
-                                                                    readonly>
+                                                                    value="{{ $product->qty }}" readonly>
                                                             </div>
                                                             <div class="col-md-4">
-                                                                <label for="" class="view-edit-purchase">Actual Cost Per Product</label>
+                                                                <label for="" class="view-edit-purchase">Actual Cost
+                                                                    Per Product</label>
                                                                 <input type="text"
                                                                     class="form-control view-edit-purchase-input"
-                                                                    value="{{ "TND ". $product->actual_cost_per_product }}" readonly>
+                                                                    value="{{ 'TND ' . $product->actual_cost_per_product }}"
+                                                                    readonly>
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-md-4">
-                                                                <label for="" class="view-edit-purchase">Total Cost (excluding VAT)</label>
+                                                                <label for="" class="view-edit-purchase">Total Cost
+                                                                    (excluding VAT)</label>
                                                                 <input type="text"
                                                                     class="form-control view-edit-purchase-input"
-                                                                    value="{{ "TND ".$product->total_excluding_vat }}" readonly>
+                                                                    value="{{ 'TND ' . $product->total_excluding_vat }}"
+                                                                    readonly>
                                                             </div>
                                                             <div class="col-md-4">
                                                                 <label for="" class="view-edit-purchase">Purchase
                                                                     Price</label>
                                                                 <input type="text"
                                                                     class="form-control view-edit-purchase-input"
-                                                                    value="{{ "TND ".$product->actual_price }}" readonly>
+                                                                    value="{{ 'TND ' . $product->actual_price }}" readonly>
                                                             </div>
                                                             <div class="col-md-4">
                                                                 <label for="" class="view-edit-purchase">Sale
                                                                     Price</label>
                                                                 <input type="text"
                                                                     class="form-control view-edit-purchase-input"
-                                                                    value="{{ "TND ".$product->sell_price }}" readonly>
+                                                                    value="{{ 'TND ' . $product->sell_price }}" readonly>
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -254,6 +257,11 @@
                             </tbody>
 
                         </table>
+                        <div class="row">
+                            <div class="col-md-3 button-padding">
+                                <a href="{{ route('purchases.index') }}" class="btn btn-primary">Back</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

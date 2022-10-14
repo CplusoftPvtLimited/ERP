@@ -1234,6 +1234,11 @@ label.view-edit-purchase{
 div#data-table_length {
     display: none !important;
 }
+
+.button-padding{
+	padding-left: 30px;
+    padding-bottom: 30px;
+}
 /* option.estimate{
 	background-color: #17a2b8;
 	color: white;

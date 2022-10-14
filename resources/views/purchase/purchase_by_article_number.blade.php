@@ -353,7 +353,7 @@
                         '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterQty(' +
                         data.data.legacyArticleId + ')" id="item_qty' + data.data
                         .legacyArticleId +
-                        '" value="0" min="0" name="item_qty[]" required></td>';
+                        '" value="1" min="1" name="item_qty[]" required></td>';
 
                     markup +=
                         '<td><input style="width:150px" type="number" class="form-control" onkeyup="alterQty(' +
@@ -368,7 +368,7 @@
                         '" name="sale_price[]" readonly></td>';
 
                     markup +=
-                        '<td><input type="number" class="form-control" value="0" min="0" step="any" id="discount_' +
+                        '<td><input type="number" class="form-control" value="0" min="0" max="100" step="any" id="discount_' +
                         data.data.legacyArticleId +
                         '" name="discount[]"></td>';
 
@@ -387,7 +387,7 @@
 
                     if (data.cash_type == "white") {
                         markup +=
-                            '<td><input style="width:100px" type="number" class="form-control" value="0" min="1" step="any" id="vat_' +
+                            '<td><input style="width:100px" type="number" class="form-control" value="0" min="1" max="100" step="any" id="vat_' +
                             data.data.legacyArticleId +
                             '" name="vat[]" required></td>';
                     }
@@ -440,6 +440,7 @@
                         selected_cash_type = [];
                     }
                     all_product_ids.push(data.data.legacyArticleId);
+                    alterPurchaseQty(data.data.legacyArticleId);
 
                 }
             },
@@ -565,7 +566,7 @@
             $('#entire_vat').val(total_vat.toFixed(2));
             var tax_stamp = parseFloat($('#tax_stamp').val());
             var total_to_be_paid = parseFloat($('#total_to_be_paid').val()) + entire_vat.toFixed(2) + tax_stamp.toFixed(2);
-            $('#total_to_be_paid').val(total_to_be_paid);
+            $('#total_to_be_paid').val(total_to_be_paid.toFixed(2));
         }
     }
 
@@ -600,9 +601,9 @@
             total_to_be_paid = parseFloat(total_actual.toFixed(2)) + parseFloat(total_vat.toFixed(2)) + parseFloat(
                 tax_stamp.toFixed(2));
             if (cashType == "white") {
-                $('#total_to_be_paid').val(total_to_be_paid);
+                $('#total_to_be_paid').val(total_to_be_paid.toFixed(2));
             } else if (cashType == "black") {
-                $('#total_to_be_paid').val(total_actual);
+                $('#total_to_be_paid').val(total_actual.toFixed(2));
             }
 
         }
