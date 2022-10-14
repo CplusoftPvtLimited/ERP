@@ -203,6 +203,7 @@ class StockManagementController extends Controller
             }
             $lower_case_check = ['reference no','cash type' ,'quantity','unit purchase price of white cash','unit sale price of white cash','unit purchase price of black cash','unit sale price of black cash','tax','margin rate'];
             // Get field names from header column
+            $csv_header = $records[0];
             $fields = array_map('strtolower', $records[0]);
             foreach ($fields as $key => $record) {
                 if($record != $lower_case_check[$key]){
@@ -332,17 +333,7 @@ class StockManagementController extends Controller
                 // $filename =  public_path("files/download.csv");
                 $handle = fopen($filename, 'w');
                 // adding the first row
-                fputcsv($handle, [
-                    "reference_no",
-                    "cash_type",
-                    "quantity",
-                    "unit_purchase_price_of_white_cash",
-                    "unit_sale_price_of_white_cash",
-                    "unit_purchase_price_of_black_cash",
-                    "unit_sale_price_of_black_cash",
-                    "tax",
-                    "margin_rate",
-                ]);
+                fputcsv($handle, $csv_header);
                 // adding the data from the array
                 // dd($data);
                 foreach ($revert_data as $key => $data) {
@@ -398,21 +389,19 @@ class StockManagementController extends Controller
 
     public function getRejectedItemCSV(Request $request){
         $notis = auth()->user()->unreadNotifications;
-        foreach($notis as $n){
+        foreach($notis as $n) {
             if($n->id == $request->id){
                 $n->markAsRead();
             }
         }
 	// dd($f);
         $file = public_path()."/". $request->filename;
-        if(file_exists($file)){
+        if (file_exists($file)) {
             $headers = array(
-                'Content-Type: application/CSV',
+                'Content-Type' => 'text/csv',
                 );
-
-        
             return Response::download($file, 'rejected_items.csv', $headers);
-        }else{
+        } else {
             return back();
         }
         

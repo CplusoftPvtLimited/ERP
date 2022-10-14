@@ -174,11 +174,10 @@ class InvoiceController extends Controller
         return true;
     }
 
-    public function showInvoice($id){
+    public function showInvoice($id) {
         $sale = ERPInvoice::find($id);
-            $sale_products = ERPInvoiceProduct::where('invoice_id',$id)->get();
-            // dd($lims_quotation_data);
-            return view('invoice.view_invoice',compact('sale','sale_products'));
+        $sale_products = ERPInvoiceProduct::where('invoice_id',$id)->get();
+        return view('invoice.view_invoice',compact('sale','sale_products'));
     }
 
     public function getDeliverySlips(Request $request){

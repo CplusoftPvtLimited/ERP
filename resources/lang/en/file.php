@@ -1,6 +1,7 @@
 <?php 
 return [
 	'Edit Bank Account' => 'Edit Bank Account',
+	'Direct Sale' => 'Direct Sale',
 	'Regulation' => 'Regulation',
 	'Over View' => 'Over View',
 	'BANK' => 'BANK',

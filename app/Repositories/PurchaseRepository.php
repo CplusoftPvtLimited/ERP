@@ -23,7 +23,6 @@ class PurchaseRepository implements PurchaseInterface
 {
     public function store($request)
     {
-        // dd($request->all());
         DB::beginTransaction();
         try {
             $count_item = 0;
@@ -49,7 +48,6 @@ class PurchaseRepository implements PurchaseInterface
             $purchase->status = 0;
             $purchase->date = date('Y-m-d');
             $purchase->save();
-            // dd($purchase);
             $document = $request->document;
             if ($document) {
                 $documentName = $document->getClientOriginalName();
@@ -57,8 +55,6 @@ class PurchaseRepository implements PurchaseInterface
                 $purchase->document = $documentName;
                 $purchase->save();
             }
-            // dd($request->all(),$request->additional_cost_without_vat, $request->additional_cost_with_vat);
-            // dd($request->vat);
             for ($i = 0; $i < count($request->item_qty); $i++) {
                 $product_purchase = new ProductPurchase();
                 $artcle = Article::where('legacyArticleId', $request->sectionn_part_id[$i])->withTrashed()->first();
@@ -103,7 +99,6 @@ class PurchaseRepository implements PurchaseInterface
             DB::commit();
             return "true";
         } catch (\Exception $e) {
-            
             DB::rollback();
             return $e->getMessage();
         }
@@ -163,17 +158,16 @@ class PurchaseRepository implements PurchaseInterface
                 $engine = LinkageTarget::where('linkageTargetId', $lims_purchase_data->eng_linkage_target_id)->withTrashed()->first();
                 $section = AssemblyGroupNode::where('assemblyGroupNodeId', $lims_purchase_data->assembly_group_node_id)->withTrashed()->first();
                 $section_part = Article::where('legacyArticleId', $lims_purchase_data->legacy_article_id)->withTrashed()->first();
-                // dd($lims_purchase_data->legacy_article_id);
                 $brand = Ambrand::where('BrandId',$section_part ? $section_part->dataSupplierId : 0)->withTrashed()->first();
 
                 $supplier = Ambrand::where('BrandId', $lims_purchase_data->supplier_id)->withTrashed()->first();
-                $lims_purchase_data['manufacturer'] = isset($manufacturer) ? $manufacturer->manuName : '';
-                $lims_purchase_data['model'] = isset($model) ? $model->modelname : '';
-                $lims_purchase_data['engine'] = isset($engine) ? $engine->description : '';
-                $lims_purchase_data['section'] = isset($section) ? $section->assemblyGroupName : '';
-                $lims_purchase_data['section_part'] = isset($section_part) ? $section_part->articleNumber : '';
-                $lims_purchase_data['supplier'] = isset($supplier) ? $supplier->name : '';
-                $lims_purchase_data['brand'] = isset($brand) ? $brand->brandName : '';
+                $lims_purchase_data['manufacturer'] = isset($manufacturer->manuName) ? $manufacturer->manuName : '';
+                $lims_purchase_data['model'] = isset($model->modelname) ? $model->modelname : '';
+                $lims_purchase_data['engine'] = isset($engine->description) ? $engine->description : '';
+                $lims_purchase_data['section'] = isset($section->assemblyGroupName) ? $section->assemblyGroupName : '';
+                $lims_purchase_data['section_part'] = isset($section_part->articleNumber) ? $section_part->articleNumber : '';
+                $lims_purchase_data['supplier'] = isset($supplier->name) ? $supplier->name : '';
+                $lims_purchase_data['brand'] = isset($brand->brandName) ? $brand->brandName : '';
 
                 array_push($purchase_products, $lims_purchase_data);
             }
@@ -190,11 +184,9 @@ class PurchaseRepository implements PurchaseInterface
     public function edit($id)
     {
         $purchase_get = Purchase::find($id);
-        // dd($purchase_get);
         if (!empty($purchase_get)) {
             $purchase_products = [];
             $purchases_products = ProductPurchase::where('purchase_id', $purchase_get->id)->withTrashed()->get();
-            // dd($purchases_products);
             
             foreach ($purchases_products as $lims_purchase_data) {
                 $manufacturer = Manufacturer::where('manuId', $lims_purchase_data->manufacture_id)->withTrashed()->first();
@@ -217,7 +209,6 @@ class PurchaseRepository implements PurchaseInterface
                 'purchase' => $purchase_get,
                 'purchase_products' => $purchase_products
             ];
-            // dd($purchase);
             return $purchase;
         } else {
             return "null";
@@ -226,19 +217,12 @@ class PurchaseRepository implements PurchaseInterface
 
     public function updatePurchase($request)
     {
-        // dd($request->all());
         try {
             $product_purchase = ProductPurchase::find($request->id);
             DB::beginTransaction();
             if (!empty($product_purchase)) {
-
-                
-                // $product_purchase->status = $request->status;
-                // $product_purchase->save();
-                // dd($product_purchase);
                 $purchase = Purchase::find($product_purchase->purchase_id);
-                $stock = StockManagement::where('retailer_id', auth()->user()->id)->where('reference_no', $product_purchase->reference_no)->withTrashed()->first();
-                // dd($purchase,$product_purchase,$stock);
+                $stock = StockManagement::where('retailer_id', auth()->user()->id)->where('reference_no', $product_purchase->reference_no)->first();
                 $product_purchase->update([
                     'status' => $request->status
                 ]);
@@ -280,7 +264,6 @@ class PurchaseRepository implements PurchaseInterface
             return false;
         } catch (\Exception $th) {
             DB::rollBack();
-            dd($th);
             return $th->getMessage();
         }
     }
@@ -366,7 +349,6 @@ class PurchaseRepository implements PurchaseInterface
     public function deleteParentPurchase($purchase_id)
     {
         $purchase_with_products = Purchase::where('id', $purchase_id)->with(['productPurchases'])->withTrashed()->first();
-        // dd($purchase_with_products);
         if (!empty($purchase_with_products)) {
             foreach ($purchase_with_products->productPurchases as $key => $product) {
                 $product->delete();
@@ -384,7 +366,6 @@ class PurchaseRepository implements PurchaseInterface
     {
 
         $purchase_with_products = Purchase::with(['productPurchases'])->where('user_id',auth()->user()->id)->get();
-        // dd($purchase_with_products);
         $all_data = [];
         if (count($purchase_with_products) > 0) {
             foreach ($purchase_with_products as $purchase) {
@@ -448,7 +429,6 @@ class PurchaseRepository implements PurchaseInterface
                         $engine = LinkageTarget::where('linkageTargetId', $lims_purchase_data->eng_linkage_target_id)->withTrashed()->first();
                         $section = AssemblyGroupNode::where('assemblyGroupNodeId', $lims_purchase_data->assembly_group_node_id)->withTrashed()->first();
                         $section_part = Article::where('legacyArticleId', $lims_purchase_data->legacy_article_id)->withTrashed()->first();
-                        // dd($lims_purchase_data->legacy_article_id);
                         $supplier = Ambrand::where('BrandId', $lims_purchase_data->supplier_id)->withTrashed()->first();
 
                         $lims_purchase_data['manufacturer'] = isset($manufacturer) ? $manufacturer->manuName : '';
@@ -468,7 +448,6 @@ class PurchaseRepository implements PurchaseInterface
                 }
 
                 $pdf = PDF::loadView('purchase.purchase_pdf', $all_data);
-                // dd($pdf);
                 return $pdf->download('product_purchases.pdf');
             }
         } catch (\Exception $e) {

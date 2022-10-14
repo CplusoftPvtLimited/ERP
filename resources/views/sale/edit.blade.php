@@ -78,7 +78,7 @@
                                                         class="form-control" step="any" />
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            {{-- <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>{{ trans('file.Attach Document') }}</label> <i
                                                         class="dripicons-question" data-toggle="tooltip"
@@ -90,7 +90,7 @@
                                                         </span>
                                                     @endif
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                         </div>
                                         {{-- <div class="row">
                                         <div class="col-md-4">
@@ -301,7 +301,7 @@
                                         </div>
                                         <div class="row total-calculations">
                                             <div class="col-md-4">
-                                                <h5>Tax Stamp</h5>
+                                                <h5>TAX Stamp</h5>
                                             </div>
                                             <div class="col-md-3">
                                                 <input type="number" name="tax_stamp" id="sale_tax_stamp"
