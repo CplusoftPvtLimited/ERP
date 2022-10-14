@@ -936,6 +936,8 @@
         }
     }
 
+    
+
     function calculateEntireTotal(product_ids_array) {
         var total_actual = 0.0;
         var total_vat = 0.0;
