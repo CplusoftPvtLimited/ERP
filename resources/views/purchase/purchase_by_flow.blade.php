@@ -464,15 +464,15 @@
             });
             exit();
         }
-        if (brandId == null) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please select Brand',
+        // if (brandId == null) {
+        //     Swal.fire({
+        //         icon: 'error',
+        //         title: 'Oops...',
+        //         text: 'Please select Brand',
 
-            });
-            exit();
-        }
+        //     });
+        //     exit();
+        // }
         $.ajax({
             method: "GET",
             url: "{{ url('show_section_parts_in_table') }}",
@@ -503,7 +503,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
-                        text: 'Please select Brand',
+                        text: 'Please select Supplier (Brand)',
 
                     });
                     exit();
