@@ -14,6 +14,9 @@ class AlterProductPurchasesTable extends Migration
     public function up()
     {
         Schema::table('product_purchases', function (Blueprint $table) {
+
+            //    $table->bigInteger('purchase_id');
+
                $table->integer('legacy_article_id')->nullable();
                $table->string('actual_price')->nullable();
                $table->string('sell_price')->nullable();
@@ -41,15 +44,18 @@ class AlterProductPurchasesTable extends Migration
             //    $table->dropColumn('white_item_qty');
             //    $table->dropColumn('linkage_target_type');
             //    $table->dropColumn('linkage_target_sub_type');
+            //    $table->dropColumn('additional_cost');
+            //    $table->dropColumn('cash_type');
+            //    $table->dropColumn('purchase_id');
 
+            //    $table->foreign('purchase_id')->references('id')->on('purchases')->onDelete('cascade');
+              
                $table->index('legacy_article_id');
                $table->index('manufacture_id');
                $table->index('model_id');
                $table->index('eng_linkage_target_id');
                $table->index('assembly_group_node_id');
                $table->index('supplier_id');
-
-
         });
     }
 
