@@ -1473,7 +1473,7 @@ class SaleController extends Controller
         $role = Role::find(Auth::user()->role_id);
         if ($role->hasPermissionTo('sales-edit')) {
             $sale = NewSale::find($id);
-            $sale_products = NewSaleProduct::where('sale_id', $id)->get();
+            $sale_products = NewSaleProduct::where('sale_id', $id)->withTrashed()->get();
 
             return view('sale.edit', compact('sale', 'sale_products'));
         } else

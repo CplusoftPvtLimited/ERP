@@ -28,8 +28,8 @@ use Illuminate\Support\Facades\Response;
 
 Route::post('checkFile', 'StockManagementController@getRejectedItemCSV')->name('checkFile');
 
-Route::get('preinvoice-pdf/{id}', 'salecontroller@preinvoicepdf')->name('sales.preinvoicepdf');
-Route::get('delivery-slip-pdf/{id}', 'salecontroller@deliverySlipPDF')->name('sales.delivery-slip');
+Route::get('preinvoice-pdf/{id}', 'SaleController@preinvoicepdf')->name('sales.preinvoicepdf');
+Route::get('delivery-slip-pdf/{id}', 'SaleController@deliverySlipPDF')->name('sales.delivery-slip');
 
 Route::group(['middleware' => 'auth'], function() {
 	Route::get('/dashboard', 'HomeController@dashboard');

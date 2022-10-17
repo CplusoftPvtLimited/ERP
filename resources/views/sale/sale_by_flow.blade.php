@@ -442,7 +442,7 @@
                                     <div class="input-group mb-3">     
                                         <input type="number" name="sale_discount" value="0" class="form-control"
                                             aria-label="Amount (to the nearest dollar)" id="sale_discount" 
-                                            class="form-control" min="0" step="any" max="100000000" onkeyup="calculateSaleTotal()">
+                                            class="form-control" min="0" step="any" max="100000000" onkeyup="calculateFlowSaleTotal()">
                                         <span class="input-group-text"><b>TND</b></span>
                                     </div>
                                 </div>
@@ -455,7 +455,7 @@
                                     <div class="input-group mb-3">     
                                         <input type="number" name="entire_vat" value="0" class="form-control"
                                             aria-label="Amount (to the nearest dollar)" id="sale_entire_vat" 
-                                            class="form-control" min="0" step="any" max="100000000" onkeyup="calculateSaleTotal()">
+                                            class="form-control" min="0" step="any" max="100000000" onkeyup="calculateFlowSaleTotal()">
                                         <span class="input-group-text"><b>TND</b></span>
                                     </div>
                                 </div>
@@ -468,7 +468,7 @@
                                     <div class="input-group mb-3">     
                                         <input type="number" name="tax_stamp" value="0" class="form-control"
                                             aria-label="Amount (to the nearest dollar)" id="sale_tax_stamp" 
-                                            class="form-control" min="0" step="any" max="100000000" onkeyup="calculateSaleTotal()">
+                                            class="form-control" min="0" step="any" max="100000000" onkeyup="calculateFlowSaleTotal()">
                                         <span class="input-group-text"><b>TND</b></span>
                                     </div>
                                 </div>
@@ -519,7 +519,7 @@
                 var html = '';
                
                 html += '<input type="hidden" name="article_number[]" value="' + data.data.articleNumber + '">';
-                calculateSaleTotal(all_product_ids);
+                calculateFlowSaleTotal(all_product_ids);
                 $('#myTable tr').each(function() {
                     if (this.id != '') {
                         article_ids_array.push(this.id)
@@ -562,7 +562,7 @@
                 if(data.cash_type == "white"){
                     markup += '<input type="hidden" value="'+data.stock.white_items+'" id="stock_items_'+data.data.legacyArticleId+'">';
                     markup +=
-                    '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterSaleQty(' +
+                    '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterFlowSaleQty(' +
                     data.data.legacyArticleId + ')" id="sale_item_qty' + data.data
                     .legacyArticleId +
                     '" value="1" min="0" max="'+data.stock.white_items+'" name="item_qty[]" required></td>';
@@ -571,7 +571,7 @@
                         white_price = data.stock.unit_sale_price_of_white_cash;
                     }
                     markup +=
-                    '<td><input style="width:100px" onkeyup="alterSaleQty(' +
+                    '<td><input style="width:100px" onkeyup="alterFlowSaleQty(' +
                     data.data.legacyArticleId + ')" type="number" value="'+white_price+'" step="any" class="form-control"  id="sale_sale_price_' +
                     data.data.legacyArticleId +
                     '" name="sale_price[]"></td>';
@@ -582,20 +582,20 @@
                         black_price = data.stock.unit_sale_price_of_black_cash;
                     }
                     markup +=
-                        '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterSaleQty(' +
+                        '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterFlowSaleQty(' +
                         data.data.legacyArticleId + ')" id="sale_item_qty' + data.data
                         .legacyArticleId +
                         '" value="1" min="0" max="' + data.stock.black_items +
                         '" name="item_qty[]" required></td>';
                     markup +=
-                    '<td><input style="width:150px" onkeyup="alterSaleQty(' +
+                    '<td><input style="width:150px" onkeyup="alterFlowSaleQty(' +
                     data.data.legacyArticleId + ')" type="number" value="'+black_price+'" step="any" class="form-control"  id="sale_sale_price_' +
                     data.data.legacyArticleId +
                     '" name="sale_price[]" readonly></td>';
                 }
                 
                 markup +=
-                    '<td><input type="number" onkeyup="alterSaleQty(' +
+                    '<td><input type="number" onkeyup="alterFlowSaleQty(' +
                     data.data.legacyArticleId +
                     ')" class="form-control" value="0" min="0" max="100" step="any" id="sale_discount_' +
                     data.data.legacyArticleId +
@@ -765,15 +765,27 @@
     var id_array = []; 
     var total_quantity_of_all_row_products = 0;
 
-    function alterSaleQty(id) {
+    function alterFlowSaleQty(id) {
 
         var item_qty = parseInt($("#sale_item_qty" + id).val());
+        if(!item_qty){
+            item_qty = 1;
+        }
+        
         var stock = parseInt($("#stock_items_" + id).val());
        
 
         var sale_price = parseFloat($("#sale_sale_price_" + id).val());
+        if(!sale_price){
+            sale_price = 1;
+        }
         var discount = (parseFloat(1) - (parseFloat($("#sale_discount_" + id).val() / 100)));
-
+        if(!discount){
+            discount = (parseFloat(1) - (0 / 100));
+        }
+        console.log("qtyyyyyyyyy",item_qty);
+        console.log('sal price',sale_price);
+        console.log('discount',discount);
         var sale_total_with_discount = (item_qty * sale_price) * discount;
         var sale_total_without_discount = (item_qty * sale_price);
         if(sale_total_with_discount <= 0){
@@ -787,7 +799,7 @@
         }else{
             $('#sale_total_without_discount' + id).val(sale_total_without_discount.toFixed(2))
         }    
-        calculateSaleTotal(all_product_ids);    
+        calculateFlowSaleTotal(all_product_ids);    
     }
 
 
@@ -858,7 +870,7 @@
         // }
     }
 
-    function calculateSaleTotal(){
+    function calculateFlowSaleTotal(){
         var total_before_discount = 0.0;
         var total_to_be_paid = 0.0;
         // console.log(product_ids_array)
@@ -870,29 +882,37 @@
             id_array.forEach(getActualProductCost);
 
             function getActualProductCost(id, index) {
-                    
-                    total_before_discount += (parseInt($('#sale_item_qty' + id).val()) * parseFloat($('#sale_sale_price_' + id).val()));
-                    var discount = parseFloat($('#sale_discount').val());
-                    console.log(discount,parseFloat($('#sale_sale_price_' + id).val()));
-                    if(discount > parseFloat($('#sale_sale_price_' + id).val())){
-                        $('#sale_discount').val(discount - 1);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'discount can not be greater than sale price',
-
-                        });
-                        exit();
+                    var it_qty = $('#sale_item_qty' + id).val();
+                    if(!it_qty){
+                        it_qty = 1;
                     }
+                    var sal_price = $('#sale_sale_price_' + id).val();
+                    if(!sal_price){
+                        sal_price = 1;
+                    }
+                    total_before_discount += (parseInt(it_qty) * parseFloat(sal_price));
+                    
+                   
+                    
             }
             
             
-            var tax_stamp = parseFloat($('#sale_tax_stamp').val());
-            var entire_vat = parseFloat($('#sale_entire_vat').val());
-            var discount = parseFloat($('#sale_discount').val());
+            var tax_stamp = $('#sale_tax_stamp').val();
+            if(!tax_stamp){
+                tax_stamp = 0
+            }
+            var entire_vat = $('#sale_entire_vat').val();
+            if(!entire_vat){
+                entire_vat = 1
+            }
+            var discount = $('#sale_discount').val();
+            if(!discount){
+                discount = 0
+            }
+            
             $('#sale_entire_total_exculding_vat').val(total_before_discount.toFixed(2));
-            total_to_be_paid = (parseFloat(total_before_discount.toFixed(2)) - parseFloat(discount.toFixed(2))) * parseFloat(entire_vat.toFixed(2)) + parseFloat(tax_stamp.toFixed(2)) ;
-           
+            total_to_be_paid = (parseFloat(total_before_discount.toFixed(2)) - parseFloat(discount)) * parseFloat(entire_vat) + parseFloat(tax_stamp) ;
+            console.log("Total to be paid",total_to_be_paid)
             if(total_to_be_paid < 0){
                 $('#total_to_be_paid').val(0);
             }else{

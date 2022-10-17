@@ -23,6 +23,7 @@ class PurchaseRepository implements PurchaseInterface
 {
     public function store($request)
     {
+        // dd($request->all());
         DB::beginTransaction();
         try {
             $count_item = 0;
@@ -58,6 +59,7 @@ class PurchaseRepository implements PurchaseInterface
             for ($i = 0; $i < count($request->item_qty); $i++) {
                 $product_purchase = new ProductPurchase();
                 $artcle = Article::where('legacyArticleId', $request->sectionn_part_id[$i])->withTrashed()->first();
+                
                 $linkage = LinkageTarget::where('linkageTargetId', $request->enginee_id[$i])->withTrashed()->first();
                 if ($request->item_qty[$i] <= 0) {
                     continue;
@@ -100,6 +102,7 @@ class PurchaseRepository implements PurchaseInterface
             return "true";
         } catch (\Exception $e) {
             DB::rollback();
+            
             return $e->getMessage();
         }
     }

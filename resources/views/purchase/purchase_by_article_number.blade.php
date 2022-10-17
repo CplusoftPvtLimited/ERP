@@ -193,7 +193,7 @@
                                     <div class="input-group mb-3">     
                                         <input type="number" name="entire_vat" value="0" class="form-control"
                                             aria-label="Amount (to the nearest dollar)" id="entire_vat" 
-                                            class="form-control" min="0" step="any" max="100000000">
+                                            class="form-control" min="0" step="any" max="100000000" readonly>
                                         <span class="input-group-text"><b>TND</b></span>
                                     </div>
                                 </div>
@@ -205,7 +205,7 @@
                                 <div class="col-md-3">
                                     <div class="input-group mb-3">     
                                         <input type="number" name="tax_stamp" value="0" class="form-control"
-                                            aria-label="Amount (to the nearest dollar)" id="tax_stamp" 
+                                            aria-label="Amount (to the nearest dollar)" onkeyup="changeTotalWithVAT()" id="tax_stamp" 
                                             class="form-control" min="0" step="any" max="100000000">
                                         <span class="input-group-text"><b>TND</b></span>
                                     </div>
@@ -220,7 +220,7 @@
                                     <div class="input-group mb-3">     
                                         <input type="number" name="total_to_be_paid" value="0" class="form-control"
                                             aria-label="Amount (to the nearest dollar)" id="total_to_be_paid"
-                                            class="form-control" min="0" max="100000000">
+                                            class="form-control" min="0" max="100000000" readonly>
                                         <span class="input-group-text"><b>TND</b></span>
                                     </div>
                                 </div> 
@@ -235,7 +235,7 @@
                                 <div class="col-md-3">
                                     <div class="input-group mb-3">     
                                         <input type="number" name="total_to_be_paid" value="0" class="form-control"
-                                            aria-label="Amount (to the nearest dollar)" id="total_to_be_paid" onkeyup="calculatePurchasePrice()"
+                                            aria-label="Amount (to the nearest dollar)" id="total_to_be_paid"
                                             class="form-control" min="0" max="100000000" readonly>
                                         <span class="input-group-text"><b>TND</b></span>
                                     </div> 
@@ -287,7 +287,7 @@
                     html += '<input type="hidden" name="sectionn_id[]" value="' + data.section_id +
                         '">';
                     html += '<input type="hidden" name="sectionn_part_id[]" value="' + data
-                        .section_part_id + '">';
+                        .data.legacyArticleId + '">';
                     html += '<input type="hidden" name="statuss[]" value="' + data.status + '">';
                     html += '<input type="hidden" name="datee[]" value="' + data.date + '">';
                     html += '<input type="hidden" name="cash_type" value="' + data.cash_type + '">';
@@ -295,12 +295,12 @@
                     calculateEntireTotal(all_product_ids);
 
                     // start
-                    $('#myTable tr').each(function() {
-                        if (this.id != '') {
-                            article_ids_array.push(this.id)
+                    // $('#myTable tr').each(function() {
+                    //     if (this.id != '') {
+                    //         article_ids_array.push(this.id)
 
-                        }
-                    })
+                    //     }
+                    // })
 
                     // if (supplier_ids_array.length > 0) {
                     //     supplier_ids_array.forEach(checkSupplier);
@@ -380,14 +380,14 @@
                         '" name="additional_cost_without_vat[]"></td>';
                     if (data.cash_type == "white") {
                         markup +=
-                            '<td><input type="number" class="form-control" value="0" min="1" step="any" id="additional_cost_with_vat_' +
+                            '<td><input type="number" class="form-control" value="0" min="1" onkeyup="changeTotalWithVAT()" step="any" id="additional_cost_with_vat_' +
                             data.data.legacyArticleId +
                             '" name="additional_cost_with_vat[]"></td>';
                     }
 
                     if (data.cash_type == "white") {
                         markup +=
-                            '<td><input style="width:100px" type="number" class="form-control" value="0" min="1" max="100" step="any" id="vat_' +
+                            '<td><input style="width:100px" type="number" onkeyup="changeTotalWithVAT()" class="form-control" value="0" min="1" max="100" step="any" id="vat_' +
                             data.data.legacyArticleId +
                             '" name="vat[]" required></td>';
                     }
@@ -459,6 +459,9 @@
         var purchasePrice = parseFloat($("#purchase_price_" + id).val());
         var additional_cost_without_vat = parseFloat($("#additional_cost_without_vat_" + id).val());
         var entireAditionalCost = $("#purchase_additional_cost").val();
+        if (additional_cost_without_vat == null || isNaN(additional_cost_without_vat)) {
+            additional_cost_without_vat = 0;
+        }
 
         var total_cost_without_vat = (purchasePrice * item_qty) + additional_cost_without_vat;
         $("#total_excluding_vat_" + id).val(total_cost_without_vat.toFixed(2));
@@ -477,6 +480,9 @@
         $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
         calculateEntireTotal(all_product_ids);
         var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
+        if (profit_margin == null || isNaN(profit_margin)) {
+            profit_margin = 0;
+        }
         var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
         sale_price_per_product = parseFloat(sale_price_per_product);
         $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
@@ -492,8 +498,14 @@
                 item_qty = parseInt($("#item_qty" + id).val());
                 var purchasePrice = parseFloat($("#purchase_price_" + id).val());
                 var additional_cost_without_vat = parseFloat($("#additional_cost_without_vat_" + id).val());
-                var entireAditionalCost = $("#purchase_additional_cost").val();
-
+                var purchase_additional_cost = $('#purchase_additional_cost').val();
+                if (!purchase_additional_cost) {
+                    purchase_additional_cost = 0;
+                }
+                var entireAditionalCost = parseFloat(purchase_additional_cost);
+                if (additional_cost_without_vat == null || isNaN(additional_cost_without_vat)) {
+                    additional_cost_without_vat = 0;
+                }
 
                 var total_cost_without_vat = (purchasePrice * item_qty) + additional_cost_without_vat;
                 $("#total_excluding_vat_" + id).val(total_cost_without_vat.toFixed(2));
@@ -528,7 +540,15 @@
             }
 
         }
-       
+        for (var i = 0; i < article_ids_array.length; i++) {
+
+            if (article_ids_array[i] === "article_" + id) {
+                console.log("article_4444444444444idsssssss", article_ids_array);
+
+                article_ids_array.splice(i, 1);
+            }
+
+        }
         if (all_product_ids.length <= 0) {
             $('#total_calculations').css('display', 'none');
             $('#submit-button').css('display', 'none');
@@ -556,23 +576,37 @@
 
                 if (cashType == "white") {
                     var vat = $('#vat_' + id).val();
-                        if(vat == null || vat == NaN){
-                            vat = 0.0;
-                        }
-                        var add_cost_with_vat = $('#additional_cost_with_vat_' + id).val();
-                        if(add_cost_with_vat == null || add_cost_with_vat == NaN){
-                            add_cost_with_vat = 0.0;
-                        }
-                        total_vat = total_vat + parseFloat(vat / 100) + parseFloat(add_cost_with_vat);
+                    if (vat == null || vat == NaN) {
+                        vat = 0;
+                    }
+                    var add_cost_with_vat = $('#additional_cost_with_vat_' + id).val();
+                    if (add_cost_with_vat == null || isNaN(add_cost_with_vat)) {
+                        add_cost_with_vat = 0;
+                    }
+                    total_vat = total_vat + parseFloat(vat / 100) + parseFloat(add_cost_with_vat);
                 }
 
 
             }
             total_vat = total_vat + parseFloat($('#purchase_additional_cost').val());
-
+            if (total_vat == null || isNaN(total_vat)) {
+                total_vat = 0;
+            }
             $('#entire_vat').val(total_vat.toFixed(2));
+            var entire_vat = parseFloat($('#entire_vat').val());
             var tax_stamp = parseFloat($('#tax_stamp').val());
-            var total_to_be_paid = parseFloat($('#total_to_be_paid').val()) + entire_vat.toFixed(2) + tax_stamp.toFixed(2);
+            var tot_to_be_paid = $('#total_to_be_paid').val();
+
+            if (tax_stamp == null || isNaN(tax_stamp)) {
+                tax_stamp = 0.0;
+            }
+            var entire_total_exculding_vat = $('#entire_total_exculding_vat').val();
+            var total_to_be_paid = parseFloat(entire_total_exculding_vat) + parseFloat(entire_vat.toFixed(2)) +
+                parseFloat(tax_stamp.toFixed(
+                    2));
+            console.log('total', total_to_be_paid)
+            console.log('total vat', total_vat)
+
             $('#total_to_be_paid').val(total_to_be_paid.toFixed(2));
         }
     }
@@ -594,19 +628,23 @@
                 total_actual += parseFloat($('#actual_cost_per_product_' + id).val());
                 if (cashType == "white") {
                     var vat = $('#vat_' + id).val();
-                        if(vat == null || vat == NaN){
-                            vat = 0.0;
-                        }
-                        var add_cost_with_vat = $('#additional_cost_with_vat_' + id).val();
-                        if(add_cost_with_vat == null || add_cost_with_vat == NaN){
-                            add_cost_with_vat = 0.0;
-                        }
-                        total_vat = total_vat + parseFloat(vat / 100) + parseFloat(add_cost_with_vat);
+                    if (vat == null || isNaN(vat)) {
+                        vat = 0;
+                    }
+                    var add_cost_with_vat = $('#additional_cost_with_vat_' + id).val();
+                    if (add_cost_with_vat == null || isNaN(add_cost_with_vat)) {
+                        add_cost_with_vat = 0;
+                    }
+                    total_vat = total_vat + parseFloat(vat / 100) + parseFloat(add_cost_with_vat);
                 }
 
 
             }
-            total_vat = total_vat + parseFloat($('#purchase_additional_cost').val());
+            var purchase_additional_cost = $('#purchase_additional_cost').val();
+            if (!purchase_additional_cost) {
+                purchase_additional_cost = 0;
+            }
+            total_vat = total_vat + parseFloat(purchase_additional_cost);
 
             $('#entire_total_exculding_vat').val(total_actual.toFixed(2));
             $('#entire_vat').val(total_vat.toFixed(2));
