@@ -1,4 +1,4 @@
-<div class="card p-0 m-0">
+<div class="card p-0 m-0" style=" box-shadow:none !important;">
     <div class="card-header">
         <h6>
             Vehicle Type
@@ -13,8 +13,7 @@
         </p>
     </div>
 </div>
-<hr>
-<div class="card p-0 m-0">
+<div class="card p-0 m-0" style=" box-shadow:none !important;">
     <div class="card-header">
         <h6>
             Vehicle Details

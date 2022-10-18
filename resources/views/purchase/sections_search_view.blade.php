@@ -17,17 +17,17 @@
                     <div class="card p-0">
                         <div class="row m-0">
                             <div class="col-3" style="margin: 0px; padding:0px; ">
-                                <div class="card" style="margin: 0px; padding:0px; height: 100%;">
+                                <div class="card" style="margin: 0px; padding:0px; height: 100%; box-shadow: none !important;">
                                     <div class="card-body" style="margin: 0px; padding:0px;">
                                         @include('purchase.sidepanel')
                                     </div>
                                 </div>
                             </div>
                             <div class="col-9" style="margin: 0px; padding:0px;">
-                                <div class="card p-3" style="margin: 0px; height:100%;">
+                                <div class="card p-3" style="margin: 0px; height:100%;box-shadow: none !important;border-left:1px solid  rgb(240, 240, 240)">
                                     <div class="row">
                                         <div class="col-4">
-                                            <div class="card">
+                                            <div class="card" style="box-shadow: none !important; border:1px solid rgb(240, 240, 240)">
                                                 <div class="card-header">
                                                     <h6>Section Name</h6>
                                                 </div>
@@ -47,7 +47,7 @@
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <div class="card">
+                                            <div class="card" style="box-shadow: none !important; border:1px solid rgb(240, 240, 240)">
                                                 <div class="card-header">
                                                     <h6>Section Name</h6>
                                                 </div>
@@ -67,7 +67,7 @@
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <div class="card">
+                                            <div class="card" style="box-shadow: none !important; border:1px solid rgb(240, 240, 240)">
                                                 <div class="card-header">
                                                     <h6>Section Name</h6>
                                                 </div>
@@ -89,7 +89,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-4">
-                                            <div class="card">
+                                            <div class="card" style="box-shadow: none !important; border:1px solid rgb(240, 240, 240)">
                                                 <div class="card-header">
                                                     <h6>Section Name</h6>
                                                 </div>
@@ -109,7 +109,7 @@
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <div class="card">
+                                            <div class="card" style="box-shadow: none !important; border:1px solid rgb(240, 240, 240)">
                                                 <div class="card-header">
                                                     <h6>Section Name</h6>
                                                 </div>
@@ -129,7 +129,7 @@
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <div class="card">
+                                            <div class="card" style="box-shadow: none !important; border:1px solid rgb(240, 240, 240)">
                                                 <div class="card-header">
                                                     <h6>Section Name</h6>
                                                 </div>
@@ -151,7 +151,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-4">
-                                            <div class="card">
+                                            <div class="card" style="box-shadow: none !important; border:1px solid rgb(240, 240, 240)">
                                                 <div class="card-header">
                                                     <h6>Section Name</h6>
                                                 </div>
@@ -171,7 +171,7 @@
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <div class="card">
+                                            <div class="card" style="box-shadow: none !important; border:1px solid rgb(240, 240, 240)">
                                                 <div class="card-header">
                                                     <h6>Section Name</h6>
                                                 </div>
@@ -191,7 +191,7 @@
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <div class="card">
+                                            <div class="card" style="box-shadow: none !important; border:1px solid rgb(240, 240, 240)">
                                                 <div class="card-header">
                                                     <h6>Section Name</h6>
                                                 </div>

@@ -24,7 +24,7 @@
                                 </div>
                             </div>
                             <div class="col-9" style="margin: 0px; padding:0px;">
-                                <div class="card pr-3 pl-3 pt-0" style="margin: 0px; height:100%;">
+                                <div class="card pr-3 pl-3 pt-0" style="margin: 0px; height:100%; border-left:1px solid  rgb(240, 240, 240); box-shadow:none !important;">
                                     <div class="row bg-secondary pt-2 mt-0 text-white">
                                         <div class="col-6">
                                             <h6>
