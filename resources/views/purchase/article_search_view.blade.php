@@ -59,7 +59,7 @@
                                                                 <img src="images/logo.png" width="100px" alt="">
                                                             </td>
                                                             <td style="width: 50%" class="text-center">
-                                                                4637526734
+                                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ipsam at esse repellendus labore, sit, soluta nobis obcaecati necessitatibus architecto dolores ea corporis consequatur laboriosam sequi minus molestiae porro magni fugiat!
                                                             </td>
                                                             <td>
                                                                 4637526734
@@ -77,7 +77,7 @@
                                                                 <img src="images/logo.png" width="100px" alt="">
                                                             </td>
                                                             <td style="width: 50%" class="text-center">
-                                                                4637526734
+                                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ipsam at esse repellendus labore, sit, soluta nobis obcaecati necessitatibus architecto dolores ea corporis consequatur laboriosam sequi minus molestiae porro magni fugiat!
                                                             </td>
                                                             <td>
                                                                 4637526734
@@ -95,7 +95,7 @@
                                                                 <img src="images/logo.png" width="100px" alt="">
                                                             </td>
                                                             <td style="width: 50%" class="text-center">
-                                                                4637526734
+                                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ipsam at esse repellendus labore, sit, soluta nobis obcaecati necessitatibus architecto dolores ea corporis consequatur laboriosam sequi minus molestiae porro magni fugiat!
                                                             </td>
                                                             <td>
                                                                 4637526734

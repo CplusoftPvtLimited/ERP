@@ -29,18 +29,18 @@
                                         <div class="col-4">
                                             <div class="card">
                                                 <div class="card-header">
-                                                    <h6>Graphic Search</h6>
+                                                    <h6>Section Name</h6>
                                                 </div>
                                                 <div class="card-body">
                                                     <ul class="">
                                                         <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 1</a>
+                                                            <a href="{{route('articles_serch_view')}}">Article 1</a>
                                                         </li>
                                                         <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 2</a>
+                                                            <a href="{{route('articles_serch_view')}}">Article 2</a>
                                                         </li>
                                                         <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 2</a>
+                                                            <a href="{{route('articles_serch_view')}}">Article 2</a>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -49,18 +49,18 @@
                                         <div class="col-4">
                                             <div class="card">
                                                 <div class="card-header">
-                                                    <h6>Graphic Search</h6>
+                                                    <h6>Section Name</h6>
                                                 </div>
                                                 <div class="card-body">
                                                     <ul class="">
                                                         <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 1</a>
+                                                            <a href="{{route('articles_serch_view')}}">Article 1</a>
                                                         </li>
                                                         <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 2</a>
+                                                            <a href="{{route('articles_serch_view')}}">Article 2</a>
                                                         </li>
                                                         <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 2</a>
+                                                            <a href="{{route('articles_serch_view')}}">Article 2</a>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -69,80 +69,18 @@
                                         <div class="col-4">
                                             <div class="card">
                                                 <div class="card-header">
-                                                    <h6>Graphic Search</h6>
+                                                    <h6>Section Name</h6>
                                                 </div>
                                                 <div class="card-body">
                                                     <ul class="">
                                                         <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 1</a>
+                                                            <a href="{{route('articles_serch_view')}}">Article 1</a>
                                                         </li>
                                                         <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 2</a>
+                                                            <a href="{{route('articles_serch_view')}}">Article 2</a>
                                                         </li>
                                                         <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 2</a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <h6>Graphic Search</h6>
-                                                </div>
-                                                <div class="card-body">
-                                                    <ul class="">
-                                                        <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 1</a>
-                                                        </li>
-                                                        <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 2</a>
-                                                        </li>
-                                                        <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 2</a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <h6>Graphic Search</h6>
-                                                </div>
-                                                <div class="card-body">
-                                                    <ul class="">
-                                                        <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 1</a>
-                                                        </li>
-                                                        <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 2</a>
-                                                        </li>
-                                                        <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 2</a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <h6>Graphic Search</h6>
-                                                </div>
-                                                <div class="card-body">
-                                                    <ul class="">
-                                                        <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 1</a>
-                                                        </li>
-                                                        <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 2</a>
-                                                        </li>
-                                                        <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 2</a>
+                                                            <a href="{{route('articles_serch_view')}}">Article 2</a>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -153,18 +91,18 @@
                                         <div class="col-4">
                                             <div class="card">
                                                 <div class="card-header">
-                                                    <h6>Graphic Search</h6>
+                                                    <h6>Section Name</h6>
                                                 </div>
                                                 <div class="card-body">
                                                     <ul class="">
                                                         <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 1</a>
+                                                            <a href="{{route('articles_serch_view')}}">Article 1</a>
                                                         </li>
                                                         <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 2</a>
+                                                            <a href="{{route('articles_serch_view')}}">Article 2</a>
                                                         </li>
                                                         <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 2</a>
+                                                            <a href="{{route('articles_serch_view')}}">Article 2</a>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -173,18 +111,18 @@
                                         <div class="col-4">
                                             <div class="card">
                                                 <div class="card-header">
-                                                    <h6>Graphic Search</h6>
+                                                    <h6>Section Name</h6>
                                                 </div>
                                                 <div class="card-body">
                                                     <ul class="">
                                                         <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 1</a>
+                                                            <a href="{{route('articles_serch_view')}}">Article 1</a>
                                                         </li>
                                                         <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 2</a>
+                                                            <a href="{{route('articles_serch_view')}}">Article 2</a>
                                                         </li>
                                                         <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 2</a>
+                                                            <a href="{{route('articles_serch_view')}}">Article 2</a>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -193,18 +131,80 @@
                                         <div class="col-4">
                                             <div class="card">
                                                 <div class="card-header">
-                                                    <h6>Graphic Search</h6>
+                                                    <h6>Section Name</h6>
                                                 </div>
                                                 <div class="card-body">
                                                     <ul class="">
                                                         <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 1</a>
+                                                            <a href="{{route('articles_serch_view')}}">Article 1</a>
                                                         </li>
                                                         <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 2</a>
+                                                            <a href="{{route('articles_serch_view')}}">Article 2</a>
                                                         </li>
                                                         <li class="">
-                                                            <a href="{{route('articles_serch_view')}}">link 2</a>
+                                                            <a href="{{route('articles_serch_view')}}">Article 2</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h6>Section Name</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <ul class="">
+                                                        <li class="">
+                                                            <a href="{{route('articles_serch_view')}}">Article 1</a>
+                                                        </li>
+                                                        <li class="">
+                                                            <a href="{{route('articles_serch_view')}}">Article 2</a>
+                                                        </li>
+                                                        <li class="">
+                                                            <a href="{{route('articles_serch_view')}}">Article 2</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h6>Section Name</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <ul class="">
+                                                        <li class="">
+                                                            <a href="{{route('articles_serch_view')}}">Article 1</a>
+                                                        </li>
+                                                        <li class="">
+                                                            <a href="{{route('articles_serch_view')}}">Article 2</a>
+                                                        </li>
+                                                        <li class="">
+                                                            <a href="{{route('articles_serch_view')}}">Article 2</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h6>Section Name</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <ul class="">
+                                                        <li class="">
+                                                            <a href="{{route('articles_serch_view')}}">Article 1</a>
+                                                        </li>
+                                                        <li class="">
+                                                            <a href="{{route('articles_serch_view')}}">Article 2</a>
+                                                        </li>
+                                                        <li class="">
+                                                            <a href="{{route('articles_serch_view')}}">Article 2</a>
                                                         </li>
                                                     </ul>
                                                 </div>
