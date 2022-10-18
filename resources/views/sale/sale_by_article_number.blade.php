@@ -204,9 +204,9 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group mb-3">     
-                                        <input type="number" name="entire_vat" value="0" class="form-control"
+                                        <input type="number" name="entire_vat" value="1" class="form-control"
                                             aria-label="Amount (to the nearest dollar)" id="sale_entire_vat" 
-                                            class="form-control" min="0" step="any" max="100000000" onkeyup="calculateSaleTotal()">
+                                            class="form-control" min="1" step="any" max="100000000" onkeyup="calculateSaleTotal()">
                                         <span class="input-group-text"><b>TND</b></span>
                                     </div>
                                 </div>
@@ -272,11 +272,11 @@
                 html += '<input type="hidden" name="article_number[]" value="' + data.data
                     .articleNumber + '">';
                 calculateEntireSaleTotal(all_product_ids);
-                $('#myTable tr').each(function() {
-                    if (this.id != '') {
-                        article_ids_array.push(this.id)
-                    }
-                })
+                // $('#myTable tr').each(function() {
+                //     if (this.id != '') {
+                //         article_ids_array.push(this.id)
+                //     }
+                // })
 
                 if (selected_cash_type.length > 0) {
                     selected_cash_type.forEach(checkCashType);
@@ -465,17 +465,17 @@
     function alterSaleQty(id) {
 
         var item_qty = parseInt($("#sale_item_qty" + id).val());
-        if(!item_qty){
+        if (!item_qty) {
             item_qty = 1;
         }
 
 
         var sale_price = parseFloat($("#sale_sale_price_" + id).val());
-        if(!sale_price){
+        if (!sale_price) {
             sale_price = 1;
         }
         var discount = (parseFloat(1) - (parseFloat($("#sale_discount_" + id).val() / 100)));
-        if(!discount){
+        if (!discount) {
             discount = (parseFloat(1) - (0 / 100));
         }
         var sale_total_with_discount = (item_qty * sale_price) * discount;
@@ -502,6 +502,15 @@
             if (all_product_ids[i] === id) {
 
                 all_product_ids.splice(i, 1);
+            }
+
+        }
+        for (var i = 0; i < article_ids_array.length; i++) {
+
+            if (article_ids_array[i] === "article_" + id) {
+                console.log("article_4444444444444idsssssss", article_ids_array);
+
+                article_ids_array.splice(i, 1);
             }
 
         }
@@ -570,6 +579,8 @@
     function calculateSaleTotal() {
         var total_before_discount = 0.0;
         var total_to_be_paid = 0.0;
+        var total_sale_price = 0.0;
+
         // console.log(product_ids_array)
         var cashType = $('#cash_type').find(":selected").val();
         var id_array = [];
@@ -587,6 +598,7 @@
                 if (!sal_price) {
                     sal_price = 1;
                 }
+                total_sale_price += parseFloat(sal_price);
                 total_before_discount += (parseInt(it_qty) * parseFloat(sal_price));
             }
 
@@ -602,6 +614,18 @@
             var discount = $('#sale_discount').val();
             if (!discount) {
                 discount = 0
+            }
+
+            if(discount > total_sale_price){
+                Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'discount can not be greater than sum of sale price',
+
+                    });
+                    $('#sale_discount').val(discount - parseInt(1))
+                    exit();
+
             }
             $('#sale_entire_total_exculding_vat').val(total_before_discount.toFixed(2));
             total_to_be_paid = (parseFloat(total_before_discount.toFixed(2)) - parseFloat(discount)) * parseFloat(

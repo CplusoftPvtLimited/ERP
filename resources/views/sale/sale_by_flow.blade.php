@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-12">
         <div id="other_data"></div>
-        <div class="row"> 
+        <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
                     <label>Engine Type</label>
@@ -398,7 +398,7 @@
                 engine_id: engine_id,
                 section_id: section_id,
                 section_part_id: section_part_id,
-                cash_type: cashType 
+                cash_type: cashType
             },
 
             success: function(data) {
@@ -415,7 +415,7 @@
                 var other_data_div = $('#other_data');
 
                 var total_calculations = $('#total_sale_calculations');
-                $('#total_sale_calculations').css('display','block');
+                $('#total_sale_calculations').css('display', 'block');
                 var white_cash_head = "";
                 var black_cash_head = "";
                 var white_cash_calculations_head = "";
@@ -453,9 +453,9 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group mb-3">     
-                                        <input type="number" name="entire_vat" value="0" class="form-control"
+                                        <input type="number" name="entire_vat" value="1" class="form-control"
                                             aria-label="Amount (to the nearest dollar)" id="sale_entire_vat" 
-                                            class="form-control" min="0" step="any" max="100000000" onkeyup="calculateFlowSaleTotal()">
+                                            class="form-control" min="1" step="any" max="100000000" onkeyup="calculateFlowSaleTotal()">
                                         <span class="input-group-text"><b>TND</b></span>
                                     </div>
                                 </div>
@@ -517,14 +517,11 @@
                 var length = document.getElementById("myTable").rows.length;
 
                 var html = '';
-               
-                html += '<input type="hidden" name="article_number[]" value="' + data.data.articleNumber + '">';
+
+                html += '<input type="hidden" name="article_number[]" value="' + data.data
+                    .articleNumber + '">';
                 calculateFlowSaleTotal(all_product_ids);
-                $('#myTable tr').each(function() {
-                    if (this.id != '') {
-                        article_ids_array.push(this.id)
-                    }
-                })
+
 
                 if (selected_cash_type.length > 0) {
                     selected_cash_type.forEach(checkCashType);
@@ -545,40 +542,44 @@
                     selected_cash_type.push(cashType);
 
                 }
-                
+
                 if (data.cash_type == "white" && tableHeadRow.length <= 0) {
                     tableHead.append(white_cash_head);
                     total_calculations.html(white_cash_calculations_head);
-                    
-                    
+
+
                 } else if (data.cash_type == "black" && tableHeadRow.length <= 0) {
                     tableHead.append(black_cash_head);
                 }
-                $('#total_sale_calculations').css('display','block')
+                $('#total_sale_calculations').css('display', 'block')
                 markup = '<tr id="article_' + data.data.legacyArticleId + '"><td>' + data.data
                     .genericArticleDescription + '-' + data.data.articleNumber +
                     '</td>';
 
-                if(data.cash_type == "white"){
-                    markup += '<input type="hidden" value="'+data.stock.white_items+'" id="stock_items_'+data.data.legacyArticleId+'">';
+                if (data.cash_type == "white") {
+                    markup += '<input type="hidden" value="' + data.stock.white_items +
+                        '" id="stock_items_' + data.data.legacyArticleId + '">';
                     markup +=
-                    '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterFlowSaleQty(' +
-                    data.data.legacyArticleId + ')" id="sale_item_qty' + data.data
-                    .legacyArticleId +
-                    '" value="1" min="0" max="'+data.stock.white_items+'" name="item_qty[]" required></td>';
+                        '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterFlowSaleQty(' +
+                        data.data.legacyArticleId + ')" id="sale_item_qty' + data.data
+                        .legacyArticleId +
+                        '" value="1" min="0" max="' + data.stock.white_items +
+                        '" name="item_qty[]" required></td>';
                     var white_price = 1;
-                    if(data.stock.unit_sale_price_of_white_cash != null){
+                    if (data.stock.unit_sale_price_of_white_cash != null) {
                         white_price = data.stock.unit_sale_price_of_white_cash;
                     }
                     markup +=
-                    '<td><input style="width:100px" onkeyup="alterFlowSaleQty(' +
-                    data.data.legacyArticleId + ')" type="number" value="'+white_price+'" step="any" class="form-control"  id="sale_sale_price_' +
-                    data.data.legacyArticleId +
-                    '" name="sale_price[]"></td>';
-                }else if(data.cash_type == "black"){
-                    markup += '<input type="hidden" value="'+data.stock.black_items+'" id="stock_items_'+data.data.legacyArticleId+'">';
+                        '<td><input style="width:100px" onkeyup="alterFlowSaleQty(' +
+                        data.data.legacyArticleId + ')" type="number" value="' + white_price +
+                        '" step="any" class="form-control"  id="sale_sale_price_' +
+                        data.data.legacyArticleId +
+                        '" name="sale_price[]"></td>';
+                } else if (data.cash_type == "black") {
+                    markup += '<input type="hidden" value="' + data.stock.black_items +
+                        '" id="stock_items_' + data.data.legacyArticleId + '">';
                     var black_price = 1;
-                    if(data.stock.unit_sale_price_of_black_cash != null){
+                    if (data.stock.unit_sale_price_of_black_cash != null) {
                         black_price = data.stock.unit_sale_price_of_black_cash;
                     }
                     markup +=
@@ -588,12 +589,13 @@
                         '" value="1" min="0" max="' + data.stock.black_items +
                         '" name="item_qty[]" required></td>';
                     markup +=
-                    '<td><input style="width:150px" onkeyup="alterFlowSaleQty(' +
-                    data.data.legacyArticleId + ')" type="number" value="'+black_price+'" step="any" class="form-control"  id="sale_sale_price_' +
-                    data.data.legacyArticleId +
-                    '" name="sale_price[]" readonly></td>';
+                        '<td><input style="width:150px" onkeyup="alterFlowSaleQty(' +
+                        data.data.legacyArticleId + ')" type="number" value="' + black_price +
+                        '" step="any" class="form-control"  id="sale_sale_price_' +
+                        data.data.legacyArticleId +
+                        '" name="sale_price[]" readonly></td>';
                 }
-                
+
                 markup +=
                     '<td><input type="number" onkeyup="alterFlowSaleQty(' +
                     data.data.legacyArticleId +
@@ -621,7 +623,7 @@
                     '" name="sale_total_with_discount[]" readonly></td>';
 
                 markup += '<td><button type="button" id="article_delete_' +
-                    data.data.legacyArticleId + '" onclick="deleteSaleArticle(' + data.data
+                    data.data.legacyArticleId + '" onclick="deleteFlowSaleArticle(' + data.data
                     .legacyArticleId +
                     ')" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button></td>';
 
@@ -652,15 +654,18 @@
                 }
                 all_product_ids.push(data.data.legacyArticleId);
 
-                var sale_price = parseFloat($("#sale_sale_price_" + data.data.legacyArticleId).val());
+                var sale_price = parseFloat($("#sale_sale_price_" + data.data.legacyArticleId)
+                .val());
                 var discount = parseFloat($("#sale_discount_" + data.data.legacyArticleId).val());
                 var item_qty = parseInt($("#sale_item_qty" + data.data.legacyArticleId).val());
 
                 var sale_total_with_discount = (item_qty * sale_price) - discount;
                 var sale_total_without_discount = (item_qty * sale_price);
 
-                $('#sale_total_with_discount' + data.data.legacyArticleId).val(sale_total_with_discount.toFixed(2));
-                $('#sale_total_without_discount' + data.data.legacyArticleId).val(sale_total_without_discount.toFixed(2));
+                $('#sale_total_with_discount' + data.data.legacyArticleId).val(
+                    sale_total_with_discount.toFixed(2));
+                $('#sale_total_without_discount' + data.data.legacyArticleId).val(
+                    sale_total_without_discount.toFixed(2));
             }
         });
     });
@@ -762,48 +767,48 @@
     var t_qty = 0;
     let w_qty = 0;
     let b_qty = 0;
-    var id_array = []; 
+    var id_array = [];
     var total_quantity_of_all_row_products = 0;
 
     function alterFlowSaleQty(id) {
 
         var item_qty = parseInt($("#sale_item_qty" + id).val());
-        if(!item_qty){
+        if (!item_qty) {
             item_qty = 1;
         }
-        
+
         var stock = parseInt($("#stock_items_" + id).val());
-       
+
 
         var sale_price = parseFloat($("#sale_sale_price_" + id).val());
-        if(!sale_price){
+        if (!sale_price) {
             sale_price = 1;
         }
         var discount = (parseFloat(1) - (parseFloat($("#sale_discount_" + id).val() / 100)));
-        if(!discount){
+        if (!discount) {
             discount = (parseFloat(1) - (0 / 100));
         }
-        console.log("qtyyyyyyyyy",item_qty);
-        console.log('sal price',sale_price);
-        console.log('discount',discount);
+        console.log("qtyyyyyyyyy", item_qty);
+        console.log('sal price', sale_price);
+        console.log('discount', discount);
         var sale_total_with_discount = (item_qty * sale_price) * discount;
         var sale_total_without_discount = (item_qty * sale_price);
-        if(sale_total_with_discount <= 0){
+        if (sale_total_with_discount <= 0) {
             $('#sale_total_with_discount' + id).val(0);
-        }else{
+        } else {
             $('#sale_total_with_discount' + id).val(sale_total_with_discount.toFixed(2))
         }
 
-        if(sale_total_without_discount <= 0){
+        if (sale_total_without_discount <= 0) {
             $('#sale_total_without_discount' + id).val(0);
-        }else{
+        } else {
             $('#sale_total_without_discount' + id).val(sale_total_without_discount.toFixed(2))
-        }    
-        calculateFlowSaleTotal(all_product_ids);    
+        }
+        calculateFlowSaleTotal(all_product_ids);
     }
 
 
-    function deleteSaleArticle(id) {
+    function deleteFlowSaleArticle(id) {
         $('#article_' + id).remove();
         for (var i = 0; i < all_product_ids.length; i++) {
 
@@ -813,9 +818,18 @@
             }
 
         }
-        if(all_product_ids.length <= 0){
-            $('#total_sale_calculations').css('display','none');
-            $('#submit-button').css('display','none');
+        for (var i = 0; i < article_ids_array.length; i++) {
+
+            if (article_ids_array[i] === "article_" + id) {
+                console.log("article_4444444444444idsssssss", article_ids_array);
+
+                article_ids_array.splice(i, 1);
+            }
+
+        }
+        if (all_product_ids.length <= 0) {
+            $('#total_sale_calculations').css('display', 'none');
+            $('#submit-button').css('display', 'none');
         }
         calculateEntireTotal(all_product_ids);
         // article_ids_array = [];
@@ -830,100 +844,121 @@
         // console.log(product_ids_array)
         var cashType = $('#cash_type').find(":selected").val();
         var id_array = [];
-        id_array =  product_ids_array.filter(onlyUnique);
-       
+        id_array = product_ids_array.filter(onlyUnique);
+
         if (id_array.length > 0) {
             id_array.forEach(getActualProductCost);
 
             function getActualProductCost(id, index) {
-                    
-                    total_before_discount += (parseInt($('#sale_item_qty' + id).val()) * parseFloat($('#sale_sale_price_' + id).val()));
-                    var discount = parseFloat($('#sale_discount').val());
-                    
-                    if(discount > parseFloat($('#sale_sale_price_' + id).val())){
-                        $('#sale_discount').val(discount - 1);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'discount can not be greater than sale price',
 
-                        });
-                        exit();
-                    }
+                total_before_discount += (parseInt($('#sale_item_qty' + id).val()) * parseFloat($('#sale_sale_price_' +
+                    id).val()));
+                var discount = parseFloat($('#sale_discount').val());
+
+                if (discount > parseFloat($('#sale_sale_price_' + id).val())) {
+                    $('#sale_discount').val(discount - 1);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'discount can not be greater than sale price',
+
+                    });
+                    exit();
+                }
             }
-            
-            
+
+
             var tax_stamp = parseFloat($('#sale_tax_stamp').val());
             var entire_vat = parseFloat($('#sale_entire_vat').val());
             var discount = parseFloat($('#sale_discount').val());
             $('#sale_entire_total_exculding_vat').val(total_before_discount.toFixed(2));
-            total_to_be_paid = (parseFloat(total_before_discount.toFixed(2)) - parseFloat(discount.toFixed(2))) * parseFloat(entire_vat.toFixed(2)) + parseFloat(tax_stamp.toFixed(2)) ;
-           
-            if(total_to_be_paid < 0){
+            total_to_be_paid = (parseFloat(total_before_discount.toFixed(2)) - parseFloat(discount.toFixed(2))) *
+                parseFloat(entire_vat.toFixed(2)) + parseFloat(tax_stamp.toFixed(2));
+
+            if (total_to_be_paid < 0) {
                 $('#total_to_be_paid').val(0);
-            }else{
+            } else {
                 $('#total_to_be_paid').val(total_to_be_paid);
             }
-           
-            
+
+
         }
         // }
     }
 
-    function calculateFlowSaleTotal(){
+    function calculateFlowSaleTotal() {
         var total_before_discount = 0.0;
         var total_to_be_paid = 0.0;
+        var total_sale_price = 0.0;
         // console.log(product_ids_array)
         var cashType = $('#cash_type').find(":selected").val();
         var id_array = [];
-        id_array =  all_product_ids.filter(onlyUnique);
-       
+        id_array = all_product_ids.filter(onlyUnique);
+
         if (id_array.length > 0) {
             id_array.forEach(getActualProductCost);
 
             function getActualProductCost(id, index) {
-                    var it_qty = $('#sale_item_qty' + id).val();
-                    if(!it_qty){
-                        it_qty = 1;
-                    }
-                    var sal_price = $('#sale_sale_price_' + id).val();
-                    if(!sal_price){
-                        sal_price = 1;
-                    }
-                    total_before_discount += (parseInt(it_qty) * parseFloat(sal_price));
-                    
-                   
-                    
+                var it_qty = $('#sale_item_qty' + id).val();
+                if (!it_qty) {
+                    it_qty = 1;
+                }
+                var sal_price = $('#sale_sale_price_' + id).val();
+                if (!sal_price) {
+                    sal_price = 1;
+                }
+                total_sale_price += parseFloat(sal_price);
+                total_before_discount += (parseInt(it_qty) * parseFloat(sal_price));
+
+
+
             }
-            
-            
+
+
             var tax_stamp = $('#sale_tax_stamp').val();
-            if(!tax_stamp){
+            if (!tax_stamp) {
                 tax_stamp = 0
             }
             var entire_vat = $('#sale_entire_vat').val();
-            if(!entire_vat){
+            if (!entire_vat) {
                 entire_vat = 1
             }
             var discount = $('#sale_discount').val();
-            if(!discount){
+            if (!discount) {
                 discount = 0
             }
-            
+          
+            if(discount > total_sale_price){
+                Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'discount can not be greater than sum of sale price',
+
+                    });
+                    $('#sale_discount').val(discount - parseInt(1))
+                    exit();
+
+            }
+            var discount = $('#sale_discount').val();
+            if (!discount) {
+                discount = 0
+            }
             $('#sale_entire_total_exculding_vat').val(total_before_discount.toFixed(2));
-            total_to_be_paid = (parseFloat(total_before_discount.toFixed(2)) - parseFloat(discount)) * parseFloat(entire_vat) + parseFloat(tax_stamp) ;
-            console.log("Total to be paid",total_to_be_paid)
-            if(total_to_be_paid < 0){
+
+            total_to_be_paid = (parseFloat(total_before_discount.toFixed(2)) - parseFloat(discount)) * parseFloat(
+                entire_vat) + parseFloat(tax_stamp);
+            console.log("Total to be paid", total_to_be_paid)
+            if (total_to_be_paid < 0) {
                 $('#total_to_be_paid').val(0);
-            }else{
+            } else {
                 $('#total_to_be_paid').val(total_to_be_paid);
             }
-           
-            
+
+
         }
     }
+
     function onlyUnique(value, index, self) {
         return self.indexOf(value) === index;
     }
-    
 </script>
