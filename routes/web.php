@@ -49,6 +49,9 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 	Route::get('articles_serch_view', function () {
 		return view('purchase.article_search_view');
 	})->name('articles_serch_view');
+	Route::get('article_view', function () {
+		return view('purchase.article_view');
+	})->name('article_view');
 
 	Route::resource('preinvoices', 'PreInvoiceController');
 

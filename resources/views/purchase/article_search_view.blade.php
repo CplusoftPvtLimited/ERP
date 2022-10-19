@@ -77,7 +77,7 @@
                                                                 4637526734
                                                             </td>
                                                             <td>
-                                                                <a href="" class="btn btn-primary text-white"><i
+                                                                <a href="{{route('article_view')}}" class="btn btn-primary text-white"><i
                                                                         class="fa fa-eye text-white"></i></a>
                                                             </td>
                                                         </tr>
@@ -99,7 +99,7 @@
                                                                 4637526734
                                                             </td>
                                                             <td>
-                                                                <a href="" class="btn btn-primary text-white"><i
+                                                                <a href="{{route('article_view')}}" class="btn btn-primary text-white"><i
                                                                         class="fa fa-eye text-white"></i></a>
                                                             </td>
                                                         </tr>
@@ -121,7 +121,7 @@
                                                                 4637526734
                                                             </td>
                                                             <td>
-                                                                <a href="" class="btn btn-primary text-white"><i
+                                                                <a href="{{route('article_view')}}" class="btn btn-primary text-white"><i
                                                                         class="fa fa-eye text-white"></i></a>
                                                             </td>
                                                         </tr>
@@ -143,7 +143,7 @@
                                                                 4637526734
                                                             </td>
                                                             <td>
-                                                                <a href="" class="btn btn-primary text-white"><i
+                                                                <a href="{{route('article_view')}}" class="btn btn-primary text-white"><i
                                                                         class="fa fa-eye text-white"></i></a>
                                                             </td>
                                                         </tr>
@@ -165,7 +165,7 @@
                                                                 4637526734
                                                             </td>
                                                             <td>
-                                                                <a href="" class="btn btn-primary text-white"><i
+                                                                <a href="{{route('article_view')}}" class="btn btn-primary text-white"><i
                                                                         class="fa fa-eye text-white"></i></a>
                                                             </td>
                                                         </tr>
@@ -187,7 +187,7 @@
                                                                 4637526734
                                                             </td>
                                                             <td>
-                                                                <a href="" class="btn btn-primary text-white"><i
+                                                                <a href="{{route('article_view')}}" class="btn btn-primary text-white"><i
                                                                         class="fa fa-eye text-white"></i></a>
                                                             </td>
                                                         </tr>
@@ -209,7 +209,7 @@
                                                                 4637526734
                                                             </td>
                                                             <td>
-                                                                <a href="" class="btn btn-primary text-white"><i
+                                                                <a href="{{route('article_view')}}" class="btn btn-primary text-white"><i
                                                                         class="fa fa-eye text-white"></i></a>
                                                             </td>
                                                         </tr>
@@ -231,7 +231,7 @@
                                                                 4637526734
                                                             </td>
                                                             <td>
-                                                                <a href="" class="btn btn-primary text-white"><i
+                                                                <a href="{{route('article_view')}}" class="btn btn-primary text-white"><i
                                                                         class="fa fa-eye text-white"></i></a>
                                                             </td>
                                                         </tr>
@@ -253,7 +253,7 @@
                                                                 4637526734
                                                             </td>
                                                             <td>
-                                                                <a href="" class="btn btn-primary text-white"><i
+                                                                <a href="{{route('article_view')}}" class="btn btn-primary text-white"><i
                                                                         class="fa fa-eye text-white"></i></a>
                                                             </td>
                                                         </tr>
