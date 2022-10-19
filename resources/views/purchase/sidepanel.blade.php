@@ -5,7 +5,7 @@
         </h6>
     </div>
     <div class="card-body text-center">
-        <img src="images/logo.png" alt="" width="100px">
+        <img src="images/logo.png" alt="" width="150px">
         <p>
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Exercitationem magni architecto quisquam. Pariatur
             facilis est excepturi enim quia, impedit, architecto dolore similique itaque dolorem ullam eligendi

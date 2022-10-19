@@ -23,8 +23,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-9" style="margin: 0px; padding:0px;">
-                                <div class="card pr-3 pl-3 pt-0" style="margin: 0px; height:100%; border-left:1px solid  rgb(240, 240, 240); box-shadow:none !important;">
+                            <div class="col-7" style="margin: 0px; padding:0px;">
+                                <div class="card pr-3 pl-3 pt-0" style="box-shadow: none !important; border-left: 1px solid rgb(240, 240, 240); border-right: 1px solid rgb(240, 240, 240)">
                                     <div class="row bg-secondary pt-2 mt-0 text-white">
                                         <div class="col-6">
                                             <h6>
@@ -50,6 +50,14 @@
                                                             <th>Action</th>
                                                         </tr>
                                                     </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" >
+                                        <div class="col-12 pl-0 pr-0">
+                                            <div class="table">
+                                                <table class="table-responsive">
                                                     <tbody>
                                                         <tr>
                                                             <td>
@@ -59,14 +67,18 @@
                                                                 <img src="images/logo.png" width="100px" alt="">
                                                             </td>
                                                             <td style="width: 50%" class="text-center">
-                                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ipsam at esse repellendus labore, sit, soluta nobis obcaecati necessitatibus architecto dolores ea corporis consequatur laboriosam sequi minus molestiae porro magni fugiat!
+                                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                                                Ipsam at esse repellendus labore, sit, soluta nobis
+                                                                obcaecati necessitatibus architecto dolores ea corporis
+                                                                consequatur laboriosam sequi minus molestiae porro magni
+                                                                fugiat!
                                                             </td>
                                                             <td>
                                                                 4637526734
                                                             </td>
                                                             <td>
                                                                 <a href="" class="btn btn-primary text-white"><i
-                                                                    class="fa fa-eye text-white"></i></a>
+                                                                        class="fa fa-eye text-white"></i></a>
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -77,14 +89,18 @@
                                                                 <img src="images/logo.png" width="100px" alt="">
                                                             </td>
                                                             <td style="width: 50%" class="text-center">
-                                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ipsam at esse repellendus labore, sit, soluta nobis obcaecati necessitatibus architecto dolores ea corporis consequatur laboriosam sequi minus molestiae porro magni fugiat!
+                                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                                                Ipsam at esse repellendus labore, sit, soluta nobis
+                                                                obcaecati necessitatibus architecto dolores ea corporis
+                                                                consequatur laboriosam sequi minus molestiae porro magni
+                                                                fugiat!
                                                             </td>
                                                             <td>
                                                                 4637526734
                                                             </td>
                                                             <td>
                                                                 <a href="" class="btn btn-primary text-white"><i
-                                                                    class="fa fa-eye text-white"></i></a>
+                                                                        class="fa fa-eye text-white"></i></a>
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -95,7 +111,143 @@
                                                                 <img src="images/logo.png" width="100px" alt="">
                                                             </td>
                                                             <td style="width: 50%" class="text-center">
-                                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ipsam at esse repellendus labore, sit, soluta nobis obcaecati necessitatibus architecto dolores ea corporis consequatur laboriosam sequi minus molestiae porro magni fugiat!
+                                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                                                Ipsam at esse repellendus labore, sit, soluta nobis
+                                                                obcaecati necessitatibus architecto dolores ea corporis
+                                                                consequatur laboriosam sequi minus molestiae porro magni
+                                                                fugiat!
+                                                            </td>
+                                                            <td>
+                                                                4637526734
+                                                            </td>
+                                                            <td>
+                                                                <a href="" class="btn btn-primary text-white"><i
+                                                                        class="fa fa-eye text-white"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                4637526734
+                                                            </td>
+                                                            <td>
+                                                                <img src="images/logo.png" width="100px" alt="">
+                                                            </td>
+                                                            <td style="width: 50%" class="text-center">
+                                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                                                Ipsam at esse repellendus labore, sit, soluta nobis
+                                                                obcaecati necessitatibus architecto dolores ea corporis
+                                                                consequatur laboriosam sequi minus molestiae porro magni
+                                                                fugiat!
+                                                            </td>
+                                                            <td>
+                                                                4637526734
+                                                            </td>
+                                                            <td>
+                                                                <a href="" class="btn btn-primary text-white"><i
+                                                                        class="fa fa-eye text-white"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                4637526734
+                                                            </td>
+                                                            <td>
+                                                                <img src="images/logo.png" width="100px" alt="">
+                                                            </td>
+                                                            <td style="width: 50%" class="text-center">
+                                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                                                Ipsam at esse repellendus labore, sit, soluta nobis
+                                                                obcaecati necessitatibus architecto dolores ea corporis
+                                                                consequatur laboriosam sequi minus molestiae porro magni
+                                                                fugiat!
+                                                            </td>
+                                                            <td>
+                                                                4637526734
+                                                            </td>
+                                                            <td>
+                                                                <a href="" class="btn btn-primary text-white"><i
+                                                                        class="fa fa-eye text-white"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                4637526734
+                                                            </td>
+                                                            <td>
+                                                                <img src="images/logo.png" width="100px" alt="">
+                                                            </td>
+                                                            <td style="width: 50%" class="text-center">
+                                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                                                Ipsam at esse repellendus labore, sit, soluta nobis
+                                                                obcaecati necessitatibus architecto dolores ea corporis
+                                                                consequatur laboriosam sequi minus molestiae porro magni
+                                                                fugiat!
+                                                            </td>
+                                                            <td>
+                                                                4637526734
+                                                            </td>
+                                                            <td>
+                                                                <a href="" class="btn btn-primary text-white"><i
+                                                                        class="fa fa-eye text-white"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                4637526734
+                                                            </td>
+                                                            <td>
+                                                                <img src="images/logo.png" width="100px" alt="">
+                                                            </td>
+                                                            <td style="width: 50%" class="text-center">
+                                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                                                Ipsam at esse repellendus labore, sit, soluta nobis
+                                                                obcaecati necessitatibus architecto dolores ea corporis
+                                                                consequatur laboriosam sequi minus molestiae porro magni
+                                                                fugiat!
+                                                            </td>
+                                                            <td>
+                                                                4637526734
+                                                            </td>
+                                                            <td>
+                                                                <a href="" class="btn btn-primary text-white"><i
+                                                                        class="fa fa-eye text-white"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                4637526734
+                                                            </td>
+                                                            <td>
+                                                                <img src="images/logo.png" width="100px" alt="">
+                                                            </td>
+                                                            <td style="width: 50%" class="text-center">
+                                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                                                Ipsam at esse repellendus labore, sit, soluta nobis
+                                                                obcaecati necessitatibus architecto dolores ea corporis
+                                                                consequatur laboriosam sequi minus molestiae porro magni
+                                                                fugiat!
+                                                            </td>
+                                                            <td>
+                                                                4637526734
+                                                            </td>
+                                                            <td>
+                                                                <a href="" class="btn btn-primary text-white"><i
+                                                                        class="fa fa-eye text-white"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                4637526734
+                                                            </td>
+                                                            <td>
+                                                                <img src="images/logo.png" width="100px" alt="">
+                                                            </td>
+                                                            <td style="width: 50%" class="text-center">
+                                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                                                Ipsam at esse repellendus labore, sit, soluta nobis
+                                                                obcaecati necessitatibus architecto dolores ea corporis
+                                                                consequatur laboriosam sequi minus molestiae porro magni
+                                                                fugiat!
                                                             </td>
                                                             <td>
                                                                 4637526734
@@ -110,6 +262,13 @@
                                                 </table>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-2" style="margin: 0px; padding:0px;">
+                                <div class="card" style="margin: 0px; padding:0px; box-shadow: none; ">
+                                    <div class="card-body" style="margin: 0px; padding:0px;">
+                                        @include('purchase.criteria_search')
                                     </div>
                                 </div>
                             </div>
