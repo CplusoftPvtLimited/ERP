@@ -1,48 +1,3 @@
-<style>
-    .prod_cart_option .buttons_opt {
-        height: 40px;
-        margin-right: 1px;
-    }
-
-    .prod_cart_option .buttons_opt {
-        border: 1px solid gray;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        padding-left: 10px;
-        padding-right: 10px;
-        border-radius: 20px;
-    }
-
-    .prod_cart_option .buttons_opt span {
-        color: black;
-        font-size: 14px;
-    }
-
-    .prod_cart_option .buttons_opt .cart_item {
-        min-width: 40px;
-        text-align: center;
-        margin-left: 2px;
-        margin-right: 2px;
-    }
-
-    .prod_cart_option .buttons_opt .m_btn {
-        color: black;
-        height: 20px;
-        width: 20px;
-        transition: 0.25s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid lightgray;
-        border-radius: 50%
-    }
-
-    .prod_cart_option .buttons_opt .m_btn:hover {
-        cursor: pointer;
-        color: #ff6295;
-    }
-</style>
 @extends('layout.main')
 @section('content')
     @if (session()->has('message'))
@@ -112,23 +67,9 @@
                 <div class="col-6 text-center pt-3">
                     <img id="image_view" src="images/E.png" alt="" width="200px" height="200px" data-toggle="modal"
                         data-target="#staticBackdrop" style="cursor: pointer;">
-                    <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
-                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="staticBackdropLabel">Image</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body text-center">
-                                    <img id="image_view" src="images/E.png" alt=""
-                                        style="width: auto; height: 300px">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        <br>
+                        <br>
+                        <img src="images/E.png" alt="" width="35px">
                 </div>
             </div>
             <div class="row ">
@@ -410,6 +351,22 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Image</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img id="image_view" src="images/E.png" alt="" style="width: auto; height: 300px">
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 @endsection
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -425,8 +382,8 @@
 
         $('#plus').click(function() {
             var quantity = $('.cart_item').html();
-                var alter_quantity = quantity -(-1);
-                $('.cart_item').html(alter_quantity);
+            var alter_quantity = quantity - (-1);
+            $('.cart_item').html(alter_quantity);
         })
     });
 </script>
