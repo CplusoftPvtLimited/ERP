@@ -305,7 +305,14 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('delivery_slips', 'InvoiceController@getDeliverySlips')->name('delivery_slips'); 
 	Route::get('show_delivery_slip/{id}', 'InvoiceController@showDeliverySlip')->name('show_delivery_slip'); 
 	
+	// Home Search views
 
+	Route::get('home_search', 'HomeSearchController@homeSearchView')->name('home_search'); 
+	Route::get('get_home_manufacturers', 'HomeSearchController@getManufacturers')->name('get_home_manufacturers'); 
+	Route::get('get_models_by_manufacturer_home_search', 'HomeSearchController@getModelsByManufacturer')->name('get_models_by_manufacturer_home_search'); 
+	Route::get('get_engines_by_model_home_search', 'HomeSearchController@getEnginesByModel')->name('get_engines_by_model_home_search'); 
+	Route::get('get_data_of_engine_home_search', 'HomeSearchController@getEngineData')->name('get_data_of_engine_home_search'); 
+	Route::post('search_sections_by_engine', 'HomeSearchController@searchSectionByEngine')->name('search_sections_by_engine'); 
 	
 
 

@@ -4,6 +4,7 @@ return [
 	'Direct Sale' => 'Direct Sale',
 	'Regulation' => 'Regulation',
 	'Over View' => 'Over View',
+	'Home' => 'Home',
 	'BANK' => 'BANK',
 	'Regulation Data' => 'Regulation Data',
 	'Add an Expense' => 'Add an Expense',

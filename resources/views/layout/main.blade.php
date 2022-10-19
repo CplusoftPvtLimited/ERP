@@ -135,6 +135,8 @@
             <ul id="side-main-menu" class="side-menu list-unstyled">
                 <li><a href="{{ url('/') }}"> <i
                             class="dripicons-meter"></i><span>{{ __('file.dashboard') }}</span></a></li>
+                <li><a href="{{ url('/home_search') }}"> <i
+                                class="dripicons-home"></i><span>{{ __('file.Home') }}</span></a></li>
                 <?php
                 $role = DB::table('roles')->find(Auth::user()->role_id);
                 $category_permission_active = DB::table('permissions')
