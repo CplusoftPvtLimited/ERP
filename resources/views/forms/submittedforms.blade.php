@@ -42,7 +42,7 @@
                 @if (count($userforms) > 0)
                   <div class="col-6">
                     <p><strong>Role:</strong> {{ $role->name }}</p>
-                    <p><strong>Form Name:</strong> {{ $form->form_name }}</p>
+                    <p><strong>Form Name:</strong> {{ isset($form->form_name) ? $form->form_name : "" }}</p>
                   </div>
                 @endif
               </div>

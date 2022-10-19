@@ -142,8 +142,8 @@ catch(\Exception $e){
     public function showForms($user_id)
     {
         $data = [];
-        $role='';
-        $form ='';
+        $role = [];
+        $form = [];
         $user = User::find($user_id);
 
         $userforms = FormUser::where('user_id',$user_id)->orderBy('created_at','desc')->get();

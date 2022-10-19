@@ -69,7 +69,8 @@ class AssemblyGroupNodesController extends Controller
     {
         $languages = Language::all();
         $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')->get();
-        return view('assembly_group_nodes.create', compact('languages', 'engines'));
+        $sections = AssemblyGroupNode::all();
+        return view('assembly_group_nodes.create', compact('languages', 'engines', 'sections'));
     }
 
     /**
@@ -114,7 +115,8 @@ class AssemblyGroupNodesController extends Controller
 
         $languages = Language::all();
         $engines = LinkageTarget::withTrashed()->get();
-        return view('assembly_group_nodes.edit', compact('languages', 'engines', 'section'));
+        $sections = AssemblyGroupNode::withTrashed()->get();
+        return view('assembly_group_nodes.edit', compact('languages', 'engines', 'section', 'sections'));
     }
 
     /**
@@ -197,29 +199,6 @@ class AssemblyGroupNodesController extends Controller
             ], 200);
         } catch (\Exception $e) {
             return $e->getMessage();
-        }
-    }
-    public function sectionshhh()
-    {
-        // $sections = [];
-        $old_sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function ($query) {
-            $query->where('linkingTargetId', 1)
-                ->where('linkingTargetType', 'V');
-        })
-            ->limit(100)
-            ->get();
-        $new_sections = AssemblyGroupNode::where('request__linkingTargetId', 1)
-            ->where('request__linkingTargetType',  'V')
-            ->get();
-        // dd($old_sections->toArray());
-        $old_sections = $old_sections->toArray();
-        $new_sections = $new_sections->toArray();
-
-        $sections = array_merge($old_sections, $new_sections);
-        dd($sections);
-        foreach($sections as $key => $value)
-        {
-            dump($value['id']);
         }
     }
 }

@@ -107,9 +107,6 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 
 	Route::get('/download_file/{name}/{extension}', 'FormController@downloadFile');
 
-	Route::get('/sectionsjhjh', [AssemblyGroupNodesController::class, 'sectionshhh']);
-
-
 
 
 	Route::get('/', 'HomeController@index');

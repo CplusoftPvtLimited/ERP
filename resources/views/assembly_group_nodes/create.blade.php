@@ -99,8 +99,11 @@
                                             <div class="col-4">
                                                 <div class="form-group">
                                                     <h6>Parent Section</h6>
-                                                    <input type="number" min="0" name="parentNodeId" class="form-control" required
-                                                        value="{{ old('parentNodeId') }}">
+                                                    <select name="parentNodeId" id="parentNodeId"  class="form-control">
+                                                        @foreach ($sections as $section)
+                                                            <option value="{{ $section->assemblyGroupNodeId}}">{{ $section->assemblyGroupName}}</option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>

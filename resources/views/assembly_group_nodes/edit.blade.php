@@ -20,7 +20,7 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <h4>{{ trans('file.Add Section') }}</h4>
+                                    <h4>Edit Section</h4>
                                 </div>
                                 <div class="col-md-6">
                                     <a href="{{ route('section.index') }}" class="btn btn-primary float-right">Back</a>
@@ -101,8 +101,14 @@
                                             <div class="col-4">
                                                 <div class="form-group">
                                                     <h6>Parent Section</h6>
-                                                    <input type="number" min="0" name="parentNodeId"
-                                                        class="form-control" required value="{{ $section->parentNodeId }}">
+                                                    <select name="parentNodeId" id="parentNodeId"  class="form-control">
+                                                        <option>select parent</option>
+                                                        @foreach ($sections as $sec)
+                                                            <option value="{{ ($section->parentNodeId == $sec->assemblyGroupNodeId) ? $section->parentNodeId : $sec->assemblyGroupNodeId}}" {{ ($section->parentNodeId == $sec->assemblyGroupNodeId) ? "selected" : ""}}>{{ $sec->assemblyGroupName}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    {{-- <input type="number" min="0" name="parentNodeId"
+                                                        class="form-control" required value="{{ $section->parentNodeId }}"> --}}
                                                 </div>
                                             </div>
                                         </div>
@@ -123,6 +129,6 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
-        
+        <script></script>
     </section>
 @endsection
