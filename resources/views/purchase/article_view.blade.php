@@ -67,23 +67,9 @@
                 <div class="col-6 text-center pt-3">
                     <img id="image_view" src="images/E.png" alt="" width="200px" height="200px" data-toggle="modal"
                         data-target="#staticBackdrop" style="cursor: pointer;">
-                    <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
-                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="staticBackdropLabel">Image</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body text-center">
-                                    <img id="image_view" src="images/E.png" alt=""
-                                        style="width: auto; height: 300px">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        <br>
+                        <br>
+                        <img src="images/E.png" alt="" width="35px">
                 </div>
             </div>
             <div class="row ">
@@ -347,19 +333,57 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-2 pt-1 offset-8 text-center" style="border: 1px solid black;">
-                    <span class="mr-3" style="border: 1px solid blue; width:25px;  border-radius:50%"><strong>-
-                        </strong></span>
-                    <span class="" style="border: 1px solid blue; width:25px;  border-radius:50%">0</span>
-                    <span class="ml-3" style="border: 1px solid blue; width:25px;  border-radius:50%">+</span>
+                <div class="col-1 offset-9 mr-4">
+                    <div class="prod_cart_option d-flex justify-content-between mb-3 pb-2">
+                        <div class="buttons_opt">
+                            <span class="m_btn" id="minus"> <i class="fa fa-minus text-danger"></i></span>
+                            <span class="cart_item">
+                                1
+                            </span>
+                            <span class="m_btn" id="plus"> <i class="fa fa-plus text-success"></i></span>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-2">
+                <div class="col-1 text-right ">
                     <button class="btn btn-primary">
                         <i class="dripicons-cart"></i> Add to Cart
                     </button>
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Image</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img id="image_view" src="images/E.png" alt="" style="width: auto; height: 300px">
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 @endsection
-<script></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#minus').click(function() {
+            var quantity = $('.cart_item').html();
+            if (quantity > 1) {
+                var alter_quantity = quantity - 1;
+                $('.cart_item').html(alter_quantity);
+            }
+        });
+
+        $('#plus').click(function() {
+            var quantity = $('.cart_item').html();
+            var alter_quantity = quantity - (-1);
+            $('.cart_item').html(alter_quantity);
+        })
+    });
+</script>
