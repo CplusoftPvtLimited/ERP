@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Article;
+use App\Models\AssemblyGroupNode;
 use App\Models\LinkageTarget;
 use App\Models\Manufacturer;
 use App\Models\ModelSeries;
@@ -81,9 +83,54 @@ class HomeSearchController extends Controller
     }
 
     public function searchSectionByEngine(Request $request){
+        // dd($request->all());
         $engine = LinkageTarget::where('linkageTargetId',$request->engine_id)
                 ->where('linkageTargetType', $request->type)
                 ->orWhere('subLinkageTargetType',$request->sub_type)->first();
-        dd($engine);
+        $all_sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function($query) use ($request){
+                    $query->where('linkingTargetId', $request->engine_id)
+                    ->where('linkingTargetType', $request->sub_type);
+                })
+               ->groupBy('assemblyGroupNodeId')
+               ->limit(100)
+                ->get();
+        $sections = [];
+        if(count($all_sections) > 0){
+            foreach ($all_sections as $sec) {
+                $sub_sections = AssemblyGroupNode::where('parentNodeId',$sec->assemblyGroupNodeId)->get();
+                $res = [
+                    'section' => $sec,
+                    'sub_sections' => $sub_sections
+                ];
+                array_push($sections,$res);
+            }
+        }
+        $type = $request->type;
+        $sub_type = $request->sub_type;
+        $model_year = $request->model_year;
+        $fuel = $request->fuel;
+        $cc = $request->cc;
+
+        return view('home_search.sections_search_view',compact('sections','engine','type','sub_type','model_year','fuel','cc'));
+    }
+
+    public function articleSearchView(Request $request){
+        // dd($request->all());
+        $section_parts = Article::whereHas('section', function($query) {
+                $query->whereNotNull('request__linkingTargetId');
+            })->whereHas('articleVehicleTree', function ($query) use ($request) {
+                $query->where('linkingTargetType', $request->sub_type)->where('assemblyGroupNodeId', $request->section);
+            })
+            ->limit(100)
+            ->get();
+
+            $type = $request->type;
+            $sub_type = $request->sub_type;
+            $model_year = $request->model_year;
+            $fuel = $request->fuel;
+            $cc = $request->cc;
+            $engine = json_decode($request->engine);
+            
+        return view('home_search.article_search_view',compact('section_parts','engine','type','sub_type','model_year','fuel','cc'));
     }
 }

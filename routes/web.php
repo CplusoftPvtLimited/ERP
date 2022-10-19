@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RetailerLoginController;
 use App\Http\Controllers\BalanceSheetController;
 use App\Http\Controllers\CashManagementController;
 use App\Http\Controllers\FormController;
+use App\Http\Controllers\HomeSearchController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplierController;
@@ -31,58 +32,62 @@ Route::post('checkFile', 'StockManagementController@getRejectedItemCSV')->name('
 Route::get('preinvoice-pdf/{id}', 'SaleController@preinvoicepdf')->name('sales.preinvoicepdf');
 Route::get('delivery-slip-pdf/{id}', 'SaleController@deliverySlipPDF')->name('sales.delivery-slip');
 
-Route::group(['middleware' => 'auth'], function() {
+Route::group(['middleware' => 'auth'], function () {
 	Route::get('/dashboard', 'HomeController@dashboard');
 });
 
-	Route::post('do-register',[RetailerRegisterController::class,'create'])->name('do-register');
-	Route::post('do-login',[RetailerLoginController::class,'login'])->name('do-login');
+Route::post('do-register', [RetailerRegisterController::class, 'create'])->name('do-register');
+Route::post('do-login', [RetailerLoginController::class, 'login'])->name('do-login');
 
-	Route::get('/get_logout','UserController@userLogout')->name('user_logout');
+Route::get('/get_logout', 'UserController@userLogout')->name('user_logout');
 
 
 
-Route::group(['middleware' => ['auth', 'active']], function() {
+Route::group(['middleware' => ['auth', 'active']], function () {
+	Route::get('section_search_view', function () {
+		return view('purchase.sections_search_view');
+	})->name('section_search_view');
+	Route::post('articles_search_view', [HomeSearchController::class,'articleSearchView'])->name('articles_search_view');
 
 	Route::resource('preinvoices', 'PreInvoiceController');
 
-    Route::resource('assembly_group_nodes', 'AssemblyGroupNodeController');  // for erp
-	Route::get('assembly_group_nodes/getSectionParts/{id}','AssemblyGroupNodeController@getSectionParts')->name('get_section.parts'); // for erp
-	Route::get('assembly_group_nodes/language/{id}','AssemblyGroupNodeController@getLanguage')->name('get_language'); // for erp
-    Route::resource('languages', 'LanguagesController'); // for erp
+	Route::resource('assembly_group_nodes', 'AssemblyGroupNodeController');  // for erp
+	Route::get('assembly_group_nodes/getSectionParts/{id}', 'AssemblyGroupNodeController@getSectionParts')->name('get_section.parts'); // for erp
+	Route::get('assembly_group_nodes/language/{id}', 'AssemblyGroupNodeController@getLanguage')->name('get_language'); // for erp
+	Route::resource('languages', 'LanguagesController'); // for erp
 
 
 
 	Route::resource('invoices', 'InvoiceController');
 	Route::get('invoices/getproduct/{id}', 'InvoiceController@getProduct')->name('invoice.getproduct');
 	Route::get('preinvoices/getproduct/{id}', 'PreInvoiceController@getProduct')->name('preinvoice.getproduct');
-	Route::get('invoices/product_quotation/{id}','InvoiceController@productQuotationData');
-	Route::get('preinvoices/product_quotation/{id}','PreInvoiceController@productQuotationData');
+	Route::get('invoices/product_quotation/{id}', 'InvoiceController@productQuotationData');
+	Route::get('preinvoices/product_quotation/{id}', 'PreInvoiceController@productQuotationData');
 	Route::get('preinvoices/lims_product_search', 'PreInvoiceController@limsProductSearch')->name('product_preinvoice.search');
 	Route::get('lims_product_search_invoice', 'InvoiceController@limsProductSearch')->name('product_invoice.search');
 
 	// Route::get('data/edit/{id}','QuotationController@edit');
 
-	Route::get('getform',[FormController::class,'getForm'])->name('getform');
-	Route::post('formSave',[FormController::class,'formSave'])->name('formSave');
-	Route::get('formMessage',[FormController::class,'formMessage'])->name('formMessage');
-	
+	Route::get('getform', [FormController::class, 'getForm'])->name('getform');
+	Route::post('formSave', [FormController::class, 'formSave'])->name('formSave');
+	Route::get('formMessage', [FormController::class, 'formMessage'])->name('formMessage');
+
 
 	Route::get('/read_notification/{id?}', 'FormController@readNotification')->name('read_notification');
 
 	Route::resource('form', 'FormController');
-	Route::get('fillform/{id}',[FormController::class,'showform'])->name('Filform');
-	Route::get('showSubmitForm',[FormController::class,'showSubmitForm'])->name('showSubmitForm');
-	Route::get('/reShowSubmitForm/{noti_id}','FormController@reShowSubmitForm');
+	Route::get('fillform/{id}', [FormController::class, 'showform'])->name('Filform');
+	Route::get('showSubmitForm', [FormController::class, 'showSubmitForm'])->name('showSubmitForm');
+	Route::get('/reShowSubmitForm/{noti_id}', 'FormController@reShowSubmitForm');
 
-	Route::post('formData',[FormController::class,'formData'])->name('formData');
+	Route::post('formData', [FormController::class, 'formData'])->name('formData');
 
 	Route::get('test', function () {
 		event(new App\Events\StatusLiked('Ali'));
 		return "Event has been sent!";
 	});
-	Route::get('/user_show/{user_id}/{noti_id}',[UserController::class,'show']);
-	
+	Route::get('/user_show/{user_id}/{noti_id}', [UserController::class, 'show']);
+
 	Route::get('/', 'HomeController@index');
 	Route::get('/approved_dashboard/{id?}', 'HomeController@approvedDashboard');
 	Route::get('switch-theme/{theme}', 'HomeController@switchTheme')->name('switchTheme');
@@ -134,8 +139,8 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('products/product_warehouse/{id}', 'ProductController@productWarehouseData');
 	Route::post('importproduct', 'ProductController@importProduct')->name('product.import');
 	Route::post('exportproduct', 'ProductController@exportProduct')->name('product.export');
-	Route::get('products/print_barcode','ProductController@printBarcode')->name('product.printBarcode');
-	
+	Route::get('products/print_barcode', 'ProductController@printBarcode')->name('product.printBarcode');
+
 	Route::get('products/lims_product_search', 'ProductController@limsProductSearch')->name('product.search');
 	Route::post('products/deletebyselection', 'ProductController@deleteBySelection');
 	Route::post('products/update', 'ProductController@updateProduct');
@@ -169,7 +174,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::post('sales/sale-data', 'SaleController@saleData');
 	Route::post('sales/sendmail', 'SaleController@sendMail')->name('sale.sendmail');
 	Route::get('sales/sale_by_csv', 'SaleController@saleByCsv');
-	Route::get('sales/product_sale/{id}','SaleController@productSaleData');
+	Route::get('sales/product_sale/{id}', 'SaleController@productSaleData');
 	Route::post('importsale', 'SaleController@importSale')->name('sale.import');
 	Route::get('pos', 'SaleController@posSale')->name('sale.pos');
 	Route::get('sales/lims_sale_search', 'SaleController@limsSaleSearch')->name('sale.search');
@@ -209,16 +214,16 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('invoice/change/status/{id}/{val}', 'SaleController@changeInvoiceStatus')->name('sales.changeInvoiceStatus');
 
 	// Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
-    ///////////////////// sale controllers ////////////////////////
+	///////////////////// sale controllers ////////////////////////
 	Route::resource('sales', 'SaleController');
 	Route::get('sale/new/create', 'SaleController@newCreate')->name('sales.newCreate');
 	Route::get('sale_product_delete', 'SaleController@saleProductDelete');
-	Route::get('get_section_parts_in_table', 'SaleController@showSectionParts')->name('get_section_parts_in_table'); 
+	Route::get('get_section_parts_in_table', 'SaleController@showSectionParts')->name('get_section_parts_in_table');
 
-    /////////////////////////// end /////////////////////////////
+	/////////////////////////// end /////////////////////////////
 
 	Route::get('delivery', 'DeliveryController@index')->name('delivery.index');
-	Route::get('delivery/product_delivery/{id}','DeliveryController@productDeliveryData');
+	Route::get('delivery/product_delivery/{id}', 'DeliveryController@productDeliveryData');
 	Route::get('delivery/create/{id}', 'DeliveryController@create');
 	Route::post('delivery/store', 'DeliveryController@store')->name('delivery.store');
 	Route::post('delivery/sendmail', 'DeliveryController@sendMail')->name('delivery.sendMail');
@@ -227,7 +232,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::post('delivery/deletebyselection', 'DeliveryController@deleteBySelection');
 	Route::post('delivery/delete/{id}', 'DeliveryController@delete')->name('delivery.delete');
 
-	Route::get('quotations/product_quotation/{id}','QuotationController@productQuotationData');
+	Route::get('quotations/product_quotation/{id}', 'QuotationController@productQuotationData');
 	Route::get('quotations/lims_product_search', 'QuotationController@limsProductSearch')->name('product_quotation.search');
 	Route::get('quotations/getcustomergroup/{id}', 'QuotationController@getCustomerGroup')->name('quotation.getcustomergroup');
 	Route::get('quotations/getproduct/{id}', 'QuotationController@getProduct')->name('quotation.getproduct');
@@ -238,7 +243,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::resource('quotations', 'QuotationController');
 
 	Route::post('purchases/purchase-data', 'PurchaseController@purchaseData')->name('purchases.data');
-	Route::get('purchases/product_purchase/{id}','PurchaseController@productPurchaseData');
+	Route::get('purchases/product_purchase/{id}', 'PurchaseController@productPurchaseData');
 	Route::get('purchases/lims_product_search', 'PurchaseController@limsProductSearch')->name('product_purchase.search');
 	Route::post('purchases/add_payment', 'PurchaseController@addPayment')->name('purchase.add-payment');
 	Route::get('purchases/getpayment/{id}', 'PurchaseController@getPayment')->name('purchase.get-payment');
@@ -248,33 +253,33 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::post('importpurchase', 'PurchaseController@importPurchase')->name('purchase.import');
 	Route::post('purchases/deletebyselection', 'PurchaseController@deleteBySelection');
 
-    /////////////// Purchase Controller ////////////////
+	/////////////// Purchase Controller ////////////////
 	Route::resource('purchases', PurchaseController::class);
-	Route::get('viewPurchase/{id}','PurchaseController@viewPurchase')->name('view_purchase'); // view a purchase
-	Route::get('editPurchase/{id}','PurchaseController@editPurchase'); // edit a purchase
-	Route::get('updatePurchaseProduct','PurchaseController@updatePurchase')->name('update_purchase'); // update a purchase
-	Route::get('deletePurchaseProduct/{purchase_id}/{id}','PurchaseController@deletePurchaseProduct')->name('delete_purchase'); // delete a purchase product
-	Route::get('deletePurchase/{purchase_id}','PurchaseController@deleteParentPurchase')->name('delete_parent_purchase'); // delete a parent purchase
-	Route::get('updatePurchaseProductQuantity','PurchaseController@updatePurchaseProductQuantity')->name('update_purchase_product_quantity'); // update a purchase
-    
-	
+	Route::get('viewPurchase/{id}', 'PurchaseController@viewPurchase')->name('view_purchase'); // view a purchase
+	Route::get('editPurchase/{id}', 'PurchaseController@editPurchase'); // edit a purchase
+	Route::get('updatePurchaseProduct', 'PurchaseController@updatePurchase')->name('update_purchase'); // update a purchase
+	Route::get('deletePurchaseProduct/{purchase_id}/{id}', 'PurchaseController@deletePurchaseProduct')->name('delete_purchase'); // delete a purchase product
+	Route::get('deletePurchase/{purchase_id}', 'PurchaseController@deleteParentPurchase')->name('delete_parent_purchase'); // delete a parent purchase
+	Route::get('updatePurchaseProductQuantity', 'PurchaseController@updatePurchaseProductQuantity')->name('update_purchase_product_quantity'); // update a purchase
+
+
 	////////////////Purchase END //////////////////////// 
-   
+
 	/////////////// Product Controller /////////////////
-	Route::resource('products',ProductController::class);
-	Route::get('product/editPurchaseByProduct/{product_id}','ProductController@editProduct');
-	Route::get('product/viewProduct/{product_id}','ProductController@viewProduct');
-    /////////////////// Product end /////////////////////
+	Route::resource('products', ProductController::class);
+	Route::get('product/editPurchaseByProduct/{product_id}', 'ProductController@editProduct');
+	Route::get('product/viewProduct/{product_id}', 'ProductController@viewProduct');
+	/////////////////// Product end /////////////////////
 
 	///////////////// Stock management ///////////////////
-	Route::resource('stockManagement','StockManagementController');
-	Route::get('product/deleteStock/{stock_id}','StockManagementController@destroy');
+	Route::resource('stockManagement', 'StockManagementController');
+	Route::get('product/deleteStock/{stock_id}', 'StockManagementController@destroy');
 	Route::post('/import/csv/', 'StockManagementController@importCsv')->name('stock.import');
-    /////////////////// Stock end //////////////////////
-	
-	Route::get('product/list','ProductController@index')->name('products.index'); // view a purchase
-	Route::get('exportPurchases','PurchaseController@exportPurchases')->name('exportPurchases'); // Export Purchase
-	Route::get('pdfDownload','PurchaseController@pdfDownload')->name('purchasesPdfDownload'); //  Purchases pdf download
+	/////////////////// Stock end //////////////////////
+
+	Route::get('product/list', 'ProductController@index')->name('products.index'); // view a purchase
+	Route::get('exportPurchases', 'PurchaseController@exportPurchases')->name('exportPurchases'); // Export Purchase
+	Route::get('pdfDownload', 'PurchaseController@pdfDownload')->name('purchasesPdfDownload'); //  Purchases pdf download
 
 
 	///////////////// Purchase Article management ///////////////////
@@ -283,24 +288,28 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('get_models_by_manufacturer', 'PurchaseController@getModelsByManufacturer')->name('get_models_by_manufacturer');
 	Route::get('get_engines_by_model', 'PurchaseController@getEnginesByModel')->name('get_engines_by_model');
 	Route::get('get_sections_by_engine', 'PurchaseController@getSectionsByEngine')->name('get_sections_by_engine');
-	Route::get('get_section_parts', 'PurchaseController@getSectionParts')->name('get_section_parts');// get all articles
+	Route::get('get_section_parts', 'PurchaseController@getSectionParts')->name('get_section_parts'); // get all articles
 	Route::get('get_brands_by_section_part', 'PurchaseController@getBrandsBySectionPart')->name('get_brands_by_section_part'); // get all suppliers against an article
-	Route::get('show_section_parts_in_table', 'PurchaseController@showSectionParts')->name('show_section_parts_in_table'); 
+	Route::get('show_section_parts_in_table', 'PurchaseController@showSectionParts')->name('show_section_parts_in_table');
 	Route::get('getArticleInfo', 'PurchaseController@getArticleInfo')->name('article.info.get');
 	Route::get('articlesByReferenceNo', 'PurchaseController@articlesByReferenceNo')->name('article.reference');
 	Route::get('sale_products_by_product_number', 'SaleController@productByArticleNumber')->name('sale_products_by_product_number');
-    ///////////////////  end //////////////////////
+	///////////////////  end //////////////////////
 	///////////////////////// Sale-unique ////////////////////////
 	///////////////////////// Sale-unique ////////////////////////
-	Route::get('get_section_parts_for_sale', 'SaleController@getSectionPartsForSale')->name('get_section_parts_for_sale');// get all articles from stock
-	Route::get('check_product_stock', 'SaleController@checkProductStock')->name('check_product_stock');// 
-	Route::get('show_section_parts_in_table_for_sale', 'SaleController@showSectionParts')->name('show_section_parts_in_table_for_sale'); 
-	Route::get('change_sale_status', 'SaleController@changeSaleStatus')->name('change_sale_status'); 
-	Route::get('view_sale/{id}', 'SaleController@viewSale')->name('view_sale'); 
+	Route::get('get_section_parts_for_sale', 'SaleController@getSectionPartsForSale')->name('get_section_parts_for_sale'); // get all articles from stock
+	Route::get('check_product_stock', 'SaleController@checkProductStock')->name('check_product_stock'); // 
+	Route::get('show_section_parts_in_table_for_sale', 'SaleController@showSectionParts')->name('show_section_parts_in_table_for_sale');
+	Route::get('change_sale_status', 'SaleController@changeSaleStatus')->name('change_sale_status');
+	Route::get('view_sale/{id}', 'SaleController@viewSale')->name('view_sale');
 
-	Route::get('change_invoice_status', 'InvoiceController@changeInvoiceStatus')->name('change_invoice_status');  
-	Route::get('createInvoice/{id}', 'InvoiceController@createInvoice')->name('create_invoice'); 
-	Route::get('show_invoice/{id}', 'InvoiceController@showInvoice')->name('show_invoice'); 
+	Route::get('change_invoice_status', 'InvoiceController@changeInvoiceStatus')->name('change_invoice_status');
+	Route::get('createInvoice/{id}', 'InvoiceController@createInvoice')->name('create_invoice');
+	Route::get('show_invoice/{id}', 'InvoiceController@showInvoice')->name('show_invoice');
+
+	Route::get('delivery_slips', 'InvoiceController@getDeliverySlips')->name('delivery_slips');
+	Route::get('show_delivery_slip/{id}', 'InvoiceController@showDeliverySlip')->name('show_delivery_slip');
+
 
 	Route::get('delivery_slips', 'InvoiceController@getDeliverySlips')->name('delivery_slips'); 
 	Route::get('show_delivery_slip/{id}', 'InvoiceController@showDeliverySlip')->name('show_delivery_slip'); 
@@ -318,7 +327,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 
 
 
-	Route::get('transfers/product_transfer/{id}','TransferController@productTransferData');
+	Route::get('transfers/product_transfer/{id}', 'TransferController@productTransferData');
 	Route::get('transfers/transfer_by_csv', 'TransferController@transferByCsv');
 	Route::post('importtransfer', 'TransferController@importTransfer')->name('transfer.import');
 	Route::get('transfers/getproduct/{id}', 'TransferController@getProduct')->name('transfer.getproduct');
@@ -335,7 +344,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::post('return-sale/sendmail', 'ReturnController@sendMail')->name('return-sale.sendmail');
 	Route::get('return-sale/getproduct/{id}', 'ReturnController@getProduct')->name('return-sale.getproduct');
 	Route::get('return-sale/lims_product_search', 'ReturnController@limsProductSearch')->name('product_return-sale.search');
-	Route::get('return-sale/product_return/{id}','ReturnController@productReturnData');
+	Route::get('return-sale/product_return/{id}', 'ReturnController@productReturnData');
 	Route::post('return-sale/deletebyselection', 'ReturnController@deleteBySelection');
 	Route::resource('return-sale', 'ReturnController');
 
@@ -343,7 +352,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::post('return-purchase/sendmail', 'ReturnPurchaseController@sendMail')->name('return-purchase.sendmail');
 	Route::get('return-purchase/getproduct/{id}', 'ReturnPurchaseController@getProduct')->name('return-purchase.getproduct');
 	Route::get('return-purchase/lims_product_search', 'ReturnPurchaseController@limsProductSearch')->name('product_return-purchase.search');
-	Route::get('return-purchase/product_return/{id}','ReturnPurchaseController@productReturnData');
+	Route::get('return-purchase/product_return/{id}', 'ReturnPurchaseController@productReturnData');
 	Route::post('return-purchase/deletebyselection', 'ReturnPurchaseController@deleteBySelection');
 	Route::resource('return-purchase', 'ReturnPurchaseController');
 
@@ -377,11 +386,11 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::put('user/changepass/{id}', 'UserController@changePassword')->name('user.password');
 	Route::get('user/genpass', 'UserController@generatePassword');
 	Route::post('user/deletebyselection', 'UserController@deleteBySelection');
-	Route::resource('user','UserController');
+	Route::resource('user', 'UserController');
 
 	Route::get('setting/general_setting', 'SettingController@generalSetting')->name('setting.general');
 	Route::post('setting/general_setting_store', 'SettingController@generalSettingStore')->name('setting.generalStore');
-	
+
 	Route::get('setting/reward-point-setting', 'SettingController@rewardPointSetting')->name('setting.rewardPoint');
 	Route::post('setting/reward-point-setting_store', 'SettingController@rewardPointSettingStore')->name('setting.rewardPointStore');
 
@@ -470,14 +479,13 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 
 
 
-	Route::resource('balanceSheet','BalanceSheetController');
-	Route::get('get/balanacecategories',[BalanceSheetController::class,'getBalanaceCategories'])->name('get_categories_from_type');
-	Route::resource('bank_account','BankAccountController');
+	Route::resource('balanceSheet', 'BalanceSheetController');
+	Route::get('get/balanacecategories', [BalanceSheetController::class, 'getBalanaceCategories'])->name('get_categories_from_type');
+	Route::resource('bank_account', 'BankAccountController');
 
 
 
 	Route::get('allMakes', [MakeController::class, 'getAllMakes'])->name('allmake.get');
-
 });
 Route::get('/logout', 'HomeController@logOut');
 Route::get('/verify/mail', 'MailController@index');
