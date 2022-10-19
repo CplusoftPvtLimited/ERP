@@ -67,9 +67,6 @@
                 <div class="col-6 text-center pt-3">
                     <img id="image_view" src="images/E.png" alt="" width="200px" height="200px" data-toggle="modal"
                         data-target="#staticBackdrop" style="cursor: pointer;">
-                        <br>
-                        <br>
-                        <img src="images/E.png" alt="" width="35px">
                 </div>
             </div>
             <div class="row ">
