@@ -1301,3 +1301,20 @@ option.cancel{
 	cursor: pointer;
 	color: #ff6295;
 }
+
+.article_view_tr_head{
+	background: #6244a6 !important;
+    color: white;
+}
+.article_view_cash_type_head{
+	background: #6244a6 !important;
+    color: white;
+	padding:10px;
+}
+thead.article_view_tr_head {
+    height: 54px;
+}
+
+.article_table_row{
+	text-align: center;
+}

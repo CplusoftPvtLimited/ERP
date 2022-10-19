@@ -1,5 +1,13 @@
+<style>
+    .card-header:first-child {
+    border-radius: 0px !important;
+}
+.card-header:first-child {
+    border-radius: 0px !important;
+}
+</style>
 <div class="card p-0 m-0" style=" box-shadow:none !important;">
-    <div class="card-header">
+    <div class="card-header article_view_tr_head">
         <h6>
             Vehicle Type
         </h6>
@@ -14,7 +22,7 @@
     </div>
 </div>
 <div class="card p-0 m-0" style=" box-shadow:none !important;">
-    <div class="card-header">
+    <div class="card-header article_view_tr_head">
         <h6>
             Vehicle Details
         </h6>

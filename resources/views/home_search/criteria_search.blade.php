@@ -7,12 +7,23 @@
         -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
         border-radius: 1px;
     }
+
     #articleSearch::-webkit-scrollbar-thumb {
-    background: #eee
-}​
+        background: #eee
+    }
+
+    .card-header:first-child {
+        border-radius: 0px !important;
+    }
+
+    .card-header:first-child {
+        border-radius: 0px !important;
+    }
+
+    ​
 </style>
 <div class="card p-0 m-0" style=" box-shadow:none !important;">
-    <div class="card-header">
+    <div class="card-header article_view_tr_head">
         <h6>
             Article Criteria
         </h6>

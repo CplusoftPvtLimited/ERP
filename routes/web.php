@@ -321,7 +321,8 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 	Route::get('get_data_of_engine_home_search', 'HomeSearchController@getEngineData')->name('get_data_of_engine_home_search'); 
 	Route::post('search_sections_by_engine', 'HomeSearchController@searchSectionByEngine')->name('search_sections_by_engine'); 
 	Route::get('articles_search_view/{id}/{section_id}', [HomeSearchController::class,'articleSearchView'])->name('articles_search_view');
-	Route::get('articles_view/{id}/{engine_id}', [HomeSearchController::class,'articleView'])->name('articles_view');
+	Route::get('articles_view/{id}/{engine_id}/{sub_section_id}', [HomeSearchController::class,'articleView'])->name('articles_view');
+	Route::post('purchase_add_to_cart', [HomeSearchController::class,'addToCart'])->name('purchase_add_to_cart');
 
 
 

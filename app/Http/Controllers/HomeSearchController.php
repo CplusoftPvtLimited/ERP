@@ -131,14 +131,21 @@ class HomeSearchController extends Controller
             $cc = $engine->capacityCC;
             
             
-        return view('home_search.article_search_view',compact('section_parts','engine','type','sub_type','model_year','fuel','cc'));
+        return view('home_search.article_search_view',compact('section_parts','section_id','engine','type','sub_type','model_year','fuel','cc'));
     }
 
-    public function articleView($id,$engine_id){
+    public function articleView($id,$engine_id,$sub_section_id){
         $article = Article::where('legacyArticleId',$id)->first();
         $section = $article->section;
+        $sub_section = AssemblyGroupNode::where('assemblyGroupNodeId',$sub_section_id)->first();
+        $brand = $article->brand;
         $engine = LinkageTarget::where('linkageTargetId',$engine_id)->first();
         
-        dd($engine);
+        return view('home_search.article_view',compact('article','section','engine','brand','sub_section'));
+    }
+
+    public function addToCart(Request $request){
+        dd($request->all());
+        
     }
 }
