@@ -12,4 +12,8 @@ class ArticleCriteria extends Model
     protected $table = "articlecriteria";
     protected $guarded = [];
 
+    public function article(){
+        return $this->belongsTo(Article::class, 'legacyArticleId', 'criteriaId');
+    }
+
 }

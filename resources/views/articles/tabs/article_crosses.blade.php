@@ -9,22 +9,22 @@
     </div>
 </div>
 <div class="card-body">
-    <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
+    <p class="italic"><small>{{ trans('file.The field labels marked with * are required input fields') }}.</small></p>
     @if (Session::has('error'))
-    <p class="bg-danger text-white p-2 rounded">{{ Session::get('error') }}</p>
+        <p class="bg-danger text-white p-2 rounded">{{ Session::get('error') }}</p>
     @endif
     @if (Session::has('success'))
-    <p class="bg-success text-white p-2 rounded">{{ Session::get('success') }}</p>
+        <p class="bg-success text-white p-2 rounded">{{ Session::get('success') }}</p>
     @endif
     @if (count($errors) > 0)
-    <div class="alert alert-danger">
-        <strong>Whoops!</strong> There were some problems with your input.<br><br>
-        <ul>
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
+        <div class="alert alert-danger">
+            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
     @endif
     <form action="{{ route('articleCrosses.store') }}" method="post" id="crossesForm" enctype="multipart/form-data">
         @csrf
@@ -34,60 +34,32 @@
                 <div class="row">
                     <div class="col-4">
                         <h6>Oem Number *</h6>
-                        <input type="text" name="oemNumber" id="crossesOemNumber" maxlength="255" class="form-control" required>
+                        <input type="text" name="oemNumber" id="crossesOemNumber" maxlength="255"
+                            class="form-control" required>
                     </div>
-                    <div class="col-4">
-                        <div class="form-group">
-                            <h6>Manufacturer</h6>
-                            <select name="mfrId" id="crossmfrId" class="form-control">
-                                @foreach ($manufacturers as $manufacturer)
-                                <option value="{{ $manufacturer->manuId }}">
-                                    {{ $manufacturer->manuName }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="form-group">
-                            <h6>Assembly Group Node</h6>
-                            <select name="assemblyGroupNodeId" id="crossesAssemblyGroupNodeId" class="form-control">
-                                @foreach ($sections as $section)
-                                <option value="{{ $section->assemblyGroupNodeId }}">
-                                    {{ $section->assemblyGroupName }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-4">
-                        <h6>Brand Name</h6>
-                        <select name="brandName" id="crossesBrandName" class="form-control">
-                            @foreach ($suppliers as $supplier)
-                            <option value="{{ $supplier->brandName }}">
-                                {{ $supplier->brandName }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-4">
-                        <div class="form-group">
-                            <h6>Article Id</h6>
-                            <input type="text" name="legacyArticleId" id="crosses_articleId" class="form-control" readonly required>
-                        </div>
-                    </div>
+                    
+                    <input type="hidden" name="mfrId" id="crossmfrId" class="form-control" readonly>
+
+                    <input type="hidden" name="assemblyGroupNodeId" id="crossesAssemblyGroupNodeId"
+                        class="form-control" readonly>
+
+                    <input type="hidden" name="brandName" id="crossesBrandName" class="form-control" readonly>
+
+                    <input type="hidden" type="text" name="legacyArticleId" id="crosses_articleId"
+                        class="form-control" readonly required>
+
                 </div>
                 <div class="d-flex flex-row-reverse">
                     <button type="button" class="btn btn-success" id="saveCrosses" style="width:100px">Save</button>
-                    <button type="button" class="btn btn-primary mr-2" style="width:100px" id="nxtCrosses">Next</button>
+                    <button type="button" class="btn btn-primary mr-2" style="width:100px"
+                        id="nxtCrosses">Next</button>
                 </div>
             </div>
         </div>
     </form>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function() {
@@ -130,7 +102,7 @@
                 });
             } else {
                 $.ajax({
-                    url: "{{route('articleCrosses.store')}}",
+                    url: "{{ route('articleCrosses.store') }}",
                     type: "POST",
                     data: {
                         legacyArticleId: legacyArticleId,
@@ -154,17 +126,20 @@
                             var product_name = response.data;
                             if (legacy_id != null) {
                                 $('#ean_articleId').val(response.data.legacyArticleId)
-                                document.getElementById('ArticleCrosses').style.display = "none";
+                                document.getElementById('ArticleCrosses').style.display =
+                                    "none";
                                 var tablinks = document.getElementsByClassName("tablinks");
                                 for (i = 0; i < tablinks.length; i++) {
                                     if (tablinks[i].id != "eanTab") {
-                                        tablinks[i].className = tablinks[i].className.replace(" active", "");
+                                        tablinks[i].className = tablinks[i].className
+                                            .replace(" active", "");
                                         tablinks[i].disabled = true;
                                     }
                                 }
                                 var tablink = document.getElementById("eanTab");
                                 tablink.className = tablink.className += " active"
-                                document.getElementById('ArticleEan').style.display = "block";
+                                document.getElementById('ArticleEan').style.display =
+                                    "block";
                             }
                         } else {
                             Swal.fire({

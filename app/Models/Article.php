@@ -48,6 +48,11 @@ class Article extends Model
     {
         return $this->hasMany(GenericArticle::class);
     }
+    
+    public function linkageTarget()
+    {
+        return $this->hasOneThrough(LinkageTarget::class, ArticleVehicleTree::class, 'legacyArticleId', 'linkageTargetId', 'legacyArticleId');
+    }
 
     public function brand() {   // usefull
         return $this->belongsTo(Ambrand::class,'dataSupplierId', 'brandId');

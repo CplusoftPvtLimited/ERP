@@ -9,26 +9,28 @@
     </div>
 </div>
 <div class="card-body">
-    <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
+    <p class="italic"><small>{{ trans('file.The field labels marked with * are required input fields') }}.</small></p>
     @if (Session::has('error'))
-    <p class="bg-danger text-white p-2 rounded">{{ Session::get('error') }}</p>
+        <p class="bg-danger text-white p-2 rounded">{{ Session::get('error') }}</p>
     @endif
     @if (Session::has('success'))
-    <p class="bg-success text-white p-2 rounded">{{ Session::get('success') }}</p>
+        <p class="bg-success text-white p-2 rounded">{{ Session::get('success') }}</p>
     @endif
     @if (count($errors) > 0)
-    <div class="alert alert-danger">
-        <strong>Whoops!</strong> There were some problems with your input.<br><br>
-        <ul>
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
+        <div class="alert alert-danger">
+            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
     @endif
-    <form action="{{ isset($art_ean->id) ? route('articleEan.update', $art_ean->id) : route('articleEan.store') }}" method="post" id="eanForm" enctype="multipart/form-data">
+    <form
+        action="{{ isset($article->articleEAN) ? route('articleEan.update', $article->articleEAN->id) : route('articleEan.store') }}"
+        method="post" id="eanForm" enctype="multipart/form-data">
         @csrf
-        @if (isset($art_ean->id))
+        @if (isset($article->articleEAN))
             @method('PUT')
         @else
             @method('POST')
@@ -37,16 +39,13 @@
             <div class="col-12">
                 <div class="other_data"></div>
                 <div class="row">
-                    <div class="col-4">
-                        <div class="form-group">
-                            <h6>Article Id *</h6>
-                            <input type="text" name="legacyArticleId" id="ean_articleId" class="form-control" value="{{isset($article->id) ? $article->legacyArticleId : ""}}" readonly required>
-                        </div>
-                    </div>
+                    <input type="hidden" name="legacyArticleId" id="ean_articleId" class="form-control"
+                        value="{{ isset($article->id) ? $article->legacyArticleId : '' }}" readonly required>
                     <div class="col-4">
                         <div class="form-group">
                             <h6>EAN Code *</h6>
-                            <input type="text" name="eancode" id="eancode" class="form-control" maxlength="25" value="{{isset($art_ean->id) ? $art_ean->eancode : ""}}" required>
+                            <input type="text" name="eancode" id="eancode" class="form-control" maxlength="25"
+                                value="{{ isset($article->articleEAN) ? $article->articleEAN->eancode : '' }}" required>
                         </div>
                     </div>
                 </div>
@@ -58,7 +57,8 @@
         </div>
     </form>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function() {
@@ -75,9 +75,9 @@
                     confirmButtonText: 'Ok'
                 });
             } else {
-                var method = "{{isset($art_ean->id) ? 'PUT' : 'POST' }}";
+                var method = "{{ isset($article->articleEAN) ? 'PUT' : 'POST' }}";
                 $.ajax({
-                    url: "{{ isset($art_ean->id) ? route('articleEan.update', $art_ean->id) : route('articleEan.store') }}",
+                    url: "{{ isset($article->articleEAN) ? route('articleEan.update', $article->articleEAN->id) : route('articleEan.store') }}",
                     type: method,
                     data: {
                         legacyArticleId: legacyArticleId,
@@ -97,16 +97,19 @@
                             var legacy_id = response.data.legacyArticleId;
                             var product_name = response.data;
                             if (legacy_id != null) {
-                                document.getElementById('editArticleEan').style.display = "none";
+                                document.getElementById('editArticleEan').style.display =
+                                    "none";
                                 var tablinks = document.getElementsByClassName("tablinks");
                                 for (i = 0; i < tablinks.length; i++) {
                                     if (tablinks[i].id != "editlinkstab") {
-                                        tablinks[i].className = tablinks[i].className.replace(" active", "");
+                                        tablinks[i].className = tablinks[i].className
+                                            .replace(" active", "");
                                     }
                                 }
                                 var tablink = document.getElementById("editlinkstab");
                                 tablink.className = tablink.className += " active"
-                                document.getElementById('editArticleLinks').style.display = "block";
+                                document.getElementById('editArticleLinks').style.display =
+                                    "block";
                             }
                         } else {
                             Swal.fire({

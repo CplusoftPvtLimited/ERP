@@ -42,10 +42,10 @@
 
                                 <option>Select Type</option>
                                 <option value="P"
-                                    {{ $manufacturer->linkingTargetType == 'V' || $manufacturer->linkingTargetType == 'L' || $manufacturer->linkingTargetType == 'B' ? 'selected' : '' }}>
+                                    {{ isset($article->manufacturer) ? ($article->manufacturer->linkingTargetType == 'V' || $article->manufacturer->linkingTargetType == 'L' || $article->manufacturer->linkingTargetType == 'B' ? 'selected' : '') : '' }}>
                                     Passenger</option>
                                 <option value="O"
-                                    {{ $manufacturer->linkingTargetType == 'C' || $manufacturer->linkingTargetType == 'T' || $manufacturer->linkingTargetType == 'M' || $manufacturer->linkingTargetType == 'A' || $manufacturer->linkingTargetType == 'k' ? 'selected' : '' }}>
+                                    {{ isset($article->manufacturer) ? ($article->manufacturer->linkingTargetType == 'C' || $article->manufacturer->linkingTargetType == 'T' || $article->manufacturer->linkingTargetType == 'M' || $article->manufacturer->linkingTargetType == 'A' || $article->manufacturer->linkingTargetType == 'k' ? 'selected' : '') : '' }}>
                                     Commercial Vehicle and Tractor</option>
                             </select>
                         </div>
@@ -57,8 +57,10 @@
                                 data-href="{{ route('get_manufacturers_by_engine_type') }}" id="subLinkageTarget"
                                 class="selectpicker form-control" data-live-search="true"
                                 data-live-search-style="begins">
-                                <option value="{{ $manufacturer->linkingTargetType }}">
-                                    {{ $manufacturer->linkingTargetType }}</option>
+                                @if (isset($article->manufacturer))
+                                    <option value="{{ $article->manufacturer->linkingTargetType }}">
+                                        {{ $article->manufacturer->linkingTargetType }}</option>
+                                @endif
                             </select>
                         </div>
                     </div>
@@ -68,7 +70,10 @@
                             <select name="mfrId" id="mfrId" class="selectpicker form-control"
                                 data-live-search="true" data-live-search-style="begins"
                                 data-href="{{ route('get_models_by_manufacturer') }}" required>
-                                <option value="{{ $manufacturer->manuId }}">{{ $manufacturer->manuName }}</option>
+                                @if (isset($article->manufacturer))
+                                    <option value="{{ $article->manufacturer->manuId }}">
+                                        {{ $article->manufacturer->manuName }}</option>
+                                @endif
                             </select>
                         </div>
                     </div>
@@ -79,7 +84,12 @@
                             <h6>Model *</h6>
                             <select name="modelSeries" id="modelSeries" data-href="{{ route('get_engines_by_model') }}"
                                 class="form-control" required>
-                                <option value="{{ $model->modelId }}">{{ $model->modelname }}</option>
+                                @if (isset($article->articleVehicleTree->linkageTarget->modelSeries))
+                                    <option
+                                        value="{{ $article->articleVehicleTree->linkageTarget->modelSeries->modelId }}">
+                                        {{ $article->articleVehicleTree->linkageTarget->modelSeries->modelname }}
+                                    </option>
+                                @endif
                             </select>
                         </div>
                     </div>
@@ -88,8 +98,13 @@
                             <h6>Engine *</h6>
                             <select name="linkingTargetId" id="linkingTargetId"
                                 data-href="{{ route('get_sections_by_engine') }}" class="form-control" required>
-                                <option value="{{ $engine->linkageTargetId }}">{{ $engine->description }} (
-                                    {{ $engine->beginYearMonth }} - {{ $engine->endYearMonth }} ) </option>
+                                @if (isset($article->articleVehicleTree->linkageTarget))
+                                    <option value="{{ $article->articleVehicleTree->linkageTarget->linkageTargetId }}">
+                                        {{ $article->articleVehicleTree->linkageTarget->description }} (
+                                        {{ $article->articleVehicleTree->linkageTarget->beginYearMonth }} -
+                                        {{ $article->articleVehicleTree->linkageTarget->endYearMonth }} ) </option>
+                                @endif
+
                             </select>
                         </div>
                     </div>
@@ -97,8 +112,11 @@
                         <div class="form-group">
                             <h6>Sections *</h6>
                             <select name="assemblyGroupNodeId" id="assemblyGroupNodeId" class="form-control" required>
-                                <option value="{{ $section->assemblyGroupNodeId }}">{{ $section->assemblyGroupName }}
-                                </option>
+                                @if (isset($article->assemblyGroup))
+                                    <option value="{{ $article->assemblyGroup->assemblyGroupNodeId }}">
+                                        {{ $article->assemblyGroup->assemblyGroupName }}
+                                    </option>
+                                @endif
                             </select>
                         </div>
                     </div>
@@ -111,7 +129,7 @@
                             <select name="dataSupplierId" id="dataSupplierId" class="form-control" required>
                                 @foreach ($suppliers as $supplier)
                                     <option value="{{ $supplier->brandId }}"
-                                        {{ $supplier->brandId == $article->dataSupplierId ? 'selected' : '' }}>
+                                        {{ isset($article) ? ($supplier->brandId == $article->dataSupplierId ? 'selected' : '') : "" }}>
                                         {{ $supplier->brandName }}
                                     </option>
                                 @endforeach
@@ -122,7 +140,7 @@
                         <h6>Product Number *</h6>
                         <input type="text" name="articleNumber" id="articleNumber" maxlength="150"
                             pattern="([^\s\-+=!@#$%^&*_|][0-9\s\-+=!@#$%^&*_|]+)" class="form-control"
-                            value="{{ $article->articleNumber }}" required>
+                            value="{{isset($article->articleNumber) ? $article->articleNumber : "" }}" required>
                         <p class="italic text-info">
                             <small>{{ trans('file.Only numbers and spaces are allowed') }}.</small>
                         </p>
@@ -130,9 +148,9 @@
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Quantity per Package</h6>
-                            <input type="number" name="quantityPerPackage" id="quantityPerPackage"
-                               min="0" max="9999999999999999999" class="form-control"
-                                value="{{ $article->quantityPerPackage }}" required>
+                            <input type="number" name="quantityPerPackage" id="quantityPerPackage" min="0"
+                                max="9999999999999999999" class="form-control"
+                                value="{{isset($article->quantityPerPackage) ? $article->quantityPerPackage : "" }}" required>
                         </div>
                     </div>
 
@@ -143,22 +161,22 @@
                         <div class="form-group">
                             <h6>Quantity/Package/Package</h6>
                             <input type="number" id="quantityPerPartPerPackage" name="quantityPerPartPerPackage"
-                               min="0" max="9999999999999999999" class="form-control"
-                                value="{{ $article->quantityPerPartPerPackage }}" required>
+                                min="0" max="9999999999999999999" class="form-control"
+                                value="{{ isset($article->quantityPerPartPerPackage) ? $article->quantityPerPartPerPackage : ""}}" required>
                         </div>
                     </div>
                     <div class="col-4">
                         <h6>Additional Description</h6>
                         <textarea name="additionalDescription" id="additionalDescription" cols="10" rows="5"
-                            class="form-control">{{ $article->additionalDescription }}</textarea>
+                            class="form-control">{{isset($article->additionalDescription) ? $article->additionalDescription : "" }}</textarea>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Generic Product Description</h6>
                             <textarea name="genericArticleDescription" id="genericArticleDescription" cols="10" rows="5"
-                                class="form-control">{{ $article->genericArticleDescription }}</textarea>
+                                class="form-control">{{ isset($article->genericArticleDescription) ?  $article->genericArticleDescription : ""}}</textarea>
                         </div>
-                        <input type="hidden" id="avt_id" name="avt_id" value="{{ $avt->id }}">
+                        <input type="hidden" id="avt_id" name="avt_id" value="{{ isset($article->articleVehicleTree) ? $article->articleVehicleTree->id : "" }}">
                     </div>
                 </div>
                 <div class="d-flex flex-row-reverse">
@@ -398,7 +416,14 @@
                             });
                             var legacy_id = response.data.legacyArticleId;
                             var product_name = response.data;
+                            $('#criteria_articleId').val(response.data.legacyArticleId)
+                            $('#criteria_assemblyGroupNodeId').val(response.data.assemblyGroupNodeId)
+                            $('#crossmfrId').val(response.data.mfrId)
+                            $('#crossesAssemblyGroupNodeId').val(response.data.assemblyGroupNodeId)
+                            $('#crossesBrandName').val(response.data.dataSupplierId)
+                            $('#crosses_articleId').val(response.data.legacyArticleId)
                             if (legacy_id != null) {
+
                                 document.getElementById('editArticles').style.display =
                                     "none";
                                 var tablinks = document.getElementsByClassName("tablinks");

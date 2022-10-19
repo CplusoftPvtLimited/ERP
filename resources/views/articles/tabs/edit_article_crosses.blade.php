@@ -9,26 +9,28 @@
     </div>
 </div>
 <div class="card-body">
-    <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
+    <p class="italic"><small>{{ trans('file.The field labels marked with * are required input fields') }}.</small></p>
     @if (Session::has('error'))
-    <p class="bg-danger text-white p-2 rounded">{{ Session::get('error') }}</p>
+        <p class="bg-danger text-white p-2 rounded">{{ Session::get('error') }}</p>
     @endif
     @if (Session::has('success'))
-    <p class="bg-success text-white p-2 rounded">{{ Session::get('success') }}</p>
+        <p class="bg-success text-white p-2 rounded">{{ Session::get('success') }}</p>
     @endif
     @if (count($errors) > 0)
-    <div class="alert alert-danger">
-        <strong>Whoops!</strong> There were some problems with your input.<br><br>
-        <ul>
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
+        <div class="alert alert-danger">
+            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
     @endif
-    <form action="{{ isset($art_crosses->id) ? route('articleCrosses.update', $art_crosses->id) : route('articleCrosses.store')  }}" method="post" id="crossesForm" enctype="multipart/form-data">
+    <form
+        action="{{ isset($article->articleCrosses) ? route('articleCrosses.update', $article->articleCrosses->id) : route('articleCrosses.store') }}"
+        method="post" id="crossesForm" enctype="multipart/form-data">
         @csrf
-        @if (isset($art_crosses->id))
+        @if (isset($article->articleCrosses))
             @method('PUT')
         @else
             @method('POST')
@@ -39,60 +41,33 @@
                 <div class="row">
                     <div class="col-4">
                         <h6>Oem Number *</h6>
-                        <input type="text" name="oemNumber" id="crossesOemNumber" maxlength="255" class="form-control" value="{{isset($art_crosses->id) ? $art_crosses->oemNumber : ""}}" required>
+                        <input type="text" name="oemNumber" id="crossesOemNumber" maxlength="255"
+                            class="form-control"
+                            value="{{ isset($article->articleCrosses) ? $article->articleCrosses->oemNumber : '' }}"
+                            required>
                     </div>
-                    <div class="col-4">
-                        <div class="form-group">
-                            <h6>Manufacturer</h6>
-                            <select name="mfrId" id="crossmfrId" class="form-control">
-                                @foreach ($manufacturers as $manufacturer)
-                                <option value="{{ $manufacturer->manuId }}" {{isset($art_crosses->id) ?  ($art_crosses->mfrId ==  $manufacturer->manuId ? 'selected' : "") : ""}}>
-                                    {{ $manufacturer->manuName }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="form-group">
-                            <h6>Assembly Group Node</h6>
-                            <select name="assemblyGroupNodeId" id="crossesAssemblyGroupNodeId" class="form-control">
-                                @foreach ($sections as $section)
-                                <option value="{{ $section->assemblyGroupNodeId }}" {{isset($art_crosses->id) ?  ($art_crosses->assemblyGroupNodeId ==  $section->assemblyGroupNodeId ? 'selected' : "") : ""}}>
-                                    {{ $section->assemblyGroupName }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-4">
-                        <h6>Brand Name</h6>
-                        <select name="brandName" id="crossesBrandName" class="form-control">
-                            @foreach ($suppliers as $supplier)
-                            <option value="{{ $supplier->brandName }}" {{ isset($art_crosses->id) ? ($supplier->brandName == $art_crosses->brandName ? 'selected' : "") : ""}}>
-                                {{ $supplier->brandName }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-4">
-                        <div class="form-group">
-                            <h6>Article Id</h6>
-                            <input type="text" name="legacyArticleId" id="crosses_articleId" class="form-control" value="{{isset($article->id) ? $article->legacyArticleId : ""}}" readonly required>
-                        </div>
-                    </div>
+                    <input type="hidden" name="mfrId" id="crossmfrId" class="form-control"
+                        value="{{ isset($article) ? $article->mfrId : '' }}" readonly>
+                    <input type="hidden" name="assemblyGroupNodeId" id="crossesAssemblyGroupNodeId"
+                        class="form-control" value="{{ isset($article) ? $article->assemblyGroupNodeId : '' }}"
+                        readonly>
+                    <input type="hidden" name="brandName" id="crossesBrandName" class="form-control"
+                        value="{{ isset($article) ? $article->dataSupplierId : '' }}" readonly>
+
+                    <input type="hidden" name="legacyArticleId" id="crosses_articleId" class="form-control"
+                        value="{{ isset($article->id) ? $article->legacyArticleId : '' }}" readonly required>
                 </div>
                 <div class="d-flex flex-row-reverse">
                     <button type="submit" class="btn btn-success" id="saveCrosses" style="width:100px">Update</button>
-                    <button type="button" class="btn btn-primary mr-2" style="width:100px" id="nxtCrosses">Next</button>
+                    <button type="button" class="btn btn-primary mr-2" style="width:100px"
+                        id="nxtCrosses">Next</button>
                 </div>
             </div>
         </div>
     </form>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function() {
@@ -120,9 +95,9 @@
                     confirmButtonText: 'Ok'
                 });
             } else {
-                var method = "{{isset($art_crosses->id) ? 'PUT' : 'POST' }}";
+                var method = "{{ isset($article->articleCrosses) ? 'PUT' : 'POST' }}";
                 $.ajax({
-                    url: "{{ isset($art_crosses->id) ? route('articleCrosses.update', $art_crosses->id) : route('articleCrosses.store')  }}",
+                    url: "{{ isset($article->articleCrosses) ? route('articleCrosses.update', $article->articleCrosses->id) : route('articleCrosses.store') }}",
                     type: method,
                     data: {
                         legacyArticleId: legacyArticleId,
@@ -145,16 +120,19 @@
                             var legacy_id = response.data.legacyArticleId;
                             var product_name = response.data;
                             if (legacy_id != null) {
-                                document.getElementById('editArticleCrosses').style.display = "none";
+                                document.getElementById('editArticleCrosses').style
+                                    .display = "none";
                                 var tablinks = document.getElementsByClassName("tablinks");
                                 for (i = 0; i < tablinks.length; i++) {
                                     if (tablinks[i].id != "editeanTab") {
-                                        tablinks[i].className = tablinks[i].className.replace(" active", "");
+                                        tablinks[i].className = tablinks[i].className
+                                            .replace(" active", "");
                                     }
                                 }
                                 var tablink = document.getElementById("editeanTab");
                                 tablink.className = tablink.className += " active"
-                                document.getElementById('editArticleEan').style.display = "block";
+                                document.getElementById('editArticleEan').style.display =
+                                    "block";
                             }
                         } else {
                             Swal.fire({

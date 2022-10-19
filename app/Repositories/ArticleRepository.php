@@ -66,7 +66,7 @@ class ArticleRepository implements ArticleInterface
             return $item;
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e->getMessage());
+            // dd($e->getMessage());
             return $e->getMessage();
         }
     }

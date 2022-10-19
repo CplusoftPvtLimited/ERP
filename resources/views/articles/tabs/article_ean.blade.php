@@ -32,12 +32,7 @@
             <div class="col-12">
                 <div class="other_data"></div>
                 <div class="row">
-                    <div class="col-4">
-                        <div class="form-group">
-                            <h6>Article Id *</h6>
-                            <input type="text" name="legacyArticleId" id="ean_articleId" class="form-control" readonly required>
-                        </div>
-                    </div>
+                            <input type="hidden" name="legacyArticleId" id="ean_articleId" class="form-control" readonly required>
                     <div class="col-4">
                         <div class="form-group">
                             <h6>EAN Code *</h6>

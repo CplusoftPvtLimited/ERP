@@ -390,6 +390,13 @@
                             var legacy_id = response.data.legacyArticleId;
                             var product_name = response.data;
                             $('#criteria_articleId').val(response.data.legacyArticleId)
+                            $('#criteria_assemblyGroupNodeId').val(response.data.assemblyGroupNodeId)
+
+                            $('#crossmfrId').val(response.data.mfrId)
+                            $('#crossesAssemblyGroupNodeId').val(response.data.assemblyGroupNodeId)
+                            $('#crossesBrandName').val(response.data.dataSupplierId)
+                            $('#crosses_articleId').val(response.data.legacyArticleId)
+
                             if (legacy_id != null) {
                                 document.getElementById('Articles').style.display = "none";
                                 var tablinks = document.getElementsByClassName("tablinks");

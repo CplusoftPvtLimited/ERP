@@ -205,24 +205,34 @@ class ArticlesController extends Controller
      */
     public function edit($id)
     {
-        $suppliers = Ambrand::all();
+        $suppliers = Ambrand::withTrashed()->get();
         $sections = AssemblyGroupNode::withTrashed()->get();
-        $article = Article::find($id);
         $manufacturers = Manufacturer::withTrashed()->get();
+        $keyValues = KeyValue::all();
+        $languages = Language::select('lang')->distinct()->get();
+        $article = Article::select()
+            ->with('articleCriteria')
+            ->with('articleCrosses')
+            ->with('articleEAN')
+            ->with('articleLink')
+            ->with('articleVehicleTree', function ($query) {
+                $query->with('linkageTarget', function ($query) {
+                    $query->select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth', 'vehicleModelSeriesId');
+                    $query->with('modelSeries', function ($query) {
+                        $query->select('modelId', 'modelname');
+                    });
+                });
+            })
+            ->with('manufacturer', function ($query) {
+                $query->select('linkingTargetType', 'manuId', 'manuName');
+            })
+            ->with('assemblyGroup', function ($query) {
+                $query->select('assemblyGroupNodeId','assemblyGroupName');
+            })
+            ->find($id);
 
         if ($article) {
-            $manufacturer = Manufacturer::where('manuId', $article->mfrId)->withTrashed()->first();
-            $avt = ArticleVehicleTree::where('legacyArticleId', $article->legacyArticleId)->withTrashed()->first();
-            $engine = LinkageTarget::where('linkageTargetId', $avt->linkingTargetId)->withTrashed()->first();
-            $model = ModelSeries::where('modelId', $engine->vehicleModelSeriesId)->withTrashed()->first();
-            $section = AssemblyGroupNode::where('assemblyGroupNodeId', $article->assemblyGroupNodeId)->withTrashed()->first();
-            $keyValues = KeyValue::all();
-            $languages = Language::select('lang')->distinct()->get();
-            $art_criteria = ArticleCriteria::where('legacyArticleId', $article->legacyArticleId)->withTrashed()->first();
-            $art_crosses = ArticleCross::where('legacyArticleId', $article->legacyArticleId)->withTrashed()->first();
-            $art_ean = ArticleEAN::where('legacyArticleId', $article->legacyArticleId)->withTrashed()->first();
-            $art_link = ArticleLinks::where('legacyArticleId', $article->legacyArticleId)->withTrashed()->first();
-            return view('articles.edit', compact('suppliers', 'sections', 'manufacturers', 'manufacturer', 'article', 'keyValues', 'languages', 'engine', 'model', 'section', 'art_criteria', 'art_crosses', 'art_ean', 'art_link', 'avt'));
+            return view('articles.edit', compact('suppliers', 'sections', 'manufacturers', 'article', 'keyValues', 'languages'));
         } else {
             return redirect(url()->previous());
         }
