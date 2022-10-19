@@ -39,18 +39,7 @@
                                                         @if(count($section['sub_sections']) > 0)
                                                         @foreach ($section['sub_sections'] as $sub_section)
                                                         <li class="">
-                                                            <form action="{{route('articles_search_view')}}" enctype="multipart/form-data" method="POST">
-                                                                @csrf
-                                                                <input type="hidden" name="type" value="{{ $type }}">
-                                                                <input type="hidden" name="sub_type" value="{{ $sub_type }}">
-                                                                <input type="hidden" name="model_year" value="{{ $model_year }}">
-                                                                <input type="hidden" name="cc" value="{{ $cc }}">
-                                                                <input type="hidden" name="fuel" value="{{ $fuel }}">
-                                                                <input type="hidden" name="engine" value="{{ json_encode($engine) }}">
-                                                                <input type="hidden" name="section" value="{{ $sub_section->assemblyGroupNodeId }}">
-                                                                <button type="submit" style="background-color: transparent;border:none">{{ $sub_section->assemblyGroupName }}</button>
-                                                            </form>
-                                                            <a href=""></a>
+                                                            <a href="{{route('articles_search_view',[$engine->linkageTargetId,$sub_section->assemblyGroupNodeId])}}">{{ $sub_section->assemblyGroupName }}</a>
                                                         </li>
                                                         @endforeach
                                                         

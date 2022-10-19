@@ -114,23 +114,31 @@ class HomeSearchController extends Controller
         return view('home_search.sections_search_view',compact('sections','engine','type','sub_type','model_year','fuel','cc'));
     }
 
-    public function articleSearchView(Request $request){
-        // dd($request->all());
+    public function articleSearchView($id,$section_id){
+        $engine = LinkageTarget::where('linkageTargetId',$id)->first();
         $section_parts = Article::whereHas('section', function($query) {
                 $query->whereNotNull('request__linkingTargetId');
-            })->whereHas('articleVehicleTree', function ($query) use ($request) {
-                $query->where('linkingTargetType', $request->sub_type)->where('assemblyGroupNodeId', $request->section);
+            })->whereHas('articleVehicleTree', function ($query) use ($section_id,$engine) {
+                $query->where('linkingTargetType', $engine->linkageTargetType)->where('assemblyGroupNodeId', $section_id);
             })
             ->limit(100)
             ->get();
 
-            $type = $request->type;
-            $sub_type = $request->sub_type;
-            $model_year = $request->model_year;
-            $fuel = $request->fuel;
-            $cc = $request->cc;
-            $engine = json_decode($request->engine);
+            $type = $engine->linkageTargetType;
+            $sub_type = $engine->subLinkageTargetType;
+            $model_year = $engine->model_year;
+            $fuel = $engine->fuelType;
+            $cc = $engine->capacityCC;
+            
             
         return view('home_search.article_search_view',compact('section_parts','engine','type','sub_type','model_year','fuel','cc'));
+    }
+
+    public function articleView($id,$engine_id){
+        $article = Article::where('legacyArticleId',$id)->first();
+        $section = $article->section;
+        $engine = LinkageTarget::where('linkageTargetId',$engine_id)->first();
+        
+        dd($engine);
     }
 }

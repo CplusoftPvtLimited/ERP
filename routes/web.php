@@ -44,10 +44,8 @@ Route::get('/get_logout', 'UserController@userLogout')->name('user_logout');
 
 
 Route::group(['middleware' => ['auth', 'active']], function () {
-	Route::get('section_search_view', function () {
-		return view('purchase.sections_search_view');
-	})->name('section_search_view');
-	Route::post('articles_search_view', [HomeSearchController::class,'articleSearchView'])->name('articles_search_view');
+	
+	
 
 	Route::resource('preinvoices', 'PreInvoiceController');
 
@@ -322,7 +320,8 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 	Route::get('get_engines_by_model_home_search', 'HomeSearchController@getEnginesByModel')->name('get_engines_by_model_home_search'); 
 	Route::get('get_data_of_engine_home_search', 'HomeSearchController@getEngineData')->name('get_data_of_engine_home_search'); 
 	Route::post('search_sections_by_engine', 'HomeSearchController@searchSectionByEngine')->name('search_sections_by_engine'); 
-	
+	Route::get('articles_search_view/{id}/{section_id}', [HomeSearchController::class,'articleSearchView'])->name('articles_search_view');
+	Route::get('articles_view/{id}/{engine_id}', [HomeSearchController::class,'articleView'])->name('articles_view');
 
 
 

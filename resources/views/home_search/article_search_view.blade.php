@@ -39,7 +39,7 @@
                                                 <table class="table-responsive">
                                                     <thead>
                                                         <tr>
-                                                            <th>Article Number</th>
+                                                            <th style="width: 50%">Article Number</th>
                                                             <th>Image</th>
                                                             <th style="width: 100%" class="text-center">Description</th>
                                                             {{-- <th>Article Status</th> --}}
@@ -58,19 +58,18 @@
                                                         @if(count($section_parts) > 0)
                                                         @foreach ($section_parts as $section_part)
                                                         <tr>
-                                                            <td>
+                                                            <td style="width: 50%">
                                                                 {{$section_part->articleNumber}}
                                                             </td>
                                                             <td>
-                                                                <img src="images/logo.png" width="100px" alt="">
+                                                                <img src="{{ asset('images/logo.png')}}" width="100px" alt="">
                                                             </td>
                                                             <td style="width: 100%" class="text-center">
                                                                 {{$section_part->genericArticleDescription}}
                                                             </td>
                                                             
                                                             <td>
-                                                                <a href="" class="btn btn-primary text-white"><i
-                                                                        class="fa fa-eye text-white"></i></a>
+                                                                <a class="btn btn-primary text-white" href="{{route('articles_view',[$section_part->legacyArticleId,$engine->linkageTargetId])}}"><i class="fa fa-eye"></i></a>
                                                             </td>
                                                         </tr>
                                                         @endforeach
