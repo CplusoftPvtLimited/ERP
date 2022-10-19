@@ -1,3 +1,48 @@
+<style>
+    .prod_cart_option .buttons_opt {
+        height: 40px;
+        margin-right: 1px;
+    }
+
+    .prod_cart_option .buttons_opt {
+        border: 1px solid gray;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding-left: 10px;
+        padding-right: 10px;
+        border-radius: 20px;
+    }
+
+    .prod_cart_option .buttons_opt span {
+        color: black;
+        font-size: 14px;
+    }
+
+    .prod_cart_option .buttons_opt .cart_item {
+        min-width: 40px;
+        text-align: center;
+        margin-left: 2px;
+        margin-right: 2px;
+    }
+
+    .prod_cart_option .buttons_opt .m_btn {
+        color: black;
+        height: 20px;
+        width: 20px;
+        transition: 0.25s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid lightgray;
+        border-radius: 50%
+    }
+
+    .prod_cart_option .buttons_opt .m_btn:hover {
+        cursor: pointer;
+        color: #ff6295;
+    }
+</style>
 @extends('layout.main')
 @section('content')
     @if (session()->has('message'))
@@ -347,13 +392,18 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-2 pt-1 offset-8 text-center" style="border: 1px solid black;">
-                    <span class="mr-3" style="border: 1px solid blue; width:25px;  border-radius:50%"><strong>-
-                        </strong></span>
-                    <span class="" style="border: 1px solid blue; width:25px;  border-radius:50%">0</span>
-                    <span class="ml-3" style="border: 1px solid blue; width:25px;  border-radius:50%">+</span>
+                <div class="col-1 offset-9 mr-4">
+                    <div class="prod_cart_option d-flex justify-content-between mb-3 pb-2">
+                        <div class="buttons_opt">
+                            <span class="m_btn" id="minus"> <i class="fa fa-minus text-danger"></i></span>
+                            <span class="cart_item">
+                                1
+                            </span>
+                            <span class="m_btn" id="plus"> <i class="fa fa-plus text-success"></i></span>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-2">
+                <div class="col-1 text-right ">
                     <button class="btn btn-primary">
                         <i class="dripicons-cart"></i> Add to Cart
                     </button>
@@ -362,4 +412,21 @@
         </div>
     </section>
 @endsection
-<script></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#minus').click(function() {
+            var quantity = $('.cart_item').html();
+            if (quantity > 1) {
+                var alter_quantity = quantity - 1;
+                $('.cart_item').html(alter_quantity);
+            }
+        });
+
+        $('#plus').click(function() {
+            var quantity = $('.cart_item').html();
+                var alter_quantity = quantity -(-1);
+                $('.cart_item').html(alter_quantity);
+        })
+    });
+</script>
