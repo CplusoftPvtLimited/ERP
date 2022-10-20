@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\RetailerRegisterEvent;
+use App\Listeners\RetailerRegisterEventListener;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -16,6 +18,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\Event' => [
             'App\Listeners\EventListener',
         ],
+        RetailerRegisterEvent::class => [
+            RetailerRegisterEventListener::class,
+        ]
     ];
 
     /**

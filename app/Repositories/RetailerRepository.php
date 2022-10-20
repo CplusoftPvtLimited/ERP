@@ -2,11 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Events\RetailerRegisterEvent;
 use App\Models\Retailer;
 use App\Repositories\Interfaces\RetailerInterface;
 use Illuminate\Support\Facades\DB;
-use Mail;
-use App\Mail\AccountCreation;
 
 class RetailerRepository implements RetailerInterface
 {
@@ -29,10 +28,11 @@ class RetailerRepository implements RetailerInterface
             $mailData = [
                 'title' => 'Mail from ERP',
                 'body' => 'Your Account Credentials.',
+                'email' => $data['email'],
                 'name' => $input['name'],
                 'password' => $password,
             ];
-            Mail::to($data['email'])->send(new AccountCreation($mailData));
+            event(new RetailerRegisterEvent($mailData));
             DB::commit();
             return $retailer;
         } catch (\Exception $e) {
