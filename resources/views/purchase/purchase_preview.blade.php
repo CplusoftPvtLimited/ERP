@@ -38,19 +38,11 @@
                    Document Details</strong></td>
             </tr>
             <tr>
-                <td colspan="5"><strong>Company:</strong> New Company </td>
+                <td colspan="5"><strong>Shop Name:</strong> New Company </td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td colspan="2"><strong>Document Date:</strong> 00-00-0000</td>
-            </tr>
-            <tr>
-                <td colspan="5"><strong>Tax Number:</strong> 1022121201 </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
             </tr>
             <tr>
                 <td colspan="5"><strong>Mobile Number:</strong> +219-1022121201 </td>
