@@ -53,6 +53,10 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 		return view('purchase.article_view');
 	})->name('article_view');
 
+	Route::get('purchase_preview', function () {
+		return view('purchase.purchase_preview');
+	})->name('purchase_preview');
+
 	Route::resource('preinvoices', 'PreInvoiceController');
 
 	Route::resource('assembly_group_nodes', 'AssemblyGroupNodeController');  // for erp
