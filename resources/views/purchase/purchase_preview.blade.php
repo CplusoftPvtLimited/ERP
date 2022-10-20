@@ -49,7 +49,8 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td colspan="2"><strong>Note:</strong> Lorem ipsum dolor sit amet.</td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
                 <td colspan="5"><strong>Mobile Number:</strong> +219-1022121201 </td>
