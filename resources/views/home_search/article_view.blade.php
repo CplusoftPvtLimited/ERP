@@ -37,6 +37,11 @@
             <input type="hidden" name="purchase_price" value="1">
             <input type="hidden" name="discount" value="0">
             <input type="hidden" name="additional_cost_with_vat" value="0">
+            <input type="hidden" name="additional_cost_without_vat" value="0">
+            <input type="hidden" name="vat" value="0">
+            <input type="hidden" name="profit_margin" value="0">
+            <input type="hidden" name="tax_stamp" value="0">
+            <input type="hidden" name="purchase_additional_cost" value="0">
             <div class="container-fluid">
                 <div class="row ">
                     <div class="col-6">
@@ -283,13 +288,13 @@
                         <h6 class="article_view_cash_type_head">Select Cash Type <span>*</span></h6>
                         <div class="box">
                             <label class="custom-radio-button__container">
-                                <input type="radio" name="cash_type" value="white_cash">
+                                <input type="radio" name="cash_type" value="white">
                                 <span class="custom-radio-button designer">
                                     <i class="fa fa-solid fa-sack-dollar"></i> White Cash
                                 </span>
                             </label>
                             <label class="custom-radio-button__container">
-                                <input type="radio" name="cash_type" value="black_cash">
+                                <input type="radio" name="cash_type" value="black">
                                 <span class="custom-radio-button designer">
                                     <i class="fa fa-solid fa-sack-dollar"></i> Black Cash
                                 </span>
@@ -367,7 +372,18 @@
             exit();
 
         }
-        if (quantity <= 0) {
+        
+        // if (!Number.isInteger(quantity)) {
+        //     Swal.fire({
+        //         icon: 'error',
+        //         title: 'Oops...',
+        //         text: 'Quantity must be Type of Integer',
+
+        //     });
+        //     exit();
+        // }
+        // exit();
+        if (quantity <= 1) {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
@@ -375,7 +391,6 @@
 
             });
             exit();
-
         }
         document.getElementById("add_to_cart_form").submit();
 

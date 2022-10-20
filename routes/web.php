@@ -323,6 +323,7 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 	Route::get('articles_search_view/{id}/{section_id}', [HomeSearchController::class,'articleSearchView'])->name('articles_search_view');
 	Route::get('articles_view/{id}/{engine_id}/{sub_section_id}', [HomeSearchController::class,'articleView'])->name('articles_view');
 	Route::post('purchase_add_to_cart', [HomeSearchController::class,'addToCart'])->name('purchase_add_to_cart');
+	Route::get('cart', [HomeSearchController::class,'cart'])->name('cart');
 
 
 
