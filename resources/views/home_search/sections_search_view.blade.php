@@ -30,7 +30,7 @@
                                         @foreach ($sections as $section)
                                         <div class="col-md-4">
                                             <div class="card" style="box-shadow: none !important; border:1px solid rgb(240, 240, 240)">
-                                                <div class="card-header">
+                                                <div class="card-header article_view_tr_head">
                                                     <h6>{{ $section['section']->assemblyGroupName }}</h6>
                                                 </div>
                                                 <div class="card-body">

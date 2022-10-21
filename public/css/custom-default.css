@@ -1318,3 +1318,8 @@ thead.article_view_tr_head {
 .article_table_row{
 	text-align: center;
 }
+.article_table_row.article_table_row_style{
+	border-bottom: 1px solid lightgray;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}

@@ -6,6 +6,8 @@ return [
 	'Over View' => 'Over View',
 	'Home' => 'Home',
 	'BANK' => 'BANK',
+	'Save Changes' => 'Save Changes',
+	'Back To Shopping' => 'Back To Shopping',
 	'Regulation Data' => 'Regulation Data',
 	'Add an Expense' => 'Add an Expense',
 	'Balance Type' => 'Balance Type',

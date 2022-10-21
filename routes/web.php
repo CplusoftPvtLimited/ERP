@@ -324,6 +324,8 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 	Route::get('articles_view/{id}/{engine_id}/{sub_section_id}', [HomeSearchController::class,'articleView'])->name('articles_view');
 	Route::post('purchase_add_to_cart', [HomeSearchController::class,'addToCart'])->name('purchase_add_to_cart');
 	Route::get('cart', [HomeSearchController::class,'cart'])->name('cart');
+	Route::post('changes_save', [HomeSearchController::class,'updateCart'])->name('changes_save');
+	Route::get('remove_cart_item/{id}', [HomeSearchController::class,'removeCartItem'])->name('remove_cart_item');
 
 
 

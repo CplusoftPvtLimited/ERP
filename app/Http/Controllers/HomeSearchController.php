@@ -275,10 +275,7 @@ class HomeSearchController extends Controller
                     $total_excluding_vat = (($request->purchase_price + $cart_item->actual_price) * ($request->quantity + $cart_item->qty)) + ($request->additional_cost_without_vat + $cart_item->additional_cost_without_vat);
                     $actual_cost_per_product =  ($total_excluding_vat / ($request->quantity + $cart_item->qty)) + ($cart->additional_cost / $cart->total_qty);
                     $sale_price = $actual_cost_per_product * (1 + (($request->profit_margin / 100) + $cart_item->profit_margin));
-                    $all_total_excluding_vat += $total_excluding_vat;
-                    // dump($total_excluding_vat);
-                    // dump($sale_price);
-                    // dd($actual_cost_per_product);
+                    
                     $cart_item->qty = $cart_item->qty + $request->quantity;
                     $cart_item->actual_price = $cart_item->actual_price + $request->purchase_price;
                     $cart_item->sell_price = $sale_price;
@@ -329,17 +326,33 @@ class HomeSearchController extends Controller
                     $cart_item->date = $date;
                     $cart_item->save();
 
-                    $all_total_excluding_vat += $total_excluding_vat;
+                    
                 }
                 
             }
 
+            // if($request->cash_type == "white"){
+            //     $cart->total_cost = (float)$all_total_excluding_vat + $cart->total_vat + $cart->tax_stamp + $request->tax_stamp;
+            //     $cart->grand_total = (float)$all_total_excluding_vat + $cart->total_vat + $cart->tax_stamp + $request->tax_stamp;
+            // }else{
+            //     $cart->total_cost = (float)$all_total_excluding_vat;
+            //     $cart->grand_total = (float)$all_total_excluding_vat;
+            // }
+            $cart_items = CartItem::where('cart_id',$cart->id)->get();
+            foreach($cart_items as $cart_item){
+                $all_total_excluding_vat += $cart_item->total_excluding_vat;
+            }
             if($request->cash_type == "white"){
-                $cart->total_cost = (float)$all_total_excluding_vat + $cart->total_vat + $cart->tax_stamp + $request->tax_stamp;
-                $cart->grand_total = (float)$all_total_excluding_vat + $cart->total_vat + $cart->tax_stamp + $request->tax_stamp;
+                $cart->total_vat = $request->entire_vat + $cart->total_vat;
+                $cart->tax_stamp = $request->tax_stamp + $cart->tax_stamp;
+                $cart->total_exculding_vat = (float)$all_total_excluding_vat;
+                $cart->total_cost = (float)$all_total_excluding_vat + $cart->entire_vat + $cart->tax_stamp;
+                $cart->grand_total = (float)$all_total_excluding_vat + $cart->entire_vat + $cart->tax_stamp;
+                
             }else{
                 $cart->total_cost = (float)$all_total_excluding_vat;
                 $cart->grand_total = (float)$all_total_excluding_vat;
+                $cart->total_exculding_vat = (float)$all_total_excluding_vat;
             }
             $cart->save();
             DB::commit();
@@ -362,6 +375,63 @@ class HomeSearchController extends Controller
         }else{
             toastr()->info('Your cart is empty');
             return redirect()->back();
+        }
+    }
+
+
+    public function removeCartItem($id){
+        DB::beginTransaction();
+        try {
+            $cart_item = CartItem::find($id);
+            $cart = Cart::find($cart_item->cart_id);
+            $cart->total_qty = $cart->total_qty - $cart_item->qty;
+            $cart->save();
+            $cart_item->delete();
+            $cart_items = CartItem::where('cart_id',$cart->id)->get();
+            if(count($cart_items) <= 0){
+                $cart->delete();
+                DB::commit();
+                toastr()->success('All Items deleted from cart successfully');
+                return redirect('/');
+
+            }else{
+                $counter = 0;
+                $all_total_excluding_vat = 0;
+                foreach($cart_items as $cart_item){
+                    $total_excluding_vat = ($cart_item->actual_price * $cart_item->qty) + $cart_item->additional_cost_without_vat;
+                    $actual_cost_per_product =  ($total_excluding_vat / $cart_item->qty) + ($cart->purchase_additional_cost / $cart->total_qty);
+                    $sale_price = $actual_cost_per_product * (1 + ($cart_item->profit_margin / 100));
+                    $all_total_excluding_vat += $total_excluding_vat;
+
+                    
+                    $cart_item->total_excluding_vat = $total_excluding_vat;
+                    $cart_item->actual_cost_per_product = $actual_cost_per_product;
+                    
+                    $cart_item->save();
+                }
+
+                if($cart->cash_type == "white"){
+                    $cart->total_cost = (float)$all_total_excluding_vat + $cart->entire_vat + $cart->tax_stamp;
+                    $cart->grand_total = (float)$all_total_excluding_vat + $cart->entire_vat + $cart->tax_stamp;
+                    $cart->total_exculding_vat = (float)$all_total_excluding_vat;
+                }else{
+                    $cart->total_cost = (float)$all_total_excluding_vat;
+                    $cart->grand_total = (float)$all_total_excluding_vat;
+                    $cart->total_exculding_vat = (float)$all_total_excluding_vat;
+                }
+                $cart->save();
+
+                DB::commit();
+                toastr()->success('Item deleted from cart successfully');
+                return redirect()->back();
+            }
+            
+
+
+        } catch (Exception $e) {
+            DB::commit();
+            toastr()->error($e->getMessage());
+            return redirect()->route('cart');
         }
     }
 }

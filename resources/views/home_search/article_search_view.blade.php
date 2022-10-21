@@ -57,7 +57,7 @@
                                                     <tbody>
                                                         @if(count($section_parts) > 0)
                                                         @foreach ($section_parts as $section_part)
-                                                        <tr class="article_table_row">
+                                                        <tr class="article_table_row article_table_row_style">
                                                             <td style="width: 30%">
                                                                 <b>{{$section_part->articleNumber}}</b>
                                                             </td>
