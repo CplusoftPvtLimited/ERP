@@ -39,18 +39,19 @@ class ArticlesController extends Controller
     {
         // dd($request->all());
         if ($request->ajax()) {
-            $articles = Article::select('id', 'legacyArticleId', 'articleNumber', 'mfrId', 'additionalDescription', 'assemblyGroupNodeId', 'created_at');
-            if (isset($request['article_id']) && $request['article_id'] != null) {
-                $articles =  $articles->where('articleNumber', 'LIKE',  '%' . $request['article_id'] . '%');
-            } elseif (isset($request['engine_sub_type']) && !empty($request['engine_sub_type']) && !empty($request['section_id']) && isset($request['section_id'])) {
-
-                $articles =  $articles->whereHas('articleVehicleTree', function ($query) use ($request) {
+            $articles = Article::select('id', 'legacyArticleId', 'articleNumber', 'mfrId', 'additionalDescription', 'assemblyGroupNodeId', 'created_at')
+            ->when(isset($request['article_id']) && $request['article_id'] != null , function($query) use ($request) {
+                $query->where('articleNumber', 'LIKE',  '%' . $request['article_id'] . '%');
+            })
+            ->when(isset($request['engine_sub_type']) && !empty($request['engine_sub_type']) && !empty($request['section_id']) && isset($request['section_id']) , function($query) use ($request) {
+                $query->whereHas('articleVehicleTree', function ($query) use ($request) {
                     $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
                 });
-            }
-            $articles->with(['assemblyGroup' => function ($query) {
+            })
+            ->with(['assemblyGroup' => function ($query) {
                 $query->select('assemblyGroupNodeId', 'assemblyGroupName')->get();
-            }, 'manufacturer'])->orderBy('id', 'desc');
+            }, 'manufacturer'])
+            ->orderBy('id', 'desc');
             return DataTables::of($articles)
                 ->addIndexColumn()
                 ->addColumn('manufacturer', function ($row) {
