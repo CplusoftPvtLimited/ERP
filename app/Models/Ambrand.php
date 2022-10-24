@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AmBrand extends Model
 {
+    
     use HasFactory , SoftDeletes;
     protected $table = "ambrand";
     protected $fillable = [
