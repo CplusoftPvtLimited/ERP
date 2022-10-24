@@ -1,5 +1,7 @@
 <?php 
 return [
+	'Chassis Details' => 'Chassis Details',
+	'Chassis Numbers' => 'Chassis Numbers',
 	'Manufacturers' => 'Manufacturers',
 	'Only numbers and spaces are allowed' => 'Only numbers and spaces are allowed',
 	'People List' => 'People List',

@@ -164,6 +164,9 @@
             @endif
             <li id="retailers-list-menu" class="{{ $route == 'retailers.index' ? 'active' : '' }}"><a href="{{route('retailers.index')}}"><i class="dripicons-user-group"></i> {{trans('file.Retailers')}}</a></li>
             <li id="form-list-menu" class="{{ $route == 'form.index' ? 'active' : '' }}"><a href="{{route('form.index')}}"><i class="dripicons-list"></i>{{trans('file.Forms')}}</a></li>
+            <li id="" class="{{ $route == 'chassis.index' ? 'active' : '' }}"><a
+                href="{{ route('chassis.index') }}"><i class="dripicons-list"></i>
+                {{ trans('file.Chassis Numbers') }}</a></li>
 
             <?php
             $index_permission = DB::table('permissions')->where('name', 'purchases-index')->first();

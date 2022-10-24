@@ -17,6 +17,7 @@ use App\Http\Controllers\LinkageTargetsController;
 use App\Http\Controllers\ManufacturerController;
 use App\Http\Controllers\ModelSeriesController;
 use App\Http\Controllers\AmBrandController;
+use App\Http\Controllers\ChassisController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\RetailerController;
@@ -107,6 +108,12 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 
 	Route::get('/download_file/{name}/{extension}', 'FormController@downloadFile');
 
+	// ---------------------------------- Chassis Routes -------------------------------
+
+	Route::resource('chassis', 'ChassisController');
+	Route::post('chassis_import', [ChassisController::class, 'import'])->name('chassis_import');
+
+	// ---------------------------------- End Chassis Routes -------------------------------
 
 
 	Route::get('/', 'HomeController@index');

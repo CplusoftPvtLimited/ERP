@@ -13,11 +13,13 @@ use App\Repositories\ArticleCriteriaRepository;
 use App\Repositories\ArticleCrossesRepository;
 use App\Repositories\ArticleEanRepository;
 use App\Repositories\ArticleLinksRepository;
+use App\Repositories\ChassisRepository;
 use App\Repositories\Interfaces\AmBrandInterface;
 use App\Repositories\Interfaces\ArticleCriteriaInterface;
 use App\Repositories\Interfaces\ArticleCrossesInterface;
 use App\Repositories\Interfaces\ArticleEanInterface;
 use App\Repositories\Interfaces\ArticleLinksInterface;
+use App\Repositories\Interfaces\ChassisInterface;
 use App\Repositories\Interfaces\ManufacturerInterface;
 use App\Repositories\LinkageTargetRepository;
 use App\Repositories\ManufacturerRepository;
@@ -52,8 +54,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ArticleCrossesInterface::class, ArticleCrossesRepository::class);
         $this->app->bind(ArticleEanInterface::class, ArticleEanRepository::class);
         $this->app->bind(ArticleLinksInterface::class, ArticleLinksRepository::class);
-
         $this->app->bind(RetailerInterface::class, RetailerRepository::class);
+        $this->app->bind(ChassisInterface::class,ChassisRepository::class);
+
     }
 
     public function boot()
