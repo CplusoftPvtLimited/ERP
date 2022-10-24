@@ -57,7 +57,7 @@
                                             <div class="form-group">
                                                 <strong>DAT_V</strong>
                                                 <input type="text" readonly class="form-control"
-                                                    value="{{ isset($chassis->DAT_V) ? $chassis->DAT_V : null }}">
+                                                    value="{{ isset($chassis->DAT_V) ? substr($chassis->DAT_V, 0, 10) : null }}">
                                             </div>
                                         </div>
                                         <div class="col-4">
