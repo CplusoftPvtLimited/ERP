@@ -16,7 +16,7 @@
         <div class="row card mt-5 p-2">
     <div class="col-lg-12 margin-tb">
         <div class="pull-left">
-            <h2>{{$form->form_name}}</h2>
+            <h2 class="mt-2">{{$form->form_name}}</h2>
         </div>
         <div class="pull-right">
             <a class="btn btn-primary" href="{{ url()->previous()}}"> Back</a>

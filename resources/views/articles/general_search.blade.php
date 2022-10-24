@@ -65,7 +65,7 @@
         <div class="row">
             <div class="col-md-12 text-right">
                 <div class="form-group">
-                    <button type="button" class="btn btn-info purchase-save-btn"
+                    <button type="button" class="btn btn-primary purchase-save-btn"
                         id="save-btn">{{ trans('file.Search') }}</button>
                 </div>
             </div>

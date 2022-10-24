@@ -1,24 +1,17 @@
 <div class="container">
     <form action="{{ route('article.index') }}">
+        <h4>Product Number</h4>
         <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <div class="col-md-12 mt-3">
-                        <div class="ui-widget">
-                            <label for="automplete-1">Product Number: </label>
-                            <input id="automplete-1" name="article_id" class="form-control">
-                        </div>
+            <div class="col-md-8 mt-3">
+                <div class="ui-widget">
+                    {{-- <label for="automplete-1">Product Number: </label> --}}
+                    <input id="automplete-1" name="article_id" class="form-control" placeholder="e.g. 1000 1000 1000">
+                </div>
 
-                    </div>
-                </div>
             </div>
-        </div>
-        <div class="row mr-1">
-            <div class="col-md-12 text-right">
-                <div class="form-group">
-                    <button type="button" class="btn btn-info purchase-save-btn"
-                        id="save-btn">{{ trans('file.Search') }}</button>
-                </div>
+            <div class="col-md-4 mt-3 pull-right" style="text-align: right">
+                <button type="button" class="btn btn-primary purchase-save-btn"
+                    id="save-btn">{{ trans('file.Search') }}</button>
             </div>
         </div>
     </form>
