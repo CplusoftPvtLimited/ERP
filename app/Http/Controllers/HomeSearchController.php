@@ -46,10 +46,20 @@ class HomeSearchController extends Controller
     {
         // dd($request->all());
         try {
-
-            $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+            $type = ["V","L","B"];
+            $type2 = ["C","T","M","A","K"];
+            if($request->engine_type == "P" && $request->engine_sub_type == "home"){
+                $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                ->whereIn('linkingTargetType', $type)->get();
+            }else if($request->engine_type == "O" && $request->engine_sub_type == "home"){
+                
+                $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                ->whereIn('linkingTargetType', $type2)->get();
+            }else{
+                $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
                 ->where('linkingTargetType', $request->engine_sub_type)->get();
-            // dd($models);
+            }
+            
             return response()->json([
                 'data' => $models
             ], 200);
@@ -61,10 +71,26 @@ class HomeSearchController extends Controller
     public function getEnginesByModel(Request $request)
     {
         try {
-            $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+            $type = ["V","L","B"];
+            $type2 = ["C","T","M","A","K"];
+            if($request->engine_type == "P" && $request->engine_sub_type == "home"){
+                $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                ->where('vehicleModelSeriesId', $request->model_id)
+                ->whereIn('subLinkageTargetType',$type)
+                ->orWhere('linkageTargetType', $request->engine_type)->get();
+            }else if($request->engine_type == "O" && $request->engine_sub_type == "home"){
+                
+                $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                ->where('vehicleModelSeriesId', $request->model_id)
+                ->whereIn('subLinkageTargetType',$type2)
+                ->orWhere('linkageTargetType', $request->engine_type)->get();
+            }else{
+                $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
                 ->where('vehicleModelSeriesId', $request->model_id)
                 ->where('linkageTargetType', $request->engine_type)
                 ->orWhere('subLinkageTargetType',$request->engine_sub_type)->get();
+            }
+            
             
             return response()->json([
                 'data' => $engines
@@ -90,15 +116,15 @@ class HomeSearchController extends Controller
     public function searchSectionByEngine(Request $request){
         // dd($request->all());
         $engine = LinkageTarget::where('linkageTargetId',$request->engine_id)
-                ->where('linkageTargetType', $request->type)
-                ->orWhere('subLinkageTargetType',$request->sub_type)->first();
-        $all_sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function($query) use ($request){
+                ->first();
+        $all_sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function($query) use ($request,$engine){
                     $query->where('linkingTargetId', $request->engine_id)
-                    ->where('linkingTargetType', $request->sub_type);
+                    ->where('linkingTargetType', $engine->subLinkageTargetType);
                 })
                ->groupBy('assemblyGroupNodeId')
                ->limit(100)
                 ->get();
+        // dd($all_sections);
         $sections = [];
         if(count($all_sections) > 0){
             foreach ($all_sections as $sec) {
@@ -121,6 +147,10 @@ class HomeSearchController extends Controller
 
     public function articleSearchView($id,$section_id){
         $engine = LinkageTarget::where('linkageTargetId',$id)->first();
+        if(empty($engine)){
+            toastr()->error("Data not found against your request");
+                return redirect()->back();
+        }
         $section_parts = Article::whereHas('section', function($query) {
                 $query->whereNotNull('request__linkingTargetId');
             })->whereHas('articleVehicleTree', function ($query) use ($section_id,$engine) {
@@ -128,7 +158,10 @@ class HomeSearchController extends Controller
             })
             ->limit(100)
             ->get();
-
+            if(count($section_parts) <= 0 || empty($engine)){
+                toastr()->error("Data not found against your request");
+                    return redirect()->back();
+            }
             $type = $engine->linkageTargetType;
             $sub_type = $engine->subLinkageTargetType;
             $model_year = $engine->model_year;

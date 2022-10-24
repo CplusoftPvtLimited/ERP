@@ -294,8 +294,8 @@
                             <div class="row" id="submit-button">
                                 <div class="col-md-7"></div>
                                 <div class="col-md-2 form-group text-right">
-                                    <button type="button" id="back_to_shopping"
-                                        class="btn btn-info">{{ trans('file.Back To Shopping') }}</button>
+                                    <a href="{{ route('home_search') }}" id="back_to_shopping"
+                                        class="btn btn-info">{{ trans('file.Back To Shopping') }}</a>
                                 </div>
                                 <div class="col-md-2 form-group text-right">
                                     <button type="button" id="save_changes"

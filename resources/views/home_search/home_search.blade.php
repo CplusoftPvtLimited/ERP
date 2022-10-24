@@ -216,12 +216,13 @@
         $(document).on('change', '#manufacturer_id', function() {
             let manufacturer_id = $(this).val();
             let engine_sub_type = $('input[name="sub_type"]:checked').val();
+            let engine_type = $('input[name="type"]:checked').val();
             let url = $(this).attr('data-href');
-            getModels(url, manufacturer_id, engine_sub_type);
+            getModels(url, manufacturer_id, engine_type,engine_sub_type);
         });
 
-        function getModels(url, manufacturer_id, engine_sub_type) {
-            $.get(url + '?manufacturer_id=' + manufacturer_id + '&engine_sub_type=' + engine_sub_type, function(data) {
+        function getModels(url, manufacturer_id,engine_type, engine_sub_type) {
+            $.get(url + '?manufacturer_id=' + manufacturer_id + '&engine_sub_type=' + engine_sub_type + '&engine_type=' + engine_type , function(data) {
                 $('#model_id').html('<option value="">Select One</option>');
                 $('#model_id').selectpicker("refresh");
                 $('#engine_id').html('<option value="">Select One</option>');

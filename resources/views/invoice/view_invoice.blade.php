@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card p-0">
-                        <div class="card-header">
+                        <div class="card-header article_view_tr_head">
                             <h3>Invoice</h3>
                         </div>
                         <div class="card-body">
@@ -73,7 +73,7 @@
                                         <h5 id="order-table-header"></h5>
                                         <div class="table-responsive mt-3">
                                             <table id="myTable" class="table table-hover order-list table-responsive">
-                                                <thead>
+                                                <thead class="article_view_tr_head">
                                                     @if ($sale->cash_type == 'white')
                                                         <tr id="">
                                                             <th>{{ trans('file.name') }}</th>
