@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\AfterMarkitSupplier;
+use App\Models\Ambrand;
 use App\Models\Article;
 use App\Models\AssemblyGroupNode;
 use App\Models\Cart;
@@ -20,8 +21,9 @@ class HomeSearchController extends Controller
     public function homeSearchView(){ 
         $type = ["V","L","B"];
         $manufacturers = Manufacturer::whereIn('linkingTargetType', $type)->get();
+        $brands = Ambrand::all();
        
-        return view('home_search.home_search',compact('manufacturers'));
+        return view('home_search.home_search',compact('manufacturers','brands'));
     }
 
     public function getManufacturers(Request $request){
@@ -117,25 +119,27 @@ class HomeSearchController extends Controller
         // dd($request->all());
         $engine = LinkageTarget::where('linkageTargetId',$request->engine_id)
                 ->first();
-        $all_sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function($query) use ($request,$engine){
+
+        $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function($query) use ($request,$engine){
                     $query->where('linkingTargetId', $request->engine_id)
                     ->where('linkingTargetType', $engine->subLinkageTargetType);
                 })
+                ->with('allSubSection')
                ->groupBy('assemblyGroupNodeId')
                ->limit(100)
                 ->get();
-        // dd($all_sections);
-        $sections = [];
-        if(count($all_sections) > 0){
-            foreach ($all_sections as $sec) {
-                $sub_sections = AssemblyGroupNode::where('parentNodeId',$sec->assemblyGroupNodeId)->get();
-                $res = [
-                    'section' => $sec,
-                    'sub_sections' => $sub_sections
-                ];
-                array_push($sections,$res);
-            }
-        }
+        // dd($sections);
+        // $sections = [];
+        // if(count($all_sections) > 0){
+        //     foreach ($all_sections as $sec) {
+        //         $sub_sections = AssemblyGroupNode::where('parentNodeId',$sec->assemblyGroupNodeId)->get();
+        //         $res = [
+        //             'section' => $sec,
+        //             'sub_sections' => $sub_sections
+        //         ];
+        //         array_push($sections,$res);
+        //     }
+        // }
         $type = $request->type;
         $sub_type = $request->sub_type;
         $model_year = $request->model_year;
@@ -147,10 +151,10 @@ class HomeSearchController extends Controller
 
     public function articleSearchView($id,$section_id){
         $engine = LinkageTarget::where('linkageTargetId',$id)->first();
-        if(empty($engine)){
-            toastr()->error("Data not found against your request");
-                return redirect()->back();
-        }
+        // if(empty($engine)){
+        //     toastr()->error("Data not found against your request");
+        //         return redirect()->back();
+        // }
         $section_parts = Article::whereHas('section', function($query) {
                 $query->whereNotNull('request__linkingTargetId');
             })->whereHas('articleVehicleTree', function ($query) use ($section_id,$engine) {
@@ -158,10 +162,10 @@ class HomeSearchController extends Controller
             })
             ->limit(100)
             ->get();
-            if(count($section_parts) <= 0 || empty($engine)){
-                toastr()->error("Data not found against your request");
-                    return redirect()->back();
-            }
+            // if(count($section_parts) <= 0 || empty($engine)){
+            //     toastr()->error("Data not found against your request");
+            //         return redirect()->back();
+            // }
             $type = $engine->linkageTargetType;
             $sub_type = $engine->subLinkageTargetType;
             $model_year = $engine->model_year;
@@ -180,6 +184,49 @@ class HomeSearchController extends Controller
         $engine = LinkageTarget::where('linkageTargetId',$engine_id)->first();
         
         return view('home_search.article_view',compact('article','section','engine','brand','sub_section'));
+    }
+
+    public function articleSearchViewByBrandSection(Request $request){
+        // dd($request->all());
+        if(empty($request->sub_section_id)){
+            toastr()->error('Please Select a Section');
+            return redirect()->back();
+        }
+        $section = AssemblyGroupNode::where('assemblyGroupNodeId',$request->sub_section_id)->first();
+        if(!empty($section)){
+            $engine = LinkageTarget::where('linkageTargetId',$section->request__linkingTargetId)->first();
+            if(empty($engine)){
+                toastr()->error('Data not available');
+                return redirect()->back();
+            }
+            return redirect()->route('get_article_by_sub_section',[$engine->linkageTargetId,$request->sub_section_id]);
+        }else{
+            toastr()->info('Section not available');
+                return redirect()->back();
+        }
+        
+    }
+
+    public function articleSearchViewBySection($id,$section_id){
+        // dd($request->all());
+        $engine = LinkageTarget::where('linkageTargetId',$id)->first();
+       
+        $section_parts = Article::whereHas('section', function($query) {
+                $query->whereNotNull('request__linkingTargetId');
+            })->whereHas('articleVehicleTree', function ($query) use ($section_id) {
+                $query->where('assemblyGroupNodeId', $section_id);
+            })
+            ->limit(100)
+            ->get();
+           
+            $type = $engine->linkageTargetType;
+            $sub_type = $engine->subLinkageTargetType;
+            $model_year = $engine->model_year;
+            $fuel = $engine->fuelType;
+            $cc = $engine->capacityCC;
+            
+            
+        return view('home_search.article_search_view',compact('section_parts','section_id','engine','type','sub_type','model_year','fuel','cc'));
     }
 
     public function addToCart(Request $request){
@@ -466,5 +513,23 @@ class HomeSearchController extends Controller
             toastr()->error($e->getMessage());
             return redirect()->route('cart');
         }
+    }
+
+    public function getSubSectionByBrand(Request $request) {
+        $brand = AssemblyGroupNode::whereHas('article', function($query) use ($request) {
+            $query->whereHas('brand', function($sub_query) use ($request)  {
+                $sub_query->where('brandId', $request->brand_id);
+            });
+        })->with('subSection')->get();
+
+        return response()->json($brand);
+
+        // dd($bran)
+        // $brand = Ambrand::where('brandId', $request->brand_id)->with(['article' => function($query) {
+        //     $query->select('id','dataSupplierId','assemblyGroupNodeId')->with('section',  function($query){
+        //         // $query->with('subSection');
+        //     });
+        // }])->first();
+        // dd($brand);
     }
 }

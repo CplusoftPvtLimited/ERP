@@ -17,7 +17,7 @@ class Ambrand extends Model
         return $this->hasOne(AmbrandAddress::class);
     }
 
-    public function article(){
+    public function article() {
         return $this->hasOne(Article::class, 'dataSupplierId', 'brandId');
     }
      

@@ -19,10 +19,25 @@ class AssemblyGroupNode extends Model
     public function linkageTarget() 
     {
         return $this->belongsTo(LinkageTarget::class, 'request__linkingTargetId', 'linkageTargetId');
+    } 
+    
+    public function article() 
+    {
+        return $this->belongsTo(Article::class, 'assemblyGroupNodeId', 'assemblyGroupNodeId');
     }
     public function articleVehicleTree()
     {
         return $this->hasMany(ArticleVehicleTree::class,'assemblyGroupNodeId','assemblyGroupNodeId');
+    }
+    
+    public function subSection()
+    {
+        return $this->hasMany(AssemblyGroupNode::class,'parentNodeId','assemblyGroupNodeId');
+    }
+
+    public function allSubSection()
+    {
+        return $this->subSection()->with('allSubSection');
     }
 
 }

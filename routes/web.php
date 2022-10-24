@@ -326,6 +326,10 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 	Route::get('cart', [HomeSearchController::class,'cart'])->name('cart');
 	Route::post('changes_save', [HomeSearchController::class,'updateCart'])->name('changes_save');
 	Route::get('remove_cart_item/{id}', [HomeSearchController::class,'removeCartItem'])->name('remove_cart_item');
+	Route::get('get_sub_sections_by_brand', 'HomeSearchController@getSubSectionByBrand')->name('get_sub_sections_by_brand'); 
+	Route::post('get_article_by_sub_sections', 'HomeSearchController@articleSearchViewByBrandSection')->name('get_article_by_sub_sections'); 
+	Route::get('get_article_by_sub_section/{id}/{section_id}', 'HomeSearchController@articleSearchViewBySection')->name('get_article_by_sub_section'); 
+
 
 
 

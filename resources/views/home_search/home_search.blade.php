@@ -11,7 +11,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card p-0">
-                        <form action="{{ route('search_sections_by_engine') }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('search_sections_by_engine') }}" method="POST"
+                            enctype="multipart/form-data">
                             @csrf
                             <div class="card-header">
                                 <div class="box">
@@ -95,7 +96,7 @@
                                 <div class="row home-search-row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="manufacturer_id">{{ __('Select Manufacturer') }}</label>
+                                            <label for="manufacturer_id">{{ __('Select Manufacturer') }} <span style="color: red;">*</span></label>
                                             <select name="manufacturer_id" id="manufacturer_id"
                                                 data-href="{{ route('get_models_by_manufacturer_home_search') }}"
                                                 class="selectpicker form-control" data-live-search="true"
@@ -110,8 +111,9 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="model_id">{{ __('Select Model') }}</label>
-                                            <select name="model_id" id="model_id" data-href="{{ route('get_engines_by_model_home_search') }}"
+                                            <label for="model_id">{{ __('Select Model') }} <span style="color: red;">*</span></label>
+                                            <select name="model_id" id="model_id"
+                                                data-href="{{ route('get_engines_by_model_home_search') }}"
                                                 class="selectpicker form-control" data-live-search="true"
                                                 data-live-search-style="begins" required>
                                             </select>
@@ -119,8 +121,9 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="engine_id">{{ __('Select Engine') }}</label>
-                                            <select name="engine_id" id="engine_id" data-href="{{ route('get_data_of_engine_home_search') }}"
+                                            <label for="engine_id">{{ __('Select Engine') }} <span style="color: red;">*</span></label>
+                                            <select name="engine_id" id="engine_id"
+                                                data-href="{{ route('get_data_of_engine_home_search') }}"
                                                 class="selectpicker form-control" data-live-search="true"
                                                 data-live-search-style="begins" required>
                                             </select>
@@ -131,11 +134,10 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="model_year">{{ __('Model Year') }}</label>
-                                            <select name="model_year" id="model_year"
-                                                data-href="#"
+                                            <select name="model_year" id="model_year" data-href="#"
                                                 class="selectpicker form-control" data-live-search="true"
                                                 data-live-search-style="begins" required>
-                                                
+
                                             </select>
                                         </div>
                                     </div>
@@ -160,11 +162,52 @@
                                 </div>
                                 <div class="row">
                                     <div class="col text-right">
-                                        <button class="btn btn-primary" type="submit">Search</button>
+                                        <button class="btn btn-primary" type="submit"><i
+                                            class="fa fa-solid fa-magnifying-glass"></i> Search</button>
                                     </div>
                                 </div>
                             </div>
                         </form>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card p-0">
+                        <div class="card-body">
+                            <form action="{{ route('get_article_by_sub_sections') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="brand_id">{{ __('Select Brand') }} <span style="color: red;">*</span></label>
+                                            <select name="brand_id" id="brand_id" data-href="{{ route('get_sub_sections_by_brand') }}"
+                                                class="selectpicker form-control" data-live-search="true"
+                                                data-live-search-style="begins" required>
+                                                <option value="">Select One</option>
+                                                @foreach ($brands as $brand)
+                                                    <option value="{{ $brand->brandId }}">{{ $brand->brandName }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="sub_section_id">{{ __('Select Product Group') }} <span style="color: red;">*</span></label>
+                                            <select name="sub_section_id" id="sub_section_id" data-href="#"
+                                                class="selectpicker form-control" data-live-search="true"
+                                                data-live-search-style="begins" required>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn btn-primary" style="margin-top: 33px;" type="submit"><i
+                                                class="fa fa-solid fa-magnifying-glass"></i> Search</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -218,27 +261,29 @@
             let engine_sub_type = $('input[name="sub_type"]:checked').val();
             let engine_type = $('input[name="type"]:checked').val();
             let url = $(this).attr('data-href');
-            getModels(url, manufacturer_id, engine_type,engine_sub_type);
+            getModels(url, manufacturer_id, engine_type, engine_sub_type);
         });
 
-        function getModels(url, manufacturer_id,engine_type, engine_sub_type) {
-            $.get(url + '?manufacturer_id=' + manufacturer_id + '&engine_sub_type=' + engine_sub_type + '&engine_type=' + engine_type , function(data) {
-                $('#model_id').html('<option value="">Select One</option>');
-                $('#model_id').selectpicker("refresh");
-                $('#engine_id').html('<option value="">Select One</option>');
-                $('#engine_id').selectpicker("refresh");
-                let response = data.data;
-                let view_html = `<option value="">Select One</option>`;
-                $.each(response, function(key, value) {
-                    view_html += `<option value="${value.modelId}">${value.modelname}</option>`;
-                });
-                // console.log(data, view_html);
-                $('#model_id').html(view_html);
-                // $("#model_id").val(4);
-                $("#model_id").selectpicker("refresh");
+        function getModels(url, manufacturer_id, engine_type, engine_sub_type) {
+            $.get(url + '?manufacturer_id=' + manufacturer_id + '&engine_sub_type=' + engine_sub_type + '&engine_type=' +
+                engine_type,
+                function(data) {
+                    $('#model_id').html('<option value="">Select One</option>');
+                    $('#model_id').selectpicker("refresh");
+                    $('#engine_id').html('<option value="">Select One</option>');
+                    $('#engine_id').selectpicker("refresh");
+                    let response = data.data;
+                    let view_html = `<option value="">Select One</option>`;
+                    $.each(response, function(key, value) {
+                        view_html += `<option value="${value.modelId}">${value.modelname}</option>`;
+                    });
+                    // console.log(data, view_html);
+                    $('#model_id').html(view_html);
+                    // $("#model_id").val(4);
+                    $("#model_id").selectpicker("refresh");
 
 
-            })
+                })
         }
 
         // get engines
@@ -247,52 +292,53 @@
             let url = $(this).attr('data-href');
             let engine_sub_type = $('input[name="sub_type"]:checked').val();
             let engine_type = $('input[name="type"]:checked').val();
-            getEngines(url, model_id, engine_sub_type,engine_type);
+            getEngines(url, model_id, engine_sub_type, engine_type);
         });
 
-        function getEngines(url, model_id, engine_sub_type,engine_type) {
-            $.get(url + '?model_id=' + model_id + '&engine_sub_type=' + engine_sub_type + '&engine_type=' + engine_type, function(data) {
-               
-                $('#engine_id').html('<option value="">Select One</option>');
-                $('#engine_id').selectpicker("refresh");
+        function getEngines(url, model_id, engine_sub_type, engine_type) {
+            $.get(url + '?model_id=' + model_id + '&engine_sub_type=' + engine_sub_type + '&engine_type=' + engine_type,
+                function(data) {
 
-                let response = data.data;
-                let view_html = `<option value="">Select One</option>`;
-                $.each(response, function(key, value) {
-                    view_html +=
-                        `<option value="${value.linkageTargetId}">${value.description + "(" + value.beginYearMonth+ " - "+ value.endYearMonth}</option>`;
-                });
-                // console.log(data, view_html);
-                $('#engine_id').html(view_html);
-                $("#engine_id").val(4);
-                $("#engine_id").selectpicker("refresh");
-            })
+                    $('#engine_id').html('<option value="">Select One</option>');
+                    $('#engine_id').selectpicker("refresh");
+
+                    let response = data.data;
+                    let view_html = `<option value="">Select One</option>`;
+                    $.each(response, function(key, value) {
+                        view_html +=
+                            `<option value="${value.linkageTargetId}">${value.description + "(" + value.beginYearMonth+ " - "+ value.endYearMonth}</option>`;
+                    });
+                    // console.log(data, view_html);
+                    $('#engine_id').html(view_html);
+                    $("#engine_id").val(4);
+                    $("#engine_id").selectpicker("refresh");
+                })
         }
 
         // get engine Data
         $(document).on('change', '#engine_id', function() {
             let engine_id = $(this).val();
             let url = $(this).attr('data-href');
-            
+
             getEngineData(url, engine_id);
         });
 
         function getEngineData(url, engine_id) {
             $.get(url + '?engine_id=' + engine_id, function(data) {
-               
+
                 // $('#engine_id').html('<option value="">Select One</option>');
                 // $('#engine_id').selectpicker("refresh");
 
                 let response = data.data;
                 let model_year = "";
-                    model_year +=
-                        `<option value="${response.beginYearMonth}">${response.beginYearMonth}</option>`;
+                model_year +=
+                    `<option value="${response.beginYearMonth}">${response.beginYearMonth}</option>`;
                 let fuel = "";
-                    fuel +=
-                        `<option value="${response.fuelType}">${response.fuelType}</option>`;
+                fuel +=
+                    `<option value="${response.fuelType}">${response.fuelType}</option>`;
                 let cc = "";
-                    cc +=
-                        `<option value="${response.capacityCC}">${response.capacityCC}</option>`;
+                cc +=
+                    `<option value="${response.capacityCC}">${response.capacityCC}</option>`;
                 $('#model_year').html(model_year);
                 $("#model_year").val(4);
                 $("#model_year").selectpicker("refresh");
@@ -303,6 +349,40 @@
                 $("#cc").val(4);
                 $("#cc").selectpicker("refresh");
             })
+        }
+
+
+        // get sub sections by brand
+        $(document).on('change', '#brand_id', function() {
+            let brand_id = $(this).val();
+            let url = $(this).attr('data-href');
+           
+            getSubSectionsByBrand(url, brand_id);
+        });
+
+        function getSubSectionsByBrand(url, brand_id) {
+            $.get(url + '?brand_id=' + brand_id,
+                function(data) {
+
+                    // $('#engine_id').html('<option value="">Select One</option>');
+                    // $('#engine_id').selectpicker("refresh");
+
+                    let response = data;
+                    console.log(response);
+                    let view_html = `<option value="">Select One</option>`;
+                    $.each(response, function(key, value) {
+                        view_html +=
+                            `<option value="${value.assemblyGroupNodeId}">${value.assemblyGroupName}</option>`;
+                            $.each(value.sub_section, function(key_2, value_2) {
+                                view_html +=
+                                    `<option value="${value_2.assemblyGroupNodeId}">${value_2.assemblyGroupName}</option>`;
+                            });
+                    });
+                    // console.log(data, view_html);
+                    $('#sub_section_id').html(view_html);
+                    $("#sub_section_id").val(4);
+                    $("#sub_section_id").selectpicker("refresh");
+                })
         }
     </script>
 @endpush
