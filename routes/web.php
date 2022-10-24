@@ -94,6 +94,8 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 		event(new App\Events\StatusLiked('Ali'));
 		return "Event has been sent!";
 	});
+
+
 	Route::get('/user_show/{user_id}/{noti_id}', [UserController::class, 'show']);
 
 	Route::get('/', 'HomeController@index');
