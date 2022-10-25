@@ -675,6 +675,7 @@
                 }
                 all_product_ids.push(data.data.legacyArticleId);
                 alterPurchaseQty(data.data.legacyArticleId);
+                calculateSalePrice();
             }
         });
     });
@@ -722,7 +723,13 @@
     }
 
     function calculatePurchasePrice() {
-        if (all_product_ids.length > 0) {           
+        if (all_product_ids.length > 0) {      
+            var total_quantity = 0;
+            all_product_ids.forEach(getAllQuantity);
+            function getAllQuantity(id, index) {
+                var i_qty = parseInt($("#item_qty" + id).val());
+                total_quantity += i_qty;
+            }     
             all_product_ids.forEach(getSalePrice);
             var actual_total = 0.0;
             function getSalePrice(id, index) {
@@ -741,7 +748,7 @@
                 $("#total_excluding_vat_" + id).val(total_cost_without_vat.toFixed(2));
                 total_quantity_of_all_row_products += parseInt($("#item_qty" + id).val());
                 var actual_cost_per_product = (total_cost_without_vat / item_qty) + (entireAditionalCost /
-                    total_quantity_of_all_row_products);
+                total_quantity);
                 $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
                 actual_total += actual_cost_per_product.toFixed(2);
                 var profit_margin = $('#profit_margin_' + id).val() / 100;
@@ -774,6 +781,7 @@
             $('#submit-button').css('display', 'none');
             $("table thead").empty();
         }
+        calculateSalePrice();
         calculateFlowEntireTotal(all_product_ids);
         if ($('#myTable tr').length == 0) {
             selected_cash_type = [];
@@ -837,7 +845,7 @@
             function getActualProductCost(id, index) {
                 var qty = parseInt($("#item_qty" + id).val());
                 if (qty > 0) {
-                    total_actual += parseFloat($('#actual_cost_per_product_' + id).val());
+                    total_actual += parseFloat($('#total_excluding_vat_' + id).val());
                     if (cashType == "white") {
                         var vat = $('#vat_' + id).val();
                         if (vat == null || vat == NaN) {

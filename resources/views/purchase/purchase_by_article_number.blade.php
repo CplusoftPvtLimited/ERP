@@ -293,7 +293,7 @@
                     html += '<input type="hidden" name="cash_type" value="' + data.cash_type + '">';
                     html += '<input type="hidden" name="brand_id[]" value="' + data.brand_id + '">';
                     calculateEntireTotal(all_product_ids);
-
+                    
                     // start
                     // $('#myTable tr').each(function() {
                     //     if (this.id != '') {
@@ -441,6 +441,7 @@
                     }
                     all_product_ids.push(data.data.legacyArticleId);
                     alterPurchaseQty(data.data.legacyArticleId);
+                    calculateSalePrice();
 
                 }
             },
@@ -467,6 +468,7 @@
         $("#total_excluding_vat_" + id).val(total_cost_without_vat.toFixed(2));
 
         if (all_product_ids.length > 0) {
+           
             all_product_ids.forEach(getActualProductCost);
 
             function getActualProductCost(id, index) {
@@ -492,10 +494,18 @@
     function calculateSalePrice() {
         if (all_product_ids.length > 0) {
             var entireAditionalCost = parseFloat($("#purchase_additional_cost").val());
+            var total_quantity = 0;
+            all_product_ids.forEach(getAllQuantity);
+            function getAllQuantity(id, index) {
+                var i_qty = parseInt($("#item_qty" + id).val());
+                total_quantity += i_qty;
+            }
+            
             all_product_ids.forEach(getSalePrice);
-
+            
             function getSalePrice(id, index) {
                 item_qty = parseInt($("#item_qty" + id).val());
+                
                 var purchasePrice = parseFloat($("#purchase_price_" + id).val());
                 var additional_cost_without_vat = parseFloat($("#additional_cost_without_vat_" + id).val());
                 var purchase_additional_cost = $('#purchase_additional_cost').val();
@@ -514,7 +524,7 @@
                 total_quantity_of_all_row_products += parseInt($("#item_qty" + id).val());
 
                 var actual_cost_per_product = (total_cost_without_vat / item_qty) + (entireAditionalCost /
-                    total_quantity_of_all_row_products);
+                    total_quantity);
 
                 $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
                 var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
@@ -556,6 +566,7 @@
 
 
         }
+        calculateSalePrice();
         calculateEntireTotal(all_product_ids);
         // article_ids_array = [];
         if ($('#myTable tr').length == 0) {
@@ -625,7 +636,7 @@
 
             function getActualProductCost(id, index) {
 
-                total_actual += parseFloat($('#actual_cost_per_product_' + id).val());
+                total_actual += parseFloat($('#total_excluding_vat_' + id).val());
                 if (cashType == "white") {
                     var vat = $('#vat_' + id).val();
                     if (vat == null || isNaN(vat)) {
