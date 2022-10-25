@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
-                        <div class="card-header d-flex align-items-center">
+                        <div class="card-header d-flex align-items-center article_view_tr_head">
                             <h4>{{ trans('file.Add Supplier') }}</h4>
                         </div>
                         <div class="card-body">
@@ -137,13 +137,13 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
-                        <div class="card-header  d-flex align-items-center">
+                        <div class="card-header  d-flex align-items-center article_view_tr_head">
                             After Market suppliers
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="purchase-table" class="table purchase-list" style="width: 100%">
-                                    <thead>
+                                    <thead class="article_view_tr_head">
                                         <tr>
                                             <th>Name</th>
                                             <th>Email</th>

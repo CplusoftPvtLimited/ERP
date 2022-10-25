@@ -55,7 +55,7 @@ class InvoiceController extends Controller
                      <a href="/generate-preinvoice-pdf/'.$row["id"].'"> <button
                                  class="btn btn-primary btn-sm " type="button"
                                  data-original-title="btn btn-success btn-xs"
-                                 title=""><i class="fa fa-file"></i></button></a>
+                                 title=""><i class="fa fa-file-pdf-o"></i></button></a>
                      </div>';
                      
                  $btn .= '</div>
@@ -196,7 +196,7 @@ class InvoiceController extends Controller
                      <a href="/delivery-slip-pdf/'.$row["id"].'"> <button
                                  class="btn btn-primary btn-sm " type="button"
                                  data-original-title="btn btn-success btn-xs"
-                                 title=""><i class="fa fa-file"></i></button></a>
+                                 title=""><i class="fa fa-file-pdf-o"></i></button></a>
                      </div>';
                      
                  $btn .= '</div>

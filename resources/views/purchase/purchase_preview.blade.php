@@ -30,30 +30,22 @@
             </tr>
             <tr>
                 <td style="border-bottom:3px solid black;padding-top:10px" colspan="5"> <strong>Supplier:</strong>
-                Lorem, ipsum dolor. </td>
+                {{ isset($data['supplier']) ? $data['supplier']->name : 'N/A' }} </td>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td style="border-bottom:3px solid black;padding-top:10px" colspan="2"><strong>
-                   Document Details</strong></td>
+                {{-- <td style="border-bottom:3px solid black;padding-top:10px" colspan="2"><strong>
+                   Document Details</strong></td> --}}
             </tr>
             <tr>
-                <td colspan="5"><strong>Shop Name:</strong> New Company </td>
+                <td colspan="5"><strong>Shop Name:</strong> {{ isset($data['supplier']) ? $data['supplier']->shop_name : 'N/A' }} </td>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td colspan="2"><strong>Document Date:</strong> 00-00-0000</td>
+                {{-- <td colspan="2"><strong>Document Date:</strong> 00-00-0000</td> --}}
             </tr>
             <tr>
-                <td colspan="5"><strong>Mobile Number:</strong> +219-1022121201 </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="5"><strong>Address:</strong> Tunisia </td>
+                <td colspan="5"><strong>Mobile Number:</strong> {{ isset($data['supplier']) ? $data['supplier']->phone : 'N/A' }} </td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -61,7 +53,15 @@
                 <td></td>
             </tr>
             <tr>
-                <td colspan="5"><strong>Email:</strong> email@email.com </td>
+                <td colspan="5"><strong>Address:</strong> {{ isset($data['supplier']) ? $data['supplier']->address : 'N/A' }} </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="5"><strong>Email:</strong> {{ isset($data['supplier']) ? $data['supplier']->email : 'N/A' }} </td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -70,24 +70,26 @@
             </tr>
             <tr style="background:lightgrey;border-top:5px solid black; ">
                 <td colspan="5" style="padding:10px;">Reference No.</td>
+                <td>Date</td>
                 <td>Qty</td>
                 <td>Unit Price</td>
                 <td>Discount</td>
-                <td>Tax</td>
                 <td>Total Amount</td>
             </tr>
-            @php $i = 0; @endphp
-            {{-- @foreach ($products as $prd) --}}
+            @if(count($data['purchase_products']) > 0)
+            @foreach ($data['purchase_products'] as $item)
                 <tr>
-                    <td colspan="5" style="padding:10px;">00 11 11 22 22 22 </td>
-                    <td>1</td>
-                    <td>TND 100</td>
-                    <td>TND 100</td>
-                    <td>TND 100</td>
-                    <td>TND 100</td>
+                    <td colspan="5" style="padding:10px;">{{ $item->reference_no }} </td>
+                    <td>{{ $item->date }}</td>
+                    <td>{{ $item->qty }}</td>
+                    <td>{{ $item->actual_price }} TND</td>
+                    <td>{{ $item->discount }}</td>
+                    <td>{{ $item->actual_cost_per_product }}</td>
                 </tr>
                 {{-- @php $i++; @endphp --}}
-            {{-- @endforeach --}}
+            @endforeach
+            @endif
+
             <tr>
                 <td style="padding:25px"></td>
             </tr>
@@ -96,8 +98,8 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td style="border-top:3px solid black; padding-top:2px">Sub Total</td>
-                <td style="border-top:3px solid black; padding-top:2px">TND 100
+                <td style="border-top:3px solid black; padding-top:2px;">Total Excluding VAT</td>
+                <td style="border-top:3px solid black; padding-top:2px;">{{ isset($data['purchase']->total_exculding_vat) ? $data['purchase']->total_exculding_vat : 0 }} TND
                 </td>
             </tr>
             <tr>
@@ -105,17 +107,16 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>Discount</td>
-                <td>TND 100</td>
+                <td>Total VAT</td>
+                <td>{{ isset($data['purchase']->total_vat) ? $data['purchase']->total_vat : 0 }} TND</td>
             </tr>
             <tr>
                 <td colspan="5"></td>
                 <td></td>
                 <td></td>
                 <td></td>
-
-                <td>Order Tax</td>
-                <td>TND 100</td>
+                <td>Tax Stamp</td>
+                <td>{{ isset($data['purchase']->tax_stamp) ? $data['purchase']->tax_stamp : 0 }} TND</td>
             </tr>
             <tr>
                 <td colspan="5"></td>
@@ -123,7 +124,7 @@
                 <td></td>
                 <td></td>
                 <td>Shipping Cost</td>
-                <td>TND 100 </td>
+                <td>{{ $data['purchase']->additional_cost }} TND</td>
             </tr>
             <tr>
                 <td style="padding:10px;"></td>
@@ -133,9 +134,8 @@
                 <td></td>
                 <td></td>
                 <td></td>
-
                 <td style="border-top:2px dotted grey; padding-top:10px;">Net To Pay</td>
-                <td style="border-top:2px dotted grey;padding-top:10px;">TND 100 </td>
+                <td style="border-top:2px dotted grey;padding-top:10px;">{{ $data['purchase']->total_cost }} TND</td>
             </tr>
         </table>
     </div>

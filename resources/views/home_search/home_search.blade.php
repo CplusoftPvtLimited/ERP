@@ -14,13 +14,13 @@
                         <form action="{{ route('search_sections_by_engine') }}" method="POST"
                             enctype="multipart/form-data">
                             @csrf
-                            <div class="card-header">
+                            <div class="card-header article_view_tr_head">
                                 <div class="box">
                                     <label class="custom-radio-button__container">
                                         <input type="radio" name="sub_type" value="home" onclick="selectEngineType()"
                                             checked>
                                         <span class="custom-radio-button designer">
-                                            <i class="dripicons-home"></i>
+                                            <i class="dripicons-home"></i> Home
                                         </span>
                                     </label>
                                     <label class="custom-radio-button__container">

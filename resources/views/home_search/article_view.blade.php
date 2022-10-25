@@ -47,7 +47,7 @@
                     <div class="col-6">
                         <div class="table">
                             <div class="m-3">
-                                <img src="{{ asset('images/E.png') }}" alt="" width="75px" height="75px">
+                                <img src="{{ asset('images/car.jpg') }}" alt=""  height="75px">
                             </div>
                             <table class="table">
                                 <thead>
@@ -90,7 +90,7 @@
                         </div>
                     </div>
                     <div class="col-6 text-center pt-3">
-                        <img id="image_view" src="{{ asset('images/E.png') }}" alt="" width="200px" height="200px"
+                        <img id="image_view" src="{{ asset('images/car.jpg') }}" alt=""
                             data-toggle="modal" data-target="#staticBackdrop" style="cursor: pointer;">
 
                     </div>
@@ -325,14 +325,14 @@
                 aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
-                        <div class="modal-header">
+                        <div class="modal-header article_view_tr_head" >
                             <h5 class="modal-title" id="staticBackdropLabel">Image</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body text-center">
-                            <img id="image_view" src="{{ asset('images/E.png') }}" alt=""
+                            <img id="image_view" src="{{ asset('images/car_big.jpg') }}" alt=""
                                 style="width: auto; height: 300px">
                         </div>
                     </div>
@@ -372,15 +372,15 @@
 
         }
         
-        // if (!Number.isInteger(quantity)) {
-        //     Swal.fire({
-        //         icon: 'error',
-        //         title: 'Oops...',
-        //         text: 'Quantity must be Type of Integer',
+        if (quantity % 1 != 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Quantity must be Type of Integer',
 
-        //     });
-        //     exit();
-        // }
+            });
+            exit();
+        }
         // exit();
         if (quantity <= 1) {
             Swal.fire({

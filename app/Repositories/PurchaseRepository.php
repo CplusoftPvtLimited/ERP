@@ -8,6 +8,8 @@ use App\Purchase;
 use App\ProductPurchase;
 use App\Models\Article;
 use App\Models\AssemblyGroupNode;
+use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\LinkageTarget;
 use App\Models\Manufacturer;
 use App\Models\StockManagement;
@@ -46,6 +48,9 @@ class PurchaseRepository implements PurchaseInterface
             $purchase->supplier_id = $request->supplier_id;
             $purchase->cash_type = $request->cash_type;
             $purchase->additional_cost = $request->purchase_additional_cost;
+            $purchase->total_exculding_vat = isset($request->entire_total_exculding_vat) ? $request->entire_total_exculding_vat : NULL;
+            $purchase->total_vat = isset($request->entire_vat) ? $request->entire_vat : NULL;
+            $purchase->tax_stamp = isset($request->tax_stamp) ? $request->tax_stamp : NULL;
             $purchase->status = 0;
             $purchase->date = date('Y-m-d');
             $purchase->save();
@@ -97,10 +102,19 @@ class PurchaseRepository implements PurchaseInterface
                     $stock = self::createStock($purchase,$product_purchase,$cash_type);
                 }
             }
+            if(isset($request->cart_id)){
+                $cart = Cart::find($request->cart_id);
+                $cart_items = CartItem::where('cart_id',$cart->id)->get();
+                foreach ($cart_items as $c) {
+                    $c->delete();
+                }
+                $cart->delete();
+            }
             DB::commit();
             return "true";
         } catch (\Exception $e) {
             DB::rollback();
+            // dd($e);
             return $e->getMessage();
         }
     }
@@ -283,10 +297,12 @@ class PurchaseRepository implements PurchaseInterface
                 if(!empty($purchase)){
                     $sum = 0;
                     $grand_total = 0;
+                    $vat_sum = 0;
                     if(isset($purchase->productPurchases) && count($purchase->productPurchases) > 0){
                         foreach ($purchase->productPurchases as $key => $item) {
                             $sum += $item->qty;
-                            $grand_total += $item->actual_cost_per_product;
+                            $vat_sum += $item->vat;
+                            
                         }
                     }
                     $sum = $sum + $request->quantity;
@@ -294,13 +310,16 @@ class PurchaseRepository implements PurchaseInterface
                     $actual_price_per_product = ($total_without_vat / $request->quantity) + ($purchase->additional_cost / $sum);
                     $sale_price = $actual_price_per_product * (1 + $product_purchase->profit_margin);
 
-                    $grand_total = $grand_total + round($actual_price_per_product,2);
+                    // $grand_total = $grand_total + round($actual_price_per_product,2);
                     $product_purchase->qty = $request->quantity;
                     $product_purchase->total_excluding_vat = round($total_without_vat,2);
                     $product_purchase->actual_cost_per_product = round($actual_price_per_product,2);
                     $product_purchase->sell_price = round($sale_price,2);
                     $product_purchase->update();
-    
+
+                    $purchase->total_vat = $product_purchase->vat + $vat_sum + $purchase->additional_cost;
+                    $purchase->update();
+                    $grand_total = $total_without_vat + $purchase->total_vat + $purchase->tax_stamp;
                     $purchase->total_qty = $sum;
                     $purchase->total_cost = round($grand_total,2);
                     $purchase->grand_total = round($grand_total,2);

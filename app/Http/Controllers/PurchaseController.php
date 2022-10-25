@@ -37,6 +37,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
 use App\Repositories\Interfaces\PurchaseInterface;
+use Barryvdh\DomPDF\PDF as DomPDFPDF;
 use Exception;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Auth as FacadesAuth;
@@ -105,6 +106,12 @@ class PurchaseController extends Controller
                                      class="btn btn-info btn-sm " type="button"
                                      data-original-title="btn btn-success btn-xs"
                                      title=""><i class="fa fa-eye"></i></button></a>
+                         </div>
+                         <div class="col-sm-3">
+                         <a href="purchase_pdf/' . $row["id"] . '"> <button
+                                     class="btn btn-success btn-sm " type="button"
+                                     data-original-title="btn btn-success btn-xs"
+                                     title=""><i class="fa fa-file-pdf-o"></i></button></a>
                          </div>
                      </div>
                      ';
@@ -408,6 +415,7 @@ class PurchaseController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         Log::debug($request->all());
 
         if($request->valueCheck == 1){
@@ -481,7 +489,7 @@ class PurchaseController extends Controller
                 $cart_item->discount = ($request->discount[$counter] / 100);
                 $cart_item->additional_cost_without_vat = $request->additional_cost_without_vat[$counter];
                 $cart_item->additional_cost_with_vat = isset($request->additional_cost_with_vat) ? $request->additional_cost_with_vat[$counter] : '';
-                $cart_item->vat = ($request->vat[$counter] / 100);
+                $cart_item->vat = isset($request->vat) ?  ($request->vat[$counter] / 100) : '';
                 $cart_item->profit_margin = ($request->profit_margin[$counter] / 100);
                 $cart_item->total_excluding_vat = $total_excluding_vat;
                 $cart_item->actual_cost_per_product = $actual_cost_per_product;
@@ -507,6 +515,7 @@ class PurchaseController extends Controller
             return "success";
         } catch (Exception $e) {
             FacadesDB::rollback();
+            // dd($e);
             return $e->getMessage();
         }
         
@@ -1565,5 +1574,25 @@ class PurchaseController extends Controller
         } catch (\Exception $e) {
             return $e->getMessage();
         }
+    }
+
+
+    public function purchasePdf($id)
+    {
+
+        $purchase = Purchase::find($id);
+        $supplier = AfterMarkitSupplier::find($purchase->supplier_id);
+        // dd($customer);
+        $purchase_products = ProductPurchase::where('purchase_id', $id)->get();
+        // dd($products);
+        $data = [
+            'purchase' => $purchase,
+            'purchase_products' => $purchase_products,
+            'supplier' => $supplier
+        ];
+        // return view('purchase.purchase_preview',compact('data'));
+        $pdf = PDF::loadView('purchase.purchase_preview', compact('data'));
+
+        return $pdf->download('purchase.pdf');
     }
 }

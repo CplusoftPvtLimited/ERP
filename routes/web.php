@@ -31,6 +31,7 @@ Route::post('checkFile', 'StockManagementController@getRejectedItemCSV')->name('
 
 Route::get('preinvoice-pdf/{id}', 'SaleController@preinvoicepdf')->name('sales.preinvoicepdf');
 Route::get('delivery-slip-pdf/{id}', 'SaleController@deliverySlipPDF')->name('sales.delivery-slip');
+Route::get('purchase_pdf/{id}', 'PurchaseController@purchasePdf')->name('purchase_pdf');
 
 Route::group(['middleware' => 'auth'], function () {
 	Route::get('/dashboard', 'HomeController@dashboard');

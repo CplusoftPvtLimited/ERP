@@ -292,7 +292,7 @@
                     html += '<input type="hidden" name="datee[]" value="' + data.date + '">';
                     html += '<input type="hidden" name="cash_type" value="' + data.cash_type + '">';
                     html += '<input type="hidden" name="brand_id[]" value="' + data.brand_id + '">';
-                    calculateEntireTotal(all_product_ids);
+                    
                     
                     // start
                     // $('#myTable tr').each(function() {
@@ -337,6 +337,7 @@
                         selected_cash_type.push(cashType);
 
                     }
+                    calculateEntireTotal(all_product_ids);
                     if (data.cash_type == "white" && tableHeadRow.length <= 0) {
                         tableHead.append(white_cash_head);
                         total_calculations.html(white_cash_calculations_head);

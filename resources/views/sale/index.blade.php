@@ -56,7 +56,7 @@
                                 @endif
 
                                 <table class="table" id="data-table" style="width: 100%">
-                                    <thead>
+                                    <thead class="article_view_tr_head">
                                         <tr>
                                             <th>#</th>
                                             <th>Date</th>

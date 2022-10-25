@@ -154,7 +154,7 @@ class SaleController extends Controller
                                     class="btn btn-success btn-sm " style="background: grey;
                                     border: 1px solid grey;" type="button"
                                     data-original-title="btn btn-success btn-xs"
-                                    title=""><i class="fa fa-file"></i></button></a>
+                                    title=""><i class="fa fa-file-pdf-o"></i></button></a>
                         </div>';
                     }
                     $btn .= '</div>

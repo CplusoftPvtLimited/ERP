@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card p-0">
-                        <div class="card-header">
+                        <div class="card-header article_view_tr_head">
                             <h3>Add Purchase</h3>
                         </div>
                         <div class="card-body">

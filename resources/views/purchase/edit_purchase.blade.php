@@ -27,7 +27,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
-                        <div class="card-header d-flex align-items-center">
+                        <div class="card-header d-flex align-items-center article_view_tr_head">
                             <h4><b>{{ trans('file.Purchase') }}</b></h4>
                         </div>
                         <div class="card-body">
@@ -66,11 +66,11 @@
                     </div>
 
                     <div class="card">
-                        <div class="card-header d-flex align-items-center">
+                        <div class="card-header d-flex align-items-center article_view_tr_head">
                             <h4><b>{{ trans('file.Purchase Products') }}</b></h4>
                         </div>
                         <table class="table table-responsive" id="purchase-table">
-                            <thead>
+                            <thead class="article_view_tr_head">
                                 <tr>
                                     <th>#</th>
                                     <th>Date</th>
@@ -174,14 +174,14 @@
                                             role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
-                                                    <div class="modal-header">
+                                                    <div class="modal-header article_view_tr_head">
                                                         <h3>Product Detail ({{ $product->section_part }} <span>Article
                                                                 Number</span>)</h3>
                                                         <h5 class="modal-title" id="exampleModalLabel">
                                                         </h5>
                                                         <button type="button" class="close" data-dismiss="modal"
                                                             aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
+                                                            <span aria-hidden="true" style="color: cyan">&times;</span>
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
@@ -244,10 +244,10 @@
 
                                                         </div>
                                                     </div>
-                                                    <div class="modal-footer">
+                                                    {{-- <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary"
                                                             data-dismiss="modal">Close</button>
-                                                    </div>
+                                                    </div> --}}
                                                 </div>
                                             </div>
                                         </div>

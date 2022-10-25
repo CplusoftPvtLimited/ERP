@@ -360,9 +360,9 @@ class HomeSearchController extends Controller
                     $cart_item->actual_price = $cart_item->actual_price + $request->purchase_price;
                     $cart_item->sell_price = $sale_price;
                     $cart_item->discount = $cart_item->discount +  ($request->discount / 100);
-                    $cart_item->additional_cost_without_vat = $cart_item->additional_cost_without_vat + $request->additional_cost_without_vat;
-                    $cart_item->additional_cost_with_vat = $cart_item->additional_cost_with_vat + $request->additional_cost_with_vat;
-                    $cart_item->vat = $cart_item->vat + ($request->vat / 100);
+                    $cart_item->additional_cost_without_vat = (float)$cart_item->additional_cost_without_vat + (float)$request->additional_cost_without_vat;
+                    $cart_item->additional_cost_with_vat = (float)$cart_item->additional_cost_with_vat + (float)$request->additional_cost_with_vat;
+                    $cart_item->vat = (float)$cart_item->vat + (float)($request->vat / 100);
                     $cart_item->profit_margin = $cart_item->profit_margin + ($request->profit_margin / 100);
                     $cart_item->total_excluding_vat = $total_excluding_vat;
                     $cart_item->actual_cost_per_product = $actual_cost_per_product;

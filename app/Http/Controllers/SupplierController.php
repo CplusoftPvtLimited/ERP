@@ -124,12 +124,7 @@ class SupplierController extends Controller
     public function update(Request $request)
     {
         $this->validate($request, [
-            'shop_name' => [
-                'max:255',
-                Rule::unique('after_markit_suppliers')->where(function ($query) {
-                    return $query->where('is_active', 1);
-                }),
-            ],
+            
             'email' => [
                 'max:255',
                 Rule::unique('after_markit_suppliers')->where(function ($query) {
@@ -142,9 +137,16 @@ class SupplierController extends Controller
                 }),
             ]
         ]);
+        
         try {
             DB::beginTransaction();
             $supplier = AfterMarkitSupplier::findOrFail(request('supplier-id'));
+            $supplier2 = AfterMarkitSupplier::where('shop_name',request('supplier-shop_name'))->first();
+            // dd($supplier2);
+            if(!empty($supplier2) && $supplier2->id != $supplier->id){
+                toastr()->error('Shop Name must be unique');
+                return redirect()->route('supplier.create');
+            }
             $data = [
                 'name' => request('supplier-name'),
                 'email' => request('supplier-email'),
