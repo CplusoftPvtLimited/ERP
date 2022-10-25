@@ -186,164 +186,164 @@ class ProductController extends Controller
         return view('stock.edit', compact('product_stock'));
     }
 
-    public function productData(Request $request)
-    {
-        $columns = array(
-            2 => 'name',
-            3 => 'code',
-            4 => 'brand_id',
-            5 => 'category_id',
-            6 => 'qty',
-            7 => 'unit_id',
-            8 => 'price',
-            9 => 'cost',
-            10 => 'stock_worth'
-        );
+    // public function productData(Request $request)
+    // {
+    //     $columns = array(
+    //         2 => 'name',
+    //         3 => 'code',
+    //         4 => 'brand_id',
+    //         5 => 'category_id',
+    //         6 => 'qty',
+    //         7 => 'unit_id',
+    //         8 => 'price',
+    //         9 => 'cost',
+    //         10 => 'stock_worth'
+    //     );
 
-        $totalData = Product::where('is_active', true)->count();
-        $totalFiltered = $totalData;
+    //     $totalData = Product::where('is_active', true)->count();
+    //     $totalFiltered = $totalData;
 
-        if ($request->input('length') != -1)
-            $limit = $request->input('length');
-        else
-            $limit = $totalData;
-        // dd($limit);S
-        $start = $request->input('start');
-        $order = 'products.' . $columns[$request->input('order.0.column')];
-        $dir = $request->input('order.0.dir');
-        if (empty($request->input('search.value'))) {
-            $products = Product::with('category', 'brand', 'unit')->offset($start)
-                ->where('is_active', true)
-                ->limit($limit)
-                ->orderBy($order, $dir)
-                ->get();
-        } else {
-            $search = $request->input('search.value');
-            $products =  Product::select('products.*')
-                ->with('category', 'brand', 'unit')
-                ->join('categories', 'products.category_id', '=', 'categories.id')
-                ->leftjoin('brands', 'products.brand_id', '=', 'brands.id')
-                ->where([
-                    ['products.name', 'LIKE', "%{$search}%"],
-                    ['products.is_active', true]
-                ])
-                ->orWhere([
-                    ['products.code', 'LIKE', "%{$search}%"],
-                    ['products.is_active', true]
-                ])
-                ->orWhere([
-                    ['categories.name', 'LIKE', "%{$search}%"],
-                    ['categories.is_active', true],
-                    ['products.is_active', true]
-                ])
-                ->orWhere([
-                    ['brands.title', 'LIKE', "%{$search}%"],
-                    ['brands.is_active', true],
-                    ['products.is_active', true]
-                ])
-                ->offset($start)
-                ->limit($limit)
-                ->orderBy($order, $dir)->get();
+    //     if ($request->input('length') != -1)
+    //         $limit = $request->input('length');
+    //     else
+    //         $limit = $totalData;
+    //     // dd($limit);S
+    //     $start = $request->input('start');
+    //     $order = 'products.' . $columns[$request->input('order.0.column')];
+    //     $dir = $request->input('order.0.dir');
+    //     if (empty($request->input('search.value'))) {
+    //         $products = Product::with('category', 'brand', 'unit')->offset($start)
+    //             ->where('is_active', true)
+    //             ->limit($limit)
+    //             ->orderBy($order, $dir)
+    //             ->get();
+    //     } else {
+    //         $search = $request->input('search.value');
+    //         $products =  Product::select('products.*')
+    //             ->with('category', 'brand', 'unit')
+    //             ->join('categories', 'products.category_id', '=', 'categories.id')
+    //             ->leftjoin('brands', 'products.brand_id', '=', 'brands.id')
+    //             ->where([
+    //                 ['products.name', 'LIKE', "%{$search}%"],
+    //                 ['products.is_active', true]
+    //             ])
+    //             ->orWhere([
+    //                 ['products.code', 'LIKE', "%{$search}%"],
+    //                 ['products.is_active', true]
+    //             ])
+    //             ->orWhere([
+    //                 ['categories.name', 'LIKE', "%{$search}%"],
+    //                 ['categories.is_active', true],
+    //                 ['products.is_active', true]
+    //             ])
+    //             ->orWhere([
+    //                 ['brands.title', 'LIKE', "%{$search}%"],
+    //                 ['brands.is_active', true],
+    //                 ['products.is_active', true]
+    //             ])
+    //             ->offset($start)
+    //             ->limit($limit)
+    //             ->orderBy($order, $dir)->get();
 
-            $totalFiltered = Product::join('categories', 'products.category_id', '=', 'categories.id')
-                ->leftjoin('brands', 'products.brand_id', '=', 'brands.id')
-                ->where([
-                    ['products.name', 'LIKE', "%{$search}%"],
-                    ['products.is_active', true]
-                ])
-                ->orWhere([
-                    ['products.code', 'LIKE', "%{$search}%"],
-                    ['products.is_active', true]
-                ])
-                ->orWhere([
-                    ['categories.name', 'LIKE', "%{$search}%"],
-                    ['categories.is_active', true],
-                    ['products.is_active', true]
-                ])
-                ->orWhere([
-                    ['brands.title', 'LIKE', "%{$search}%"],
-                    ['brands.is_active', true],
-                    ['products.is_active', true]
-                ])
-                ->count();
-        }
-        $data = array();
-        if (!empty($products)) {
-            foreach ($products as $key => $product) {
-                $nestedData['id'] = $product->id;
-                $nestedData['key'] = $key;
-                $product_image = explode(",", $product->image);
-                $product_image = htmlspecialchars($product_image[0]);
-                $nestedData['image'] = '<img src="' . url('public/images/product', $product_image) . '" height="80" width="80">';
-                $nestedData['name'] = $product->name;
-                $nestedData['code'] = $product->code;
-                if ($product->brand_id)
-                    $nestedData['brand'] = $product->brand->title;
-                else
-                    $nestedData['brand'] = "N/A";
-                $nestedData['category'] = $product->category->name;
-                $nestedData['qty'] = $product->qty;
-                if ($product->unit_id)
-                    $nestedData['unit'] = $product->unit->unit_name;
-                else
-                    $nestedData['unit'] = 'N/A';
+    //         $totalFiltered = Product::join('categories', 'products.category_id', '=', 'categories.id')
+    //             ->leftjoin('brands', 'products.brand_id', '=', 'brands.id')
+    //             ->where([
+    //                 ['products.name', 'LIKE', "%{$search}%"],
+    //                 ['products.is_active', true]
+    //             ])
+    //             ->orWhere([
+    //                 ['products.code', 'LIKE', "%{$search}%"],
+    //                 ['products.is_active', true]
+    //             ])
+    //             ->orWhere([
+    //                 ['categories.name', 'LIKE', "%{$search}%"],
+    //                 ['categories.is_active', true],
+    //                 ['products.is_active', true]
+    //             ])
+    //             ->orWhere([
+    //                 ['brands.title', 'LIKE', "%{$search}%"],
+    //                 ['brands.is_active', true],
+    //                 ['products.is_active', true]
+    //             ])
+    //             ->count();
+    //     }
+    //     $data = array();
+    //     if (!empty($products)) {
+    //         foreach ($products as $key => $product) {
+    //             $nestedData['id'] = $product->id;
+    //             $nestedData['key'] = $key;
+    //             $product_image = explode(",", $product->image);
+    //             $product_image = htmlspecialchars($product_image[0]);
+    //             $nestedData['image'] = '<img src="' . url('public/images/product', $product_image) . '" height="80" width="80">';
+    //             $nestedData['name'] = $product->name;
+    //             $nestedData['code'] = $product->code;
+    //             if ($product->brand_id)
+    //                 $nestedData['brand'] = $product->brand->title;
+    //             else
+    //                 $nestedData['brand'] = "N/A";
+    //             $nestedData['category'] = $product->category->name;
+    //             $nestedData['qty'] = $product->qty;
+    //             if ($product->unit_id)
+    //                 $nestedData['unit'] = $product->unit->unit_name;
+    //             else
+    //                 $nestedData['unit'] = 'N/A';
 
-                $nestedData['price'] = $product->price;
-                $nestedData['cost'] = $product->cost;
+    //             $nestedData['price'] = $product->price;
+    //             $nestedData['cost'] = $product->cost;
 
-                if (config('currency_position') == 'prefix')
-                    $nestedData['stock_worth'] = config('currency') . ' ' . ($product->qty * $product->price) . ' / ' . config('currency') . ' ' . ($product->qty * $product->cost);
-                else
-                    $nestedData['stock_worth'] = ($product->qty * $product->price) . ' ' . config('currency') . ' / ' . ($product->qty * $product->cost) . ' ' . config('currency');
-                //$nestedData['stock_worth'] = ($product->qty * $product->price).'/'.($product->qty * $product->cost);
+    //             if (config('currency_position') == 'prefix')
+    //                 $nestedData['stock_worth'] = config('currency') . ' ' . ($product->qty * $product->price) . ' / ' . config('currency') . ' ' . ($product->qty * $product->cost);
+    //             else
+    //                 $nestedData['stock_worth'] = ($product->qty * $product->price) . ' ' . config('currency') . ' / ' . ($product->qty * $product->cost) . ' ' . config('currency');
+    //             //$nestedData['stock_worth'] = ($product->qty * $product->price).'/'.($product->qty * $product->cost);
 
-                $nestedData['options'] = '<div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' . trans("file.action") . '
-                              <span class="caret"></span>
-                              <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
-                            <li>
-                                <button="type" class="btn btn-link view"><i class="fa fa-eye"></i> ' . trans('file.View') . '</button>
-                            </li>';
-                if (in_array("products-edit", $request['all_permission']))
-                    $nestedData['options'] .= '<li>
-                            <a href="' . route('products.edit', $product->id) . '" class="btn btn-link"><i class="fa fa-edit"></i> ' . trans('file.edit') . '</a>
-                        </li>';
-                if (in_array("products-delete", $request['all_permission']))
-                    $nestedData['options'] .= \Form::open(["route" => ["products.destroy", $product->id], "method" => "DELETE"]) . '
-                            <li>
-                              <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="fa fa-trash"></i> ' . trans("file.delete") . '</button> 
-                            </li>' . \Form::close() . '
-                        </ul>
-                    </div>';
-                // data for product details by one click
-                if ($product->tax_id)
-                    $tax = Tax::find($product->tax_id)->name;
-                else
-                    $tax = "N/A";
+    //             $nestedData['options'] = '<div class="btn-group">
+    //                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' . trans("file.action") . '
+    //                           <span class="caret"></span>
+    //                           <span class="sr-only">Toggle Dropdown</span>
+    //                         </button>
+    //                         <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
+    //                         <li>
+    //                             <button="type" class="btn btn-link view"><i class="fa fa-eye"></i> ' . trans('file.View') . '</button>
+    //                         </li>';
+    //             if (in_array("products-edit", $request['all_permission']))
+    //                 $nestedData['options'] .= '<li>
+    //                         <a href="' . route('products.edit', $product->id) . '" class="btn btn-link"><i class="fa fa-edit"></i> ' . trans('file.edit') . '</a>
+    //                     </li>';
+    //             if (in_array("products-delete", $request['all_permission']))
+    //                 $nestedData['options'] .= \Form::open(["route" => ["products.destroy", $product->id], "method" => "DELETE"]) . '
+    //                         <li>
+    //                           <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="fa fa-trash"></i> ' . trans("file.delete") . '</button> 
+    //                         </li>' . \Form::close() . '
+    //                     </ul>
+    //                 </div>';
+    //             // data for product details by one click
+    //             if ($product->tax_id)
+    //                 $tax = Tax::find($product->tax_id)->name;
+    //             else
+    //                 $tax = "N/A";
 
-                if ($product->tax_method == 1)
-                    $tax_method = trans('file.Exclusive');
-                else
-                    $tax_method = trans('file.Inclusive');
+    //             if ($product->tax_method == 1)
+    //                 $tax_method = trans('file.Exclusive');
+    //             else
+    //                 $tax_method = trans('file.Inclusive');
 
-                $nestedData['product'] = array(
-                    '[ "' . $product->type . '"', ' "' . $product->name . '"', ' "' . $product->code . '"', ' "' . $nestedData['brand'] . '"', ' "' . $nestedData['category'] . '"', ' "' . $nestedData['unit'] . '"', ' "' . $product->cost . '"', ' "' . $product->price . '"', ' "' . $tax . '"', ' "' . $tax_method . '"', ' "' . $product->alert_quantity . '"', ' "' . preg_replace('/\s+/S', " ", $product->product_details) . '"', ' "' . $product->id . '"', ' "' . $product->product_list . '"', ' "' . $product->variant_list . '"', ' "' . $product->qty_list . '"', ' "' . $product->price_list . '"', ' "' . $product->qty . '"', ' "' . $product->image . '"]'
-                );
-                //$nestedData['imagedata'] = DNS1D::getBarcodePNG($product->code, $product->barcode_symbology);
-                $data[] = $nestedData;
-            }
-        }
-        $json_data = array(
-            "draw"            => intval($request->input('draw')),
-            "recordsTotal"    => intval($totalData),
-            "recordsFiltered" => intval($totalFiltered),
-            "data"            => $data
-        );
+    //             $nestedData['product'] = array(
+    //                 '[ "' . $product->type . '"', ' "' . $product->name . '"', ' "' . $product->code . '"', ' "' . $nestedData['brand'] . '"', ' "' . $nestedData['category'] . '"', ' "' . $nestedData['unit'] . '"', ' "' . $product->cost . '"', ' "' . $product->price . '"', ' "' . $tax . '"', ' "' . $tax_method . '"', ' "' . $product->alert_quantity . '"', ' "' . preg_replace('/\s+/S', " ", $product->product_details) . '"', ' "' . $product->id . '"', ' "' . $product->product_list . '"', ' "' . $product->variant_list . '"', ' "' . $product->qty_list . '"', ' "' . $product->price_list . '"', ' "' . $product->qty . '"', ' "' . $product->image . '"]'
+    //             );
+    //             //$nestedData['imagedata'] = DNS1D::getBarcodePNG($product->code, $product->barcode_symbology);
+    //             $data[] = $nestedData;
+    //         }
+    //     }
+    //     $json_data = array(
+    //         "draw"            => intval($request->input('draw')),
+    //         "recordsTotal"    => intval($totalData),
+    //         "recordsFiltered" => intval($totalFiltered),
+    //         "data"            => $data
+    //     );
 
-        echo json_encode($json_data);
-    }
+    //     echo json_encode($json_data);
+    // }
 
     public function create()
     {
@@ -630,189 +630,189 @@ class ProductController extends Controller
         \Session::flash('edit_message', 'Product updated successfully');
     }
 
-    public function generateCode()
-    {
-        $id = Keygen::numeric(8)->generate();
-        return $id;
-    }
+    // public function generateCode()
+    // {
+    //     $id = Keygen::numeric(8)->generate();
+    //     return $id;
+    // }
 
-    public function search(Request $request)
-    {
-        $product_code = explode(" ", $request['data']);
-        $lims_product_data = Product::where('code', $product_code[0])->first();
+    // public function search(Request $request)
+    // {
+    //     $product_code = explode(" ", $request['data']);
+    //     $lims_product_data = Product::where('code', $product_code[0])->first();
 
-        $product[] = $lims_product_data->name;
-        $product[] = $lims_product_data->code;
-        $product[] = $lims_product_data->qty;
-        $product[] = $lims_product_data->price;
-        $product[] = $lims_product_data->id;
-        return $product;
-    }
+    //     $product[] = $lims_product_data->name;
+    //     $product[] = $lims_product_data->code;
+    //     $product[] = $lims_product_data->qty;
+    //     $product[] = $lims_product_data->price;
+    //     $product[] = $lims_product_data->id;
+    //     return $product;
+    // }
 
-    public function saleUnit($id)
-    {
-        $unit = Unit::where("base_unit", $id)->orWhere('id', $id)->pluck('unit_name', 'id');
-        return json_encode($unit);
-    }
+    // public function saleUnit($id)
+    // {
+    //     $unit = Unit::where("base_unit", $id)->orWhere('id', $id)->pluck('unit_name', 'id');
+    //     return json_encode($unit);
+    // }
 
-    public function getData($id, $variant_id)
-    {
-        if ($variant_id) {
-            $data = Product::join('product_variants', 'products.id', 'product_variants.product_id')
-                ->select('products.name', 'product_variants.item_code')
-                ->where([
-                    ['products.id', $id],
-                    ['product_variants.variant_id', $variant_id]
-                ])->first();
-            $data->code = $data->item_code;
-        } else
-            $data = Product::select('name', 'code')->find($id);
-        return $data;
-    }
+    // public function getData($id, $variant_id)
+    // {
+    //     if ($variant_id) {
+    //         $data = Product::join('product_variants', 'products.id', 'product_variants.product_id')
+    //             ->select('products.name', 'product_variants.item_code')
+    //             ->where([
+    //                 ['products.id', $id],
+    //                 ['product_variants.variant_id', $variant_id]
+    //             ])->first();
+    //         $data->code = $data->item_code;
+    //     } else
+    //         $data = Product::select('name', 'code')->find($id);
+    //     return $data;
+    // }
 
-    public function productWarehouseData($id)
-    {
-        // dd($id);
-        $warehouse = [];
-        $qty = [];
-        $batch = [];
-        $expired_date = [];
-        $imei_number = [];
-        $warehouse_name = [];
-        $variant_name = [];
-        $variant_qty = [];
-        $product_warehouse = [];
-        $product_variant_warehouse = [];
-        $lims_product_data = Product::select('id', 'is_variant')->find($id);
-        if ($lims_product_data->is_variant) {
-            $lims_product_variant_warehouse_data = Product_Warehouse::where('product_id', $lims_product_data->id)->orderBy('warehouse_id')->get();
-            $lims_product_warehouse_data = Product_Warehouse::select('warehouse_id', DB::raw('sum(qty) as qty'))->where('product_id', $id)->groupBy('warehouse_id')->get();
-            foreach ($lims_product_variant_warehouse_data as $key => $product_variant_warehouse_data) {
-                $lims_warehouse_data = Warehouse::find($product_variant_warehouse_data->warehouse_id);
-                $lims_variant_data = Variant::find($product_variant_warehouse_data->variant_id);
-                $warehouse_name[] = $lims_warehouse_data->name;
-                $variant_name[] = isset($lims_variant_data) ? $lims_variant_data->name : '';
-                $variant_qty[] = $product_variant_warehouse_data->qty;
-            }
-        } else {
-            $lims_product_warehouse_data = Product_Warehouse::where('product_id', $id)->orderBy('warehouse_id', 'asc')->get();
-        }
-        foreach ($lims_product_warehouse_data as $key => $product_warehouse_data) {
-            $lims_warehouse_data = Warehouse::find($product_warehouse_data->warehouse_id);
-            if ($product_warehouse_data->product_batch_id) {
-                $product_batch_data = ProductBatch::select('batch_no', 'expired_date')->find($product_warehouse_data->product_batch_id);
-                $batch_no = $product_batch_data->batch_no;
-                $expiredDate = date(config('date_format'), strtotime($product_batch_data->expired_date));
-            } else {
-                $batch_no = 'N/A';
-                $expiredDate = 'N/A';
-            }
-            $warehouse[] = $lims_warehouse_data->name;
-            $batch[] = $batch_no;
-            $expired_date[] = $expiredDate;
-            $qty[] = $product_warehouse_data->qty;
-            if ($product_warehouse_data->imei_number)
-                $imei_number[] = $product_warehouse_data->imei_number;
-            else
-                $imei_number[] = 'N/A';
-        }
+    // public function productWarehouseData($id)
+    // {
+    //     // dd($id);
+    //     $warehouse = [];
+    //     $qty = [];
+    //     $batch = [];
+    //     $expired_date = [];
+    //     $imei_number = [];
+    //     $warehouse_name = [];
+    //     $variant_name = [];
+    //     $variant_qty = [];
+    //     $product_warehouse = [];
+    //     $product_variant_warehouse = [];
+    //     $lims_product_data = Product::select('id', 'is_variant')->find($id);
+    //     if ($lims_product_data->is_variant) {
+    //         $lims_product_variant_warehouse_data = Product_Warehouse::where('product_id', $lims_product_data->id)->orderBy('warehouse_id')->get();
+    //         $lims_product_warehouse_data = Product_Warehouse::select('warehouse_id', DB::raw('sum(qty) as qty'))->where('product_id', $id)->groupBy('warehouse_id')->get();
+    //         foreach ($lims_product_variant_warehouse_data as $key => $product_variant_warehouse_data) {
+    //             $lims_warehouse_data = Warehouse::find($product_variant_warehouse_data->warehouse_id);
+    //             $lims_variant_data = Variant::find($product_variant_warehouse_data->variant_id);
+    //             $warehouse_name[] = $lims_warehouse_data->name;
+    //             $variant_name[] = isset($lims_variant_data) ? $lims_variant_data->name : '';
+    //             $variant_qty[] = $product_variant_warehouse_data->qty;
+    //         }
+    //     } else {
+    //         $lims_product_warehouse_data = Product_Warehouse::where('product_id', $id)->orderBy('warehouse_id', 'asc')->get();
+    //     }
+    //     foreach ($lims_product_warehouse_data as $key => $product_warehouse_data) {
+    //         $lims_warehouse_data = Warehouse::find($product_warehouse_data->warehouse_id);
+    //         if ($product_warehouse_data->product_batch_id) {
+    //             $product_batch_data = ProductBatch::select('batch_no', 'expired_date')->find($product_warehouse_data->product_batch_id);
+    //             $batch_no = $product_batch_data->batch_no;
+    //             $expiredDate = date(config('date_format'), strtotime($product_batch_data->expired_date));
+    //         } else {
+    //             $batch_no = 'N/A';
+    //             $expiredDate = 'N/A';
+    //         }
+    //         $warehouse[] = $lims_warehouse_data->name;
+    //         $batch[] = $batch_no;
+    //         $expired_date[] = $expiredDate;
+    //         $qty[] = $product_warehouse_data->qty;
+    //         if ($product_warehouse_data->imei_number)
+    //             $imei_number[] = $product_warehouse_data->imei_number;
+    //         else
+    //             $imei_number[] = 'N/A';
+    //     }
 
-        $product_warehouse = [$warehouse, $qty, $batch, $expired_date, $imei_number];
-        // dd($product_warehouse);
-        $product_variant_warehouse = [$warehouse_name, $variant_name, $variant_qty];
-        return ['product_warehouse' => $product_warehouse, 'product_variant_warehouse' => $product_variant_warehouse];
-    }
+    //     $product_warehouse = [$warehouse, $qty, $batch, $expired_date, $imei_number];
+    //     // dd($product_warehouse);
+    //     $product_variant_warehouse = [$warehouse_name, $variant_name, $variant_qty];
+    //     return ['product_warehouse' => $product_warehouse, 'product_variant_warehouse' => $product_variant_warehouse];
+    // }
 
-    public function printBarcode()
-    {
-        $lims_product_list_without_variant = $this->productWithoutVariant();
-        $lims_product_list_with_variant = $this->productWithVariant();
-        return view('product.print_barcode', compact('lims_product_list_without_variant', 'lims_product_list_with_variant'));
-    }
+    // public function printBarcode()
+    // {
+    //     $lims_product_list_without_variant = $this->productWithoutVariant();
+    //     $lims_product_list_with_variant = $this->productWithVariant();
+    //     return view('product.print_barcode', compact('lims_product_list_without_variant', 'lims_product_list_with_variant'));
+    // }
 
-    public function productWithoutVariant()
-    {
-        return Product::ActiveStandard()->select('id', 'name', 'code')
-            ->whereNull('is_variant')->get();
-    }
+    // public function productWithoutVariant()
+    // {
+    //     return Product::ActiveStandard()->select('id', 'name', 'code')
+    //         ->whereNull('is_variant')->get();
+    // }
 
-    public function productWithVariant()
-    {
-        return Product::join('product_variants', 'products.id', 'product_variants.product_id')
-            ->ActiveStandard()
-            ->whereNotNull('is_variant')
-            ->select('products.id', 'products.name', 'product_variants.item_code')
-            ->orderBy('position')->get();
-    }
+    // public function productWithVariant()
+    // {
+    //     return Product::join('product_variants', 'products.id', 'product_variants.product_id')
+    //         ->ActiveStandard()
+    //         ->whereNotNull('is_variant')
+    //         ->select('products.id', 'products.name', 'product_variants.item_code')
+    //         ->orderBy('position')->get();
+    // }
 
-    public function limsProductSearch(Request $request)
-    {
-        $product_code = explode("(", $request['data']);
-        $product_code[0] = rtrim($product_code[0], " ");
-        $lims_product_data = Product::where([
-            ['code', $product_code[0]],
-            ['is_active', true]
-        ])->first();
-        if (!$lims_product_data) {
-            $lims_product_data = Product::join('product_variants', 'products.id', 'product_variants.product_id')
-                ->select('products.*', 'product_variants.item_code', 'product_variants.variant_id', 'product_variants.additional_price')
-                ->where('product_variants.item_code', $product_code[0])
-                ->first();
+    // public function limsProductSearch(Request $request)
+    // {
+    //     $product_code = explode("(", $request['data']);
+    //     $product_code[0] = rtrim($product_code[0], " ");
+    //     $lims_product_data = Product::where([
+    //         ['code', $product_code[0]],
+    //         ['is_active', true]
+    //     ])->first();
+    //     if (!$lims_product_data) {
+    //         $lims_product_data = Product::join('product_variants', 'products.id', 'product_variants.product_id')
+    //             ->select('products.*', 'product_variants.item_code', 'product_variants.variant_id', 'product_variants.additional_price')
+    //             ->where('product_variants.item_code', $product_code[0])
+    //             ->first();
 
-            $variant_id = $lims_product_data->variant_id;
-            $additional_price = $lims_product_data->additional_price;
-        } else {
-            $variant_id = '';
-            $additional_price = 0;
-        }
-        $product[] = $lims_product_data->name;
-        if ($lims_product_data->is_variant)
-            $product[] = $lims_product_data->item_code;
-        else
-            $product[] = $lims_product_data->code;
+    //         $variant_id = $lims_product_data->variant_id;
+    //         $additional_price = $lims_product_data->additional_price;
+    //     } else {
+    //         $variant_id = '';
+    //         $additional_price = 0;
+    //     }
+    //     $product[] = $lims_product_data->name;
+    //     if ($lims_product_data->is_variant)
+    //         $product[] = $lims_product_data->item_code;
+    //     else
+    //         $product[] = $lims_product_data->code;
 
-        $product[] = $lims_product_data->price + $additional_price;
-        $product[] = DNS1D::getBarcodePNG($lims_product_data->code, $lims_product_data->barcode_symbology);
-        $product[] = $lims_product_data->promotion_price;
-        $product[] = config('currency');
-        $product[] = config('currency_position');
-        $product[] = $lims_product_data->qty;
-        $product[] = $lims_product_data->id;
-        $product[] = $variant_id;
-        return $product;
-    }
+    //     $product[] = $lims_product_data->price + $additional_price;
+    //     $product[] = DNS1D::getBarcodePNG($lims_product_data->code, $lims_product_data->barcode_symbology);
+    //     $product[] = $lims_product_data->promotion_price;
+    //     $product[] = config('currency');
+    //     $product[] = config('currency_position');
+    //     $product[] = $lims_product_data->qty;
+    //     $product[] = $lims_product_data->id;
+    //     $product[] = $variant_id;
+    //     return $product;
+    // }
 
     /*public function getBarcode()
     {
         return DNS1D::getBarcodePNG('72782608', 'C128');
     }*/
 
-    public function checkBatchAvailability($product_id, $batch_no, $warehouse_id)
-    {
-        $product_batch_data = ProductBatch::where([
-            ['product_id', $product_id],
-            ['batch_no', $batch_no]
-        ])->first();
-        if ($product_batch_data) {
-            $product_warehouse_data = Product_Warehouse::select('qty')
-                ->where([
-                    ['product_batch_id', $product_batch_data->id],
-                    ['warehouse_id', $warehouse_id]
-                ])->first();
-            if ($product_warehouse_data) {
-                $data['qty'] = $product_warehouse_data->qty;
-                $data['product_batch_id'] = $product_batch_data->id;
-                $data['expired_date'] = date(config('date_format'), strtotime($product_batch_data->expired_date));
-                $data['message'] = 'ok';
-            } else {
-                $data['qty'] = 0;
-                $data['message'] = 'This Batch does not exist in the selected warehouse!';
-            }
-        } else {
-            $data['message'] = 'Wrong Batch Number!';
-        }
-        return $data;
-    }
+    // public function checkBatchAvailability($product_id, $batch_no, $warehouse_id)
+    // {
+    //     $product_batch_data = ProductBatch::where([
+    //         ['product_id', $product_id],
+    //         ['batch_no', $batch_no]
+    //     ])->first();
+    //     if ($product_batch_data) {
+    //         $product_warehouse_data = Product_Warehouse::select('qty')
+    //             ->where([
+    //                 ['product_batch_id', $product_batch_data->id],
+    //                 ['warehouse_id', $warehouse_id]
+    //             ])->first();
+    //         if ($product_warehouse_data) {
+    //             $data['qty'] = $product_warehouse_data->qty;
+    //             $data['product_batch_id'] = $product_batch_data->id;
+    //             $data['expired_date'] = date(config('date_format'), strtotime($product_batch_data->expired_date));
+    //             $data['message'] = 'ok';
+    //         } else {
+    //             $data['qty'] = 0;
+    //             $data['message'] = 'This Batch does not exist in the selected warehouse!';
+    //         }
+    //     } else {
+    //         $data['message'] = 'Wrong Batch Number!';
+    //     }
+    //     return $data;
+    // }
 
     public function importProduct(Request $request)
     {
@@ -933,4 +933,5 @@ class ProductController extends Controller
         $lims_product_data->save();
         return redirect('products')->with('message', 'Product deleted successfully');
     }
+
 }

@@ -33,7 +33,7 @@ class PurchaseRepository implements PurchaseInterface
             if ($count_item == 0) {
                 return "submit_purchase_not_allowed";
             }
-
+            
             $purchase = new Purchase();
             $total_qty = 0;
             $total_amount = 0;
@@ -92,30 +92,28 @@ class PurchaseRepository implements PurchaseInterface
                 $date = date("Y-m-d", strtotime($request->datee[$i]));
                 $product_purchase->date = $date;
                 $product_purchase->save();
-
                 if ($request->statuss[$i] == "received") {
                     $cash_type = $product_purchase->cash_type;
-                    self::createStock($purchase,$product_purchase,$cash_type);
+                    $stock = self::createStock($purchase,$product_purchase,$cash_type);
                 }
             }
             DB::commit();
             return "true";
         } catch (\Exception $e) {
             DB::rollback();
-            
             return $e->getMessage();
         }
     }
 
     public static function createStock($purchase,$product_purchase,$cash_type){
-        $stock_exists = StockManagement::where('reference_no',$product_purchase->reference_no)->where('retailer_id',$purchase->user_id)->withTrashed()->first();
+        $stock_exists = StockManagement::where('reference_no',$product_purchase->reference_no)->where('retailer_id',$purchase->user_id)->first();
         if(!empty($stock_exists)){
-            $stock_exists->update([
+           $stock = $stock_exists->update([
                 'white_items' => ($cash_type == "white") ? $product_purchase->qty+$stock_exists->white_items : $stock_exists->white_items, 
                 'black_items' => ($cash_type == "black") ? $product_purchase->qty+$stock_exists->black_items : $stock_exists->black_items,
                 'unit_purchase_price_of_white_cash' => isset($product_purchase->actual_price) && $cash_type == "white" ? $product_purchase->actual_price : $stock_exists->unit_purchase_price_of_white_cash, // purchase price white
                 'unit_purchase_price_of_black_cash' => isset($product_purchase->actual_price) && $cash_type == "black" ? $product_purchase->actual_price : $stock_exists->unit_purchase_price_of_black_cash, // purchase price black
-                'unit_sale_price_of_white_cash' => isset($product_purchase->sell_price) && $cash_type == "white" ? $product_purchase->sell_price : $stock_exists->unit_sale_price_of_black_cash, // Sale price white
+                'unit_sale_price_of_white_cash' => isset($product_purchase->sell_price) && $cash_type == "white" ? $product_purchase->sell_price : $stock_exists->unit_sale_price_of_white_cash, // Sale price white
                 'unit_sale_price_of_black_cash' => isset($product_purchase->sell_price) && $cash_type == "black" ? $product_purchase->sell_price : $stock_exists->unit_sale_price_of_black_cash, // Sale price black
                 'total_qty' => isset($product_purchase->qty) ? $product_purchase->qty + $stock_exists->total_qty : $stock_exists->total_qty,
                 'discount' => isset($product_purchase->discount) ? $product_purchase->discount : $stock_exists->total_qty,
@@ -127,7 +125,7 @@ class PurchaseRepository implements PurchaseInterface
                 'actual_cost_per_product' => isset($product_purchase->actual_cost_per_product) ? $product_purchase->actual_cost_per_product : $stock_exists->actual_cost_per_product,
             ]);
         }else{
-            StockManagement::create([
+           $stock = StockManagement::create([
                 'product_id' => isset($product_purchase->legacy_article_id) ? $product_purchase->legacy_article_id : null,
                 'purchase_product_id' => isset($product_purchase->id) ? $product_purchase->id: null,
                 'reference_no' => isset($product_purchase->reference_no) ? $product_purchase->reference_no : null,
@@ -148,6 +146,7 @@ class PurchaseRepository implements PurchaseInterface
                 'actual_cost_per_product' => isset($product_purchase->actual_cost_per_product) ? $product_purchase->actual_cost_per_product : null,
             ]);
         }
+        return $stock;
     }
     public function view($id)
     {
