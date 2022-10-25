@@ -5,9 +5,11 @@ namespace App\Providers;
 use App\Repositories\AssemblyGroupNodeRepository;
 use App\Repositories\BalanceSheetRepository;
 use App\Repositories\BankAccountRepository;
+use App\Repositories\ChassisRepository;
 use App\Repositories\Interfaces\AssemblyGroupNodeInterface;
 use App\Repositories\Interfaces\BalanceSheetInterface;
 use App\Repositories\Interfaces\BankAccountInterface;
+use App\Repositories\Interfaces\ChassisInterface;
 use App\Repositories\Interfaces\PurchaseInterface;
 use App\Repositories\Interfaces\SaleInterface;
 use App\Repositories\PurchaseRepository;
@@ -38,7 +40,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PurchaseInterface::class,PurchaseRepository::class);
         $this->app->bind(BalanceSheetInterface::class,BalanceSheetRepository::class);
         $this->app->bind(BankAccountInterface::class,BankAccountRepository::class);
-
         $this->app->bind(SaleInterface::class,SaleRepository::class);
     }
 

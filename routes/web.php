@@ -47,6 +47,10 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 	
 	
 
+	Route::get('purchase_preview', function () {
+		return view('purchase.purchase_preview');
+	})->name('purchase_preview');
+
 	Route::resource('preinvoices', 'PreInvoiceController');
 
 	Route::resource('assembly_group_nodes', 'AssemblyGroupNodeController');  // for erp
@@ -84,6 +88,8 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 		event(new App\Events\StatusLiked('Ali'));
 		return "Event has been sent!";
 	});
+
+
 	Route::get('/user_show/{user_id}/{noti_id}', [UserController::class, 'show']);
 
 	Route::get('/', 'HomeController@index');
