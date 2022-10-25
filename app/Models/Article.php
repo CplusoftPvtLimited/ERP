@@ -13,7 +13,7 @@ class Article extends Model
     protected $table = "articles";
 
     public function articleCriteria(){
-        return $this->hasOne(ArticleCriteria::class);
+        return $this->hasOne(ArticleCriteria::class,'legacyArticleId','legacyArticleId');
     }
 
     public function articleDocs(){
@@ -25,7 +25,7 @@ class Article extends Model
     }
 
     public function articleEAN(){
-        return $this->hasOne(ArticleEAN::class);
+        return $this->hasOne(ArticleEAN::class,'legacyArticleId','legacyArticleId');
     }
 
     public function articleMain(){

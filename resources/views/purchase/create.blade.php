@@ -27,6 +27,7 @@
                                                     class="form-control date" placeholder="Choose date" />
                                             </div>
                                         </div>
+                                        <input type="hidden" name="valueCheck" value="1">
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>{{ trans('file.After Market Supplier') }}</label>

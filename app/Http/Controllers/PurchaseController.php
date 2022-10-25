@@ -25,6 +25,8 @@ use App\Models\Ambrand;
 use DB;
 use App\GeneralSetting;
 use App\Models\AfterMarkitSupplier;
+use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\StockManagement;
 use Stripe\Stripe;
 use Auth;
@@ -35,8 +37,10 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
 use App\Repositories\Interfaces\PurchaseInterface;
+use Exception;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Auth as FacadesAuth;
+use Illuminate\Support\Facades\DB as FacadesDB;
 use PDF;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\DataTables;
@@ -405,41 +409,107 @@ class PurchaseController extends Controller
     public function store(Request $request)
     {
         Log::debug($request->all());
-        // dd($request->all());
 
-        $this->validate($request, [
-            'item_qty.*' => 'required',
-            'sale_price.*' => 'required',
-            'purchase_price.*' => 'required',
-            'modell_id.*' => 'required',
-            'enginee_id.*' => 'required',
-            'sectionn_id.*' => 'required',
-            'sectionn_part_id.*' => 'required',
-            'manufacturer_id.*' => 'required',
-            'statuss.*' => 'required',
-            'datee.*' => 'required',
-            'brand_id.*' => 'required',
-            'purchase_additional_cost' => 'nullable|min:0',
-            'additional_cost_without_vat.*' => 'required|min:0',
-            'additional_cost_with_vat.*' => 'nullable|min:0',
-            'vat.*' => 'nullable|min:0',
-            'profit_margin.*' => 'nullable|min:0',
-            'total_excluding_vat.*' => 'required|min:0',
-            'actual_cost_per_product.*' => 'required|min:0',
-        ]);
+        if($request->valueCheck == 1){
+            $this->validate($request, [
+                'item_qty.*' => 'required',
+                'sale_price.*' => 'required',
+                'purchase_price.*' => 'required',
+                'modell_id.*' => 'required',
+                'enginee_id.*' => 'required',
+                'sectionn_id.*' => 'required',
+                'sectionn_part_id.*' => 'required',
+                'manufacturer_id.*' => 'required',
+                'statuss.*' => 'required',
+                'datee.*' => 'required',
+                'brand_id.*' => 'required',
+                'purchase_additional_cost' => 'nullable|min:0',
+                'additional_cost_without_vat.*' => 'required|min:0',
+                'additional_cost_with_vat.*' => 'nullable|min:0',
+                'vat.*' => 'nullable|min:0',
+                'profit_margin.*' => 'nullable|min:0',
+                'total_excluding_vat.*' => 'required|min:0',
+                'actual_cost_per_product.*' => 'required|min:0',
+            ]);
+    
+            $purchase = $this->purchaseRepository->store($request);
+            if ($purchase == "submit_purchase_not_allowed") {
+                toastr()->info('Please enter the item quantity');
+                return redirect('purchases');
+            }
+            if ($purchase == "true") {
+                toastr()->success('Purchase created successfully');
+                return redirect()->route('purchases.index')->with('message', 'Purchase created successfully');
+            } else {
+                // dd($purchase);
+                toastr()->error($purchase);
+                return redirect()->back()->withErrors($purchase);
+            }
+        }else if($request->valueCheck == 2){
+            $result = $this->updateCart($request);
+            if($result == "success"){
+                toastr()->success("Cart Updated Successfully");
+                return redirect()->route('cart');
+            }else{
+                toastr()->error($result);
+                return redirect()->route('cart');
+            }
+        }
+        
+    }
 
-        $purchase = $this->purchaseRepository->store($request);
-        if ($purchase == "submit_purchase_not_allowed") {
-            toastr()->info('Please enter the item quantity');
-            return redirect('purchases');
+    public function updateCart($request){
+        FacadesDB::beginTransaction();
+        try {
+            $cart = Cart::find($request->cart_id);
+            $total_qty = 0;
+            foreach($request->item_qty as $qty){
+                $total_qty += $qty;
+            }
+            $cart_items = CartItem::where('cart_id',$cart->id)->get();
+            $counter = 0;
+            $all_total_excluding_vat = 0;
+            foreach($cart_items as $cart_item){
+                $total_excluding_vat = ($request->purchase_price[$counter] * $request->item_qty[$counter]) + $request->additional_cost_without_vat[$counter];
+                $actual_cost_per_product =  ($total_excluding_vat / $request->item_qty[$counter]) + ($request->purchase_additional_cost / $total_qty);
+                $sale_price = $actual_cost_per_product * (1 + ($request->profit_margin[$counter] / 100));
+                $all_total_excluding_vat += $total_excluding_vat;
+
+                $cart_item->qty = $request->item_qty[$counter];
+                $cart_item->actual_price = $request->purchase_price[$counter];
+                $cart_item->sell_price = $sale_price;
+                $cart_item->discount = ($request->discount[$counter] / 100);
+                $cart_item->additional_cost_without_vat = $request->additional_cost_without_vat[$counter];
+                $cart_item->additional_cost_with_vat = isset($request->additional_cost_with_vat) ? $request->additional_cost_with_vat[$counter] : '';
+                $cart_item->vat = ($request->vat[$counter] / 100);
+                $cart_item->profit_margin = ($request->profit_margin[$counter] / 100);
+                $cart_item->total_excluding_vat = $total_excluding_vat;
+                $cart_item->actual_cost_per_product = $actual_cost_per_product;
+                
+                $cart_item->save();
+                $counter++;
+            }
+
+            if($cart->cash_type == "white"){
+                $cart->total_cost = (float)$all_total_excluding_vat + $request->entire_vat + $request->tax_stamp;
+                $cart->grand_total = (float)$all_total_excluding_vat + $request->entire_vat + $request->tax_stamp;
+                $cart->total_vat = $request->entire_vat;
+                $cart->tax_stamp = $request->tax_stamp;
+                $cart->total_exculding_vat = (float)$all_total_excluding_vat;
+            }else{
+                $cart->total_cost = (float)$all_total_excluding_vat;
+                $cart->grand_total = (float)$all_total_excluding_vat;
+                $cart->total_exculding_vat = (float)$all_total_excluding_vat;
+            }
+            $cart->save();
+
+            FacadesDB::commit();
+            return "success";
+        } catch (Exception $e) {
+            FacadesDB::rollback();
+            return $e->getMessage();
         }
-        if ($purchase == "true") {
-            toastr()->success('Purchase created successfully');
-            return redirect()->route('purchases.index')->with('message', 'Purchase created successfully');
-        } else {
-            toastr()->error($purchase);
-            return redirect()->back()->withErrors($purchase);
-        }
+        
     }
 
     public function viewPurchase($id)

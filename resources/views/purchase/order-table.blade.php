@@ -3,7 +3,7 @@
         <h5 id="order-table-header"></h5>
         <div class="table-responsive mt-3">
             <table id="myTable" class="table table-hover order-list table-responsive">
-                <thead>
+                <thead class="article_view_tr_head">
 
                 </thead>
                 <tbody>
