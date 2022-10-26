@@ -62,6 +62,8 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 
 	Route::resource('article', 'ArticlesController');
 	Route::post('article/delete', [ArticlesController::class,'delete']);
+	Route::get('articles/archived',[ArticlesController::class, 'archivedProducts'])->name('article.archived');
+	Route::post('restoreArticle', [ArticlesController::class, 'restoreProduct'])->name('articles.restore');
 	Route::resource('suppliers', 'AmBrandController');
 	Route::post('deleteSupplier',[AmBrandController::class,'delete']);
 	Route::post('deleteRole',[RoleController::class,'delete']);

@@ -127,6 +127,53 @@ class ArticlesController extends Controller
 
         return view('articles.index');
     }
+    public function archivedProducts(Request $request)
+    {
+        // dd($request->all());
+        if ($request->ajax()) {
+            $articles = Article::select('id', 'legacyArticleId', 'articleNumber', 'mfrId', 'additionalDescription', 'assemblyGroupNodeId', 'created_at')
+                ->when(isset($request['article_id']) && $request['article_id'] != null, function ($query) use ($request) {
+                    $query->where('articleNumber', 'LIKE',  '%' . $request['article_id'] . '%');
+                    $query->onlyTrashed();
+                })
+                ->when(isset($request['engine_sub_type']) && !empty($request['engine_sub_type']) && !empty($request['section_id']) && isset($request['section_id']), function ($query) use ($request) {
+                    $query->whereHas('articleVehicleTree', function ($query) use ($request) {
+                        $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
+                        $query->onlyTrashed();
+                    });
+                })
+                ->with(['assemblyGroup' => function ($query) {
+                    $query->select('assemblyGroupNodeId', 'assemblyGroupName')->get();
+                }, 'manufacturer'])
+                ->onlyTrashed()
+                ->orderBy('id', 'desc');
+            return DataTables::of($articles)
+                ->addIndexColumn()
+                ->addColumn('manufacturer', function ($row) {
+                    return isset($row->manufacturer->manuName) ? $row->manufacturer->manuName : "N/A";
+                })
+                ->addColumn('section', function ($row) {
+                    return isset($row->assemblyGroup->assemblyGroupName) ? $row->assemblyGroup->assemblyGroupName : "N/A";
+                })
+                ->addColumn('action', function ($row) {
+                    $btn = '<div class="row">
+                                <div class="col-md-2 mr-1">
+                                <button class="btn btn-info btn-sm" onclick="restoreProduct(\'' . $row["id"] . '\')"><i class="fa fa-undo"></i></button>
+                                </div>
+                            </div>
+                            ';
+                    return $btn;
+                })
+                ->addColumn('index', function ($row) {
+                    $value = ++$this->val;
+                    return $value;
+                })
+                ->rawColumns(['action', 'section', 'manufacturer', 'index'])
+                ->make(true);
+        }
+
+        return view('articles.archived-products');
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -325,6 +372,35 @@ class ArticlesController extends Controller
             ], 200);
         } catch (\Exception $e) {
             return $e->getMessage();
+        }
+    }
+    public function restoreProduct(Request $request)
+    {
+        // dd($request->id);
+        try {
+            $article = Article::onlyTrashed()
+                ->with('articleCriteria', function ($query) {
+                    $query->onlyTrashed()->restore();
+                })
+                ->with('articleCrosses', function ($query) {
+                    $query->onlyTrashed()->restore();
+                })
+                ->with('articleEAN', function ($query) {
+                    $query->onlyTrashed()->restore();
+                })
+                ->with('articleLink', function ($query) {
+                    $query->onlyTrashed()->restore();
+                })
+                ->with('articleVehicleTree', function ($query) {
+                    $query->onlyTrashed()->restore();
+                })
+                ->find($request->id)
+                ->restore();
+            toastr()->success('Product Restored Successfully');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            toastr()->error($e->getMessage());
+            return redirect()->back();
         }
     }
 }

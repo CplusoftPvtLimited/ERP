@@ -1,5 +1,6 @@
 <?php 
 return [
+	'Archived Products' => 'Archived Products',
 	'Chassis Details' => 'Chassis Details',
 	'Chassis Numbers' => 'Chassis Numbers',
 	'Manufacturers' => 'Manufacturers',
