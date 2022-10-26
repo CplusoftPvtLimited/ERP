@@ -111,6 +111,7 @@ class ArticlesController extends Controller
                                     },
                                     success: function(data) {
                                         $("#show_confirm_' . $row['id'] . '").parents("tr").remove();
+                                        location.reload();
                                     }
                                  })
                              }
