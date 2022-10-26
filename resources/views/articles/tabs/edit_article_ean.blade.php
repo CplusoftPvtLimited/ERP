@@ -27,10 +27,10 @@
         </div>
     @endif
     <form
-        action="{{ isset($article->articleEAN) ? route('articleEan.update', $article->articleEAN->id) : route('articleEan.store') }}"
+        action="{{ isset($article->articleEAN->id) ? route('articleEan.update', $article->articleEAN->id) : route('articleEan.store') }}"
         method="post" id="eanForm" enctype="multipart/form-data">
         @csrf
-        @if (isset($article->articleEAN))
+        @if (isset($article->articleEAN->id))
             @method('PUT')
         @else
             @method('POST')
@@ -45,7 +45,7 @@
                         <div class="form-group">
                             <h6>EAN Code *</h6>
                             <input type="text" name="eancode" id="eancode" class="form-control" maxlength="25"
-                                value="{{ isset($article->articleEAN) ? $article->articleEAN->eancode : '' }}" required>
+                                value="{{ isset($article->articleEAN->eancode) ? $article->articleEAN->eancode : '' }}" required>
                         </div>
                     </div>
                 </div>
@@ -75,9 +75,9 @@
                     confirmButtonText: 'Ok'
                 });
             } else {
-                var method = "{{ isset($article->articleEAN) ? 'PUT' : 'POST' }}";
+                var method = "{{ isset($article->articleEAN->id) ? 'PUT' : 'POST' }}";
                 $.ajax({
-                    url: "{{ isset($article->articleEAN) ? route('articleEan.update', $article->articleEAN->id) : route('articleEan.store') }}",
+                    url: "{{ isset($article->articleEAN->id) ? route('articleEan.update', $article->articleEAN->id) : route('articleEan.store') }}",
                     type: method,
                     data: {
                         legacyArticleId: legacyArticleId,

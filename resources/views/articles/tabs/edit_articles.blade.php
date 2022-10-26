@@ -42,10 +42,10 @@
 
                                 <option>Select Type</option>
                                 <option value="P"
-                                    {{ isset($article->manufacturer) ? ($article->manufacturer->linkingTargetType == 'V' || $article->manufacturer->linkingTargetType == 'L' || $article->manufacturer->linkingTargetType == 'B' ? 'selected' : '') : '' }}>
+                                    {{ isset($article->manufacturer->linkingTargetType) ? ($article->manufacturer->linkingTargetType == 'V' || $article->manufacturer->linkingTargetType == 'L' || $article->manufacturer->linkingTargetType == 'B' ? 'selected' : '') : '' }}>
                                     Passenger</option>
                                 <option value="O"
-                                    {{ isset($article->manufacturer) ? ($article->manufacturer->linkingTargetType == 'C' || $article->manufacturer->linkingTargetType == 'T' || $article->manufacturer->linkingTargetType == 'M' || $article->manufacturer->linkingTargetType == 'A' || $article->manufacturer->linkingTargetType == 'k' ? 'selected' : '') : '' }}>
+                                    {{ isset($article->manufacturer->linkingTargetType) ? ($article->manufacturer->linkingTargetType == 'C' || $article->manufacturer->linkingTargetType == 'T' || $article->manufacturer->linkingTargetType == 'M' || $article->manufacturer->linkingTargetType == 'A' || $article->manufacturer->linkingTargetType == 'k' ? 'selected' : '') : '' }}>
                                     Commercial Vehicle and Tractor</option>
                             </select>
                         </div>
@@ -57,7 +57,7 @@
                                 data-href="{{ route('get_manufacturers_by_engine_type') }}" id="subLinkageTarget"
                                 class="selectpicker form-control" data-live-search="true"
                                 data-live-search-style="begins">
-                                @if (isset($article->manufacturer))
+                                @if (isset($article->manufacturer->linkingTargetType))
                                     <option value="{{ $article->manufacturer->linkingTargetType }}">
                                         {{ $article->manufacturer->linkingTargetType }}</option>
                                 @endif

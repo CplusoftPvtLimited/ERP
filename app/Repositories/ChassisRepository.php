@@ -2,10 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Models\BankAccount;
 use App\Models\Chassis;
 use App\Repositories\Interfaces\ChassisInterface;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 

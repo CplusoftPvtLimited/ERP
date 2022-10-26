@@ -27,10 +27,10 @@
         </div>
     @endif
     <form
-        action="{{ isset($article->articleCrosses) ? route('articleCrosses.update', $article->articleCrosses->id) : route('articleCrosses.store') }}"
+        action="{{ isset($article->articleCrosses->id) ? route('articleCrosses.update', $article->articleCrosses->id) : route('articleCrosses.store') }}"
         method="post" id="crossesForm" enctype="multipart/form-data">
         @csrf
-        @if (isset($article->articleCrosses))
+        @if (isset($article->articleCrosses->id))
             @method('PUT')
         @else
             @method('POST')
@@ -43,19 +43,19 @@
                         <h6>Oem Number *</h6>
                         <input type="text" name="oemNumber" id="crossesOemNumber" maxlength="255"
                             class="form-control"
-                            value="{{ isset($article->articleCrosses) ? $article->articleCrosses->oemNumber : '' }}"
+                            value="{{ isset($article->articleCrosses->oemNumber) ? $article->articleCrosses->oemNumber : '' }}"
                             required>
                     </div>
                     <input type="hidden" name="mfrId" id="crossmfrId" class="form-control"
-                        value="{{ isset($article) ? $article->mfrId : '' }}" readonly>
+                        value="{{ isset($article->mfrId) ? $article->mfrId : '' }}" readonly>
                     <input type="hidden" name="assemblyGroupNodeId" id="crossesAssemblyGroupNodeId"
-                        class="form-control" value="{{ isset($article) ? $article->assemblyGroupNodeId : '' }}"
+                        class="form-control" value="{{ isset($article->assemblyGroupNodeId) ? $article->assemblyGroupNodeId : '' }}"
                         readonly>
                     <input type="hidden" name="brandName" id="crossesBrandName" class="form-control"
-                        value="{{ isset($article) ? $article->dataSupplierId : '' }}" readonly>
+                        value="{{ isset($article->dataSupplierId) ? $article->dataSupplierId : '' }}" readonly>
 
                     <input type="hidden" name="legacyArticleId" id="crosses_articleId" class="form-control"
-                        value="{{ isset($article->id) ? $article->legacyArticleId : '' }}" readonly required>
+                        value="{{ isset($article->legacyArticleId) ? $article->legacyArticleId : '' }}" readonly required>
                 </div>
                 <div class="d-flex flex-row-reverse">
                     <button type="submit" class="btn btn-success" id="saveCrosses" style="width:100px">Update</button>
@@ -95,9 +95,9 @@
                     confirmButtonText: 'Ok'
                 });
             } else {
-                var method = "{{ isset($article->articleCrosses) ? 'PUT' : 'POST' }}";
+                var method = "{{ isset($article->articleCrosses->id) ? 'PUT' : 'POST' }}";
                 $.ajax({
-                    url: "{{ isset($article->articleCrosses) ? route('articleCrosses.update', $article->articleCrosses->id) : route('articleCrosses.store') }}",
+                    url: "{{ isset($article->articleCrosses->id) ? route('articleCrosses.update', $article->articleCrosses->id) : route('articleCrosses.store') }}",
                     type: method,
                     data: {
                         legacyArticleId: legacyArticleId,

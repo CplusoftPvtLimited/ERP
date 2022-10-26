@@ -27,10 +27,10 @@
         </div>
     @endif
     <form
-        action="{{ isset($article->articleCriteria) ? route('articleCriteria.update', $article->articleCriteria->id) : route('articleCriteria.store') }}"
+        action="{{ isset($article->articleCriteria->id) ? route('articleCriteria.update', $article->articleCriteria->id) : route('articleCriteria.store') }}"
         method="post" id="editCriteriaForm" enctype="multipart/form-data">
         @csrf
-        @if (isset($article->articleCriteria))
+        @if (isset($article->articleCriteria->id))
             @method('PUT')
         @else
             @method('POST')
@@ -43,60 +43,60 @@
                         <div class="form-group">
                             <h6>Criteria Type</h6>
                             <input type="text" name="criteriaType" id="criteriaType" class="form-control"
-                                value="{{ isset($article->articleCriteria) ? $article->articleCriteria->criteriaType : '' }}"
+                                value="{{ isset($article->articleCriteria->criteriaType) ? $article->articleCriteria->criteriaType : '' }}"
                                 maxlength="5" required>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Criteria Description</h6>
-                            <textarea name="criteriaDescription" id="criteriaDescription" cols="10" rows="5 " class="form-control">{{ isset($article->articleCriteria) ? $article->articleCriteria->criteriaDescription : '' }}</textarea>
+                            <textarea name="criteriaDescription" id="criteriaDescription" cols="10" rows="5 " class="form-control">{{ isset($article->articleCriteria->criteriaDescription) ? $article->articleCriteria->criteriaDescription : '' }}</textarea>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Criteria Abbr. Description</h6>
                             <textarea name="criteriaAbbrDescription" id="criteriaAbbrDescription" cols="10" rows="5"
-                                class="form-control">{{ isset($article->articleCriteria) ? $article->articleCriteria->criteriaAbbrDescription : '' }}</textarea>
+                                class="form-control">{{ isset($article->articleCriteria->criteriaAbbrDescription) ? $article->articleCriteria->criteriaAbbrDescription : '' }}</textarea>
                         </div>
                     </div>
                     <input type="hidden" name="assemblyGroupNodeId" id="criteria_assemblyGroupNodeId"
-                        class="form-control" value="{{ isset($article) ? $article->assemblyGroupNodeId : '' }}"
+                        class="form-control" value="{{ isset($article->assemblyGroupNodeId) ? $article->assemblyGroupNodeId : '' }}"
                         readonly>
                     <input type="hidden" name="legacyArticleId" id="criteria_articleId" class="form-control"
-                        value="{{ isset($article) ? $article->legacyArticleId : '' }}" readonly required>
+                        value="{{ isset($article->legacyArticleId) ? $article->legacyArticleId : '' }}" readonly required>
                 </div>
                 <div class="row">
                     <div class="col-4">
                         <h6>Criteria Unit Description</h6>
                         <textarea name="criteriaUnitDescription" id="criteriaUnitDescription" cols="10" rows="5"
-                            class="form-control">{{ isset($article->articleCriteria) ? $article->articleCriteria->criteriaUnitDescription : '' }}</textarea>
+                            class="form-control">{{ isset($article->articleCriteria->criteriaUnitDescription) ? $article->articleCriteria->criteriaUnitDescription : '' }}</textarea>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
                             <h6>Raw Value</h6>
-                            <textarea name="rawValue" id="rawValue" cols="10" rows="5" class="form-control">{{ isset($article->articleCriteria) ? $article->articleCriteria->rawValue : '' }}</textarea>
+                            <textarea name="rawValue" id="rawValue" cols="10" rows="5" class="form-control">{{ isset($article->articleCriteria->rawValue) ? $article->articleCriteria->rawValue : '' }}</textarea>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="form-group pt-3 pl-3">
                             <input class="form-check-input" type="checkbox" value="1" name="isInterval"
                                 id="isInterval"
-                                {{ isset($article->articleCriteria) ? ($article->articleCriteria->isInterval == 1 ? 'checked' : '') : '' }}>
+                                {{ isset($article->articleCriteria->isInterval) ? ($article->articleCriteria->isInterval == 1 ? 'checked' : '') : '' }}>
                             <label class="form-check-label" for="flexCheckDefault">
                                 <h6>Is Interval</h6>
                             </label>
                             <br>
                             <input class="form-check-input" type="checkbox" value="1" name="isMandatory"
                                 id="isMandatory"
-                                {{ isset($article->articleCriteria) ? ($article->articleCriteria->isMandatory == 1 ? 'checked' : '') : '' }}>
+                                {{ isset($article->articleCriteria->isMandatory) ? ($article->articleCriteria->isMandatory == 1 ? 'checked' : '') : '' }}>
                             <label class="form-check-label" for="flexCheckDefault">
                                 <h6>Is Mandatory</h6>
                             </label>
                             <br>
                             <input class="form-check-input" type="checkbox" value="1" name="immediateDisplay"
                                 id="immediateDisplay"
-                                {{ isset($article->articleCriteria) ? ($article->articleCriteria->immediateDisplay == 1 ? 'checked' : '') : '' }}>
+                                {{ isset($article->articleCriteria->immediateDisplay) ? ($article->articleCriteria->immediateDisplay == 1 ? 'checked' : '') : '' }}>
                             <label class="form-check-label" for="flexCheckDefault">
                                 <h6>Immediate Display</h6>
                             </label>
@@ -142,9 +142,9 @@
                     confirmButtonText: 'Ok'
                 });
             } else {
-                var method = "{{ isset($article->articleCriteria) ? 'PUT' : 'POST' }}";
+                var method = "{{ isset($article->articleCriteria->id) ? 'PUT' : 'POST' }}";
                 $.ajax({
-                    url: "{{ isset($article->articleCriteria) ? route('articleCriteria.update', $article->articleCriteria->id) : route('articleCriteria.store') }}",
+                    url: "{{ isset($article->articleCriteria->id) ? route('articleCriteria.update', $article->articleCriteria->id) : route('articleCriteria.store') }}",
                     type: method,
                     data: {
                         assemblyGroupNodeId: assemblyGroupNodeId,
