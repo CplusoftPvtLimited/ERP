@@ -5,17 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Ambrand;
 use App\Models\Article;
-use App\Models\ArticleCriteria;
-use App\Models\ArticleCross;
-use App\Models\ArticleEAN;
-use App\Models\ArticleLinks;
-use App\Models\ArticleVehicleTree;
 use App\Models\AssemblyGroupNode;
 use App\Models\KeyValue;
 use App\Models\Language;
-use App\Models\LinkageTarget;
 use App\Models\Manufacturer;
-use App\Models\ModelSeries;
 use App\Repositories\Interfaces\ArticleInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -40,18 +33,18 @@ class ArticlesController extends Controller
         // dd($request->all());
         if ($request->ajax()) {
             $articles = Article::select('id', 'legacyArticleId', 'articleNumber', 'mfrId', 'additionalDescription', 'assemblyGroupNodeId', 'created_at')
-            ->when(isset($request['article_id']) && $request['article_id'] != null , function($query) use ($request) {
-                $query->where('articleNumber', 'LIKE',  '%' . $request['article_id'] . '%');
-            })
-            ->when(isset($request['engine_sub_type']) && !empty($request['engine_sub_type']) && !empty($request['section_id']) && isset($request['section_id']) , function($query) use ($request) {
-                $query->whereHas('articleVehicleTree', function ($query) use ($request) {
-                    $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
-                });
-            })
-            ->with(['assemblyGroup' => function ($query) {
-                $query->select('assemblyGroupNodeId', 'assemblyGroupName')->get();
-            }, 'manufacturer'])
-            ->orderBy('id', 'desc');
+                ->when(isset($request['article_id']) && $request['article_id'] != null, function ($query) use ($request) {
+                    $query->where('articleNumber', 'LIKE',  '%' . $request['article_id'] . '%');
+                })
+                ->when(isset($request['engine_sub_type']) && !empty($request['engine_sub_type']) && !empty($request['section_id']) && isset($request['section_id']), function ($query) use ($request) {
+                    $query->whereHas('articleVehicleTree', function ($query) use ($request) {
+                        $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
+                    });
+                })
+                ->with(['assemblyGroup' => function ($query) {
+                    $query->select('assemblyGroupNodeId', 'assemblyGroupName')->get();
+                }, 'manufacturer'])
+                ->orderBy('id', 'desc');
             return DataTables::of($articles)
                 ->addIndexColumn()
                 ->addColumn('manufacturer', function ($row) {
@@ -212,23 +205,36 @@ class ArticlesController extends Controller
         $keyValues = KeyValue::all();
         $languages = Language::select('lang')->distinct()->get();
         $article = Article::select()
-            ->with('articleCriteria')
-            ->with('articleCrosses')
-            ->with('articleEAN')
-            ->with('articleLink')
+            ->with('articleCriteria', function ($query) {
+                $query->withTrashed();
+            })
+            ->with('articleCrosses', function ($query) {
+                $query->withTrashed();
+            })
+            ->with('articleEAN', function ($query) {
+                $query->withTrashed();
+            })
+            ->with('articleLink', function ($query) {
+                $query->withTrashed();
+            })
             ->with('articleVehicleTree', function ($query) {
                 $query->with('linkageTarget', function ($query) {
                     $query->select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth', 'vehicleModelSeriesId');
+                    $query->withTrashed();
                     $query->with('modelSeries', function ($query) {
                         $query->select('modelId', 'modelname');
+                        $query->withTrashed();
                     });
+                    $query->withTrashed();
                 });
             })
             ->with('manufacturer', function ($query) {
                 $query->select('linkingTargetType', 'manuId', 'manuName');
+                $query->withTrashed();
             })
             ->with('assemblyGroup', function ($query) {
-                $query->select('assemblyGroupNodeId','assemblyGroupName');
+                $query->select('assemblyGroupNodeId', 'assemblyGroupName');
+                $query->withTrashed();
             })
             ->find($id);
 
