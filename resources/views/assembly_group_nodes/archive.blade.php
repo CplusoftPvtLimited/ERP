@@ -41,10 +41,10 @@
                         <div class="card-body">
                             <div class="container">
                                 <div class="d-flex flex-row-reverse mb-3 mr-4">
-                                    <a href="{{ route('section.create') }}" class="btn btn-info mb-1"><i
-                                            class="dripicons-plus"></i> {{ trans('file.Add Section') }}</a>
+                                    {{-- <a href="{{ route('section.create') }}" class="btn btn-info mb-1"><i
+                                            class="dripicons-plus"></i> {{ trans('file.Add Section') }}</a> --}}
                                     <div class="col pl-4 pt-1">
-                                        <h2>Sections</h2>
+                                        <h2>Archived Sections</h2>
                                     </div>
                                 </div>
                                 <div class="table-responsive">
@@ -101,7 +101,7 @@
                 "ordering" : false,
                 "processing": true,
                 "serverside": true,
-                ajax: "{{ route('section.index') }}",
+                ajax: "{{ route('section.archive') }}",
                 columns: [{
                         data: 'index',
                         name: 'index'
@@ -140,31 +140,31 @@
             });
         });
 
-
-        function deleteSection(id) {
+        function restoreSection(id) {
             Swal.fire({
                 title: 'Are you sure?',
-                text: "You won't be able to revert this!",
+                // text: "You won't be able to revert this!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Yes, Restore it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                        $.ajax({
-                            method: "post",
-                            url: "{{ url('section/delete') }}",
-                            data: {
-                                id: id
-                            },
-                            success: function(data) {
-                                location.reload();
-                            }
+                    $.ajax({
+                        method: "post",
+                        url: "{{ url('/restoreSection') }}",
+                        data: {
+                            id: id,
+                            "_token": "{{ csrf_token() }}"
+                        },
+                        success: function(data) {
+                            location.reload();
+                        }
 
-                        });
+                    });
 
-                    
+
                 }
             });
         }

@@ -41,10 +41,10 @@
                         <div class="card-body">
                             <div class="container">
                                 <div class="d-flex flex-row-reverse mb-3 mr-4">
-                                    <a href="{{ route('section.create') }}" class="btn btn-info mb-1"><i
-                                            class="dripicons-plus"></i> {{ trans('file.Add Section') }}</a>
+                                    {{-- <a href="{{ route('engine.create') }}" class="btn btn-info mb-1"><i
+                                            class="dripicons-plus"></i> {{ trans('file.Add Engine') }}</a> --}}
                                     <div class="col pl-4 pt-1">
-                                        <h2>Sections</h2>
+                                        <h2>Archived Engines</h2>
                                     </div>
                                 </div>
                                 <div class="table-responsive">
@@ -68,12 +68,15 @@
                                         <thead>
                                             <tr>
                                                 <th>#</th>
-                                                <th>Section ID</th>
-                                                <th>Section Name</th>
-                                                <th>Engine Type ID</th>
+                                                <th>engine Id</th>
+                                                <th>Capacity (cc)</th>
+                                                <th>Capacity (liters)</th>
+                                                <th>Code</th>
+                                                <th>KiloWatt From</th>
+                                                <th>KiloWatt To</th>
+                                                <th>HorsePower From</th>
+                                                <th>HorsePower To</th>
                                                 <th>Engine Type</th>
-                                                <th>Language</th>
-                                                <th>Parent Section</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -98,37 +101,50 @@
                 }
             });
             $('#model-data-table').DataTable({
-                "ordering" : false,
+                "ordering":false,
                 "processing": true,
                 "serverside": true,
-                ajax: "{{ route('section.index') }}",
-                columns: [{
-                        data: 'index',
+                ajax: "{{ route('engine.archive') }}",
+                columns: [
+                    {
+                        "data": 'index',
                         name: 'index'
+                    },    
+                    {
+                        data: 'linkageTargetId',
+                        name: 'linkageTargetId'
                     },
                     {
-                        "data": 'assemblyGroupNodeId',
-                        name: 'assemblyGroupNodeId'
+                        "data": 'capacityCC',
+                        name: 'capacityCC'
                     },
                     {
-                        "data": "assemblyGroupName",
-                        name: 'assemblyGroupName'
+                        "data": "capacityLiters",
+                        name: 'capacityLiters'
                     },
                     {
-                        "data": "request__linkingTargetId",
-                        name: 'request__linkingTargetId'
+                        "data": "code",
+                        name: 'code'
                     },
                     {
-                        "data": "request__linkingTargetType",
-                        name: 'request__linkingTargetType'
+                        "data": "kiloWattsFrom",
+                        name: 'kiloWattsFrom'
                     },
                     {
-                        "data": "lang",
-                        name: 'lang'
+                        "data": "kiloWattsTo",
+                        name: 'kiloWattsTo'
                     },
                     {
-                        "data": "parentNodeId",
-                        name: 'parentNodeId'
+                        "data": "horsePowerFrom",
+                        name: 'horsePowerFrom'
+                    },
+                    {
+                        "data": "horsePowerTo",
+                        name: 'horsePowerTo'
+                    },
+                    {
+                        "data": "engineType",
+                        name: 'engineType'
                     },
                     {
                         "data": 'action',
@@ -141,30 +157,31 @@
         });
 
 
-        function deleteSection(id) {
+        function restoreEngine(id) {
             Swal.fire({
                 title: 'Are you sure?',
-                text: "You won't be able to revert this!",
+                // text: "You won't be able to revert this!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Yes, Restore it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                        $.ajax({
-                            method: "post",
-                            url: "{{ url('section/delete') }}",
-                            data: {
-                                id: id
-                            },
-                            success: function(data) {
-                                location.reload();
-                            }
+                    $.ajax({
+                        method: "post",
+                        url: "{{ url('/restoreEngine') }}",
+                        data: {
+                            id: id,
+                            "_token": "{{ csrf_token() }}"
+                        },
+                        success: function(data) {
+                            location.reload();
+                        }
 
-                        });
+                    });
 
-                    
+
                 }
             });
         }

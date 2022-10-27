@@ -41,10 +41,10 @@
                         <div class="card-body">
                             <div class="container">
                                 <div class="d-flex flex-row-reverse mb-3 mr-4">
-                                    <a href="{{ route('section.create') }}" class="btn btn-info mb-1"><i
-                                            class="dripicons-plus"></i> {{ trans('file.Add Section') }}</a>
+                                    {{-- <a href="{{ route('modelseries.create') }}" class="btn btn-info mb-1"><i
+                                            class="dripicons-plus"></i> {{ trans('file.Add Model') }}</a> --}}
                                     <div class="col pl-4 pt-1">
-                                        <h2>Sections</h2>
+                                        <h2>Archived Models</h2>
                                     </div>
                                 </div>
                                 <div class="table-responsive">
@@ -68,12 +68,12 @@
                                         <thead>
                                             <tr>
                                                 <th>#</th>
-                                                <th>Section ID</th>
-                                                <th>Section Name</th>
-                                                <th>Engine Type ID</th>
-                                                <th>Engine Type</th>
-                                                <th>Language</th>
-                                                <th>Parent Section</th>
+                                                <th>Model Id</th>
+                                                <th>Model Name</th>
+                                                <th>Construction Year From</th>
+                                                <th>Construction Year To</th>
+                                                <th>Linking Target Type</th>
+                                                <th>Maufacturer Name</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -98,37 +98,37 @@
                 }
             });
             $('#model-data-table').DataTable({
-                "ordering" : false,
+                "ordering": false,
                 "processing": true,
                 "serverside": true,
-                ajax: "{{ route('section.index') }}",
+                ajax: "{{ route('modelseries.archive') }}",
                 columns: [{
                         data: 'index',
                         name: 'index'
                     },
                     {
-                        "data": 'assemblyGroupNodeId',
-                        name: 'assemblyGroupNodeId'
+                        "data": 'modelId',
+                        name: 'modelId'
                     },
                     {
-                        "data": "assemblyGroupName",
-                        name: 'assemblyGroupName'
+                        "data": "modelname",
+                        name: 'modelname'
                     },
                     {
-                        "data": "request__linkingTargetId",
-                        name: 'request__linkingTargetId'
+                        "data": "yearOfConstrFrom",
+                        name: 'yearOfConstrFrom'
                     },
                     {
-                        "data": "request__linkingTargetType",
-                        name: 'request__linkingTargetType'
+                        "data": "yearOfConstrTo",
+                        name: 'yearOfConstrTo'
                     },
                     {
-                        "data": "lang",
-                        name: 'lang'
+                        "data": "linkingTargetType",
+                        name: 'linkingTargetType'
                     },
                     {
-                        "data": "parentNodeId",
-                        name: 'parentNodeId'
+                        "data": "manuName",
+                        name: 'manuName'
                     },
                     {
                         "data": 'action',
@@ -140,33 +140,34 @@
             });
         });
 
-
-        function deleteSection(id) {
+        function restoreModel(id) {
             Swal.fire({
                 title: 'Are you sure?',
-                text: "You won't be able to revert this!",
+                // text: "You won't be able to revert this!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Yes, Restore it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                        $.ajax({
-                            method: "post",
-                            url: "{{ url('section/delete') }}",
-                            data: {
-                                id: id
-                            },
-                            success: function(data) {
-                                location.reload();
-                            }
+                    $.ajax({
+                        method: "post",
+                        url: "{{ url('/restoreModel') }}",
+                        data: {
+                            id: id,
+                            "_token": "{{ csrf_token() }}"
+                        },
+                        success: function(data) {
+                            location.reload();
+                        }
 
-                        });
+                    });
 
-                    
+
                 }
             });
         }
     </script>
+    
 @endsection

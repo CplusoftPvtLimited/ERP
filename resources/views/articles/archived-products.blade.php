@@ -42,8 +42,10 @@
                                 <div class="card" style="margin: 0px; padding:0px; height: 100%;">
                                     <div class="card-body" style="margin: 0px;">
                                         <div class="tab search-tabs">
-                                            <button class="searchLinks" onclick="switchTab(event, 'generalSearch')" id="defaultOpen">Filter</button>
-                                            <button class="searchLinks" onclick="switchTab(event, 'searchByProductNumber')" id="searchByProductNoTab">Search By Product Number</button>
+                                            <button class="searchLinks" onclick="switchTab(event, 'generalSearch')"
+                                                id="defaultOpen">Filter</button>
+                                            <button class="searchLinks" onclick="switchTab(event, 'searchByProductNumber')"
+                                                id="searchByProductNoTab">Search By Product Number</button>
                                         </div>
                                     </div>
                                 </div>
@@ -69,7 +71,7 @@
                             <div class="container">
                                 <div class="d-flex flex-row-reverse mb-3 mr-4">
                                     {{-- <a href="{{ route('article.create') }}" class="btn btn-info mb-1"><i --}}
-                                            {{-- class="dripicons-plus"></i> {{ trans('file.Add Product') }}</a> --}}
+                                    {{-- class="dripicons-plus"></i> {{ trans('file.Add Product') }}</a> --}}
                                     <div class="col pl-4 pt-1">
                                         <h2>Archived Products</h2>
                                     </div>
@@ -131,9 +133,9 @@
                 ajax: {
                     "url": "{{ route('article.archived') }}",
                     "data": (d) => {
-                        d.article_id =  article_id,
-                        d.engine_sub_type = engine_sub_type,
-                        d.section_id = section_id
+                        d.article_id = article_id,
+                            d.engine_sub_type = engine_sub_type,
+                            d.section_id = section_id
                     }
                 },
                 columns: [{
@@ -170,11 +172,11 @@
             });
 
             $('.purchase-save-btn').on('click', (e) => {
-                article_id =  $('#automplete-1').val(),
-                engine_sub_type = null;
+                article_id = $('#automplete-1').val(),
+                    engine_sub_type = null;
                 section_id = null;
                 oTable.ajax.reload();
-                
+
             });
 
             $('#save-btn').on('click', (e) => {
@@ -219,18 +221,15 @@
                         method: "post",
                         url: "{{ url('/restoreArticle') }}",
                         data: {
-                            id: id
+                            id: id,
+                            "_token": "{{ csrf_token() }}"
                         },
                         success: function(data) {
                             location.reload();
                         }
-
                     });
-
-
                 }
             });
         }
     </script>
-    
 @endsection

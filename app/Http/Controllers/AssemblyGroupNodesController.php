@@ -60,6 +60,31 @@ class AssemblyGroupNodesController extends Controller
         return view('assembly_group_nodes.index');
     }
 
+    public function archiveSection(Request $request)
+    {
+        if ($request->ajax()) {
+            return DataTables::of(AssemblyGroupNode::onlyTrashed()->orderBy('id', 'desc'))
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $btn = '<div class="row">
+                                <div class="col-md-2 mr-1">
+                                <button class="btn btn-info btn-sm" onclick="restoreSection(\'' . $row["id"] . '\')"><i class="fa fa-undo"></i></button>
+                                </div>
+                            </div>
+                         ';
+                    return $btn;
+                })
+                ->addColumn('index', function ($row) {
+                    $value = ++$this->val;
+                    return $value;
+                })
+                ->rawColumns(['action', 'index'])
+                ->toJson();
+        }
+
+        return view('assembly_group_nodes.archive');
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -147,7 +172,8 @@ class AssemblyGroupNodesController extends Controller
     {
         $engine = $this->sectionRepository->delete($request);
         if ($engine == true) {
-            return redirect()->route('section.index')->with('create_message', 'Section Deleted successfully');
+            toastr()->success('Section Deleted Successfully');
+            return redirect()->route('section.index');
         } else {
             // dd($engine->getMessage());
             return redirect()->route('section.index')->with('error', $engine->getMessage());
@@ -199,6 +225,20 @@ class AssemblyGroupNodesController extends Controller
             ], 200);
         } catch (\Exception $e) {
             return $e->getMessage();
+        }
+    }
+
+
+
+    public function restore(Request $request)
+    {
+        try {
+            $section = AssemblyGroupNode::onlyTrashed()->findOrFail($request->id)->restore();
+            toastr()->success('Section Restored Successfully');
+            return redirect()->route('section.archive');
+        } catch (\Exception $e) {
+            toastr()->error($e->getMessage());
+            return redirect()->route('section.archive');
         }
     }
 }

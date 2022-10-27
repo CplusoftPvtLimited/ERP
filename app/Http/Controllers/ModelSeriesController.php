@@ -54,7 +54,31 @@ class ModelSeriesController extends Controller
 
         return view('model_series.index');
     }
+    public function archiveModels (Request $request)
+    {
+        if ($request->ajax()) {
+            $models = ModelSeries::onlyTrashed()->orderBy('id', 'desc')->join('manufacturers', 'modelseries.manuId', '=', 'manufacturers.manuId')->select('modelseries.*', 'manufacturers.manuName')->get();
+            return DataTables::of($models)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $btn = '<div class="row">
+                                <div class="col-md-2 mr-1">
+                                <button class="btn btn-info btn-sm" onclick="restoreModel(\''.$row["id"].'\')"><i class="fa fa-undo"></i></button>
+                                </div>
+                            </div>
+                         ';
+                    return $btn;
+                })
+                ->addColumn('index', function ($row) {
+                    $value = ++$this->val;
+                    return $value;
+                })
+                ->rawColumns(['action', 'index'])
+                ->make(true);
+        }
 
+        return view('model_series.archive');
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -197,7 +221,8 @@ class ModelSeriesController extends Controller
     {
         try {
             ModelSeries::find($request->id)->delete();
-            return redirect()->route('modelseries.index')->with('create_message', 'Model Deleted successfully');
+            toastr()->success('Model Deleted Successfully');
+            return redirect()->route('modelseries.index');
         } catch (\Exception $e) {
             return redirect()->route('modelseries.index')->with('error', $e->getMessage());
         }
@@ -225,4 +250,17 @@ class ModelSeriesController extends Controller
             return $e->getMessage();
         }
     }
+
+
+    public function restore(Request $request)
+     {
+         try {
+             $model = ModelSeries::onlyTrashed()->findOrFail($request->id)->restore();
+             toastr()->success('Model Restored Successfully');
+             return redirect()->route('modelseries.archive');
+         } catch (\Exception $e) {
+             toastr()->error($e->getMessage());
+             return redirect()->route('modelseries.archive');
+         }
+     }
 }

@@ -3,6 +3,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
 @endsection
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@10.10.1/dist/sweetalert2.min.css'>
 <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
 <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
@@ -10,6 +11,7 @@
 <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.all.min.js"></script>
 @section('content')
     @if (session()->has('create_message'))
         <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close"
@@ -41,10 +43,10 @@
                         <div class="card-body">
                             <div class="container">
                                 <div class="d-flex flex-row-reverse mb-3 mr-4">
-                                    <a href="{{ route('section.create') }}" class="btn btn-info mb-1"><i
-                                            class="dripicons-plus"></i> {{ trans('file.Add Section') }}</a>
-                                    <div class="col pl-4 pt-1">
-                                        <h2>Sections</h2>
+                                    {{-- <a href="{{ route('suppliers.create') }}" class="btn btn-info mb-1"><i
+                                            class="dripicons-plus"></i> {{ trans('file.Add Supplier') }}</a> --}}
+                                    <div class="col pt-1">
+                                        <h2>Archived Suppliers</h2>
                                     </div>
                                 </div>
                                 <div class="table-responsive">
@@ -64,16 +66,15 @@
                                             <p>{{ $message }}</p>
                                         </div>
                                     @endif
-                                    <table id="model-data-table" class="table" style="width: 100% !important">
+                                    <table id="data-table" class="table" style="width: 100% !important">
                                         <thead>
                                             <tr>
                                                 <th>#</th>
-                                                <th>Section ID</th>
-                                                <th>Section Name</th>
-                                                <th>Engine Type ID</th>
-                                                <th>Engine Type</th>
-                                                <th>Language</th>
-                                                <th>Parent Section</th>
+                                                <th>Brand Id</th>
+                                                <th>Brand Logo Id</th>
+                                                <th>Brand Name</th>
+                                                <th>Lang</th>
+                                                <th>Article Country</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -88,7 +89,6 @@
             </div>
         </div>
     </section>
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             console.log('here');
@@ -97,38 +97,34 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            $('#model-data-table').DataTable({
-                "ordering" : false,
+            $('#data-table').DataTable({
+                "ordering": false,
                 "processing": true,
                 "serverside": true,
-                ajax: "{{ route('section.index') }}",
+                ajax: "{{ route('suppliers.archive') }}",
                 columns: [{
                         data: 'index',
                         name: 'index'
                     },
                     {
-                        "data": 'assemblyGroupNodeId',
-                        name: 'assemblyGroupNodeId'
+                        "data": "brandId",
+                        name: 'brandId'
                     },
                     {
-                        "data": "assemblyGroupName",
-                        name: 'assemblyGroupName'
+                        "data": "brandLogoID",
+                        name: 'brandLogoID'
                     },
                     {
-                        "data": "request__linkingTargetId",
-                        name: 'request__linkingTargetId'
-                    },
-                    {
-                        "data": "request__linkingTargetType",
-                        name: 'request__linkingTargetType'
+                        "data": "brandName",
+                        name: 'brandName'
                     },
                     {
                         "data": "lang",
                         name: 'lang'
                     },
                     {
-                        "data": "parentNodeId",
-                        name: 'parentNodeId'
+                        "data": "articleCountry",
+                        name: 'articleCountry'
                     },
                     {
                         "data": 'action',
@@ -141,32 +137,34 @@
         });
 
 
-        function deleteSection(id) {
+        function restoreSupplier(id) {
             Swal.fire({
                 title: 'Are you sure?',
-                text: "You won't be able to revert this!",
+                // text: "You won't be able to revert this!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Yes, Restore it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                        $.ajax({
-                            method: "post",
-                            url: "{{ url('section/delete') }}",
-                            data: {
-                                id: id
-                            },
-                            success: function(data) {
-                                location.reload();
-                            }
+                    $.ajax({
+                        method: "post",
+                        url: "{{ url('/restoreSupplier') }}",
+                        data: {
+                            id: id,
+                            "_token": "{{ csrf_token() }}"
+                        },
+                        success: function(data) {
+                            location.reload();
+                        }
 
-                        });
+                    });
 
-                    
+
                 }
             });
         }
+
     </script>
 @endsection

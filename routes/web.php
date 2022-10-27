@@ -50,15 +50,25 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('showSubmitForm',[FormController::class,'showSubmitForm'])->name('showSubmitForm');
 	Route::resource('manufacturer', 'ManufacturerController');
 	Route::post('deleteManufacturer',[ManufacturerController::class,'delete']);
+	Route::get('archive/manufacturer',[ManufacturerController::class, 'archivedManufacturer'])->name('manufacturer.archive');
+	Route::post('restoreManufacturer',[ManufacturerController::class,'restore']);
+
 	Route::resource('modelseries', 'ModelSeriesController');
 	Route::post('model/delete', [ModelSeriesController::class,'delete']);
+	Route::get('archive/models', [ModelSeriesController::class, 'archiveModels'])->name('modelseries.archive');
+	Route::post('restoreModel',[ModelSeriesController::class,'restore']);
 
 	Route::resource('engine', 'LinkageTargetsController');
 	Route::post('engine/delete', [LinkageTargetsController::class,'delete']);
+	Route::get('archive/engines', [LinkageTargetsController::class, 'archiveEngines'])->name('engine.archive');
+	Route::post('restoreEngine',[LinkageTargetsController::class,'restore']);
+	
 
 
 	Route::resource('section', 'AssemblyGroupNodesController');
 	Route::post('section/delete', [AssemblyGroupNodesController::class,'delete']);
+	Route::get('archive/section', [AssemblyGroupNodesController::class, 'archiveSection'])->name('section.archive');
+	Route::post('restoreSection',[AssemblyGroupNodesController::class,'restore']);
 
 	Route::resource('article', 'ArticlesController');
 	Route::post('article/delete', [ArticlesController::class,'delete']);
@@ -66,6 +76,11 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::post('restoreArticle', [ArticlesController::class, 'restoreProduct'])->name('articles.restore');
 	Route::resource('suppliers', 'AmBrandController');
 	Route::post('deleteSupplier',[AmBrandController::class,'delete']);
+	Route::get('archive/supplier', [AmBrandController::class, 'archiveSupplier'])->name('suppliers.archive');
+	Route::post('restoreSupplier',[AmBrandController::class,'restore']);
+
+
+
 	Route::post('deleteRole',[RoleController::class,'delete']);
 	Route::post('deleteForm',[FormController::class,'delete']);
 

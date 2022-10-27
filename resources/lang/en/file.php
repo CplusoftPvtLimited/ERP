@@ -1,5 +1,11 @@
 <?php 
 return [
+	'Archived Suppliers' => 'Archived Suppliers',
+	'Archived Sections' => 'Archived Sections',
+	'Archived Engines' => 'Archived Engines',
+	'Archived Model' => 'Archived Model',
+	'Archived Models' => 'Archived Models',
+ 	'Archived Manufacturer' => 'Archived Manufacturer',
 	'Archived Products' => 'Archived Products',
 	'Chassis Details' => 'Chassis Details',
 	'Chassis Numbers' => 'Chassis Numbers',

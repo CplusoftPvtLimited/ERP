@@ -103,14 +103,14 @@ class ArticlesController extends Controller
                              })
                              if (email) {
                                  $.ajax({
-                                    url: "article/' . $row["id"] . '",
-                                    type: "DELETE",
+                                    url: "article/delete",
+                                    type: "POST",
                                     cache: false,
                                     data: {
+                                        "id" : ' . $row["id"] . ',
                                         "_token": "{{ csrf_token() }}",
                                     },
                                     success: function(data) {
-                                        $("#show_confirm_' . $row['id'] . '").parents("tr").remove();
                                         location.reload();
                                     }
                                  })
@@ -338,17 +338,7 @@ class ArticlesController extends Controller
      */
     public function delete(Request $request)
     {
-        $item = $this->article->delete($request);
-        if ($item == true) {
-            return redirect()->route('article.index')->withSuccess(__('Product Deleted Successfully.'));
-        } else {
-            return redirect()->back()->withError(__('Some thing went wrong'));
-        }
-    }
-    public function destroy($id)
-    {
-        DB::beginTransaction();
-        $article = Article::find($id);
+        $article = Article::find($request->id);
         if ($article) {
             $article->articleCriteria()->delete();
             $article->articleCrosses()->delete();
@@ -357,12 +347,33 @@ class ArticlesController extends Controller
             $article->articleVehicleTree()->delete();
             $article->delete();
             DB::commit();
-            return response()->json(['data' => "true", 'id' => $id]);
+            toastr()->success('Product Deleted Successfully');
+            return redirect()->route('article.archived');
         } else {
             DB::rollBack();
-            return response()->json("false");
+            toastr()->error('Something went wrong');
+            return redirect()->route('article.archived');
         }
     }
+    // public function destroy($id)
+    // {
+    //     DB::beginTransaction();
+    //     $article = Article::find($id);
+    //     if ($article) {
+    //         $article->articleCriteria()->delete();
+    //         $article->articleCrosses()->delete();
+    //         $article->articleEAN()->delete();
+    //         $article->articleLink()->delete();
+    //         $article->articleVehicleTree()->delete();
+    //         $article->delete();
+    //         DB::commit();
+    //         toastr()->success('Product Deleted Successfully');
+    //         return redirect()->route('article.archived');
+    //     } else {
+    //         DB::rollBack();
+    //         return response()->json("false");
+    //     }
+    // }
 
     public function articlesByReferenceNo(Request $request)
     {
@@ -395,13 +406,13 @@ class ArticlesController extends Controller
                 ->with('articleVehicleTree', function ($query) {
                     $query->onlyTrashed()->restore();
                 })
-                ->find($request->id)
+                ->findOrFail($request->id)
                 ->restore();
             toastr()->success('Product Restored Successfully');
-            return redirect()->back();
+            return redirect()->route('article.archived');
         } catch (\Exception $e) {
             toastr()->error($e->getMessage());
-            return redirect()->back();
+            return redirect()->route('article.archived');
         }
     }
 }

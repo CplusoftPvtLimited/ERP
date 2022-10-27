@@ -70,7 +70,7 @@
                                 <div class="d-flex flex-row-reverse mb-3 mr-4">
                                     <a href="{{ route('article.create') }}" class="btn btn-info mb-1"><i
                                             class="dripicons-plus"></i> {{ trans('file.Add Product') }}</a>
-                                    <div class="col-10 pl-0 pt-1">
+                                    <div class="col pl-4 pt-1">
                                         <h2>Products</h2>
                                     </div>
                                 </div>

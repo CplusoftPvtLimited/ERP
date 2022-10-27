@@ -58,6 +58,32 @@ class AmBrandController extends Controller
             return view('ambrand.index');
     }
 
+    public function archiveSupplier(Request $request)
+    {
+        if ($request->ajax()) {
+            $brands = AmBrand::onlyTrashed()->orderBy('id','desc')->get();
+                return DataTables::of($brands)
+                        ->addIndexColumn()
+                        ->addColumn('action', function($row){
+                            $btn = '<div class="row">
+                                <div class="col-md-2 mr-1">
+                                <button class="btn btn-info btn-sm" onclick="restoreSupplier(\'' . $row["id"] . '\')"><i class="fa fa-undo"></i></button>
+                                </div>
+                            </div>
+                         ';
+                                return $btn;
+                        })
+                        ->addColumn('index', function ($row) {
+                            $value = ++$this->val;
+                            return $value;
+                        })
+                        ->rawColumns(['action','index'])
+                        ->make(true);
+            }
+          
+            return view('ambrand.archive');
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -174,6 +200,18 @@ class AmBrandController extends Controller
             ], 200);
         } catch (\Exception $e) {
             return $e->getMessage();
+        }
+    }
+
+    public function restore(Request $request)
+    {
+        try {
+            $section = AmBrand::onlyTrashed()->findOrFail($request->id)->restore();
+            toastr()->success('Supplier Restored Successfully');
+            return redirect()->route('suppliers.archive');
+        } catch (\Exception $e) {
+            toastr()->error($e->getMessage());
+            return redirect()->route('suppliers.archive');
         }
     }
 }

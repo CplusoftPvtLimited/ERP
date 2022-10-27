@@ -169,27 +169,54 @@
 
                         <li id="maufacturer-list-menu" class="{{ $route == 'manufacturer.index' ? 'active' : '' }}">
                             <a href="{{ route('manufacturer.index') }}"><i class="dripicons-user-group"></i>
-                                {{ trans('file.Manufacturer') }}</a></li>
-                        <li id="modelseries-list-menu" class="{{ $route == 'modelseries.index' ? 'active' : '' }}"><a
-                                href="{{ route('modelseries.index') }}"><i class="dripicons-user-group"></i>
-                                {{ trans('file.Model') }}</a></li>
-                        <li id="modelseries-list-menu" class="{{ $route == 'engine.index' ? 'active' : '' }}"><a
-                                href="{{ route('engine.index') }}"><i class="dripicons-user-group"></i>
-                                {{ trans('file.Engines') }}</a></li>
-                        <li id="modelseries-list-menu" class="{{ $route == 'section.index' ? 'active' : '' }}"><a
-                                href="{{ route('section.index') }}"><i class="dripicons-user-group"></i>
-                                {{ trans('file.Sections') }}</a></li>
-                        <li id="modelseries-list-menu" class="{{ $route == 'article.index' ? 'active' : '' }}"><a
-                                href="{{ route('article.index') }}"><i class="dripicons-user-group"></i>
-                                {{ trans('file.Products') }}</a></li>
-
+                                {{ trans('file.Manufacturer') }}</a>
+                        </li>
+                        <li id="maufacturer-list-menu"
+                            class="{{ $route == 'manufacturer.archive' ? 'active' : '' }}">
+                            <a href="{{ route('manufacturer.archive') }}"><i class="dripicons-user-group"></i>
+                                {{ trans('file.Archived Manufacturer') }}</a>
+                        </li>
+                        <li id="modelseries-list-menu" class="{{ $route == 'modelseries.index' ? 'active' : '' }}">
+                            <a href="{{ route('modelseries.index') }}"><i class="dripicons-user-group"></i>
+                                {{ trans('file.Model') }}</a>
+                        </li>
+                        <li id="modelseries-list-menu" class="{{ $route == 'modelseries.archive' ? 'active' : '' }}">
+                            <a href="{{ route('modelseries.archive') }}"><i class="dripicons-user-group"></i>
+                                {{ trans('file.Archived Model') }}</a>
+                        </li>
+                        <li id="modelseries-list-menu" class="{{ $route == 'engine.index' ? 'active' : '' }}">
+                            <a href="{{ route('engine.index') }}"><i class="dripicons-user-group"></i>
+                                {{ trans('file.Engines') }}</a>
+                        </li>
+                        <li id="modelseries-list-menu" class="{{ $route == 'engine.archive' ? 'active' : '' }}">
+                            <a href="{{ route('engine.archive') }}"><i class="dripicons-user-group"></i>
+                                {{ trans('file.Archived Engines') }}</a>
+                        </li>
+                        <li id="modelseries-list-menu" class="{{ $route == 'section.index' ? 'active' : '' }}">
+                            <a href="{{ route('section.index') }}"><i class="dripicons-user-group"></i>
+                                {{ trans('file.Sections') }}</a>
+                        </li>
+                        <li id="modelseries-list-menu" class="{{ $route == 'section.archive' ? 'active' : '' }}">
+                            <a href="{{ route('section.archive') }}"><i class="dripicons-user-group"></i>
+                                {{ trans('file.Archived Sections') }}</a>
+                        </li>
+                        <li id="modelseries-list-menu" class="{{ $route == 'article.index' ? 'active' : '' }}">
+                            <a href="{{ route('article.index') }}"><i class="dripicons-user-group"></i>
+                                {{ trans('file.Products') }}</a>
+                        </li>
                         <li id="modelseries-list-menu" class="{{ $route == 'article.archived' ? 'active' : '' }}"><a
                                 href="{{ route('article.archived') }}"><i class="dripicons-user-group"></i>
                                 {{ trans('file.Archived Products') }}</a></li>
 
-                        <li id="suppliers-list-menu" class="{{ $route == 'suppliers.index' ? 'active' : '' }}"><a
-                                href="{{ route('suppliers.index') }}"><i class="dripicons-user-group"></i>
-                                {{ trans('file.Suppliers') }}</a></li>
+                        <li id="suppliers-list-menu" class="{{ $route == 'suppliers.index' ? 'active' : '' }}">
+                            <a href="{{ route('suppliers.index') }}"><i class="dripicons-user-group"></i>
+                                {{ trans('file.Suppliers') }}</a>
+                        </li>
+
+                        <li id="suppliers-list-menu" class="{{ $route == 'suppliers.archive' ? 'active' : '' }}">
+                            <a href="{{ route('suppliers.archive') }}"><i class="dripicons-user-group"></i>
+                                {{ trans('file.Archived Suppliers') }}</a>
+                        </li>
                     </ul>
                 </li>
             @endif

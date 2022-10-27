@@ -45,7 +45,7 @@
                                 <div class="d-flex flex-row-reverse mb-3 mr-4">
                                     <a href="{{ route('suppliers.create') }}" class="btn btn-info mb-1"><i
                                             class="dripicons-plus"></i> {{ trans('file.Add Supplier') }}</a>
-                                    <div class="col-10 pt-1">
+                                    <div class="col pt-1 pl-4">
                                         <h2>Suppliers</h2>
                                     </div>
                                 </div>
