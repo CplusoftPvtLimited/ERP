@@ -1272,6 +1272,7 @@ option.cancel{
 	padding-left: 10px;
 	padding-right: 10px;
 	border-radius: 20px;
+	background: white !important;
 }
 
 .prod_cart_option .buttons_opt span {
@@ -1301,6 +1302,11 @@ option.cancel{
 .prod_cart_option .buttons_opt .m_btn:hover {
 	cursor: pointer;
 	color: #ff6295;
+}
+
+
+.box.d-flex.justify-content-between.mb-3.pb-2 {
+    display: contents !important;
 }
 
 .article_view_tr_head{

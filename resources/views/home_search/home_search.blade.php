@@ -221,6 +221,7 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <input type="hidden" name="dual_search" value="dual">
                                     <div class="col-md-4">
                                         <button class="btn btn-primary" style="margin-top: 33px;" type="submit"><i
                                                 class="fa fa-solid fa-magnifying-glass"></i> Search</button>

@@ -200,7 +200,8 @@ class HomeSearchController extends Controller
                 toastr()->error('Data not available');
                 return redirect()->back();
             }
-            return redirect()->route('get_article_by_sub_section',[$engine->linkageTargetId,$request->sub_section_id]);
+            $dual = $request->dual_search;
+            return redirect()->route('get_article_by_sub_section',[$engine->linkageTargetId,$request->sub_section_id,$dual]);
         }else{
             toastr()->info('Section not available');
                 return redirect()->back();
@@ -208,7 +209,7 @@ class HomeSearchController extends Controller
         
     }
 
-    public function articleSearchViewBySection($id,$section_id){
+    public function articleSearchViewBySection($id,$section_id,$dual){
         // dd($request->all());
         $engine = LinkageTarget::where('linkageTargetId',$id)->first();
        
@@ -227,7 +228,7 @@ class HomeSearchController extends Controller
             $cc = $engine->capacityCC;
             
             
-        return view('home_search.article_search_view',compact('section_parts','section_id','engine','type','sub_type','model_year','fuel','cc'));
+        return view('home_search.article_search_view',compact('section_parts','section_id','engine','type','sub_type','model_year','fuel','cc','dual'));
     }
 
     public function addToCart(Request $request){
@@ -236,7 +237,8 @@ class HomeSearchController extends Controller
         try {
             if(!empty($cart)){  // if retailer has data in cart
                 if($cart->cash_type != $request->cash_type){
-                    toastr()->info('You have already data against cash type "'.$cart->cash_type.'"'." So Yo cannot change cash type");
+                    $cash_type = $cart->cash_type == "white" ? "primary" : "secondary";
+                    toastr()->info('You have already data against cash type "'.$cash_type.'"'." So Yo cannot change cash type");
                     return redirect()->back();
                 }
                 $cart_data = $this->cartFilledData($cart,$request);
@@ -406,12 +408,9 @@ class HomeSearchController extends Controller
                     $date = date("Y-m-d");
                     $cart_item->date = $date;
                     $cart_item->save();
-
                     
                 }
-                
             }
-
             // if($request->cash_type == "white"){
             //     $cart->total_cost = (float)$all_total_excluding_vat + $cart->total_vat + $cart->tax_stamp + $request->tax_stamp;
             //     $cart->grand_total = (float)$all_total_excluding_vat + $cart->total_vat + $cart->tax_stamp + $request->tax_stamp;
@@ -445,13 +444,12 @@ class HomeSearchController extends Controller
     }
 
     public function cart(){
+
         $cart = Cart::where('retailer_id',auth()->user()->id)->first();
         if(!empty($cart)){
             $cart_items = CartItem::where('cart_id',$cart->id)->get();
             $manufacturers = Manufacturer::all();
             $suppliers = AfterMarkitSupplier::select('id', 'name')->where('retailer_id', auth()->user()->id)->get();
-            
-            
             return view('home_search.cart',compact('cart','cart_items','suppliers'));
         }else{
             toastr()->info('Your cart is empty');
@@ -522,16 +520,7 @@ class HomeSearchController extends Controller
                 $sub_query->where('brandId', $request->brand_id);
             });
         })->with('subSection')->get();
-
         return response()->json($brand);
-
-        // dd($bran)
-        // $brand = Ambrand::where('brandId', $request->brand_id)->with(['article' => function($query) {
-        //     $query->select('id','dataSupplierId','assemblyGroupNodeId')->with('section',  function($query){
-        //         // $query->with('subSection');
-        //     });
-        // }])->first();
-        // dd($brand);
     }
 
     public function loadMoreBrands(){

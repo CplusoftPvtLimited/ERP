@@ -47,7 +47,7 @@
                     <div class="col-6">
                         <div class="table">
                             <div class="m-3">
-                                <img src="{{ asset('images/car.jpg') }}" alt=""  height="75px">
+                                <img src="{{ asset('images/part.jpg') }}" alt=""  height="75px">
                             </div>
                             <table class="table">
                                 <thead>
@@ -90,7 +90,7 @@
                         </div>
                     </div>
                     <div class="col-6 text-center pt-3">
-                        <img id="image_view" src="{{ asset('images/car.jpg') }}" alt=""
+                        <img id="image_view" src="{{ asset('images/part_medium.jpg') }}" alt=""
                             data-toggle="modal" data-target="#staticBackdrop" style="cursor: pointer;">
 
                     </div>
@@ -284,41 +284,48 @@
                             </table>
                         </div>
                     </div>
-                    <div class="col-6">
-                        <h6 class="article_view_cash_type_head">Select Cash Type <span>*</span></h6>
-                        <div class="box">
+                    
+                </div>
+                <div class="row" style="margin-top: 20px">
+                    <div class="col-7 offset-0">
+                        <div class="box d-flex justify-content-between mb-3 pb-2">
                             <label class="custom-radio-button__container">
                                 <input type="radio" name="cash_type" value="white">
                                 <span class="custom-radio-button designer">
-                                    <i class="fa fa-solid fa-sack-dollar"></i> White Cash
+                                    <i class="fa fa-solid fa-sack-dollar"></i> Primary Cash
                                 </span>
                             </label>
                             <label class="custom-radio-button__container">
                                 <input type="radio" name="cash_type" value="black">
                                 <span class="custom-radio-button designer">
-                                    <i class="fa fa-solid fa-sack-dollar"></i> Black Cash
+                                    <i class="fa fa-solid fa-sack-dollar"></i> Secondry Cash
                                 </span>
                             </label>
+                            <label class="custom-radio-button__container">
+                                <div class="prod_cart_option d-flex justify-content-between mb-3 pb-2">
+                                    <div class="buttons_opt">
+                                        <span class="m_btn" id="minus"> <i class="fa fa-minus text-danger"></i></span>
+                                        <input type="number" class="cart_item" id="quantity"
+                                            style="border: none;outline: none;background: transparent;width: 70px" min="1" name="quantity"
+                                            value="1">
+                                        <span class="m_btn" id="plus"> <i class="fa fa-plus text-success"></i></span>
+                                    </div>
+                                </div>
+                            </label>
+                            <label class="custom-radio-button__container">
+                                <button class="btn btn-primary" type="button">
+                                    <i class="dripicons-cart"></i> Add to Cart
+                                </button>
+                            </label>
+                            
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-1 offset-9 mr-4">
-                        <div class="prod_cart_option d-flex justify-content-between mb-3 pb-2">
-                            <div class="buttons_opt">
-                                <span class="m_btn" id="minus"> <i class="fa fa-minus text-danger"></i></span>
-                                <input type="number" class="cart_item" id="quantity"
-                                    style="border: none;outline: none;background: transparent;width: 45px" min="1" name="quantity"
-                                    value="1">
-                                <span class="m_btn" id="plus"> <i class="fa fa-plus text-success"></i></span>
-                            </div>
-                        </div>
+                    {{-- <div class="col-2">
+                        
                     </div>
-                    <div class="col-1 text-right ">
-                        <button class="btn btn-primary" type="button" onclick="addToCart()">
-                            <i class="dripicons-cart"></i> Add to Cart
-                        </button>
-                    </div>
+                    <div class="col-2">
+                        
+                    </div> --}}
                 </div>
             </div>
             <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
@@ -332,7 +339,7 @@
                             </button>
                         </div>
                         <div class="modal-body text-center">
-                            <img id="image_view" src="{{ asset('images/car_big.jpg') }}" alt=""
+                            <img id="image_view" src="{{ asset('images/part.jpg') }}" alt=""
                                 style="width: auto; height: 300px">
                         </div>
                     </div>
