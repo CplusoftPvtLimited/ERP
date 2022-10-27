@@ -46,8 +46,6 @@ Route::get('/get_logout', 'UserController@userLogout')->name('user_logout');
 
 Route::group(['middleware' => ['auth', 'active']], function () {
 	
-	
-
 	Route::get('purchase_preview', function () {
 		return view('purchase.purchase_preview');
 	})->name('purchase_preview');
@@ -58,8 +56,6 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 	Route::get('assembly_group_nodes/getSectionParts/{id}', 'AssemblyGroupNodeController@getSectionParts')->name('get_section.parts'); // for erp
 	Route::get('assembly_group_nodes/language/{id}', 'AssemblyGroupNodeController@getLanguage')->name('get_language'); // for erp
 	Route::resource('languages', 'LanguagesController'); // for erp
-
-
 
 	Route::resource('invoices', 'InvoiceController');
 	Route::get('invoices/getproduct/{id}', 'InvoiceController@getProduct')->name('invoice.getproduct');
@@ -74,7 +70,6 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 	Route::get('getform', [FormController::class, 'getForm'])->name('getform');
 	Route::post('formSave', [FormController::class, 'formSave'])->name('formSave');
 	Route::get('formMessage', [FormController::class, 'formMessage'])->name('formMessage');
-
 
 	Route::get('/read_notification/{id?}', 'FormController@readNotification')->name('read_notification');
 
@@ -266,8 +261,6 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 	Route::get('deletePurchaseProduct/{purchase_id}/{id}', 'PurchaseController@deletePurchaseProduct')->name('delete_purchase'); // delete a purchase product
 	Route::get('deletePurchase/{purchase_id}', 'PurchaseController@deleteParentPurchase')->name('delete_parent_purchase'); // delete a parent purchase
 	Route::get('updatePurchaseProductQuantity', 'PurchaseController@updatePurchaseProductQuantity')->name('update_purchase_product_quantity'); // update a purchase
-
-
 	////////////////Purchase END //////////////////////// 
 
 	/////////////// Product Controller /////////////////
@@ -300,7 +293,7 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 	Route::get('articlesByReferenceNo', 'PurchaseController@articlesByReferenceNo')->name('article.reference');
 	Route::get('sale_products_by_product_number', 'SaleController@productByArticleNumber')->name('sale_products_by_product_number');
 	///////////////////  end //////////////////////
-	///////////////////////// Sale-unique ////////////////////////
+
 	///////////////////////// Sale-unique ////////////////////////
 	Route::get('get_section_parts_for_sale', 'SaleController@getSectionPartsForSale')->name('get_section_parts_for_sale'); // get all articles from stock
 	Route::get('check_product_stock', 'SaleController@checkProductStock')->name('check_product_stock'); // 
@@ -315,12 +308,9 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 	Route::get('delivery_slips', 'InvoiceController@getDeliverySlips')->name('delivery_slips');
 	Route::get('show_delivery_slip/{id}', 'InvoiceController@showDeliverySlip')->name('show_delivery_slip');
 
-
 	Route::get('delivery_slips', 'InvoiceController@getDeliverySlips')->name('delivery_slips'); 
 	Route::get('show_delivery_slip/{id}', 'InvoiceController@showDeliverySlip')->name('show_delivery_slip'); 
-	
-	// Home Search views
-
+	///////////////////  Home Search views  ///////////////////
 	Route::get('home_search', 'HomeSearchController@homeSearchView')->name('home_search'); 
 	Route::get('get_home_manufacturers', 'HomeSearchController@getManufacturers')->name('get_home_manufacturers'); 
 	Route::get('get_models_by_manufacturer_home_search', 'HomeSearchController@getModelsByManufacturer')->name('get_models_by_manufacturer_home_search'); 
@@ -335,11 +325,7 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 	Route::get('remove_cart_item/{id}', [HomeSearchController::class,'removeCartItem'])->name('remove_cart_item');
 	Route::get('get_sub_sections_by_brand', 'HomeSearchController@getSubSectionByBrand')->name('get_sub_sections_by_brand'); 
 	Route::post('get_article_by_sub_sections', 'HomeSearchController@articleSearchViewByBrandSection')->name('get_article_by_sub_sections'); 
-	Route::get('get_article_by_sub_section/{id}/{section_id}', 'HomeSearchController@articleSearchViewBySection')->name('get_article_by_sub_section'); 
-
-
-
-
+	Route::get('get_article_by_sub_section/{id}/{section_id}/{type}', 'HomeSearchController@articleSearchViewBySection')->name('get_article_by_sub_section'); 
 
 	Route::get('transfers/product_transfer/{id}', 'TransferController@productTransferData');
 	Route::get('transfers/transfer_by_csv', 'TransferController@transferByCsv');

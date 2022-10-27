@@ -284,26 +284,29 @@
                             </table>
                         </div>
                     </div>
-                    <div class="col-6">
+                    {{-- <div class="col-6">
                         <h6 class="article_view_cash_type_head">Select Cash Type <span>*</span></h6>
+                        
+                    </div> --}}
+                </div>
+                <div class="row" style="margin-top: 20px">
+                    <div class="col-4 offset-0">
                         <div class="box">
                             <label class="custom-radio-button__container">
                                 <input type="radio" name="cash_type" value="white">
                                 <span class="custom-radio-button designer">
-                                    <i class="fa fa-solid fa-sack-dollar"></i> White Cash
+                                    <i class="fa fa-solid fa-sack-dollar"></i> Primary Cash
                                 </span>
                             </label>
                             <label class="custom-radio-button__container">
                                 <input type="radio" name="cash_type" value="black">
                                 <span class="custom-radio-button designer">
-                                    <i class="fa fa-solid fa-sack-dollar"></i> Black Cash
+                                    <i class="fa fa-solid fa-sack-dollar"></i> Secondry Cash
                                 </span>
                             </label>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-1 offset-9 mr-4">
+                    <div class="col-2">
                         <div class="prod_cart_option d-flex justify-content-between mb-3 pb-2">
                             <div class="buttons_opt">
                                 <span class="m_btn" id="minus"> <i class="fa fa-minus text-danger"></i></span>
@@ -314,8 +317,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-1 text-right ">
-                        <button class="btn btn-primary" type="button" onclick="addToCart()">
+                    <div class="col-2">
+                        <button class="btn btn-primary" type="button">
                             <i class="dripicons-cart"></i> Add to Cart
                         </button>
                     </div>
