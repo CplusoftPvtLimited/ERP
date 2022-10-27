@@ -20,10 +20,11 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header article_view_tr_head">
                             <div class="d-flex flex-row-reverse">
                                 <a href="" data-toggle="modal" data-target="#createModal"
-                                    class="btn btn-info mb-1"><i class="dripicons-plus"></i> {{ trans('file.Add') }}</a>
+                                    class="btn btn-info mb-1" style="background: white;
+                                    color: #6244a6;"><i class="dripicons-plus"></i> {{ trans('file.Add') }}</a>
                                 <div class="col-11 pt-1">
                                     <h2>Cheque / Drafts</h2>
                                 </div>
@@ -137,7 +138,7 @@
                                         <div class="d-flex flex-wrap p-2">
                                             <button type="submit" name="" id="filter_btn"
                                                 class="btn btn-primary btn-lg btn-block float-left"
-                                                style="color: #fff; font-family: Arial; font-size: 14px; text-align: center;">Filter</button>
+                                                style="color: #fff; font-family: Arial; font-size: 14px; text-align: center;border-radius: 5px !important;">Filter</button>
                                         </div>
                                     </div>
                                 </form>
@@ -156,7 +157,7 @@
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="data-table" class="table" style="width: 100%">
-                                    <thead>
+                                    <thead class="article_view_tr_head">
                                         <tr>
                                             <th>{{ trans('file.Payment Mode') }}</th>
                                             <th>{{ trans('file.NUMBER') }}</th>
@@ -200,7 +201,7 @@
             class="modal fade text-left">
             <div role="document" class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header article_view_tr_head">
                         <h5 id="exampleModalLabel" class="modal-title">{{ trans('file.Add Check / Draft') }}</h5>
                         <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span
                                 aria-hidden="true"><i class="dripicons-cross"></i></span></button>

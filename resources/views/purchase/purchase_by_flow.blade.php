@@ -107,7 +107,6 @@
     integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 
 <script>
-
     $('#linkageTarget').on('change', function() {
         var val = this.value;
         if (val == "P") {
@@ -562,20 +561,26 @@
                 var length = document.getElementById("myTable").rows.length;
 
                 var html = '';
-                html += '<input type="hidden" name="manufacturer_id[]" value="' + data.manufacturer_id + '">';
-                html += '<input type="hidden" name="linkage_target_type[]" value="' + data.linkage_target_type + '">';
-                html += '<input type="hidden" name="linkage_target_sub_type[]" value="' + data.linkage_target_sub_type + '">';
+                html += '<input type="hidden" name="manufacturer_id[]" value="' + data
+                    .manufacturer_id + '">';
+                html += '<input type="hidden" name="linkage_target_type[]" value="' + data
+                    .linkage_target_type + '">';
+                html += '<input type="hidden" name="linkage_target_sub_type[]" value="' + data
+                    .linkage_target_sub_type + '">';
                 html += '<input type="hidden" name="modell_id[]" value="' + data.model_id + '">';
                 html += '<input type="hidden" name="enginee_id[]" value="' + data.engine_id + '">';
-                html += '<input type="hidden" name="sectionn_id[]" value="' + data.section_id + '">';
-                html += '<input type="hidden" name="sectionn_part_id[]" value="' + data.section_part_id + '">';
+                html += '<input type="hidden" name="sectionn_id[]" value="' + data.section_id +
+                    '">';
+                html += '<input type="hidden" name="sectionn_part_id[]" value="' + data
+                    .section_part_id + '">';
                 html += '<input type="hidden" name="statuss[]" value="' + data.status + '">';
                 html += '<input type="hidden" name="datee[]" value="' + data.date + '">';
                 html += '<input type="hidden" name="cash_type" value="' + data.cash_type + '">';
                 html += '<input type="hidden" name="brand_id[]" value="' + data.brand_id + '">';
-                
+
                 if (selected_cash_type.length > 0) {
                     selected_cash_type.forEach(checkCashType);
+
                     function checkCashType(element, index, data) {
                         if (element != cashType) {
                             Swal.fire({
@@ -602,7 +607,9 @@
                     .genericArticleDescription + '-' + data.data.articleNumber +
                     '</td>';
                 markup +=
-                    '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterPurchaseQty(' +data.data.legacyArticleId + ')" id="item_qty' + data.data.legacyArticleId +'" value="1" min="1" name="item_qty[]" required></td>';
+                    '<td><input type="number" style="width:100px" class="form-control" onkeyup="alterPurchaseQty(' +
+                    data.data.legacyArticleId + ')" id="item_qty' + data.data.legacyArticleId +
+                    '" value="1" min="1" name="item_qty[]" required></td>';
                 markup +=
                     '<td><input style="width:150px" type="number" class="form-control" onkeyup="alterPurchaseQty(' +
                     data.data.legacyArticleId +
@@ -614,11 +621,11 @@
                     data.data.legacyArticleId +
                     '" name="sale_price[]" readonly></td>';
                 markup +=
-                    '<td><input type="number" class="form-control" value="0" min="0" max="100" step="any" id="discount_' +
+                    '<td><input type="number" class="form-control" value="0" min="0" max="100" onkeyup="checkFlowDiscount()" id="discount_' +
                     data.data.legacyArticleId +
                     '" name="discount[]"></td>';
                 markup +=
-                    '<td><input type="number" class="form-control" value="0" min="0" step="any"  onkeyup="alterPurchaseQty(' +
+                    '<td><input type="number" class="form-control" value="0" min="0"  onkeyup="alterPurchaseQty(' +
                     data.data.legacyArticleId + ')" id="additional_cost_without_vat_' + data.data
                     .legacyArticleId +
                     '" name="additional_cost_without_vat[]"></td>';
@@ -630,12 +637,12 @@
                 }
                 if (data.cash_type == "white") {
                     markup +=
-                        '<td><input style="width:100px" type="number" onkeyup="changeFlowTotalWithVAT()" class="form-control" max="100" value="0" min="0" step="any" id="vat_' +
+                        '<td><input style="width:100px" type="number" onkeyup="changeFlowTotalWithVAT()" class="form-control" max="100" value="0" min="0" id="vat_' +
                         data.data.legacyArticleId +
                         '" name="vat[]" required></td>';
                 }
                 markup +=
-                    '<td><input type="number" style="width:100px" class="form-control" value="0" min="0" step="any"   onkeyup="alterPurchaseQty(' +
+                    '<td><input type="number" style="width:100px" class="form-control" value="0" min="0"  onkeyup="alterPurchaseQty(' +
                     data.data.legacyArticleId + ')" id="profit_margin_' + data.data
                     .legacyArticleId +
                     '" name="profit_margin[]" required></td>';
@@ -681,13 +688,14 @@
         });
     });
 
-    var t_qty = 0;  // why let qn nhi ?? 
-    let w_qty = 0;  // let why ?? var qn nhi ??
-    let b_qty = 0; 
+    var t_qty = 0; // why let qn nhi ?? 
+    let w_qty = 0; // let why ?? var qn nhi ??
+    let b_qty = 0;
     var id_array = [];
     var total_quantity_of_all_row_products = 0;
 
     function alterPurchaseQty(id) {
+        var error = 0;
         item_qty = parseInt($("#item_qty" + id).val());
         var purchasePrice = parseFloat($("#purchase_price_" + id).val());
         var additional_cost_without_vat = parseFloat($("#additional_cost_without_vat_" + id).val());
@@ -705,34 +713,61 @@
         $("#total_excluding_vat_" + id).val(total_cost_without_vat.toFixed(2));
         if (all_product_ids.length > 0) {
             all_product_ids.forEach(getActualProductCost);
+
             function getActualProductCost(idd, index) {
                 total_actual += parseFloat($('#actual_cost_per_product_' + idd).val());
                 total_quantity_of_all_row_products += parseInt($("#item_qty" + idd).val());
             }
-            var actual_cost_per_product = (total_cost_without_vat / item_qty) + (entireAditionalCost / total_quantity_of_all_row_products);
+            var actual_cost_per_product = (total_cost_without_vat / item_qty) + (entireAditionalCost /
+                total_quantity_of_all_row_products);
         }
         $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
-        var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
-        if (profit_margin == null || profit_margin == NaN) {
-            profit_margin = 0;
+        var profit_margin = $('#profit_margin_' + id).val()
+        if (profit_margin % 1 != 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Profit Margin must be Type of Integer',
+
+            });
+            $('#profit_margin_' + id).val(0)
+            error = 1;
         }
-        var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
-        sale_price_per_product = parseFloat(sale_price_per_product);
-        $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
-        calculateFlowEntireTotal(all_product_ids);
+        if (profit_margin > 100) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Profit Margin must be less or equal to 100',
+            });
+            $('#profit_margin_' + id).val(0)
+            error = 1;
+        }
+        profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
+        if (error == 0) {
+            if (profit_margin == null || profit_margin == NaN) {
+                profit_margin = 0;
+            }
+            var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
+            sale_price_per_product = parseFloat(sale_price_per_product);
+            $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
+            calculateFlowEntireTotal(all_product_ids);
+            
+        }
         total_quantity_of_all_row_products = 0;
     }
 
     function calculatePurchasePrice() {
-        if (all_product_ids.length > 0) {      
+        if (all_product_ids.length > 0) {
             var total_quantity = 0;
             all_product_ids.forEach(getAllQuantity);
+
             function getAllQuantity(id, index) {
                 var i_qty = parseInt($("#item_qty" + id).val());
                 total_quantity += i_qty;
-            }     
+            }
             all_product_ids.forEach(getSalePrice);
             var actual_total = 0.0;
+
             function getSalePrice(id, index) {
                 item_qty = parseInt($("#item_qty" + id).val());
                 var purchasePrice = parseFloat($("#purchase_price_" + id).val());
@@ -749,10 +784,30 @@
                 $("#total_excluding_vat_" + id).val(total_cost_without_vat.toFixed(2));
                 total_quantity_of_all_row_products += parseInt($("#item_qty" + id).val());
                 var actual_cost_per_product = (total_cost_without_vat / item_qty) + (entireAditionalCost /
-                total_quantity);
+                    total_quantity);
                 $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
                 actual_total += actual_cost_per_product.toFixed(2);
-                var profit_margin = $('#profit_margin_' + id).val() / 100;
+                var profit_margin = $('#profit_margin_' + id).val()
+                if (profit_margin % 1 != 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Profit Margin must be Type of Integer',
+
+                    });
+                    $('#profit_margin_' + id).val(0)
+                    exit();
+                }
+                if (profit_margin > 100) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Profit Margin must be less or equal to 100',
+                    });
+                    $('#profit_margin_' + id).val(0)
+                    exit();
+                }
+                profit_margin = $('#profit_margin_' + id).val() / 100;
                 if (profit_margin == null || profit_margin == NaN) {
                     profit_margin = 0.0;
                 }
@@ -797,9 +852,30 @@
         id_array = all_product_ids.filter(onlyUnique);
         if (id_array.length > 0) {
             id_array.forEach(getActualProductCost);
+
             function getActualProductCost(id, index) {
+                var error = 0;
                 if (cashType == "white") {
                     var vat = $('#vat_' + id).val();
+                    if (vat % 1 != 0) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'VAT must be Type of Integer',
+
+                        });
+                        $('#vat_' + id).val(0)
+                        error = 1;
+                    }
+                    if (vat > 100) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'VAT must be less or equal to 100',
+                        });
+                        $('#vat_' + id).val(0)
+                        error = 1;
+                    }
                     if (vat == null || isNaN(vat)) {
                         $('#vat_' + id).val(0);
                         vat = 0;
@@ -809,7 +885,10 @@
                         $('#additional_cost_with_vat_' + id).val(0);
                         add_cost_with_vat = 0;
                     }
-                    total_vat = total_vat + parseFloat(vat / 100) + parseFloat(add_cost_with_vat);
+                    if (error == 0) {
+                        total_vat = total_vat + parseFloat(vat / 100) + parseFloat(add_cost_with_vat);
+                    }
+
                 }
             }
             var purchase_additional_cost = $('#purchase_additional_cost').val();
@@ -825,11 +904,12 @@
             var tax_stamp = parseFloat($('#tax_stamp').val());
             var tot_to_be_paid = $('#total_to_be_paid').val();
             var entire_total_exculding_vat = $('#entire_total_exculding_vat').val();
-            if(tax_stamp == null || isNaN(tax_stamp)){
+            if (tax_stamp == null || isNaN(tax_stamp)) {
                 tax_stamp = 0.0;
             }
-            var total_to_be_paid = parseFloat(entire_total_exculding_vat) + parseFloat(entire_vat.toFixed(2)) + parseFloat(tax_stamp.toFixed(
-                2));
+            var total_to_be_paid = parseFloat(entire_total_exculding_vat) + parseFloat(entire_vat.toFixed(2)) +
+                parseFloat(tax_stamp.toFixed(
+                    2));
             $('#total_to_be_paid').val(total_to_be_paid.toFixed(2));
         }
     }
@@ -843,6 +923,7 @@
         id_array = product_ids_array.filter(onlyUnique);
         if (id_array.length > 0) {
             id_array.forEach(getActualProductCost);
+
             function getActualProductCost(id, index) {
                 var qty = parseInt($("#item_qty" + id).val());
                 if (qty > 0) {
@@ -883,8 +964,40 @@
         }
     }
 
+
+
+    function checkFlowDiscount() {
+        var id_array = [];
+        id_array = all_product_ids.filter(onlyUnique);
+        if (id_array.length > 0) {
+            id_array.forEach(checkDiscount);
+
+            function checkDiscount(id, index) {
+                var discount = $('#discount_' + id).val();
+                if (discount % 1 != 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'discount must be Type of Integer',
+
+                    });
+                    $('#discount_' + id).val(0)
+                    exit();
+                }
+                if (discount > 100) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Discount must be less or equal to 100',
+                    });
+                    $('#discount_' + id).val(0)
+                    exit();
+                }
+            }
+        }
+    }
+
     function onlyUnique(value, index, self) {
         return self.indexOf(value) === index;
     }
-
 </script>

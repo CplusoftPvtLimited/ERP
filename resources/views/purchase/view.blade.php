@@ -94,62 +94,49 @@
                                                         <div class="col-md-4">
                                                             <label for="" class="view-edit-purchase">Purchase
                                                                 Status</label>
-                                                            <input type="text"
-                                                                class="form-control view-edit-purchase-input"
-                                                                value="{{ $product->status }}" readonly>
+                                                            <p>{{ $product->status }}</p>
+                                                            
                                                         </div>
                                                         <div class="col-md-4">
                                                             <label for="" class="view-edit-purchase">Total
                                                                 Quantity</label>
-                                                            <input type="text"
-                                                                class="form-control view-edit-purchase-input"
-                                                                value="{{ $product->qty }}"
-                                                                readonly>
+                                                            <p>{{ $product->qty }}</p>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <label for="" class="view-edit-purchase">Actual Cost Per Product</label>
-                                                            <input type="text"
-                                                                class="form-control view-edit-purchase-input"
-                                                                value="{{ "TND ". $product->actual_cost_per_product }}" readonly>
+                                                            <p> {{  $product->actual_cost_per_product }} TND </p>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-4">
                                                             <label for="" class="view-edit-purchase">Total Cost (excluding VAT)</label>
-                                                            <input type="text"
-                                                                class="form-control view-edit-purchase-input"
-                                                                value="{{ "TND ".$product->total_excluding_vat }}" readonly>
+                                                            
+                                                                <p> {{  $product->total_excluding_vat }} TND </p>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <label for="" class="view-edit-purchase">Purchase
                                                                 Price</label>
-                                                            <input type="text"
-                                                                class="form-control view-edit-purchase-input"
-                                                                value="{{ "TND ".$product->actual_price }}" readonly>
+                                                           
+                                                                <p> {{  $product->actual_price }} TND </p>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <label for="" class="view-edit-purchase">Sale
                                                                 Price</label>
-                                                            <input type="text"
-                                                                class="form-control view-edit-purchase-input"
-                                                                value="{{ "TND ".$product->sell_price }}" readonly>
+                                                            
+                                                                <p> {{  $product->sell_price }} TND </p>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-4">
                                                             <label for="" class="view-edit-purchase">Engine
                                                                 Details</label>
-                                                            <input type="text"
-                                                                class="form-control view-edit-purchase-input"
-                                                                value="{{ $product->engine_details }}" readonly>
+                                                            
+                                                                <p> {{  $product->engine_details }} </p>
                                                         </div>
 
                                                     </div>
                                                 </div>
-                                                {{-- <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-dismiss="modal">Close</button>
-                                                </div> --}}
+                                                
                                             </div>
                                         </div>
                                     </div>

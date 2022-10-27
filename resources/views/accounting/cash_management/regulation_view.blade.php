@@ -21,8 +21,9 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class=" card-header d-flex flex-row-reverse mb-3">
-                            <a href="{{ url()->previous() }}" class="btn btn-info mb-1 mr-4">{{ trans('file.Back') }}</a>
+                        <div class=" card-header d-flex flex-row-reverse mb-3 article_view_tr_head">
+                            <a href="{{ url()->previous() }}" class="btn btn-info mb-1 mr-4" style="background: white;
+                                color: #6244a6;">{{ trans('file.Back') }}</a>
                             <div class="col-11 pt-1">
                                 <h2>Regulation Data</h2>
                             </div>
@@ -82,7 +83,7 @@
                                             <div class="form-group">
                                                 <strong>Amount</strong>
                                                 <div class="input-group">
-                                                    <div class="input-group-text">TND</div>
+                                                    <div class="input-group-text article_view_tr_head">TND</div>
                                                     <input type="text" class="form-control" readonly
                                                     value="{{ $regulation->amount }}">
                                                   </div>

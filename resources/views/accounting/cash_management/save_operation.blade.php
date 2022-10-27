@@ -70,7 +70,7 @@
                         <div class="form-group">
                             <h6>Amount *</h6>
                             <div class="input-group">
-                                <div class="input-group-text">TND</div>
+                                <div class="input-group-text article_view_tr_head">TND</div>
                                 <input type="number" name="amount" id="total_amount" step="any" maxlength="191"
                                     class="form-control">
                             </div>

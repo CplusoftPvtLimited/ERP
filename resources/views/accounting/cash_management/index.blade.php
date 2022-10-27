@@ -11,7 +11,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header article_view_tr_head">
                         <h3 class="text-center">{{trans('file.Primary balance')}}</h3>
                     </div>
                     <div class="card-body text-center">
@@ -26,7 +26,7 @@
             </div>
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header article_view_tr_head">
                         <h3 class="text-center">{{trans('file.Secondary balance')}}</h3>
                     </div>
                     <div class="card-body text-center">

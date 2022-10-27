@@ -292,8 +292,8 @@
                     html += '<input type="hidden" name="datee[]" value="' + data.date + '">';
                     html += '<input type="hidden" name="cash_type" value="' + data.cash_type + '">';
                     html += '<input type="hidden" name="brand_id[]" value="' + data.brand_id + '">';
-                    
-                    
+
+
                     // start
                     // $('#myTable tr').each(function() {
                     //     if (this.id != '') {
@@ -369,7 +369,7 @@
                         '" name="sale_price[]" readonly></td>';
 
                     markup +=
-                        '<td><input type="number" class="form-control" value="0" min="0" max="100" step="any" id="discount_' +
+                        '<td><input type="number" class="form-control" value="0" min="0" onkeyup="checkDiscount()" max="100" step="any" id="discount_' +
                         data.data.legacyArticleId +
                         '" name="discount[]"></td>';
 
@@ -457,6 +457,7 @@
     var total_quantity_of_all_row_products = 0;
 
     function alterQty(id) {
+        var error = 0;
         item_qty = parseInt($("#item_qty" + id).val());
         var purchasePrice = parseFloat($("#purchase_price_" + id).val());
         var additional_cost_without_vat = parseFloat($("#additional_cost_without_vat_" + id).val());
@@ -469,7 +470,7 @@
         $("#total_excluding_vat_" + id).val(total_cost_without_vat.toFixed(2));
 
         if (all_product_ids.length > 0) {
-           
+
             all_product_ids.forEach(getActualProductCost);
 
             function getActualProductCost(id, index) {
@@ -482,31 +483,60 @@
 
         $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
         calculateEntireTotal(all_product_ids);
-        var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
-        if (profit_margin == null || isNaN(profit_margin)) {
-            profit_margin = 0;
+        var profit_margin = $('#profit_margin_' + id).val()
+        if (profit_margin % 1 != 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Profit Margin must be Type of Integer',
+
+            });
+            $('#profit_margin_' + id).val(0)
+            error = 1;
+
         }
-        var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
-        sale_price_per_product = parseFloat(sale_price_per_product);
-        $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
+        if (profit_margin > 100) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Profit Margin must be less or equal to 100',
+            });
+            $('#profit_margin_' + id).val(0)
+            error = 1;
+
+        }
+
+        if (error == 0) {
+            var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
+            if (profit_margin == null || isNaN(profit_margin)) {
+                profit_margin = 0;
+            }
+            var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
+            sale_price_per_product = parseFloat(sale_price_per_product);
+            $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
+        }
+
         total_quantity_of_all_row_products = 0;
     }
 
     function calculateSalePrice() {
+
         if (all_product_ids.length > 0) {
             var entireAditionalCost = parseFloat($("#purchase_additional_cost").val());
             var total_quantity = 0;
             all_product_ids.forEach(getAllQuantity);
+
             function getAllQuantity(id, index) {
                 var i_qty = parseInt($("#item_qty" + id).val());
                 total_quantity += i_qty;
             }
-            
+
             all_product_ids.forEach(getSalePrice);
-            
+
             function getSalePrice(id, index) {
+                var error = 0;
                 item_qty = parseInt($("#item_qty" + id).val());
-                
+
                 var purchasePrice = parseFloat($("#purchase_price_" + id).val());
                 var additional_cost_without_vat = parseFloat($("#additional_cost_without_vat_" + id).val());
                 var purchase_additional_cost = $('#purchase_additional_cost').val();
@@ -528,13 +558,38 @@
                     total_quantity);
 
                 $('#actual_cost_per_product_' + id).val(actual_cost_per_product.toFixed(2));
-                var profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
-                var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
+                var profit_margin = $('#profit_margin_' + id).val()
+                if (profit_margin % 1 != 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Profit Margin must be Type of Integer',
+
+                    });
+                    $('#profit_margin_' + id).val(0);
+                    error = 1;
+
+                }
+                if (profit_margin > 100) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Profit Margin must be less or equal to 100',
+                    });
+                    $('#profit_margin_' + id).val(0);
+                    error = 1;
+
+                }
+                if (error == 0) {
+                    profit_margin = parseFloat($('#profit_margin_' + id).val() / 100);
+                    var sale_price_per_product = actual_cost_per_product * (1 + profit_margin);
 
 
 
-                sale_price_per_product = parseFloat(sale_price_per_product);
-                $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
+                    sale_price_per_product = parseFloat(sale_price_per_product);
+                    $('#sale_price_' + id).val(sale_price_per_product.toFixed(2));
+                }
+
             }
             calculateEntireTotal(all_product_ids);
             total_quantity_of_all_row_products = 0;
@@ -579,15 +634,35 @@
         var total_vat = 0.0;
         var cashType = $('#cash_type').find(":selected").val();
         var id_array = [];
+       
         id_array = all_product_ids.filter(onlyUnique);
 
         if (id_array.length > 0) {
             id_array.forEach(getActualProductCost);
 
             function getActualProductCost(id, index) {
-
+                var error = 0;
                 if (cashType == "white") {
                     var vat = $('#vat_' + id).val();
+                    if (vat % 1 != 0) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'VAT must be Type of Integer',
+
+                        });
+                        $('#vat_' + id).val(0)
+                        error = 1;
+                    }
+                    if (vat > 100) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'VAT must be less or equal to 100',
+                        });
+                        $('#vat_' + id).val(0)
+                        error = 1;
+                    }
                     if (vat == null || vat == NaN) {
                         vat = 0;
                     }
@@ -595,31 +670,37 @@
                     if (add_cost_with_vat == null || isNaN(add_cost_with_vat)) {
                         add_cost_with_vat = 0;
                     }
-                    total_vat = total_vat + parseFloat(vat / 100) + parseFloat(add_cost_with_vat);
+                    if (error == 0) {
+                        total_vat = total_vat + parseFloat(vat / 100) + parseFloat(add_cost_with_vat);
+                    }
+                    
                 }
 
 
             }
-            total_vat = total_vat + parseFloat($('#purchase_additional_cost').val());
-            if (total_vat == null || isNaN(total_vat)) {
-                total_vat = 0;
-            }
-            $('#entire_vat').val(total_vat.toFixed(2));
-            var entire_vat = parseFloat($('#entire_vat').val());
-            var tax_stamp = parseFloat($('#tax_stamp').val());
-            var tot_to_be_paid = $('#total_to_be_paid').val();
+            
+                total_vat = total_vat + parseFloat($('#purchase_additional_cost').val());
+                if (total_vat == null || isNaN(total_vat)) {
+                    total_vat = 0;
+                }
+                $('#entire_vat').val(total_vat.toFixed(2));
+                var entire_vat = parseFloat($('#entire_vat').val());
+                var tax_stamp = parseFloat($('#tax_stamp').val());
+                var tot_to_be_paid = $('#total_to_be_paid').val();
 
-            if (tax_stamp == null || isNaN(tax_stamp)) {
-                tax_stamp = 0.0;
-            }
-            var entire_total_exculding_vat = $('#entire_total_exculding_vat').val();
-            var total_to_be_paid = parseFloat(entire_total_exculding_vat) + parseFloat(entire_vat.toFixed(2)) +
-                parseFloat(tax_stamp.toFixed(
-                    2));
-            console.log('total', total_to_be_paid)
-            console.log('total vat', total_vat)
+                if (tax_stamp == null || isNaN(tax_stamp)) {
+                    tax_stamp = 0.0;
+                }
+                var entire_total_exculding_vat = $('#entire_total_exculding_vat').val();
+                var total_to_be_paid = parseFloat(entire_total_exculding_vat) + parseFloat(entire_vat.toFixed(2)) +
+                    parseFloat(tax_stamp.toFixed(
+                        2));
+                console.log('total', total_to_be_paid)
+                console.log('total vat', total_vat)
 
-            $('#total_to_be_paid').val(total_to_be_paid.toFixed(2));
+                $('#total_to_be_paid').val(total_to_be_paid.toFixed(2));
+           
+
         }
     }
 
@@ -672,6 +753,35 @@
 
         }
 
+    }
+
+    function checkDiscount() {
+        var id_array = [];
+        id_array = all_product_ids.filter(onlyUnique);
+        if (id_array.length > 0) {
+            id_array.forEach(checkDiscount);
+
+            function checkDiscount(id, index) {
+                var discount = $('#discount_' + id).val();
+                if (discount % 1 != 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'discount must be Type of Integer',
+
+                    });
+                    $('#discount_' + id).val(0)
+                }
+                if (discount > 100) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Discount must be less or equal to 100',
+                    });
+                    $('#discount_' + id).val(0)
+                }
+            }
+        }
     }
 
     function onlyUnique(value, index, self) {

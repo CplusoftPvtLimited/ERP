@@ -126,9 +126,11 @@ class BankAccountController extends Controller
         ]);
         $item = $this->bankAccount->update($request, $bankAccount);
         if ($item == true) {
-            return redirect()->route('bank_account.index')->withSuccess(__('Bank Account has been Updated Successfully !'));
+            toastr()->success('Bank Account has been Updated Successfully !');
+            return redirect()->route('bank_account.index');
         } else {
-            return redirect()->back()->with('error', $item);
+            toastr()->error($item);
+            return redirect()->back();
         }
     }
 

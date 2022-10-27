@@ -1,5 +1,5 @@
 @extends('layout.main')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />e
+
 @section('content')
     @if (session()->has('message'))
         <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close"
@@ -21,7 +21,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header d-flex align-items-center">
+                        <div class="card-header d-flex align-items-center article_view_tr_head">
                             <h4>{{ trans('file.Edit Bank Account') }}</h4>
                         </div>
                         <div class="card-body">

@@ -10,7 +10,7 @@
                 <h2>{{ trans('file.Over View') }}</h2>
             </div>
             <div class="col-6 mb-1 mt-0 pt-0">
-                <button data-toggle="modal" data-target="#createModal" class="btn btn-danger float-right">+ Add
+                <button data-toggle="modal" data-target="#createModal" class="btn btn-info float-right">+ Add
                     Expense</button>
             </div>
 
@@ -33,7 +33,7 @@
                 </div>
             @endif
             <table id="data-table" class="table" style="width: 100% !important">
-                <thead>
+                <thead class="article_view_tr_head">
                     <tr>
                         <th>#</th>
                         <th>Type</th>
@@ -82,7 +82,7 @@
     class="modal fade text-left">
     <div role="document" class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header article_view_tr_head">
                 <h5 id="exampleModalLabel" class="modal-title">{{ trans('file.Add an Expense') }}</h5>
                 <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span
                         aria-hidden="true"><i class="dripicons-cross"></i></span></button>

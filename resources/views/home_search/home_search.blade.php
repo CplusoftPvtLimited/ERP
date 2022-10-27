@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ asset('css/home_search.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <section>
+        
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
@@ -14,7 +15,7 @@
                         <form action="{{ route('search_sections_by_engine') }}" method="POST"
                             enctype="multipart/form-data">
                             @csrf
-                            <div class="card-header article_view_tr_head">
+                            <div class="card-header article_view_tr_head" style="padding: 9px !important;">
                                 <div class="box">
                                     <label class="custom-radio-button__container">
                                         <input type="radio" name="sub_type" value="home" onclick="selectEngineType()"
@@ -96,7 +97,8 @@
                                 <div class="row home-search-row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="manufacturer_id">{{ __('Select Manufacturer') }} <span style="color: red;">*</span></label>
+                                            <label for="manufacturer_id">{{ __('Select Manufacturer') }} <span
+                                                    style="color: red;">*</span></label>
                                             <select name="manufacturer_id" id="manufacturer_id"
                                                 data-href="{{ route('get_models_by_manufacturer_home_search') }}"
                                                 class="selectpicker form-control" data-live-search="true"
@@ -111,7 +113,8 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="model_id">{{ __('Select Model') }} <span style="color: red;">*</span></label>
+                                            <label for="model_id">{{ __('Select Model') }} <span
+                                                    style="color: red;">*</span></label>
                                             <select name="model_id" id="model_id"
                                                 data-href="{{ route('get_engines_by_model_home_search') }}"
                                                 class="selectpicker form-control" data-live-search="true"
@@ -121,7 +124,8 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="engine_id">{{ __('Select Engine') }} <span style="color: red;">*</span></label>
+                                            <label for="engine_id">{{ __('Select Engine') }} <span
+                                                    style="color: red;">*</span></label>
                                             <select name="engine_id" id="engine_id"
                                                 data-href="{{ route('get_data_of_engine_home_search') }}"
                                                 class="selectpicker form-control" data-live-search="true"
@@ -134,36 +138,42 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="model_year">{{ __('Model Year') }}</label>
-                                            <select name="model_year" id="model_year" data-href="#"
+                                            {{-- <select name="model_year" id="model_year" data-href="#"
                                                 class="selectpicker form-control" data-live-search="true"
                                                 data-live-search-style="begins" required>
 
-                                            </select>
+                                            </select> --}}
+                                            <input type="text" id="model_year" name="model_year" class="form-control"
+                                                readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="fuel">{{ __('Fuel') }}</label>
-                                            <select name="fuel" id="fuel" data-href="#"
+                                            {{-- <select name="fuel" id="fuel" data-href="#"
                                                 class="selectpicker form-control" data-live-search="true"
                                                 data-live-search-style="begins" required>
-                                            </select>
+                                            </select> --}}
+                                            <input type="text" id="fuel" name="fuel" class="form-control"
+                                                readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="cc">{{ __('CC') }}</label>
-                                            <select name="cc" id="cc" data-href="#"
+                                            {{-- <select name="cc" id="cc" data-href="#"
                                                 class="selectpicker form-control" data-live-search="true"
                                                 data-live-search-style="begins" required>
-                                            </select>
+                                            </select> --}}
+                                            <input type="text" id="cc" name="cc" class="form-control"
+                                                readonly>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col text-right">
                                         <button class="btn btn-primary" type="submit"><i
-                                            class="fa fa-solid fa-magnifying-glass"></i> Search</button>
+                                                class="fa fa-solid fa-magnifying-glass"></i> Search</button>
                                     </div>
                                 </div>
                             </div>
@@ -176,25 +186,35 @@
                 <div class="col-md-12">
                     <div class="card p-0">
                         <div class="card-body">
-                            <form action="{{ route('get_article_by_sub_sections') }}" method="POST" enctype="multipart/form-data">
+                            <form action="{{ route('get_article_by_sub_sections') }}" method="POST"
+                                enctype="multipart/form-data">
                                 @csrf
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="brand_id">{{ __('Select Brand') }} <span style="color: red;">*</span></label>
-                                            <select name="brand_id" id="brand_id" data-href="{{ route('get_sub_sections_by_brand') }}"
+                                            <label for="brand_id">{{ __('Select Brand') }} <span
+                                                    style="color: red;">*</span></label>
+                                            <select name="brand_id" id="brand_id"
+                                                data-href="{{ route('get_sub_sections_by_brand') }}"
                                                 class="selectpicker form-control" data-live-search="true"
                                                 data-live-search-style="begins" required>
-                                                <option value="">Select One</option>
+                                                <option id="select_one" value="">Select One</option>
                                                 @foreach ($brands as $brand)
-                                                    <option value="{{ $brand->brandId }}">{{ $brand->brandName }}</option>
+                                                    <option value="{{ $brand->brandId }}">{{ $brand->brandName }}
+                                                    </option>
                                                 @endforeach
+                                                @if ($brands_count > 3)
+                                                    <option value="load" id="load"
+                                                        class="text-center text-danger"><a href="#">Load More</a>
+                                                    </option>
+                                                @endif
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="sub_section_id">{{ __('Select Product Group') }} <span style="color: red;">*</span></label>
+                                            <label for="sub_section_id">{{ __('Select Product Group') }} <span
+                                                    style="color: red;">*</span></label>
                                             <select name="sub_section_id" id="sub_section_id" data-href="#"
                                                 class="selectpicker form-control" data-live-search="true"
                                                 data-live-search-style="begins" required>
@@ -330,24 +350,10 @@
                 // $('#engine_id').selectpicker("refresh");
 
                 let response = data.data;
-                let model_year = "";
-                model_year +=
-                    `<option value="${response.beginYearMonth}">${response.beginYearMonth}</option>`;
-                let fuel = "";
-                fuel +=
-                    `<option value="${response.fuelType}">${response.fuelType}</option>`;
-                let cc = "";
-                cc +=
-                    `<option value="${response.capacityCC}">${response.capacityCC}</option>`;
-                $('#model_year').html(model_year);
-                $("#model_year").val(4);
-                $("#model_year").selectpicker("refresh");
-                $('#fuel').html(fuel);
-                $("#fuel").val(4);
-                $("#fuel").selectpicker("refresh");
-                $('#cc').html(cc);
-                $("#cc").val(4);
-                $("#cc").selectpicker("refresh");
+
+                $('#model_year').val(response.beginYearMonth);
+                $('#fuel').val(response.fuelType);
+                $('#cc').val(response.capacityCC);
             })
         }
 
@@ -356,33 +362,59 @@
         $(document).on('change', '#brand_id', function() {
             let brand_id = $(this).val();
             let url = $(this).attr('data-href');
-           
+
             getSubSectionsByBrand(url, brand_id);
         });
 
         function getSubSectionsByBrand(url, brand_id) {
-            $.get(url + '?brand_id=' + brand_id,
-                function(data) {
+            if (brand_id == "load") {
+                document.getElementById("select_one").selected = true;
+                var count = "{{ $brands_count }}";
+                $.ajax({
+                    url: "{{ route('load_more_brand') }}",
+                    method: "GET",
+                    success: function(data) {
+                        let view_html = "";
+                        $.each(data.brands, function(key, value) {
+                            view_html +=
+                                `<option value="${value.brandId}">${value.brandName}</option>`;
+                        });
 
-                    // $('#engine_id').html('<option value="">Select One</option>');
-                    // $('#engine_id').selectpicker("refresh");
+                        if (data.count >= count) {
+                            $('#load').hide();
+                        }
+                        
+                        $(this).addClass('dropdown open');
+                        $('#brand_id').append($("#load").before(view_html));
+                        $("#brand_id").selectpicker("refresh");
+                        $('#brand_id').val(4).trigger('change');
+                    }
+                });
+            } else {
+                $.get(url + '?brand_id=' + brand_id,
+                    function(data) {
 
-                    let response = data;
-                    console.log(response);
-                    let view_html = `<option value="">Select One</option>`;
-                    $.each(response, function(key, value) {
-                        view_html +=
-                            `<option value="${value.assemblyGroupNodeId}">${value.assemblyGroupName}</option>`;
+                        // $('#engine_id').html('<option value="">Select One</option>');
+                        // $('#engine_id').selectpicker("refresh");
+
+                        let response = data;
+                        console.log(response);
+                        let view_html = `<option value="">Select One</option>`;
+                        $.each(response, function(key, value) {
+                            view_html +=
+                                `<option value="${value.assemblyGroupNodeId}">${value.assemblyGroupName}</option>`;
                             $.each(value.sub_section, function(key_2, value_2) {
                                 view_html +=
                                     `<option value="${value_2.assemblyGroupNodeId}">${value_2.assemblyGroupName}</option>`;
                             });
-                    });
-                    // console.log(data, view_html);
-                    $('#sub_section_id').html(view_html);
-                    $("#sub_section_id").val(4);
-                    $("#sub_section_id").selectpicker("refresh");
-                })
+                        });
+                        // console.log(data, view_html);
+                        $('#sub_section_id').html(view_html);
+                        $("#sub_section_id").val(4);
+                        $("#sub_section_id").selectpicker("refresh");
+                    })
+            }
+
         }
     </script>
 @endpush

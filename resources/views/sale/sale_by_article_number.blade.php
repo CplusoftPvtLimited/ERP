@@ -464,6 +464,7 @@
 
     function alterSaleQty(id) {
 
+        var error = 0;
         var item_qty = parseInt($("#sale_item_qty" + id).val());
         if (!item_qty) {
             item_qty = 1;
@@ -474,24 +475,46 @@
         if (!sale_price) {
             sale_price = 1;
         }
-        var discount = (parseFloat(1) - (parseFloat($("#sale_discount_" + id).val() / 100)));
-        if (!discount) {
-            discount = (parseFloat(1) - (0 / 100));
-        }
-        var sale_total_with_discount = (item_qty * sale_price) * discount;
-        var sale_total_without_discount = (item_qty * sale_price);
-        if (sale_total_with_discount <= 0) {
-            $('#sale_total_with_discount' + id).val(0);
-        } else {
-            $('#sale_total_with_discount' + id).val(sale_total_with_discount.toFixed(2))
-        }
+        var discount_check = $("#sale_discount_" + id).val();
+        if (discount_check % 1 != 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Discount must be Type of Integer',
 
-        if (sale_total_without_discount <= 0) {
-            $('#sale_total_without_discount' + id).val(0);
-        } else {
-            $('#sale_total_without_discount' + id).val(sale_total_without_discount.toFixed(2))
+            });
+            $('#sale_discount_' + id).val(0)
+            error = 1;
         }
-        calculateEntireSaleTotal(all_product_ids);
+        if (discount_check > 100) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Discount must be less or equal to 100',
+            });
+            $('#sale_discount_' + id).val(0)
+            error = 1;
+        }
+        if (error == 0) {
+            var discount = (parseFloat(1) - (parseFloat($("#sale_discount_" + id).val() / 100)));
+            if (!discount) {
+                discount = (parseFloat(1) - (0 / 100));
+            }
+            var sale_total_with_discount = (item_qty * sale_price) * discount;
+            var sale_total_without_discount = (item_qty * sale_price);
+            if (sale_total_with_discount <= 0) {
+                $('#sale_total_with_discount' + id).val(0);
+            } else {
+                $('#sale_total_with_discount' + id).val(sale_total_with_discount.toFixed(2))
+            }
+
+            if (sale_total_without_discount <= 0) {
+                $('#sale_total_without_discount' + id).val(0);
+            } else {
+                $('#sale_total_without_discount' + id).val(sale_total_without_discount.toFixed(2))
+            }
+            calculateEntireSaleTotal(all_product_ids);
+        }
     }
 
 
@@ -616,15 +639,15 @@
                 discount = 0
             }
 
-            if(discount > total_sale_price){
+            if (discount > total_sale_price) {
                 Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'discount can not be greater than sum of sale price',
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'discount can not be greater than sum of sale price',
 
-                    });
-                    $('#sale_discount').val(discount - parseInt(1))
-                    exit();
+                });
+                $('#sale_discount').val(discount - parseInt(1))
+                exit();
 
             }
             $('#sale_entire_total_exculding_vat').val(total_before_discount.toFixed(2));

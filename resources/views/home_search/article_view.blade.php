@@ -382,7 +382,7 @@
             exit();
         }
         // exit();
-        if (quantity <= 1) {
+        if (quantity < 1) {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',

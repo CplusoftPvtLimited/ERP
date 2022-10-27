@@ -21,9 +21,11 @@ class HomeSearchController extends Controller
     public function homeSearchView(){ 
         $type = ["V","L","B"];
         $manufacturers = Manufacturer::whereIn('linkingTargetType', $type)->get();
-        $brands = Ambrand::all();
-       
-        return view('home_search.home_search',compact('manufacturers','brands'));
+        $brands = Ambrand::limit(3)->get();
+        $brands_count = Ambrand::count();
+        session()->put("record",3);
+        
+        return view('home_search.home_search',compact('manufacturers','brands','brands_count'));
     }
 
     public function getManufacturers(Request $request){
@@ -151,17 +153,16 @@ class HomeSearchController extends Controller
 
     public function articleSearchView($id,$section_id){
         $engine = LinkageTarget::where('linkageTargetId',$id)->first();
-        // if(empty($engine)){
-        //     toastr()->error("Data not found against your request");
-        //         return redirect()->back();
-        // }
+        
         $section_parts = Article::whereHas('section', function($query) {
                 $query->whereNotNull('request__linkingTargetId');
-            })->whereHas('articleVehicleTree', function ($query) use ($section_id,$engine) {
+            })
+            ->whereHas('articleVehicleTree', function ($query) use ($section_id,$engine) {
                 $query->where('linkingTargetType', $engine->linkageTargetType)->where('assemblyGroupNodeId', $section_id);
             })
             ->limit(100)
             ->get();
+        // dd($section_parts);
             // if(count($section_parts) <= 0 || empty($engine)){
             //     toastr()->error("Data not found against your request");
             //         return redirect()->back();
@@ -531,5 +532,18 @@ class HomeSearchController extends Controller
         //     });
         // }])->first();
         // dd($brand);
+    }
+
+    public function loadMoreBrands(){
+        $value = session()->get('record');
+        
+        $brands = Ambrand::skip($value)->take(3)->get();
+        session()->put('record',[]);
+        session()->put('record',$value + (int)3);
+        $value2 = session()->get('record');
+        return response()->json([
+            'brands' => $brands,
+            'count' => $value2
+        ]);
     }
 }

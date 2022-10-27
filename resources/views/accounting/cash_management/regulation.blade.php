@@ -29,7 +29,7 @@
                 </div>
             </div>
             <table id="regulation-data-table" class="table table-striped" style="width: 100% !important">
-                <thead style="border-bottom: 3px solid white;">
+                <thead style="border-bottom: 3px solid white;" class="article_view_tr_head">
                     <tr>
                         <th>Date</th>
                         <th>Label</th>

@@ -337,6 +337,8 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 	Route::post('get_article_by_sub_sections', 'HomeSearchController@articleSearchViewByBrandSection')->name('get_article_by_sub_sections'); 
 	Route::get('get_article_by_sub_section/{id}/{section_id}', 'HomeSearchController@articleSearchViewBySection')->name('get_article_by_sub_section'); 
 
+	Route::get('load_more_brand', 'HomeSearchController@loadMoreBrands')->name('load_more_brand'); 
+
 
 
 
