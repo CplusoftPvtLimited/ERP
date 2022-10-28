@@ -313,7 +313,7 @@
                                 </div>
                             </label>
                             <label class="custom-radio-button__container">
-                                <button class="btn btn-primary" type="button">
+                                <button class="btn btn-primary" onclick="show()" type="button">
                                     <i class="dripicons-cart"></i> Add to Cart
                                 </button>
                             </label>
@@ -364,6 +364,17 @@
             $('.cart_item').val(alter_quantity);
         })
     });
+
+
+    function show(){
+        Swal.fire({
+                icon: 'warning',
+                title: 'Work in Progress',
+                text: 'On click this button, items will be added to cart and then create a purchase...This work is in progress',
+
+            });
+            exit();
+    }
 
     function addToCart() {
         var cash_type = $('input[name="cash_type"]:checked').val();
