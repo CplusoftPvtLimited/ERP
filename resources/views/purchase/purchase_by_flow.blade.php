@@ -669,6 +669,7 @@
                     });
                 } else {
                     if (!article_ids_array.includes("article_" + data.data.legacyArticleId)) {
+                        $('#myTable tr').each(function() {
                         tableBody.append(markup);
                     } else {
                         Swal.fire({

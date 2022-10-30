@@ -21,9 +21,9 @@ class HomeSearchController extends Controller
     public function homeSearchView(){ 
         $type = ["V","L","B"];
         $manufacturers = Manufacturer::whereIn('linkingTargetType', $type)->get();
-        $brands = Ambrand::limit(3)->get();
+        $brands = Ambrand::limit(10)->get();
         $brands_count = Ambrand::count();
-        session()->put("record",3);
+        session()->put("record",10);
         
         return view('home_search.home_search',compact('manufacturers','brands','brands_count'));
     }
@@ -526,9 +526,9 @@ class HomeSearchController extends Controller
     public function loadMoreBrands(){
         $value = session()->get('record');
         
-        $brands = Ambrand::skip($value)->take(3)->get();
+        $brands = Ambrand::skip($value)->take(10)->get();
         session()->put('record',[]);
-        session()->put('record',$value + (int)3);
+        session()->put('record',$value + (int)10);
         $value2 = session()->get('record');
         return response()->json([
             'brands' => $brands,
