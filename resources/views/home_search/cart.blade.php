@@ -43,7 +43,7 @@
                                             <div class="form-group">
                                                 <label>{{ trans('file.Cash Type') }}</label>
                                                 <input type="text" class="form-control"
-                                                    value="{{ $cart->cash_type == 'white' ? 'White Cash' : 'Black Cash' }}"
+                                                    value="{{ $cart->cash_type == 'white' ? 'Primary Cash' : 'Secondary Cash' }}"
                                                     readonly>
                                             </div>
                                         </div>
