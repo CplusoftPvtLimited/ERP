@@ -305,12 +305,10 @@
                                 <div class="prod_cart_option d-flex justify-content-between mb-3 pb-2">
                                     <div class="buttons_opt">
                                         <span class="m_btn" id="minus"> <i class="fa fa-minus text-danger"></i></span>
-                                        @php
-                                            $old_val = session()->get('old_quantity'); 
-                                        @endphp
+                                        
                                         <input type="number" class="cart_item" id="quantity"
                                             style="border: none;outline: none;background: transparent;width: 70px" min="1" name="quantity"
-                                            value="{{ isset($old_val) ? $old_val : 1 }}">
+                                            value="1">
                                         <span class="m_btn" id="plus"> <i class="fa fa-plus text-success"></i></span>
                                     </div>
                                 </div>
