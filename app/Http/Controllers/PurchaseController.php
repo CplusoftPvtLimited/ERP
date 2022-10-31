@@ -323,16 +323,16 @@ class PurchaseController extends Controller
             $lims_product_list_without_variant = $this->productWithoutVariant();
             $lims_product_list_with_variant = $this->productWithVariant();
             $manufacturers = Manufacturer::all();
-            $articles = Article::select('articleNumber')->get();
-            $article_array = [];
-            if(count($articles) > 0){
-                foreach ($articles as $key => $value) {
-                    array_push($article_array,$value->articleNumber);
-                }
-            }
+            // $articles = Article::select('articleNumber')->get();
+            // $article_array = [];
+            // if(count($articles) > 0){
+            //     foreach ($articles as $key => $value) {
+            //         array_push($article_array,$value->articleNumber);
+            //     }
+            // }
             
             $suppliers = AfterMarkitSupplier::select('id', 'name')->where('retailer_id', auth()->user()->id)->get();
-            return view('purchase.create', compact('lims_supplier_list', 'lims_warehouse_list', 'lims_tax_list', 'lims_product_list_without_variant', 'lims_product_list_with_variant', 'manufacturers', 'suppliers','article_array'));
+            return view('purchase.create', compact('lims_supplier_list', 'lims_warehouse_list', 'lims_tax_list', 'lims_product_list_without_variant', 'lims_product_list_with_variant', 'manufacturers', 'suppliers'));
         } else
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
     }
@@ -1446,6 +1446,7 @@ class PurchaseController extends Controller
 
     public function getSectionsByEngine(Request $request)
     {
+        // dd($request->all());
         try {
             $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function($query) use ($request){
                     $query->where('linkingTargetId', $request->engine_id)
@@ -1468,10 +1469,11 @@ class PurchaseController extends Controller
         try {
             $section_parts = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')
             ->whereHas('section', function($query) {
-                $query->whereNotNull('request__linkingTargetId');
-            })->whereHas('articleVehicleTree', function ($query) use ($request) {
-                $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
+                // $query->whereNotNull('request__linkingTargetId');
             })
+            // ->whereHas('articleVehicleTree', function ($query) use ($request) {
+            //     $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
+            // })
             ->limit(100)
             ->get();
             return response()->json([
