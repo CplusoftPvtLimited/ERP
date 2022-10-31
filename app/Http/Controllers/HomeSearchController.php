@@ -21,7 +21,7 @@ class HomeSearchController extends Controller
     public function homeSearchView(){ 
         $type = ["V","L","B"];
         $manufacturers = Manufacturer::whereIn('linkingTargetType', $type)->get();
-        $brands = Ambrand::limit(10)->get();
+        $brands = Ambrand::where('lang','EN')->limit(10)->get();
         $brands_count = Ambrand::count();
         session()->put("record",10);
         
@@ -80,19 +80,19 @@ class HomeSearchController extends Controller
             if($request->engine_type == "P" && $request->engine_sub_type == "home"){
                 $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
                 ->where('vehicleModelSeriesId', $request->model_id)
-                ->whereIn('subLinkageTargetType',$type)
-                ->orWhere('linkageTargetType', $request->engine_type)->get();
+                // ->whereIn('subLinkageTargetType',$type)
+                ->whereIn('linkageTargetType', $type)->limit(100)->get();
             }else if($request->engine_type == "O" && $request->engine_sub_type == "home"){
                 
                 $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
                 ->where('vehicleModelSeriesId', $request->model_id)
-                ->whereIn('subLinkageTargetType',$type2)
-                ->orWhere('linkageTargetType', $request->engine_type)->get();
+                // ->whereIn('subLinkageTargetType',$type2)
+                ->whereIn('linkageTargetType', $type2)->limit(100)->get();
             }else{
                 $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
                 ->where('vehicleModelSeriesId', $request->model_id)
-                ->where('linkageTargetType', $request->engine_type)
-                ->orWhere('subLinkageTargetType',$request->engine_sub_type)->get();
+                // ->where('linkageTargetType', $request->engine_type)
+                ->orWhere('subLinkageTargetType',$request->engine_sub_type)->limit(100)->get();
             }
             
             
@@ -121,15 +121,49 @@ class HomeSearchController extends Controller
         // dd($request->all());
         $engine = LinkageTarget::where('linkageTargetId',$request->engine_id)
                 ->first();
+                $type = ["V","L","B"];
+                $type2 = ["C","T","M","A","K"];
+        if($request->type == "P" && $request->sub_type == "home"){
+            $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
+            ->whereHas('articleVehicleTree', function($query) use ($request,$engine,$type){
+                        $query->where('linkingTargetId', $request->engine_id)
+                        ->whereIn('linkingTargetType', $type);
+                        })
+                        ->with('allSubSection', function($data){
+                            $data->limit(10);
+                        })
+                   ->groupBy('assemblyGroupNodeId')
+                   ->limit(30)
+                    ->get();
+        }else if($request->type == "O" && $request->sub_type == "home"){
+            // dd($request->all());
+            $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
+            ->whereHas('articleVehicleTree', function($query) use ($request,$engine,$type2){
+                        $query->where('linkingTargetId', $request->engine_id)
+                        ->whereIn('linkingTargetType', $type2);
+                        })
+                        ->with('allSubSection', function($data){
+                            $data->limit(10);
+                        })
+                   ->groupBy('assemblyGroupNodeId')
+                   ->limit(30)
+                    ->get();
+        }else{
+            $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
+            ->whereHas('articleVehicleTree', function($query) use ($request,$engine,$type){
+                        $query->where('linkingTargetId', $request->engine_id)
+                        ->where('linkingTargetType', $request->engine_sub_type);
+                        
 
-        $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function($query) use ($request,$engine){
-                    $query->where('linkingTargetId', $request->engine_id)
-                    ->where('linkingTargetType', $engine->subLinkageTargetType);
-                })
-                ->with('allSubSection')
-               ->groupBy('assemblyGroupNodeId')
-               ->limit(100)
-                ->get();
+                        })
+                    ->with('allSubSection', function($data){
+                        $data->limit(10);
+                    })
+                   ->groupBy('assemblyGroupNodeId')
+                   ->limit(30)
+                    ->get();
+        }
+        
         // dd($sections);
         // $sections = [];
         // if(count($all_sections) > 0){
@@ -214,10 +248,11 @@ class HomeSearchController extends Controller
         $engine = LinkageTarget::where('linkageTargetId',$id)->first();
        
         $section_parts = Article::whereHas('section', function($query) {
-                $query->whereNotNull('request__linkingTargetId');
-            })->whereHas('articleVehicleTree', function ($query) use ($section_id) {
-                $query->where('assemblyGroupNodeId', $section_id);
+                // $query->whereNotNull('request__linkingTargetId');
             })
+            // ->whereHas('articleVehicleTree', function ($query) use ($section_id) {
+            //     $query->where('assemblyGroupNodeId', $section_id);
+            // })
             ->limit(100)
             ->get();
            
@@ -515,9 +550,9 @@ class HomeSearchController extends Controller
     }
 
     public function getSubSectionByBrand(Request $request) {
-        $brand = AssemblyGroupNode::whereHas('article', function($query) use ($request) {
+        $brand = AssemblyGroupNode::where('lang',"EN")->whereHas('article', function($query) use ($request) {
             $query->whereHas('brand', function($sub_query) use ($request)  {
-                $sub_query->where('brandId', $request->brand_id);
+                $sub_query->where('brandId', $request->brand_id)->where('lang','EN');
             });
         })->with('subSection')->get();
         return response()->json($brand);

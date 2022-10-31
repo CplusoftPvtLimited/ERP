@@ -40,7 +40,7 @@
                                         foreach ($sub_section as $section) {  
                                             if(count($section->allSubSection) > 0) {
                                                 
-                                                $html .=  '<li class="list-unstyled"> <a href="#getSubSection_'.$sub_section->assemblyGroupNodeId .'" class="list-unstyled" aria-expanded="false" data-toggle="collapse"><i class="fa fa-chevron-right"></i> ' . $section->assemblyGroupName . '</a> </li>';
+                                                $html .=  '<li class="list-unstyled"> <a href="#getSubSection_'.$section->assemblyGroupNodeId .'" class="list-unstyled" aria-expanded="false" data-toggle="collapse"><i class="fa fa-chevron-right"></i> ' . $section->assemblyGroupName . '</a> </li>';
                                                 return getSubSection($section->allSubSection, $engine, $html, $ul);
                                             }else{
                                                 $html .=  '<li class=""> <a href="/articles_search_view/' . $engine->linkageTargetId . '/' .  $section->assemblyGroupNodeId . '">' . $section->assemblyGroupName . '</a> </li>';

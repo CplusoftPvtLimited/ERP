@@ -669,7 +669,6 @@
                     });
                 } else {
                     if (!article_ids_array.includes("article_" + data.data.legacyArticleId)) {
-                        $('#myTable tr').each(function() {
                         tableBody.append(markup);
                     } else {
                         Swal.fire({
@@ -833,6 +832,7 @@
                 article_ids_array.splice(i, 1);
             }
         }
+        console.log(article_ids_array)
         if (all_product_ids.length <= 0) {
             $('#total_calculations').css('display', 'none');
             $('#submit-button').css('display', 'none');

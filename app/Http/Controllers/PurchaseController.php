@@ -1446,6 +1446,7 @@ class PurchaseController extends Controller
 
     public function getSectionsByEngine(Request $request)
     {
+        // dd($request->all());
         try {
             $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function($query) use ($request){
                     $query->where('linkingTargetId', $request->engine_id)
