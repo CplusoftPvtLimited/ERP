@@ -8,8 +8,6 @@ use App\Http\Requests\StoreChassisRequest;
 use App\Http\Requests\UpdateChassisRequest;
 use App\Repositories\Interfaces\ChassisInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 
 class ChassisController extends Controller
@@ -30,7 +28,7 @@ class ChassisController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $chassis = Chassis::orderBy('id', 'desc')->get();
+            $chassis = Chassis::all();
             return DataTables::of($chassis)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
