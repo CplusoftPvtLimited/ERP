@@ -664,14 +664,14 @@
                     tableBody.append(markup);
                     $('#myTable tr').each(function() {
                         if (this.id != '') {
-                            article_ids_array.push("article_"+ this.id)
+                            article_ids_array.push(this.id)
                         }
                     });
                 } else {
                     if (!article_ids_array.includes("article_" + data.data.legacyArticleId)) {
                         tableBody.append(markup);
                         
-                        //article_ids_array.push(data.data.legacyArticleId)
+                        article_ids_array.push("article_" + data.data.legacyArticleId)
                        
                    
                     } else {

@@ -41,8 +41,8 @@
                                             <div class="form-group">
                                                 <label>{{ trans('file.Cash Type') }}</label>
                                                 <select name="cash_type" id="cash_type" class="form-control">
-                                                    <option value="white">{{ trans('file.White Cash') }}</option>
-                                                    <option value="black">{{ trans('file.Black Cash') }}</option>
+                                                    <option value="white">{{ trans('file.Primary Cash') }}</option>
+                                                    <option value="black">{{ trans('file.Secondary Cash') }}</option>
                                                 </select>
                                             </div>
                                         </div>

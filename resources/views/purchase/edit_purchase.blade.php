@@ -47,7 +47,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for=""><b>Cash Type</b></label>
-                                    <p>{{ $purchase->cash_type == 'white' ? 'white' : 'black' }}</p>
+                                    <p>{{ $purchase->cash_type == 'white' ? 'Primary' : 'Secondary' }}</p>
 
                                 </div>
                                 <div class="col-md-4">

@@ -5,9 +5,10 @@
     @endif
     <link rel="stylesheet" href="{{ asset('css/purchase_create.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home_search.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/load_more_dropdown.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <section>
-        
+
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
@@ -194,21 +195,22 @@
                                         <div class="form-group">
                                             <label for="brand_id">{{ __('Select Brand') }} <span
                                                     style="color: red;">*</span></label>
-                                            <select name="brand_id" id="brand_id"
-                                                data-href="{{ route('get_sub_sections_by_brand') }}"
-                                                class="selectpicker form-control" data-live-search="true"
-                                                data-live-search-style="begins" required>
-                                                <option id="select_one" value="">Select One</option>
-                                                @foreach ($brands as $brand)
-                                                    <option value="{{ $brand->brandId }}">{{ $brand->brandName }}
-                                                    </option>
-                                                @endforeach
-                                                @if ($brands_count > 3)
-                                                    <option value="load" id="load"
-                                                        class="text-center text-danger"><a href="#">Load More</a>
-                                                    </option>
-                                                @endif
-                                            </select>
+                                           
+                                            <div class="dropdown">
+                                                <div class="dropdown-header form-control">{{ __('Select Brand') }}</div>
+                                                <div class="dropdown-content form-control">
+                                                    <div class="normal-option">
+                                                        @foreach ($brands as $brand)
+                                                            <div class="option" data-brand_id="{{ $brand->brandId }}">
+                                                                {{ $brand->brandName }}
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                    @if($brands_count > 10)
+                                                    <div class="option more">Load More</div>
+                                                    @endif
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -352,70 +354,76 @@
 
                 let response = data.data;
 
-                $('#model_year').val(response.beginYearMonth);
-                $('#fuel').val(response.fuelType);
-                $('#cc').val(response.capacityCC);
+                $('#model_year').val(response.beginYearMonth != null ? response.beginYearMonth : 'N/A');
+                $('#fuel').val(response.fuelType != null ? response.fuelType : 'N/A');
+                $('#cc').val(response.capacityCC != null ? response.capacityCC : 'N/A');
             })
         }
 
 
-        // get sub sections by brand
-        $(document).on('change', '#brand_id', function() {
-            let brand_id = $(this).val();
-            let url = $(this).attr('data-href');
+        // load more script
 
-            getSubSectionsByBrand(url, brand_id);
-        });
+        $('.dropdown-header').click(function(event) {
+            $('.dropdown-content').toggle();
+            event.stopPropagation();
+        })
 
-        function getSubSectionsByBrand(url, brand_id) {
-            if (brand_id == "load") {
-                document.getElementById("select_one").selected = true;
-                var count = "{{ $brands_count }}";
-                $.ajax({
-                    url: "{{ route('load_more_brand') }}",
-                    method: "GET",
-                    success: function(data) {
-                        let view_html = "";
-                        $.each(data.brands, function(key, value) {
-                            view_html +=
-                                `<option value="${value.brandId}">${value.brandName}</option>`;
-                        });
+        $(window).click(function() {
+            $('.dropdown-content').hide();
+        })
 
-                        if (data.count >= count) {
-                            $('#load').hide();
-                        }
-                        
-                        $(this).addClass('dropdown open');
-                        $('#brand_id').append($("#load").before(view_html));
-                        $("#brand_id").selectpicker("refresh");
-                        $('#brand_id').val(4).trigger('change');
-                    }
+        $(document.body).on('click', '.option:not(.more)', function(event) {
+           var brand_id =$(this).data('brand_id');
+           $('.dropdown-header').html($(this).html());
+           
+            
+           var url = "{{ route('get_sub_sections_by_brand') }}";
+            $.get(url + '?brand_id=' + brand_id, function(data) {
+
+
+                let response = data;
+                console.log(response);
+                let view_html = `<option value="">Select One</option>`;
+                $.each(response, function(key, value) {
+                    view_html +=
+                        `<option value="${value.assemblyGroupNodeId}">${value.assemblyGroupName}</option>`;
+                    $.each(value.sub_section, function(key_2, value_2) {
+                        view_html +=
+                            `<option value="${value_2.assemblyGroupNodeId}">${value_2.assemblyGroupName}</option>`;
+                    });
                 });
-            } else {
-                $.get(url + '?brand_id=' + brand_id,
-                    function(data) {
+                // console.log(data, view_html);
+                $('#sub_section_id').html(view_html);
+                $("#sub_section_id").val(4);
+                $("#sub_section_id").selectpicker("refresh");
+            })
+        })
 
-                        // $('#engine_id').html('<option value="">Select One</option>');
-                        // $('#engine_id').selectpicker("refresh");
+        $('.option.more').click(function(event) {
+            var count = "{{ $brands_count }}";
+            $.ajax({
+                url: "{{ route('load_more_brand') }}",
+                method: "GET",
+                success: function(data) {
+                    let view_html = "";
+                    $.each(data.brands, function(key, value) {
+                        $('.normal-option').append($('<div class="option" data-brand_id="'+value.brandId+'">').html(value.brandName));
+                    });
 
-                        let response = data;
-                        console.log(response);
-                        let view_html = `<option value="">Select One</option>`;
-                        $.each(response, function(key, value) {
-                            view_html +=
-                                `<option value="${value.assemblyGroupNodeId}">${value.assemblyGroupName}</option>`;
-                            $.each(value.sub_section, function(key_2, value_2) {
-                                view_html +=
-                                    `<option value="${value_2.assemblyGroupNodeId}">${value_2.assemblyGroupName}</option>`;
-                            });
-                        });
-                        // console.log(data, view_html);
-                        $('#sub_section_id').html(view_html);
-                        $("#sub_section_id").val(4);
-                        $("#sub_section_id").selectpicker("refresh");
-                    })
-            }
+                    if (data.count >= count) {
+                        $('.option.more').hide();
+                    }
+                    
 
-        }
+                }
+            });
+            event.stopPropagation();
+           
+           
+        })
+
+        /// load more script end
+
+        
     </script>
 @endpush

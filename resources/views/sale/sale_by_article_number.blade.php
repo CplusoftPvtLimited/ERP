@@ -396,6 +396,7 @@
                 } else {
                     if (!article_ids_array.includes("article_" + data.data.legacyArticleId)) {
                         tableBody.append(markup);
+                        article_ids_array.push("article_" + data.data.legacyArticleId)
                     } else {
                         Swal.fire({
                             icon: 'error',

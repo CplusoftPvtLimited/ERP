@@ -44,10 +44,10 @@
                                                 <div class="form-group">
                                                     <label class="invoice-label">{{ trans('file.Cash Type') }}</label>
                                                     @if ($sale->cash_type == 'white')
-                                                        <input type="text" class="form-control" value="White Cash"
+                                                        <input type="text" class="form-control" value="Primary Cash"
                                                             readonly>
                                                     @else
-                                                        <input type="text" class="form-control" value="Black Cash"
+                                                        <input type="text" class="form-control" value="Secondary Cash"
                                                             readonly>
                                                     @endif
 

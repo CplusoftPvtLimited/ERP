@@ -51,6 +51,8 @@ return [
 	'Detail' => 'Detail',
 	'Black Cash' => 'Black Cash',
 	'White Cash' => 'White Cash',
+	'Primary Cash' => 'Primary Cash',
+	'Secondary Cash' => 'Secondary Cash',
 	'Cash Type' => 'Cash Type',
 	'Section Parts' => 'Section Parts',
 	'Brand Languages' => 'Brand Languages',

@@ -337,6 +337,13 @@
         var id_array = [];
         var total_quantity_of_all_row_products = 0;
         $('#submit_button').on('click', function() {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Work in Progress',
+                text: 'On click this button, items will be added to cart and then create a purchase...This work is in progress',
+
+            });
+            exit();
             $('#valueCheck').val(1);
             var check_array = [];
             var supplier_id = $('#supplier_id').find(":selected").val();

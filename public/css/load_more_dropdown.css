@@ -1,0 +1,33 @@
+.dropdown{
+    display: table;
+    width: 100%;
+  }
+  
+  .dropdown-content{
+    display: none;
+    border: 1px solid gray;
+  }
+  
+  .dropdown-content .normal-option .option, .dropdown-content .option{
+    /* border-top: 1px solid gray; */
+    /* text-align: center; */
+    padding: 2px 10px;  
+    cursor: pointer;
+    font-size: 13px;
+  }
+  
+  .dropdown-content .normal-option .option:hover, .dropdown-content .option:hover{
+    background-color: lightgray;
+  }
+  
+  .dropdown-header{
+    border: 1px solid gray;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+
+  .option.more {
+    text-align: center;
+    background: #6244a6;
+    color: white;
+}
