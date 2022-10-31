@@ -1,15 +1,10 @@
-<h1 align="center" data-color="red"><strong>THIS PACKAGE IS DEPRECATED, PLEASE USE  <a href="https://packagist.org/packages/php-flasher/flasher-toastr-laravel">php-flasher/flasher-toastr-laravel</a> INSTEAD</strong></h1>
+<h1 align="center">Toastr.js notifications for Laravel</h1>
 
-<h1 align="center">Toastr.js notifications for Laravel 5 and Lumen</h1>
-
-<p align="center">:eyes: This package helps you to add <a href="https://github.com/CodeSeven/toastr">toastr.js</a> notifications to your Laravel 5 and Lumen projects.</p>
+<p align="center">:eyes: This package helps you to add <a href="https://github.com/CodeSeven/toastr">toastr.js</a> notifications to your Laravel projects.</p>
 
 <p align="center">
     <a href="https://packagist.org/packages/yoeunes/toastr"><img src="https://poser.pugx.org/yoeunes/toastr/v/stable" alt="Latest Stable Version"></a>
     <a href="https://packagist.org/packages/yoeunes/toastr"><img src="https://poser.pugx.org/yoeunes/toastr/v/unstable" alt="Latest Unstable Version"></a>
-    <a href="https://scrutinizer-ci.com/g/yoeunes/toastr/build-status/master"><img src="https://scrutinizer-ci.com/g/yoeunes/toastr/badges/build.png?b=master" alt="Build Status"></a>
-    <a href="https://scrutinizer-ci.com/g/yoeunes/toastr/?branch=master"><img src="https://scrutinizer-ci.com/g/yoeunes/toastr/badges/quality-score.png?b=master" alt="Scrutinizer Code Quality"></a>
-    <a href="https://scrutinizer-ci.com/g/yoeunes/toastr/?branch=master"><img src="https://scrutinizer-ci.com/g/yoeunes/toastr/badges/coverage.png?b=master" alt="Code Coverage"></a>
     <a href="https://packagist.org/packages/yoeunes/toastr"><img src="https://poser.pugx.org/yoeunes/toastr/downloads" alt="Total Downloads"></a>
     <a href="https://packagist.org/packages/yoeunes/toastr"><img src="https://poser.pugx.org/yoeunes/toastr/license" alt="License"></a>
 </p>
@@ -18,40 +13,11 @@
 
 ## Install
 
-<strong>THIS PACKAGE IS DEPRECATED, CONSIDER USING <a href="https://packagist.org/packages/php-flasher/flasher-toastr-laravel">php-flasher/flasher-toastr-laravel</a> INSTEAD</strong>
-
 You can install the package using composer
 
 ```sh
 composer require yoeunes/toastr
 ```
-
-Then add the service provider to `config/app.php`. In Laravel versions 5.5 and beyond, this step can be skipped if package auto-discovery is enabled.
-
-```php
-'providers' => [
-    ...
-    Yoeunes\Toastr\ToastrServiceProvider::class
-    ...
-];
-```
-
-As optional if you want to modify the default configuration, you can publish the configuration file:
- 
-```sh
-php artisan vendor:publish --provider="Yoeunes\Toastr\ToastrServiceProvider"
-```
-
-For Windows users if you get `Unable to locate publishable resources` 
-
-![Screenshot from 2020-12-29 11-28-38](https://user-images.githubusercontent.com/10859693/103277521-82676380-49c9-11eb-9b83-48e9620e7314.png)
-
-Run this command :
-```sh
-php artisan vendor:publish
-```
-
-And after that select `Yoeunes\Toastr\ToastrServiceProvider`
 
 ## Usage:
 
@@ -60,8 +26,8 @@ The usage of this package is very simple and straightforward. it only required o
 Use `toastr()` helper function inside your controller to set a toast notification for info, success, warning or error
 
 ```php
-// Display an info toast with no title
-toastr()->info('Are you the 6 fingered man?')
+// Display an error toast with no title
+toastr()->error('Oops! Something went wrong!');
 ```
 
 As an example:
@@ -98,17 +64,16 @@ class PostController extends Controller
 
 ```php
 // Set a warning toast, with no title
-toastr()->warning('My name is Inigo Montoya. You killed my father, prepare to die!')
+toastr()->warning('Are you sure you want to proceed ?');
 
 // Set a success toast, with a title
-toastr()->success('Have fun storming the castle!', 'Miracle Max Says')
+toastr()->success('Data has been saved successfully!', 'Congrats');
 
 // Set an error toast, with a title
-toastr()->error('I do not think that word means what you think it means.', 'Inconceivable!')
+toastr()->error('Oops! Something went wrong!', 'Oops!');
 
 // Override global config options from 'config/toastr.php'
-
-toastr()->success('We do have the Kapua suite available.', 'Turtle Bay Resort', ['timeOut' => 5000])
+toastr()->success('Data has been saved successfully!', 'Congrats', ['timeOut' => 5000]);
 ```
 
 ### Other api methods:
@@ -116,7 +81,10 @@ toastr()->success('We do have the Kapua suite available.', 'Turtle Bay Resort', 
 You can also chain multiple messages together using method chaining
 
 ```php
-toastr()->info('Are you the 6 fingered man?')->success('Have fun storming the castle!')->warning('doritos');
+toastr()
+    ->info('Welcome back')
+    ->success('Data has been saved successfully!')
+    ->warning('Are you sure you want to proceed ?');
 ```
 
 You can use `toastr('')` instead of `toastr()->success()`
@@ -133,6 +101,24 @@ So
 * `toastr($message, 'error') ` is equivalent to `toastr()->error($message)`
 
 ### configuration:
+
+As optional if you want to modify the default configuration, you can publish the configuration file:
+ 
+```sh
+php artisan vendor:publish --provider="Yoeunes\Toastr\ToastrServiceProvider"
+```
+
+For Windows users if you get `Unable to locate publishable resources` 
+
+![Screenshot from 2020-12-29 11-28-38](https://user-images.githubusercontent.com/10859693/103277521-82676380-49c9-11eb-9b83-48e9620e7314.png)
+
+Run this command :
+```sh
+php artisan vendor:publish
+```
+
+And after that select `Yoeunes\Toastr\ToastrServiceProvider`
+
 ```php
 // config/toastr.php
 <?php

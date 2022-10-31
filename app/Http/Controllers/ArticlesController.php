@@ -355,25 +355,6 @@ class ArticlesController extends Controller
             return redirect()->route('article.archived');
         }
     }
-    // public function destroy($id)
-    // {
-    //     DB::beginTransaction();
-    //     $article = Article::find($id);
-    //     if ($article) {
-    //         $article->articleCriteria()->delete();
-    //         $article->articleCrosses()->delete();
-    //         $article->articleEAN()->delete();
-    //         $article->articleLink()->delete();
-    //         $article->articleVehicleTree()->delete();
-    //         $article->delete();
-    //         DB::commit();
-    //         toastr()->success('Product Deleted Successfully');
-    //         return redirect()->route('article.archived');
-    //     } else {
-    //         DB::rollBack();
-    //         return response()->json("false");
-    //     }
-    // }
 
     public function articlesByReferenceNo(Request $request)
     {
@@ -386,6 +367,8 @@ class ArticlesController extends Controller
             return $e->getMessage();
         }
     }
+
+    
     public function restoreProduct(Request $request)
     {
         // dd($request->id);

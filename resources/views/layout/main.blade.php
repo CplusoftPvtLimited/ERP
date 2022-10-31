@@ -174,7 +174,10 @@
                         <li id="maufacturer-list-menu"
                             class="{{ $route == 'manufacturer.archive' ? 'active' : '' }}">
                             <a href="{{ route('manufacturer.archive') }}"><i class="dripicons-user-group"></i>
-                                {{ trans('file.Archived Manufacturer') }}</a>
+                                {{ trans('file.Archived') }}
+                                <br>
+                                <i class="dripicons"></i>
+                                {{ trans('file.Manufacturer') }}</a>
                         </li>
                         <li id="modelseries-list-menu" class="{{ $route == 'modelseries.index' ? 'active' : '' }}">
                             <a href="{{ route('modelseries.index') }}"><i class="dripicons-user-group"></i>

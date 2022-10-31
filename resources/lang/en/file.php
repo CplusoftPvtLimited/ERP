@@ -1,5 +1,6 @@
 <?php 
 return [
+	'Archived' => 'Archived',
 	'Archived Suppliers' => 'Archived Suppliers',
 	'Archived Sections' => 'Archived Sections',
 	'Archived Engines' => 'Archived Engines',
