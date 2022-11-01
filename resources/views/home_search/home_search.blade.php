@@ -241,6 +241,18 @@
     <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
 
     <script>
+         $(document).ready(function() {
+            // $('#search_home').on('click', function(e) {
+
+            //     e.preventDefault();
+
+                if ($(window).outerWidth() > 1199) {
+                    $('nav.side-navbar').toggleClass('shrink');
+                    $('.page').toggleClass('active');
+                    // window.location.href = "/home_search";
+                }
+            // });
+        })
         // get manufacturers
         function selectEngineType() {
             var sub_type = $('input[name="sub_type"]:checked').val();

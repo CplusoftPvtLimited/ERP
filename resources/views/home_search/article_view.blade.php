@@ -29,9 +29,9 @@
     <section>
         <form action="{{ route('purchase_add_to_cart') }}" id="add_to_cart_form" method="POST" enctype="multipart/form-data">
             @csrf
-            <input type="hidden" name="article" value="{{ $article->legacyArticleId }}">
-            <input type="hidden" name="section" value="{{ $section->assemblyGroupNodeId }}">
-            <input type="hidden" name="sub_section" value="{{ $sub_section->assemblyGroupNodeId }}">
+            <input type="hidden" name="article" value="{{ isset($article) ? $article->legacyArticleId : '' }}">
+            <input type="hidden" name="section" value="{{ isset($section) ?  $section->assemblyGroupNodeId : ''}}">
+            <input type="hidden" name="sub_section" value="{{ isset($sub_section) ? $sub_section->assemblyGroupNodeId : ''}}">
             <input type="hidden" name="engine" value="{{ $engine->linkageTargetId }}">
             <input type="hidden" name="brand" value="{{ $brand->brandId }}">
             <input type="hidden" name="purchase_price" value="1">

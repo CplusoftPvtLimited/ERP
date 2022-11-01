@@ -1535,24 +1535,28 @@ class PurchaseController extends Controller
     public function getArticleInfo(Request $request)
     {
         try {
-            $section_part = Article::select('mfrId', 'assemblyGroupNodeId','legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')->whereHas('articleVehicleTree', function ($query) use ($request) {
+            $section_part = Article::select('mfrId', 'assemblyGroupNodeId','legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')
+            ->whereHas('articleVehicleTree', function ($query) use ($request) {
                 $query->where('articleNumber', 'LIKE' , '%' . $request->name . '%');
-            })->with(['section' => function($query) {
-                $query->whereNotNull('request__linkingTargetType');
-                $query->select(['assemblyGroupNodeId', 'assemblyGroupName', 'request__linkingTargetId', 'request__linkingTargetType']);
-                $query->whereHas('linkageTarget');
-            }])->first();
-            if(empty($section_part->section)) {
-                return response()->json([
-                    'data' => 0,
-                    "message" => "section not available for this product"
-                ]);
-            }
+            })
+            // ->with(['section' => function($query) {
+            //     // $query->whereNotNull('request__linkingTargetType');
+            //     $query->select(['assemblyGroupNodeId', 'assemblyGroupName', 'request__linkingTargetId', 'request__linkingTargetType']);
+            //     // $query->whereHas('linkageTarget');
+            // }])
+            ->first();
+            // dd($section_part);
+            // if(empty($section_part->section)) {
+            //     return response()->json([
+            //         'data' => 0,
+            //         "message" => "section not available for this product"
+            //     ]);
+            // }
             $model = ModelSeries::where('manuId',$section_part->mfrId)->first();
             $p_type = ['V','L','B'];
             $o_type = ['M','A','K','C','T'];
             $type = "";
-            if(in_array($section_part->section->request__linkingTargetType,$p_type)){
+            if(in_array($section_part->articleVehicleTree->linkingTargetType,$p_type)){
                 $type = "P";
             }else{
                 $type = "O";
@@ -1563,10 +1567,10 @@ class PurchaseController extends Controller
                 'stock' => $stock,
                 'supplier' => $request->supplier_id,
                 'linkage_target_type' => $type, // engine_type
-                'linkage_target_sub_type' => $section_part->section->request__linkingTargetType, //
+                'linkage_target_sub_type' => $section_part->articleVehicleTree->linkingTargetType, //
                 'manufacturer_id' => $section_part->mfrId,
-                'model_id' => $model->modelId,
-                'engine_id' => $section_part->section->request__linkingTargetId,
+                'model_id' => isset( $model->modelId) ? $model->modelId : 0,
+                'engine_id' => $section_part->articleVehicleTree->linkingTargetId,
                 'section_id' => $request->section_id,
                 'status' => $request->status,
                 'date' => $request->date,

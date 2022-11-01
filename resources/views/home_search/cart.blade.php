@@ -331,6 +331,16 @@
 @endsection
 @push('scripts')
     <script>
+         $(document).ready(function() {
+           
+
+                if ($(window).outerWidth() > 1199) {
+                    $('nav.side-navbar').toggleClass('shrink');
+                    $('.page').toggleClass('active');
+                 
+                }
+            // });
+        })
         var t_qty = 0;
         let w_qty = 0;
         let b_qty = 0;

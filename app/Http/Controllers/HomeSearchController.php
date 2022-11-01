@@ -188,10 +188,11 @@ class HomeSearchController extends Controller
     public function articleSearchView($id,$section_id){
         $engine = LinkageTarget::where('linkageTargetId',$id)->first();
         
-        $section_parts = Article::whereHas('section', function($query) {
-                $query->whereNotNull('request__linkingTargetId');
-            })
-            ->whereHas('articleVehicleTree', function ($query) use ($section_id,$engine) {
+        
+        // whereHas('section', function($query) {
+        //         $query->whereNotNull('request__linkingTargetId');
+        //     })
+        $section_parts = Article::whereHas('articleVehicleTree', function ($query) use ($section_id,$engine) {
                 $query->where('linkingTargetType', $engine->linkageTargetType)->where('assemblyGroupNodeId', $section_id);
             })
             ->limit(100)
@@ -247,13 +248,14 @@ class HomeSearchController extends Controller
         // dd($request->all());
         $engine = LinkageTarget::where('linkageTargetId',$id)->first();
        
-        $section_parts = Article::whereHas('section', function($query) {
-                // $query->whereNotNull('request__linkingTargetId');
+        
+        // whereHas('section', function($query) {
+        //         // $query->whereNotNull('request__linkingTargetId');
+        //     })
+        $section_parts = Article::whereHas('articleVehicleTree', function ($query) use ($section_id) {
+                $query->where('assemblyGroupNodeId', $section_id);
             })
-            // ->whereHas('articleVehicleTree', function ($query) use ($section_id) {
-            //     $query->where('assemblyGroupNodeId', $section_id);
-            // })
-            ->limit(100)
+            ->limit(50)
             ->get();
            
             $type = $engine->linkageTargetType;
@@ -305,6 +307,7 @@ class HomeSearchController extends Controller
 
     // When Cart is empty 
     public function cartEmptyData($request){
+        // dd($request->all());
         DB::beginTransaction();
         try {
             
@@ -353,11 +356,11 @@ class HomeSearchController extends Controller
             $cart_item->linkage_target_sub_type = $linkage->subLinkageTargetType;
             $cart_item->cash_type = $request->cash_type;
             $cart_item->brand_id = $request->brand;
-            $cart_item->discount = $request->discount / 100;
+            $cart_item->discount = $request->discount;
             $cart_item->additional_cost_without_vat = $request->additional_cost_without_vat;
             $cart_item->additional_cost_with_vat = $request->additional_cost_with_vat;
             $cart_item->vat = $request->vat;
-            $cart_item->profit_margin = ($request->profit_margin / 100);
+            $cart_item->profit_margin = ($request->profit_margin);
             $cart_item->total_excluding_vat = $total_excluding_vat;
             $cart_item->actual_cost_per_product = $actual_cost_per_product;
             $date = date("Y-m-d");
@@ -393,16 +396,16 @@ class HomeSearchController extends Controller
                 if($cart_item->product_id == $request->article){
                     $total_excluding_vat = (($request->purchase_price + $cart_item->actual_price) * ($request->quantity + $cart_item->qty)) + ($request->additional_cost_without_vat + $cart_item->additional_cost_without_vat);
                     $actual_cost_per_product =  ($total_excluding_vat / ($request->quantity + $cart_item->qty)) + ($cart->additional_cost / $cart->total_qty);
-                    $sale_price = $actual_cost_per_product * (1 + (($request->profit_margin / 100) + $cart_item->profit_margin));
+                    $sale_price = $actual_cost_per_product * (1 + (($request->profit_margin / 100) + ($cart_item->profit_margin /100)));
                     
                     $cart_item->qty = $cart_item->qty + $request->quantity;
                     $cart_item->actual_price = $cart_item->actual_price + $request->purchase_price;
                     $cart_item->sell_price = $sale_price;
-                    $cart_item->discount = $cart_item->discount +  ($request->discount / 100);
+                    $cart_item->discount = $cart_item->discount +  $request->discount;
                     $cart_item->additional_cost_without_vat = (float)$cart_item->additional_cost_without_vat + (float)$request->additional_cost_without_vat;
                     $cart_item->additional_cost_with_vat = (float)$cart_item->additional_cost_with_vat + (float)$request->additional_cost_with_vat;
-                    $cart_item->vat = (float)$cart_item->vat + (float)($request->vat / 100);
-                    $cart_item->profit_margin = $cart_item->profit_margin + ($request->profit_margin / 100);
+                    $cart_item->vat = (float)$cart_item->vat + (float)$request->vat;
+                    $cart_item->profit_margin = $cart_item->profit_margin + $request->profit_margin;
                     $cart_item->total_excluding_vat = $total_excluding_vat;
                     $cart_item->actual_cost_per_product = $actual_cost_per_product;
                     $date = date("Y-m-d");
@@ -434,11 +437,11 @@ class HomeSearchController extends Controller
                     $cart_item->linkage_target_sub_type = $linkage->subLinkageTargetType;
                     $cart_item->cash_type = $request->cash_type;
                     $cart_item->brand_id = $request->brand;
-                    $cart_item->discount = $request->discount / 100;
+                    $cart_item->discount = $request->discount;
                     $cart_item->additional_cost_without_vat = $request->additional_cost_without_vat;
                     $cart_item->additional_cost_with_vat = $request->additional_cost_with_vat;
                     $cart_item->vat = $request->vat;
-                    $cart_item->profit_margin = ($request->profit_margin / 100);
+                    $cart_item->profit_margin = ($request->profit_margin);
                     $cart_item->total_excluding_vat = $total_excluding_vat;
                     $cart_item->actual_cost_per_product = $actual_cost_per_product;
                     $date = date("Y-m-d");
@@ -551,11 +554,16 @@ class HomeSearchController extends Controller
     }
 
     public function getSubSectionByBrand(Request $request) {
-        $brand = AssemblyGroupNode::where('lang',"EN")->whereHas('article', function($query) use ($request) {
-            $query->whereHas('brand', function($sub_query) use ($request)  {
-                $sub_query->where('brandId', $request->brand_id)->where('lang','EN');
+        $brand = AssemblyGroupNode::where('lang',"EN")->whereHas('articleVehicleTree', function($query) use ($request) {
+            $query->whereHas('article', function($query) use ($request) {
+                $query->whereHas('brand', function($sub_query) use ($request)  {
+                    $sub_query->where('brandId', $request->brand_id)->where('lang','EN');
+                });
             });
-        })->with('subSection')->get();
+        })->with('subSection', function($query){
+            $query->limit(50);
+        })->limit(20)->get();
+        // dd($brand);
         return response()->json($brand);
     }
 
