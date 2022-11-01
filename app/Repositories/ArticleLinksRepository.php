@@ -28,7 +28,7 @@ class ArticleLinksRepository implements ArticleLinksInterface
             return $item;
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e->getMessage());
+            // dd($e->getMessage());
             return $e->getMessage();
         }
     }

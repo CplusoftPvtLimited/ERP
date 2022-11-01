@@ -360,7 +360,7 @@ catch(\Exception $e){
             return back();
         }catch(\Exception $e){
             DB::rollback();
-            dd($e->getMessage());
+            // dd($e->getMessage());
             return back();
         }
         
@@ -422,7 +422,7 @@ catch(\Exception $e){
             return back();
         } catch (\Exception $e) {
             DB::rollback();
-            dd($e->getMessage());
+            // dd($e->getMessage());
             return back();
         }
     }
@@ -482,7 +482,7 @@ catch(\Exception $e){
             return back();
         }catch(\Exception $e){
             DB::rollback();
-            dd($e->getMessage());
+            // dd($e->getMessage());
             return back();
         }
     }

@@ -105,7 +105,7 @@ class RegisterController extends Controller
         } 
         catch (\Throwable $th) {
             DB::rollback();
-            dd($th);
+            // dd($th);
         }
 
     }

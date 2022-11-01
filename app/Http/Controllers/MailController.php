@@ -19,6 +19,6 @@ class MailController extends Controller
          
         Mail::to('your_email@gmail.com')->send(new DemoMail($mailData));
            
-        dd("Email is sent successfully.");
+        // dd("Email is sent successfully.");
     }
 }

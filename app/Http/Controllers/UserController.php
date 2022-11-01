@@ -27,7 +27,7 @@ class UserController extends Controller
         if($request->ajax())
         {
             $user :: User::where('is_deleted', false)->orderBy('id','desc')->join('roles')->get();
-            dd($user);
+            // dd($user);
         }
         $role = Role::find(Auth::user()->role_id);
         if($role->hasPermissionTo('users-index')){
