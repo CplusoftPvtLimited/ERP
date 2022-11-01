@@ -272,6 +272,9 @@ catch(\Exception $e){
                 'receiver' => $admin->id,
                 'sender' => auth()->user()->id,
                 'sender_name' => auth()->user()->name,
+                'type' => "no",
+                'file_name' => "no file",
+
                 'message' => auth()->user()->name.' has submitted a Form',
                 'url' => 'submitted_form_show',
 
@@ -298,7 +301,7 @@ catch(\Exception $e){
             // return back();
         }catch(\Exception $e){
             DB::rollback();
-            // dd($e->getMessage());
+           
             return back()->with('error','Fields Data Must be greater than 0 & less than 255');
         }
         

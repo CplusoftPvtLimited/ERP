@@ -23,7 +23,7 @@ class RetailerRegisterController extends Controller
     protected function validator(Request $request)
     {
        $data = $request->all();
-       dd($data);
+      
         return Validator::make($data, [
             'shop_name' => 'required|string|max:255|unique:users',
             'name' => [
@@ -113,6 +113,9 @@ class RetailerRegisterController extends Controller
                 'receiver' => $admin->id,
                 'sender' => $newuser->id,
                 'sender_name' => $newuser->name,
+                'type' => "no",
+                'file_name' => "no file",
+
                 'message' => 'A new User has been Registered',
                 'url' => 'user_show',
 
