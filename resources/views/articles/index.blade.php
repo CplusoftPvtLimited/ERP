@@ -2,14 +2,14 @@
 @section('css')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
 @endsection
-
-@section('content')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
 <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
 <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script> -->
-<!-- <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
+<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>  -->
+<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+@section('content')
     @if (session()->has('create_message'))
         <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close"
                 data-dismiss="alert" aria-label="Close"><span
@@ -128,7 +128,6 @@
                 "ordering": false,
                 "processing": true,
                 "serverside": true,
-                "pageLength": 5,
                 ajax: {
                     "url": "{{ route('article.index') }}",
                     "data": (d) => {
@@ -169,7 +168,6 @@
                     }
                 ],
             });
-
             $('.purchase-save-btn').on('click', (e) => {
                 article_id =  $('#automplete-1').val(),
                 engine_sub_type = null;
@@ -177,7 +175,6 @@
                 oTable.ajax.reload();
                 
             });
-
             $('#save-btn').on('click', (e) => {
                 engine_sub_type = $('#subLinkageTarget').val();
                 section_id = $('#section_id').val();
@@ -200,7 +197,6 @@
             document.getElementById(tabName).style.display = "block";
             evt.currentTarget.className += " active";
         }
-
         // Get the element with id="defaultOpen" and click on it
         document.getElementById("defaultOpen").click();
     </script>
