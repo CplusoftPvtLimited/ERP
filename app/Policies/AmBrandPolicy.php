@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\AmBrand;
+use App\Models\Ambrand;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -25,10 +25,10 @@ class AmBrandPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\User  $user
-     * @param  \App\Models\AmBrand  $amBrand
+     * @param  \App\Models\Ambrand  $amBrand
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, AmBrand $amBrand)
+    public function view(User $user, Ambrand $amBrand)
     {
         //
     }
@@ -48,10 +48,10 @@ class AmBrandPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\User  $user
-     * @param  \App\Models\AmBrand  $amBrand
+     * @param  \App\Models\Ambrand  $amBrand
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, AmBrand $amBrand)
+    public function update(User $user, Ambrand $amBrand)
     {
         //
     }
@@ -60,10 +60,10 @@ class AmBrandPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\User  $user
-     * @param  \App\Models\AmBrand  $amBrand
+     * @param  \App\Models\Ambrand  $amBrand
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, AmBrand $amBrand)
+    public function delete(User $user, Ambrand $amBrand)
     {
         //
     }
@@ -72,10 +72,10 @@ class AmBrandPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\User  $user
-     * @param  \App\Models\AmBrand  $amBrand
+     * @param  \App\Models\Ambrand  $amBrand
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, AmBrand $amBrand)
+    public function restore(User $user, Ambrand $amBrand)
     {
         //
     }
@@ -84,10 +84,10 @@ class AmBrandPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\User  $user
-     * @param  \App\Models\AmBrand  $amBrand
+     * @param  \App\Models\Ambrand  $amBrand
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, AmBrand $amBrand)
+    public function forceDelete(User $user, Ambrand $amBrand)
     {
         //
     }

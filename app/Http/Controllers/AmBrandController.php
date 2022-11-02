@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AmBrand;
+use App\Models\Ambrand;
 use App\Http\Requests\StoreAmBrandRequest;
 use App\Http\Requests\UpdateAmBrandRequest;
 use App\Language;
@@ -29,7 +29,7 @@ class AmBrandController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $brands = AmBrand::orderBy('id','desc')->get();
+            $brands = Ambrand::orderBy('id','desc')->get();
                 return DataTables::of($brands)
                         ->addIndexColumn()
                         ->addColumn('action', function($row){
@@ -61,7 +61,7 @@ class AmBrandController extends Controller
     public function archiveSupplier(Request $request)
     {
         if ($request->ajax()) {
-            $brands = AmBrand::onlyTrashed()->orderBy('id','desc')->get();
+            $brands = Ambrand::onlyTrashed()->orderBy('id','desc')->get();
                 return DataTables::of($brands)
                         ->addIndexColumn()
                         ->addColumn('action', function($row){
@@ -115,10 +115,10 @@ class AmBrandController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\AmBrand  $amBrand
+     * @param  \App\Models\Ambrand  $amBrand
      * @return \Illuminate\Http\Response
      */
-    public function show(AmBrand $amBrand)
+    public function show(Ambrand $amBrand)
     {
         //
     }
@@ -126,13 +126,13 @@ class AmBrandController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\AmBrand  $amBrand
+     * @param  \App\Models\Ambrand  $amBrand
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
         try {
-            $supplier = AmBrand::findOrFail($id);
+            $supplier = Ambrand::findOrFail($id);
             $languages = Language::select('languageCode','languageName')->get();
             $countries = Country::select('id','countryCode','countryName')->get();
             return view('ambrand.edit',compact('supplier','languages','countries'));
@@ -145,12 +145,12 @@ class AmBrandController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateAmBrandRequest  $request
-     * @param  \App\Models\AmBrand  $amBrand
+     * @param  \App\Models\Ambrand  $amBrand
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateAmBrandRequest $request, $id)
     {
-        $amBrand = AmBrand::find($id);
+        $amBrand = Ambrand::find($id);
         if($amBrand){
             $item = $this->amBrand->update($request, $amBrand);
             if(is_object($item)){
@@ -166,12 +166,12 @@ class AmBrandController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\AmBrand  $amBrand
+     * @param  \App\Models\Ambrand  $amBrand
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)
     {
-        $supplier = AmBrand::findOrFail($request->id);
+        $supplier = Ambrand::findOrFail($request->id);
         $item = $this->amBrand->delete($supplier);
         if($item == true){
             return redirect()->route('suppliers.index')->withSuccess(__('Supplier Deleted Successfully.'));
@@ -181,7 +181,7 @@ class AmBrandController extends Controller
     }
     public function delete(Request $request)
     {
-        $supplier = AmBrand::findOrFail($request->id);
+        $supplier = Ambrand::findOrFail($request->id);
         $item = $this->amBrand->delete($supplier);
         if($item == true){
             return redirect()->route('suppliers.index')->withSuccess(__('Supplier Deleted Successfully.'));
@@ -206,7 +206,7 @@ class AmBrandController extends Controller
     public function restore(Request $request)
     {
         try {
-            $section = AmBrand::onlyTrashed()->findOrFail($request->id)->restore();
+            $section = Ambrand::onlyTrashed()->findOrFail($request->id)->restore();
             toastr()->success('Supplier Restored Successfully');
             return redirect()->route('suppliers.archive');
         } catch (\Exception $e) {

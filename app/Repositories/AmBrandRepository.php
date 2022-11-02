@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\AmBrand;
+use App\Models\Ambrand;
 use App\Repositories\Interfaces\AmBrandInterface;
 use Illuminate\Support\Facades\DB;
 
@@ -11,14 +11,14 @@ class AmBrandRepository implements AmBrandInterface
     public function store($data)
     {
         $input= $data->except('_token');
-        $brand = AmBrand::max('brandId');
+        $brand = Ambrand::max('brandId');
         $brandId = ++$brand;
         $input['brandId'] = $brandId;
         $brandLogoId = rand(1,99999);
         $input['brandLogoID'] = $brandLogoId;
         DB::beginTransaction();
         try {
-            $supplier = AmBrand::create($input);
+            $supplier = Ambrand::create($input);
             DB::commit();
             return $supplier;
         } catch (\Exception $e) {
