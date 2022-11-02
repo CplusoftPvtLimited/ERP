@@ -108,7 +108,7 @@
                                                     Search</button>
                                                 <button class="tablinks" onclick="openCity(event, 'Paris')">By Product
                                                     Number</button>
-                                                <button class="tablinks" onclick="openCity(event, 'Tokyo')">By Chassis
+                                                <button class="tablinks" onclick="openCity(event, 'Tokyo')">By Plate
                                                     Number</button>
                                             </div>
                                         </div>
@@ -124,10 +124,9 @@
                                             <div id="Paris" class="tabcontent">
                                                 @include('purchase.purchase_by_article_number')
                                             </div>
-
+                                            
                                             <div id="Tokyo" class="tabcontent">
-                                                <h3>Tokyo</h3>
-                                                <p>Tokyo is the capital of Japan.</p>
+                                                @include('purchase.purchase_by_plate_number')
                                             </div>
                                         </div>
                                     </div>

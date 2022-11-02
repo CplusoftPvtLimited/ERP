@@ -27,6 +27,7 @@ use App\GeneralSetting;
 use App\Models\AfterMarkitSupplier;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\ChassisNumber;
 use App\Models\StockManagement;
 use Stripe\Stripe;
 use Auth;
@@ -1505,6 +1506,28 @@ class PurchaseController extends Controller
             return response()->json([
                 'data' => $suppliers
             ], 200);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+    public function getChasisNumber(Request $request){
+        try {
+            $plate_number = explode("-",$request->plate_number);
+            if(sizeof($plate_number) < 3) {
+              return response()->json([
+                'data' => 1
+              ]);
+            }
+            $chasis_number = ChassisNumber::Select('CHASSIS')->where('GAUCHE',$plate_number[0])->where('CD_SERIE',$plate_number[1])->where('DROIT_MIL',$plate_number[2])->first();
+            if(empty($chasis_number)){
+                return response()->json([
+                    'data' => 2
+                  ]);
+            }else {
+                return response()->json([
+                    'data' => $chasis_number
+                ]);
+            }
         } catch (\Exception $e) {
             return $e->getMessage();
         }
