@@ -11,7 +11,7 @@ class BrandController extends Controller
 
     public function index()
     {
-        $lims_brand_all = Brand::where('is_active',true)->get();
+        $lims_brand_all = Brand::where('is_active',true)->limit(10000)->get();
         return view('brand.create', compact('lims_brand_all'));
     }
 

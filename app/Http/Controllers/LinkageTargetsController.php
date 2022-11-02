@@ -62,7 +62,7 @@ class LinkageTargetsController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $engines = LinkageTarget::select('id', 'linkageTargetId', 'capacityCC', 'capacityLiters', 'code', 'kiloWattsFrom', 'kiloWattsTo', 'horsePowerTo', 'horsePowerFrom', 'engineType', 'id')->orderBy('id', 'desc')->get();
+            $engines = LinkageTarget::select('id', 'linkageTargetId', 'capacityCC', 'capacityLiters', 'code', 'kiloWattsFrom', 'kiloWattsTo', 'horsePowerTo', 'horsePowerFrom', 'engineType', 'id')->orderBy('id', 'desc')->limit(10000)->get();
             return DataTables::of($engines)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {

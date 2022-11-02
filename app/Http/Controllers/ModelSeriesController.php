@@ -23,7 +23,7 @@ class ModelSeriesController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $models = ModelSeries::orderBy('id', 'desc')->join('manufacturers', 'modelseries.manuId', '=', 'manufacturers.manuId')->select('modelseries.*', 'manufacturers.manuName')->get();
+            $models = ModelSeries::orderBy('id', 'desc')->join('manufacturers', 'modelseries.manuId', '=', 'manufacturers.manuId')->select('modelseries.*', 'manufacturers.manuName')->limit(10000);
             return DataTables::of($models)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
@@ -49,7 +49,7 @@ class ModelSeriesController extends Controller
                     return $value;
                 })
                 ->rawColumns(['action', 'index'])
-                ->make(true);
+                ->toJson();
         }
 
         return view('model_series.index');

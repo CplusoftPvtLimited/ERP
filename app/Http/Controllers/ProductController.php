@@ -28,7 +28,7 @@ class ProductController extends Controller
     public function index()
     {
         $role = Role::find(Auth::user()->role_id);
-        if($role->hasPermissionTo('products-index')){            
+        if($role->hasPermissionTo('products-index')) {            
             $permissions = Role::findByName($role->name)->permissions;
             foreach ($permissions as $permission)
                 $all_permission[] = $permission->name;

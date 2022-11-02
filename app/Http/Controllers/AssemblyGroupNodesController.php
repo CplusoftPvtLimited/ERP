@@ -29,7 +29,7 @@ class AssemblyGroupNodesController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            return DataTables::of(AssemblyGroupNode::orderBy('id', 'desc'))
+            return DataTables::of(AssemblyGroupNode::orderBy('id', 'desc')->limit(10000))
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="row">

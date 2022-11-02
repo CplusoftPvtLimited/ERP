@@ -44,7 +44,7 @@ class ArticlesController extends Controller
                 ->with(['assemblyGroup' => function ($query) {
                     $query->select('assemblyGroupNodeId', 'assemblyGroupName')->get();
                 }, 'manufacturer'])
-                ->orderBy('id', 'desc');
+                ->orderBy('id', 'desc')->limit(10000);
             return DataTables::of($articles)
                 ->addIndexColumn()
                 ->addColumn('manufacturer', function ($row) {
