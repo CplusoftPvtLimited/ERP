@@ -851,7 +851,6 @@ class ProductController extends Controller
             $lims_unit_data = Unit::where('unit_code', $data['unitcode'])->first();
             if (!$lims_unit_data)
                 return redirect()->back()->with('not_permitted', 'Unit code does not exist in the database.');
-
             $product = Product::firstOrNew(['name' => $data['name'], 'is_active' => true]);
             if ($data['image'])
                 $product->image = $data['image'];
