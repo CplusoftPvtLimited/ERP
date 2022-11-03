@@ -292,6 +292,8 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 	Route::get('getArticleInfo', 'PurchaseController@getArticleInfo')->name('article.info.get');
 	Route::get('articlesByReferenceNo', 'PurchaseController@articlesByReferenceNo')->name('article.reference');
 	Route::get('sale_products_by_product_number', 'SaleController@productByArticleNumber')->name('sale_products_by_product_number');
+	Route::get('get_chasis_number', 'PurchaseController@getChasisNumber')->name('chasis_number.get');
+
 	///////////////////  end //////////////////////
 
 	///////////////////////// Sale-unique ////////////////////////
