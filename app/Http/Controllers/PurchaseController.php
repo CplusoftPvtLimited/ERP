@@ -486,11 +486,11 @@ class PurchaseController extends Controller
                 $cart_item->qty = $request->item_qty[$counter];
                 $cart_item->actual_price = $request->purchase_price[$counter];
                 $cart_item->sell_price = $sale_price;
-                $cart_item->discount = ($request->discount[$counter] / 100);
+                $cart_item->discount = ($request->discount[$counter]);
                 $cart_item->additional_cost_without_vat = $request->additional_cost_without_vat[$counter];
                 $cart_item->additional_cost_with_vat = isset($request->additional_cost_with_vat) ? $request->additional_cost_with_vat[$counter] : '';
-                $cart_item->vat = isset($request->vat) ?  ($request->vat[$counter] / 100) : '';
-                $cart_item->profit_margin = ($request->profit_margin[$counter] / 100);
+                $cart_item->vat = isset($request->vat) ?  ($request->vat[$counter]) : '';
+                $cart_item->profit_margin = ($request->profit_margin[$counter] );
                 $cart_item->total_excluding_vat = $total_excluding_vat;
                 $cart_item->actual_cost_per_product = $actual_cost_per_product;
                 

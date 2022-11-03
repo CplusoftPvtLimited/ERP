@@ -20,52 +20,252 @@ class HomeSearchController extends Controller
 {
     public function homeSearchView(){ 
         $type = ["V","L","B"];
-        $manufacturers = Manufacturer::whereIn('linkingTargetType', $type)->get();
+        $manufacturers = Manufacturer::whereIn('linkingTargetType', $type)->limit(10)->get();
+        $manfuacture_array = [
+            'type' => "P",
+            'sub_type' => "home",
+            'value' => 10,
+        ];
+        session()->put('manufacturer_load_more',$manfuacture_array);
+        $model_array = [
+            'type' => "null",
+            'sub_type' => "null",
+            'value' => 0,
+        ];
+        session()->put('model_load_more',$model_array);
+        $engine_array = [
+            'engine_type' => "null",
+            'engine_sub_type' => "null",
+            'value' => 0,
+        ];
+        session()->put('engine_load_more',$engine_array);
         $brands = Ambrand::where('lang','EN')->limit(10)->get();
         $brands_count = Ambrand::count();
         session()->put("record",10);
-        
+        session()->put('section_count',[]);
+        session()->put('sub_section_count',[]);
+        session()->put('section_brand_id',[]);
+
         return view('home_search.home_search',compact('manufacturers','brands','brands_count'));
-    }
+    }   
 
     public function getManufacturers(Request $request){
         // dd($request->all());
         $type = ["V","L","B"];
         $type2 = ["C","T","M","A","K"];
         $manufacturers = "";
+        $total_count = 0;
+        $manufacturer_load_more = session()->get('manufacturer_load_more');
+        if(isset($request->main)){
+            $manfuacture_array = [
+                'type' => "",
+                'sub_type' => "",
+                'value' => 0,
+            ];
+            session()->put('manufacturer_load_more',$manfuacture_array);
+        }
+        // dd($manufacturer_load_more);
         if($request->type == "P" && $request->sub_type == "home"){
-            $manufacturers = Manufacturer::whereIn('linkingTargetType', $type)->get();
+            if($request->type == $manufacturer_load_more['type'] && $request->sub_type == $manufacturer_load_more['sub_type']){
+                $manufacturers = Manufacturer::whereIn('linkingTargetType', $type)
+                ->skip($manufacturer_load_more['value'])->take((int)10)->get();
+                $manfuacture_array = [
+                    'type' => "P",
+                    'sub_type' => "home",
+                    'value' => $manufacturer_load_more['value'] + (int)10,
+                ];
+                session()->put('manufacturer_load_more',$manfuacture_array);
+            }else{
+                $manfuacture_array = [
+                    'type' => "P",
+                    'sub_type' => "home",
+                    'value' => 0,
+                ];
+                session()->put('manufacturer_load_more',$manfuacture_array);
+                $manufacturers = Manufacturer::whereIn('linkingTargetType', $type)
+                ->skip($manufacturer_load_more['value'])->take((int)10)->get();
+                $manfuacture_array = [
+                    'type' => "P",
+                    'sub_type' => "home",
+                    'value' => 10,
+                ];
+                session()->put('manufacturer_load_more',$manfuacture_array);
+            }
+            $total_count = Manufacturer::whereIn('linkingTargetType', $type)->count();
         }else if($request->type == "O" && $request->sub_type == "home"){
-            $manufacturers = Manufacturer::whereIn('linkingTargetType', $type2)->get();
+            if($request->type == $manufacturer_load_more['type'] && $request->sub_type == $manufacturer_load_more['sub_type']){
+                $manufacturers = Manufacturer::whereIn('linkingTargetType', $type2)
+                ->skip($manufacturer_load_more['value'])->take((int)10)->get();
+                $manfuacture_array = [
+                    'type' => "O",
+                    'sub_type' => "home",
+                    'value' => $manufacturer_load_more['value'] + (int)10,
+                ];
+                session()->put('manufacturer_load_more',$manfuacture_array);
+            }else{
+                $manfuacture_array = [
+                    'type' => "O",
+                    'sub_type' => "home",
+                    'value' => 0,
+                ];
+                session()->put('manufacturer_load_more',$manfuacture_array);
+                $manufacturers = Manufacturer::whereIn('linkingTargetType', $type)
+                ->skip($manufacturer_load_more['value'])->take((int)10)->get();
+                $manfuacture_array = [
+                    'type' => "O",
+                    'sub_type' => "home",
+                    'value' => 10,
+                ];
+                session()->put('manufacturer_load_more',$manfuacture_array);
+            }
+            $total_count = Manufacturer::whereIn('linkingTargetType', $type2)->count();
         }else {
-            $manufacturers = Manufacturer::where('linkingTargetType', $request->sub_type)->get();
+            if($request->sub_type == $manufacturer_load_more['sub_type']){
+                $manufacturers = Manufacturer::whereIn('linkingTargetType', $type2)
+                ->skip($manufacturer_load_more['value'])->take((int)10)->get();
+                $manfuacture_array = [
+                    'type' => "",
+                    'sub_type' => $request->sub_type,
+                    'value' => $manufacturer_load_more['value'] + (int)10,
+                ];
+                session()->put('manufacturer_load_more',$manfuacture_array);
+            }else{
+                $manfuacture_array = [
+                    'type' => "",
+                    'sub_type' => $request->sub_type,
+                    'value' => 0,
+                ];
+                session()->put('manufacturer_load_more',$manfuacture_array);
+                $manufacturers = Manufacturer::whereIn('linkingTargetType', $type)
+                ->skip($manufacturer_load_more['value'])->take((int)10)->get();
+                $manfuacture_array = [
+                    'type' => "",
+                    'sub_type' => $request->sub_type,
+                    'value' => 0,
+                ];
+                session()->put('manufacturer_load_more',$manfuacture_array);
+            }
+            $total_count = Manufacturer::where('linkingTargetType', $request->sub_type)->count();
         }
         
         return response()->json([
             'data' => $manufacturers,
+            'total_count' => $total_count,
+            'manu_more_data' => session()->get('manufacturer_load_more'),
         ]);
     }
 
     public function getModelsByManufacturer(Request $request)
     {
-        // dd($request->all());
+        
         try {
             $type = ["V","L","B"];
             $type2 = ["C","T","M","A","K"];
+            $model_load_more = session()->get('model_load_more');
+            // dd($model_load_more);
+            if($request->main){
+                $model_array = [
+                    'type' => "null",
+                    'sub_type' => "null",
+                    'value' => 0,
+                ];
+                session()->put('model_load_more',$model_array);
+            }
+            $model_load_more = session()->get('model_load_more');
+            $total_count = 0;
+            
             if($request->engine_type == "P" && $request->engine_sub_type == "home"){
-                $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
-                ->whereIn('linkingTargetType', $type)->get();
+                
+                if($request->engine_type == $model_load_more['type'] && $request->engine_sub_type == $model_load_more['sub_type']){
+                    
+                    $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                    ->whereIn('linkingTargetType', $type)
+                    ->skip($model_load_more['value'])->take((int)10)->get();
+                    $model_array = [
+                        'type' => "P",
+                        'sub_type' => "home",
+                        'value' => $model_load_more['value'] + (int)10,
+                    ];
+                    session()->put('model_load_more',$model_array);
+                }else{
+                    
+                    $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                    ->whereIn('linkingTargetType', $type)
+                    ->skip(0)->take((int)10)->get();
+                    $model_array = [
+                        'type' => "P",
+                        'sub_type' => "home",
+                        'value' => 10,
+                    ];
+                    session()->put('model_load_more',$model_array);
+                }
+
+                $total_count = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                ->whereIn('linkingTargetType', $type)
+                ->count();
             }else if($request->engine_type == "O" && $request->engine_sub_type == "home"){
                 
-                $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
-                ->whereIn('linkingTargetType', $type2)->get();
+                if($request->engine_type == $model_load_more['type'] && $request->engine_sub_type == $model_load_more['sub_type']){
+                    
+                    $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                    ->whereIn('linkingTargetType', $type2)
+                    ->skip($model_load_more['value'])->take((int)10)->get();
+                    $model_array = [
+                        'type' => "O",
+                        'sub_type' => "home",
+                        'value' => $model_load_more['value'] + (int)10,
+                    ];
+                    session()->put('model_load_more',$model_array);
+                }else{
+                   
+                    $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                    ->whereIn('linkingTargetType', $type2)
+                    ->skip(0)->take((int)10)->get();
+                    $model_array = [
+                        'type' => "O",
+                        'sub_type' => "home",
+                        'value' => 10,
+                    ];
+                    session()->put('model_load_more',$model_array);
+                }
+
+                $total_count = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                ->whereIn('linkingTargetType', $type2)
+                ->count();
             }else{
-                $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
-                ->where('linkingTargetType', $request->engine_sub_type)->get();
+                if($request->engine_sub_type == $model_load_more['sub_type']){
+                    
+                    $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                    ->where('linkingTargetType', $request->engine_sub_type)
+                    ->skip($model_load_more['value'])->take((int)10)->get();
+                    $model_array = [
+                        'type' => "",
+                        'sub_type' => $request->engine_sub_type,
+                        'value' => $model_load_more['value'] + (int)10,
+                    ];
+                    session()->put('model_load_more',$model_array);
+                }else{
+                    
+                    $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                    ->where('linkingTargetType', $request->engine_sub_type)
+                    ->skip(0)->take((int)10)->get();
+                    $model_array = [
+                        'type' => "",
+                        'sub_type' => $request->engine_sub_type,
+                        'value' => 10,
+                    ];
+                    session()->put('model_load_more',$model_array);
+                }
+
+                $total_count =  ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                ->where('linkingTargetType', $request->engine_sub_type)
+                ->count();
             }
             
             return response()->json([
-                'data' => $models
+                'data' => $models,
+                'total_count' => $total_count,
+                'load_more_model' => session()->get('model_load_more')
             ], 200);
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -77,27 +277,111 @@ class HomeSearchController extends Controller
         try {
             $type = ["V","L","B"];
             $type2 = ["C","T","M","A","K"];
+            $engine_load_more = session()->get('engine_load_more');
+            // dd($model_load_more);
+            if($request->main){
+                $engine_array = [
+                    'engine_type' => "null",
+                    'engine_sub_type' => "null",
+                    'value' => 0,
+                ];
+                session()->put('model_load_more',$engine_array);
+            }
+            $engine_load_more = session()->get('engine_load_more');
+            $total_count = 0;
             if($request->engine_type == "P" && $request->engine_sub_type == "home"){
-                $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                
+                if($request->engine_type == $engine_load_more['engine_type'] && $request->engine_sub_type == $engine_load_more['engine_sub_type']){
+                    $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                    ->where('vehicleModelSeriesId', $request->model_id)
+                    // ->whereIn('subLinkageTargetType',$type)
+                    ->whereIn('linkageTargetType', $type)->skip($engine_load_more['value'])->take((int)10)->get();
+                    $engine_array = [
+                        'engine_type' => "P",
+                        'engine_sub_type' => "home",
+                        'value' => $engine_load_more['value'] + (int)10,
+                    ];
+                    session()->put('engine_load_more',$engine_array);
+                }else{
+                    
+                    $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                    ->where('vehicleModelSeriesId', $request->model_id)
+                    // ->whereIn('subLinkageTargetType',$type)
+                    ->whereIn('linkageTargetType', $type)->skip(0)->take((int)10)->get();
+                    $model_array = [
+                        'engine_type' => "P",
+                        'engine_sub_type' => "home",
+                        'value' => 10,
+                    ];
+                    session()->put('engine_load_more',$model_array);
+                }
+                $total_count = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
                 ->where('vehicleModelSeriesId', $request->model_id)
-                // ->whereIn('subLinkageTargetType',$type)
-                ->whereIn('linkageTargetType', $type)->limit(100)->get();
+                ->whereIn('linkageTargetType', $type)->count();
             }else if($request->engine_type == "O" && $request->engine_sub_type == "home"){
                 
-                $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                if($request->engine_type == $engine_load_more['engine_type'] && $request->engine_sub_type == $engine_load_more['engine_sub_type']){
+                    $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                    ->where('vehicleModelSeriesId', $request->model_id)
+                    // ->whereIn('subLinkageTargetType',$type)
+                    ->whereIn('linkageTargetType', $type)->skip($engine_load_more['value'])->take((int)10)->get();
+                    $engine_array = [
+                        'engine_type' => "O",
+                        'engine_sub_type' => "home",
+                        'value' => $engine_load_more['value'] + (int)10,
+                    ];
+                    session()->put('engine_load_more',$engine_array);
+                }else{
+                    
+                    $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                    ->where('vehicleModelSeriesId', $request->model_id)
+                    // ->whereIn('subLinkageTargetType',$type)
+                    ->whereIn('linkageTargetType', $type)->skip(0)->take((int)10)->get();
+                    $model_array = [
+                        'engine_type' => "O",
+                        'engine_sub_type' => "home",
+                        'value' => 10,
+                    ];
+                    session()->put('engine_load_more',$model_array);
+                }
+                $total_count = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
                 ->where('vehicleModelSeriesId', $request->model_id)
-                // ->whereIn('subLinkageTargetType',$type2)
-                ->whereIn('linkageTargetType', $type2)->limit(100)->get();
+                ->whereIn('linkageTargetType', $type2)->count();
             }else{
-                $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                if($request->engine_sub_type == $engine_load_more['engine_sub_type']){
+                    $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                    ->where('vehicleModelSeriesId', $request->model_id)
+                    // ->whereIn('subLinkageTargetType',$type)
+                    ->where('linkageTargetType', $request->engine_sub_type)->skip($engine_load_more['value'])->take((int)10)->get();
+                    $engine_array = [
+                        'engine_type' => "",
+                        'engine_sub_type' => $request->engine_sub_type,
+                        'value' => $engine_load_more['value'] + (int)10,
+                    ];
+                    session()->put('engine_load_more',$engine_array);
+                }else{
+                    
+                    $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                    ->where('vehicleModelSeriesId', $request->model_id)
+                    // ->whereIn('subLinkageTargetType',$type)
+                    ->where('linkageTargetType', $request->engine_sub_type)->skip(0)->take((int)10)->get();
+                    $model_array = [
+                        'engine_type' => "",
+                        'engine_sub_type' => $request->engine_sub_type,
+                        'value' => 10,
+                    ];
+                    session()->put('engine_load_more',$model_array);
+                }
+                $total_count = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
                 ->where('vehicleModelSeriesId', $request->model_id)
-                // ->where('linkageTargetType', $request->engine_type)
-                ->orWhere('subLinkageTargetType',$request->engine_sub_type)->limit(100)->get();
+                ->where('linkageTargetType', $request->engine_sub_type)->count();
             }
             
             
             return response()->json([
-                'data' => $engines
+                'data' => $engines,
+                'total_count' => $total_count,
+                'load_more_engine' => session()->get('engine_load_more'),
             ], 200);
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -119,6 +403,18 @@ class HomeSearchController extends Controller
 
     public function searchSectionByEngine(Request $request){
         // dd($request->all());
+        $model_array = [
+            'type' => "null",
+            'sub_type' => "null",
+            'value' => 0,
+        ];
+        session()->put('model_load_more',$model_array);
+        $engine_array = [
+            'engine_type' => "null",
+            'engine_sub_type' => "null",
+            'value' => 0,
+        ];
+        session()->put('engine_load_more',$engine_array);
         $engine = LinkageTarget::where('linkageTargetId',$request->engine_id)
                 ->first();
                 $type = ["V","L","B"];
@@ -188,10 +484,11 @@ class HomeSearchController extends Controller
     public function articleSearchView($id,$section_id){
         $engine = LinkageTarget::where('linkageTargetId',$id)->first();
         
-        $section_parts = Article::whereHas('section', function($query) {
-                $query->whereNotNull('request__linkingTargetId');
-            })
-            ->whereHas('articleVehicleTree', function ($query) use ($section_id,$engine) {
+        
+        // whereHas('section', function($query) {
+        //         $query->whereNotNull('request__linkingTargetId');
+        //     })
+        $section_parts = Article::whereHas('articleVehicleTree', function ($query) use ($section_id,$engine) {
                 $query->where('linkingTargetType', $engine->linkageTargetType)->where('assemblyGroupNodeId', $section_id);
             })
             ->limit(100)
@@ -247,13 +544,14 @@ class HomeSearchController extends Controller
         // dd($request->all());
         $engine = LinkageTarget::where('linkageTargetId',$id)->first();
        
-        $section_parts = Article::whereHas('section', function($query) {
-                // $query->whereNotNull('request__linkingTargetId');
+        
+        // whereHas('section', function($query) {
+        //         // $query->whereNotNull('request__linkingTargetId');
+        //     })
+        $section_parts = Article::whereHas('articleVehicleTree', function ($query) use ($section_id) {
+                $query->where('assemblyGroupNodeId', $section_id);
             })
-            // ->whereHas('articleVehicleTree', function ($query) use ($section_id) {
-            //     $query->where('assemblyGroupNodeId', $section_id);
-            // })
-            ->limit(100)
+            ->limit(50)
             ->get();
            
             $type = $engine->linkageTargetType;
@@ -305,6 +603,7 @@ class HomeSearchController extends Controller
 
     // When Cart is empty 
     public function cartEmptyData($request){
+        // dd($request->all());
         DB::beginTransaction();
         try {
             
@@ -353,11 +652,11 @@ class HomeSearchController extends Controller
             $cart_item->linkage_target_sub_type = $linkage->subLinkageTargetType;
             $cart_item->cash_type = $request->cash_type;
             $cart_item->brand_id = $request->brand;
-            $cart_item->discount = $request->discount / 100;
+            $cart_item->discount = $request->discount;
             $cart_item->additional_cost_without_vat = $request->additional_cost_without_vat;
             $cart_item->additional_cost_with_vat = $request->additional_cost_with_vat;
             $cart_item->vat = $request->vat;
-            $cart_item->profit_margin = ($request->profit_margin / 100);
+            $cart_item->profit_margin = ($request->profit_margin);
             $cart_item->total_excluding_vat = $total_excluding_vat;
             $cart_item->actual_cost_per_product = $actual_cost_per_product;
             $date = date("Y-m-d");
@@ -393,16 +692,16 @@ class HomeSearchController extends Controller
                 if($cart_item->product_id == $request->article){
                     $total_excluding_vat = (($request->purchase_price + $cart_item->actual_price) * ($request->quantity + $cart_item->qty)) + ($request->additional_cost_without_vat + $cart_item->additional_cost_without_vat);
                     $actual_cost_per_product =  ($total_excluding_vat / ($request->quantity + $cart_item->qty)) + ($cart->additional_cost / $cart->total_qty);
-                    $sale_price = $actual_cost_per_product * (1 + (($request->profit_margin / 100) + $cart_item->profit_margin));
+                    $sale_price = $actual_cost_per_product * (1 + (($request->profit_margin / 100) + ($cart_item->profit_margin /100)));
                     
                     $cart_item->qty = $cart_item->qty + $request->quantity;
                     $cart_item->actual_price = $cart_item->actual_price + $request->purchase_price;
                     $cart_item->sell_price = $sale_price;
-                    $cart_item->discount = $cart_item->discount +  ($request->discount / 100);
+                    $cart_item->discount = $cart_item->discount +  $request->discount;
                     $cart_item->additional_cost_without_vat = (float)$cart_item->additional_cost_without_vat + (float)$request->additional_cost_without_vat;
                     $cart_item->additional_cost_with_vat = (float)$cart_item->additional_cost_with_vat + (float)$request->additional_cost_with_vat;
-                    $cart_item->vat = (float)$cart_item->vat + (float)($request->vat / 100);
-                    $cart_item->profit_margin = $cart_item->profit_margin + ($request->profit_margin / 100);
+                    $cart_item->vat = (float)$cart_item->vat + (float)$request->vat;
+                    $cart_item->profit_margin = $cart_item->profit_margin + $request->profit_margin;
                     $cart_item->total_excluding_vat = $total_excluding_vat;
                     $cart_item->actual_cost_per_product = $actual_cost_per_product;
                     $date = date("Y-m-d");
@@ -434,11 +733,11 @@ class HomeSearchController extends Controller
                     $cart_item->linkage_target_sub_type = $linkage->subLinkageTargetType;
                     $cart_item->cash_type = $request->cash_type;
                     $cart_item->brand_id = $request->brand;
-                    $cart_item->discount = $request->discount / 100;
+                    $cart_item->discount = $request->discount;
                     $cart_item->additional_cost_without_vat = $request->additional_cost_without_vat;
                     $cart_item->additional_cost_with_vat = $request->additional_cost_with_vat;
                     $cart_item->vat = $request->vat;
-                    $cart_item->profit_margin = ($request->profit_margin / 100);
+                    $cart_item->profit_margin = ($request->profit_margin);
                     $cart_item->total_excluding_vat = $total_excluding_vat;
                     $cart_item->actual_cost_per_product = $actual_cost_per_product;
                     $date = date("Y-m-d");
@@ -551,11 +850,37 @@ class HomeSearchController extends Controller
     }
 
     public function getSubSectionByBrand(Request $request) {
-        $brand = AssemblyGroupNode::where('lang',"EN")->whereHas('article', function($query) use ($request) {
-            $query->whereHas('brand', function($sub_query) use ($request)  {
-                $sub_query->where('brandId', $request->brand_id)->where('lang','EN');
+        // dd($request->all());
+        $section_count  = session()->get('section_count');
+        $sub_section_count  = session()->get('sub_section_count');
+        $section_brand_id  = session()->get('section_brand_id');
+        if(!empty($section_brand_id) && $section_brand_id != $request->brand_id){
+            session()->put('section_count',[]);
+            session()->put('sub_section_count',[]);
+        }
+        
+        
+        if(empty($section_count)){
+            $section_count = 0;
+        }
+        if(empty($sub_section_count)){
+            $sub_section_count = 0;
+        }
+
+        
+        $brand = AssemblyGroupNode::where('lang',"EN")->whereHas('articleVehicleTree', function($query) use ($request) {
+            $query->whereHas('article', function($query) use ($request) {
+                $query->whereHas('brand', function($sub_query) use ($request)  {
+                    $sub_query->where('brandId', $request->brand_id)->where('lang','EN');
+                });
             });
-        })->with('subSection')->get();
+        })->with('subSection', function($query) use ($sub_section_count){
+            $query->limit((int)$sub_section_count + (int)10);
+        })->skip($section_count)->limit((int)$section_count + (int)10)->get();
+        // dd($brand);
+        session()->put('section_brand_id',$request->brand_id);
+        session()->put('section_count', (int)$section_count);
+        session()->put('sub_section_count',(int)$sub_section_count);
         return response()->json($brand);
     }
 

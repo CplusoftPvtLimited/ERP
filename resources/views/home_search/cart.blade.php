@@ -155,7 +155,8 @@
                                                                 name="sale_price[]" readonly></td>
                                                         <td><input type="number" style="width:100px" class="form-control"
                                                                 id="discount_{{ $cart_item->id }}"
-                                                                value="{{ $cart_item->discount }}" min="0"
+                                                                value="{{ $cart_item->discount }}"
+                                                                onkeyup="checkCartDiscount()" min="0"
                                                                 max="100" name="discount[]"></td>
                                                         <td><input type="number" style="width:100px"
                                                                 class="form-control"
@@ -197,8 +198,9 @@
                                                                 value="{{ $cart_item->actual_cost_per_product }}"
                                                                 min="1" name="actual_cost_per_product[]" readonly>
                                                         </td>
-                                                        <td><a href="{{ route('remove_cart_item',$cart_item->id) }}" class="btn btn-danger"
-                                                                id="cart_item_delete"><i class="fa fa-trash"></i></a>
+                                                        <td><a href="{{ route('remove_cart_item', $cart_item->id) }}"
+                                                                class="btn btn-danger" id="cart_item_delete"><i
+                                                                    class="fa fa-trash"></i></a>
                                                         </td>
 
                                                     </tr>
@@ -206,18 +208,28 @@
                                                         all_product_ids = [];
                                                         all_product_ids.push({{ $cart_item->id }});
                                                     </script>
-                                                    <input type="hidden" name="manufacturer_id[]" value="{{ $cart_item->manufacture_id }}">
-                                                    
-                                                    <input type="hidden" name="modell_id[]" value="{{ $cart_item->model_id }}">
-                                                    <input type="hidden" name="enginee_id[]" value="{{ $cart_item->eng_linkage_target_id }}">
-                                                    <input type="hidden" name="sectionn_id[]" value="{{ $cart_item->assembly_group_node_id }}">
-                                                    <input type="hidden" name="sectionn_part_id[]" value="{{ $cart_item->legacy_article_id }}">
-                                                    <input type="hidden" name="statuss[]" value="{{ $cart_item->status }}">
+                                                    <input type="hidden" name="manufacturer_id[]"
+                                                        value="{{ $cart_item->manufacture_id }}">
+
+                                                    <input type="hidden" name="modell_id[]"
+                                                        value="{{ $cart_item->model_id }}">
+                                                    <input type="hidden" name="enginee_id[]"
+                                                        value="{{ $cart_item->eng_linkage_target_id }}">
+                                                    <input type="hidden" name="sectionn_id[]"
+                                                        value="{{ $cart_item->assembly_group_node_id }}">
+                                                    <input type="hidden" name="sectionn_part_id[]"
+                                                        value="{{ $cart_item->legacy_article_id }}">
+                                                    <input type="hidden" name="statuss[]"
+                                                        value="{{ $cart_item->status }}">
                                                     <input type="hidden" name="datee[]" value="{{ $cart_item->date }}">
-                                                    <input type="hidden" name="cash_type" value="{{ $cart_item->cash_type }}">
-                                                    <input type="hidden" name="brand_id[]" value="{{ $cart_item->brand_id }}">
-                                                    <input type="hidden" name="linkage_target_type[]" value="{{ $cart_item->linkage_target_sub_type }}">
-                                                    <input type="hidden" name="linkage_target_sub_type[]" value="{{ $cart_item->linkage_target_sub_type }}">
+                                                    <input type="hidden" name="cash_type"
+                                                        value="{{ $cart_item->cash_type }}">
+                                                    <input type="hidden" name="brand_id[]"
+                                                        value="{{ $cart_item->brand_id }}">
+                                                    <input type="hidden" name="linkage_target_type[]"
+                                                        value="{{ $cart_item->linkage_target_sub_type }}">
+                                                    <input type="hidden" name="linkage_target_sub_type[]"
+                                                        value="{{ $cart_item->linkage_target_sub_type }}">
                                                 @endforeach
                                             </tbody>
                                         </table>
@@ -226,7 +238,7 @@
                             </div>
                             <input type="hidden" name="valueCheck" id="valueCheck" value="0">
                             <input type="hidden" name="cart_id" id="cart_id" value="{{ $cart->id }}">
-                            
+
                             @if ($cart->cash_type == 'white')
                                 <div class="col-md-12">
                                     <div class="row total-calculations">
@@ -651,6 +663,7 @@
             var total_actual = 0;
             var cashType = "{{ $cart->cash_type }}";
             var id_array = [];
+            var cart_item_array = <?php echo json_encode($cart_items); ?>;
             id_array = all_product_ids.filter(onlyUnique);
 
             if (id_array.length > 0) {
@@ -659,12 +672,28 @@
                 function getActualProductCost(id, index) {
 
                     if (cashType == "white") {
+                        var vat = document.getElementById('vat_'+id).value;
+                        console.log(vat,"iiiii",$("vat_"+ id).val())
+                        if (vat % 1 != 0) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'VAT must be Type of Integer',
 
-                        var vat = $('#vat_' + id).val();
-                        if (vat == null || isNaN(vat)) {
-                            $('#vat_' + id).val(0);
-                            vat = 0;
-                        }
+                                });
+                                $('#vat_' + id).val(cart_item_array[index].vat)
+                                error = 1;
+                            }
+                            if (vat > 100) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'VAT must be less or equal to 100',
+                                });
+                                $('#vat_' + id).val(cart_item_array[index].vat)
+                                error = 1;
+                            }
+                        vat = $('#vat_' + id).val();
                         var add_cost_with_vat = $('#additional_cost_with_vat_' + id).val();
                         if (add_cost_with_vat == null || isNaN(add_cost_with_vat)) {
                             $('#additional_cost_with_vat_' + id).val(0);
@@ -717,17 +746,33 @@
 
             if (id_array.length > 0) {
                 id_array.forEach(getActualProductCost);
-
+                var cart_item_array = <?php echo json_encode($cart_items); ?>;
                 function getActualProductCost(id, index) {
                     var qty = parseInt($("#item_qty" + id).val());
                     if (qty > 0) {
                         total_actual += parseFloat($('#total_excluding_vat_' + id).val());
                         if (cashType == "white") {
-                            var vat = $('#vat_' + id).val();
-                            if (vat == null || vat == NaN) {
-                                $('#vat_' + id).val(0);
-                                vat = 0;
+                            var vat = $('vat_'+id).val();
+                            if (vat % 1 != 0) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'VAT must be Type of Integer',
+
+                                });
+                                $('#vat_' + id).val(cart_item_array[index].vat)
+                                error = 1;
                             }
+                            if (vat > 100) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'VAT must be less or equal to 100',
+                                });
+                                $('#vat_' + id).val(cart_item_array[index].vat)
+                                error = 1;
+                            }
+                            vat = $('vat_'+id).val();
                             var add_cost_with_vat = $('#additional_cost_with_vat_' + id).val();
                             if (add_cost_with_vat == null || add_cost_with_vat == NaN) {
                                 add_cost_with_vat = 0;
@@ -764,6 +809,39 @@
 
             }
 
+        }
+
+        function checkCartDiscount() {
+            var id_array = [];
+            var cart_item_array = <?php echo json_encode($cart_items); ?>;
+            // console.log(cart_item_array);
+            id_array = all_product_ids.filter(onlyUnique);
+            if (id_array.length > 0) {
+                id_array.forEach(checkDiscount);
+
+                function checkDiscount(id, index) {
+                    var discount = $('#discount_' + id).val();
+                    if (discount % 1 != 0) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'discount must be Type of Integer',
+
+                        });
+                        $('#discount_' + id).val(cart_item_array[index].discount)
+                        exit();
+                    }
+                    if (discount > 100) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Discount must be less or equal to 100',
+                        });
+                        $('#discount_' + id).val(cart_item_array[index].discount)
+                        exit();
+                    }
+                }
+            }
         }
 
         function onlyUnique(value, index, self) {
