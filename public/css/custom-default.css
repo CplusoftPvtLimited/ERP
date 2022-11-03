@@ -1330,3 +1330,9 @@ thead.article_view_tr_head {
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
+
+.article_search_view_scroll{
+    max-height: 600px !important;
+	display: block;
+    overflow: auto;
+  }

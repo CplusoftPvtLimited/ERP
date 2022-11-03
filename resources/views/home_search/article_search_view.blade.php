@@ -48,7 +48,7 @@
                                         <div class="col-12 pl-0 pr-0">
                                             <div class="">
                                                 <table class="table-responsive">
-                                                    <tbody>
+                                                    <tbody class="article_search_view_scroll">
                                                         @if(count($section_parts) > 0)
                                                         @foreach ($section_parts as $section_part)
                                                         <tr class="article_table_row article_table_row_style">
@@ -117,7 +117,7 @@
                                         <div class="col-12 pl-0 pr-0">
                                             <div class="">
                                                 <table class="table-responsive">
-                                                    <tbody>
+                                                    <tbody class="article_search_view_scroll">
                                                         @if(count($section_parts) > 0)
                                                         @foreach ($section_parts as $section_part)
                                                         <tr class="article_table_row article_table_row_style">
