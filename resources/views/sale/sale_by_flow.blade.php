@@ -131,7 +131,7 @@
 
         let engine_sub_type = $(this).val();
         //alert(engine_sub_type)
-        let url = '/get_manufacturers_by_engine_type';
+        let url = '{{ route("get_manufacturers_by_engine_type")}}';
         // alert(url)
         getManufacturer(url, engine_sub_type);
     });
