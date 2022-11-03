@@ -703,7 +703,7 @@
                                 $('#vat_' + id).val(cart_item_array[index].vat)
                                 error = 1;
                             }
-                        vat = $('#vat_' + id).val();
+                        vat = document.getElementById('vat_'+id).value;
                         var add_cost_with_vat = $('#additional_cost_with_vat_' + id).val();
                         if (add_cost_with_vat == null || isNaN(add_cost_with_vat)) {
                             $('#additional_cost_with_vat_' + id).val(0);
@@ -762,7 +762,7 @@
                     if (qty > 0) {
                         total_actual += parseFloat($('#total_excluding_vat_' + id).val());
                         if (cashType == "white") {
-                            var vat = $('vat_'+id).val();
+                            var vat = document.getElementById('vat_'+id).value;
                             if (vat % 1 != 0) {
                                 Swal.fire({
                                     icon: 'error',
@@ -782,7 +782,7 @@
                                 $('#vat_' + id).val(cart_item_array[index].vat)
                                 error = 1;
                             }
-                            vat = $('vat_'+id).val();
+                            vat = document.getElementById('vat_'+id).value;
                             var add_cost_with_vat = $('#additional_cost_with_vat_' + id).val();
                             if (add_cost_with_vat == null || add_cost_with_vat == NaN) {
                                 add_cost_with_vat = 0;

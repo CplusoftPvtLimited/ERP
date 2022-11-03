@@ -242,7 +242,9 @@
                                                         @endforeach
                                                     </div>
                                                     @if ($brands_count > 10)
-                                                        <div class="option more">Load More</div>
+                                                        <div class="option more"><span>Load More
+                                                                &nbsp;&nbsp;<span> <span style="display:none;"
+                                                                        id="brand_load_icon" class="loader4"></span></div>
                                                     @endif
                                                 </div>
                                             </div>
@@ -313,7 +315,13 @@
         function selectEngineType() {
             manufacturer_id_check_array = [];
             $('.dropdown-header.manufacturer').html("Select Manufacturer");
+            $('.dropdown-header.model').html("Select Model");
+            $('.dropdown-header.engine').html("Select Engine");
             $('.manufacturer_normal_option').empty();
+            $('.model_normal_option').empty();
+            $('.engine_normal_option').empty();
+            document.getElementById('model_more').style.display = "none";
+            document.getElementById('engine_more').style.display = "none";
             var sub_type = $('input[name="sub_type"]:checked').val();
             var main_type = $('input[name="type"]:checked').val();
             if (sub_type == "V" || sub_type == "L" || sub_type == "B") {
@@ -334,20 +342,29 @@
             }
             var type = $('input[name="type"]:checked').val();
             var url = "{{ url('get_home_manufacturers') }}";
+            
             $.get(url + '?type=' + type + '&sub_type=' + sub_type + '&main=1', function(data) {
 
                 let response = data.data;
+                
                 if (data.manu_more_data['value'] > data.total_count) {
                     document.getElementById('manufacturer_more').style.display = "none";
                 } else {
                     document.getElementById('manufacturer_more').style.display = "block";
                 }
-                $.each(response, function(key, value) {
-                    manufacturer_id_check_array.push(value.manuId);
-                    $('.manufacturer_normal_option').append($(
-                        '<div class="manufacturer_option" id="manu_id" data-manufacturer_id="' +
-                        value.manuId + '">').html(value.manuName));
-                });
+                if (response.length > 0) {
+                    $.each(response, function(key, value) {
+                        manufacturer_id_check_array.push(value.manuId);
+                        $('.manufacturer_normal_option').append($(
+                            '<div class="manufacturer_option" id="manu_id" data-manufacturer_id="' +
+                            value.manuId + '">').html(value.manuName));
+                    });
+                    
+                } else {
+                    console.log(data)
+                    $('.manufacturer_normal_option').append("<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>");
+                }
+
 
 
 
@@ -410,7 +427,11 @@
             event) { // click on brand to get sections
             model_id_check_array = [];
             $('.dropdown-header.model').html("Select Model");
+            $('.dropdown-header.engine').html("Select Engine");
             $('.model_normal_option').empty();
+            $('.engine_normal_option').empty();
+            document.getElementById('engine_more').style.display = "none";
+
             var manufacturer_id = $(this).data('manufacturer_id');
             manufacturer_id_set = manufacturer_id;
             let engine_sub_type = $('input[name="sub_type"]:checked').val();
@@ -427,12 +448,19 @@
                     } else {
                         document.getElementById('model_more').style.display = "block";
                     }
-                    $.each(response, function(key, value) {
 
-                        model_id_check_array.push(value.modelId);
-                        $('.model_normal_option').append($('<div class="model_option" data-model_id="' +
-                            value.modelId + '">').html(value.modelname));
-                    });
+                    if (response.length > 0) {
+                        $.each(response, function(key, value) {
+
+                            model_id_check_array.push(value.modelId);
+                            $('.model_normal_option').append($(
+                                '<div class="model_option" data-model_id="' +
+                                value.modelId + '">').html(value.modelname));
+                        });
+                    } else {
+                        $('.model_normal_option').append("<span style='color:red;text-align:center;font-size:13px;'>No Record Found</span>");
+                    }
+
 
 
 
@@ -485,7 +513,7 @@
             let url = "{{ route('get_engines_by_model_home_search') }}";
             let engine_sub_type = $('input[name="sub_type"]:checked').val();
             let engine_type = $('input[name="type"]:checked').val();
-
+            $('.engine_normal_option').empty();
             $.get(url + '?model_id=' + model_id + '&engine_sub_type=' + engine_sub_type + '&engine_type=' +
                 engine_type + "&main=1",
                 function(data) {
@@ -498,14 +526,18 @@
                     } else {
                         document.getElementById('engine_more').style.display = "block";
                     }
-
-                    $.each(response, function(key, value) {
+                    if(response.length > 0){
+                        $.each(response, function(key, value) {
                         engine_id_check_array.push(value.linkageTargetId);
                         $('.engine_normal_option').append($(
                             '<div class="engine_option" data-engine_id="' +
                             value.linkageTargetId + '">').html(value.description + "(" + value
                             .beginYearMonth + " - " + value.endYearMonth));
-                    });
+                        });
+                    }else {
+                        $('.engine_normal_option').append("<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>");
+                    }
+                    
                 })
 
         })
@@ -579,11 +611,13 @@
 
         $('.option.more').click(function(event) {
             var count = "{{ $brands_count }}";
+            document.getElementById('brand_load_icon').style.display = "block";
             $.ajax({
                 url: "{{ route('load_more_brand') }}",
                 method: "GET",
                 success: function(data) {
                     let view_html = "";
+                    document.getElementById('brand_load_icon').style.display = "none";
                     $.each(data.brands, function(key, value) {
                         $('.normal-option').append($('<div class="option" data-brand_id="' +
                             value.brandId + '">').html(value.brandName));

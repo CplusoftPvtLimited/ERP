@@ -108,3 +108,33 @@ body {
     color: white;
     /* box-shadow: 0px 0px 16px -6px rgba(0, 0, 0, .5); */
   }
+
+.dropdown-content.brands_content{
+  height: auto;
+  max-height: 200px;
+  overflow-x: hidden;
+}
+
+.dropdown-content.product_group_content{
+  height: auto;
+  cursor: pointer;
+  max-height: 200px;
+  overflow-x: hidden;
+}
+.dropdown-content.manufacturer_content{
+  height: auto;
+  max-height: 200px;
+  overflow-x: hidden;
+}
+
+.dropdown-content.model_content{
+  height: auto;
+  max-height: 200px;
+  overflow-x: hidden;
+}
+  
+.dropdown-content.engine_content{
+  height: auto;
+  max-height: 200px;
+  overflow-x: hidden;
+}

@@ -49,6 +49,7 @@
                     plate_number: plate_number,
                 },
                 success: function (data) {
+                    console.log(data)
                     if (data.data == 1) {
                         console.log(data.data)
                         Swal.fire({
