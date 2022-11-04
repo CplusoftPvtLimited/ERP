@@ -206,7 +206,7 @@
                                                     </tr>
                                                     <script>
                                                         all_product_ids = [];
-                                                        all_product_ids.push({{ $cart_item->id }});
+                                                        
                                                     </script>
                                                     <input type="hidden" name="manufacturer_id[]"
                                                         value="{{ $cart_item->manufacture_id }}">
@@ -343,6 +343,11 @@
 @endsection
 @push('scripts')
     <script>
+         var array = <?php echo json_encode($cart_items); ?>;
+         for(var i=0; i< array.length; i++){
+            all_product_ids.push(array[i].id);
+         }
+         console.log(all_product_ids);
          $(document).ready(function() {
            
 
@@ -795,6 +800,8 @@
 
 
                 }
+                console.log(total_actual)
+                console.log(product_ids_array)
                 var purchase_additional_cost = $('#purchase_additional_cost').val();
                 if (!purchase_additional_cost) {
                     purchase_additional_cost = 0;

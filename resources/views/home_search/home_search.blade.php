@@ -104,6 +104,8 @@
                                             <div class="dropdown">
                                                 <div class="dropdown-header manufacturer form-control">
                                                     {{ __('Select Manufacturer') }}</div>
+                                                {{-- <input type="text" placeholder="Search.." id="myInput"
+                                                    onkeyup="filterFunction()"> --}}
                                                 <div class="dropdown-content manufacturer_content form-control">
                                                     <div class="manufacturer_normal_option">
                                                         @foreach ($manufacturers as $manufacturer)
@@ -301,6 +303,22 @@
             }
             // });
         })
+
+        function filterFunction() {
+            var input, filter, ul, li, a, i;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            div = document.getElementsByClassName("manufacturer_normal_option");
+            a = document.getElementsByClassName("manufacturer_option");
+            for (i = 0; i < a.length; i++) {
+                txtValue = a[i].textContent || a[i].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    a[i].style.display = "";
+                } else {
+                    a[i].style.display = "none";
+                }
+            }
+        }
         // get manufacturers // load more script for get manufacturers
         var manufacturer_id_check_array = [];
         $('.dropdown-header.manufacturer').click(function(event) {
@@ -342,11 +360,11 @@
             }
             var type = $('input[name="type"]:checked').val();
             var url = "{{ url('get_home_manufacturers') }}";
-            
+
             $.get(url + '?type=' + type + '&sub_type=' + sub_type + '&main=1', function(data) {
 
                 let response = data.data;
-                
+
                 if (data.manu_more_data['value'] > data.total_count) {
                     document.getElementById('manufacturer_more').style.display = "none";
                 } else {
@@ -359,10 +377,11 @@
                             '<div class="manufacturer_option" id="manu_id" data-manufacturer_id="' +
                             value.manuId + '">').html(value.manuName));
                     });
-                    
+
                 } else {
                     console.log(data)
-                    $('.manufacturer_normal_option').append("<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>");
+                    $('.manufacturer_normal_option').append(
+                        "<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>");
                 }
 
 
@@ -458,7 +477,9 @@
                                 value.modelId + '">').html(value.modelname));
                         });
                     } else {
-                        $('.model_normal_option').append("<span style='color:red;text-align:center;font-size:13px;'>No Record Found</span>");
+                        $('.model_normal_option').append(
+                            "<span style='color:red;text-align:center;font-size:13px;'>No Record Found</span>"
+                            );
                     }
 
 
@@ -526,18 +547,21 @@
                     } else {
                         document.getElementById('engine_more').style.display = "block";
                     }
-                    if(response.length > 0){
+                    if (response.length > 0) {
                         $.each(response, function(key, value) {
-                        engine_id_check_array.push(value.linkageTargetId);
-                        $('.engine_normal_option').append($(
-                            '<div class="engine_option" data-engine_id="' +
-                            value.linkageTargetId + '">').html(value.description + "(" + value
-                            .beginYearMonth + " - " + value.endYearMonth));
+                            engine_id_check_array.push(value.linkageTargetId);
+                            $('.engine_normal_option').append($(
+                                '<div class="engine_option" data-engine_id="' +
+                                value.linkageTargetId + '">').html(value.description + "(" +
+                                value
+                                .beginYearMonth + " - " + value.endYearMonth));
                         });
-                    }else {
-                        $('.engine_normal_option').append("<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>");
+                    } else {
+                        $('.engine_normal_option').append(
+                            "<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>"
+                            );
                     }
-                    
+
                 })
 
         })
@@ -716,6 +740,7 @@
         $(document.body).on('click', '.product_group_option:not(.product_group_more)', function(
             event) { // click on brand to get sections
             var section_id = $(this).data('section_id');
+            $('.dropdown-content.product_group_content').toggle();
             $('#sub_section_id').val(section_id);
             $('.dropdown-header.product_group').html($(this).html());
             event.stopPropagation();

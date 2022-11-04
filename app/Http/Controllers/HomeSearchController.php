@@ -678,6 +678,7 @@ class HomeSearchController extends Controller
     // When cart is filled 
 
     public function cartFilledData($cart,$request){
+        // dd($request->all());
         DB::beginTransaction();
 
         try {
@@ -688,6 +689,7 @@ class HomeSearchController extends Controller
             $cart->additional_cost = $cart->additional_cost + $request->purchase_additional_cost;
             $all_total_excluding_vat = 0;
             $cart->save();
+            $article_id_check_array = [];
             foreach ($cart_items as $cart_item) {
                 if($cart_item->product_id == $request->article){
                     $total_excluding_vat = (($request->purchase_price + $cart_item->actual_price) * ($request->quantity + $cart_item->qty)) + ($request->additional_cost_without_vat + $cart_item->additional_cost_without_vat);
@@ -709,50 +711,49 @@ class HomeSearchController extends Controller
                     $cart_item->save();
                 }else{
                     // cart Item save code
-                    $total_excluding_vat = ($request->purchase_price  * $request->quantity ) + $request->additional_cost_without_vat ;
-                    $actual_cost_per_product =  ($total_excluding_vat / $request->quantity) + ($cart->additional_cost / $cart->total_qty);
-                    $sale_price = $actual_cost_per_product * (1 + ($request->profit_margin / 100));
-                    $article = Article::where('legacyArticleId',$request->article)->first();
-                    $linkage = LinkageTarget::where('linkageTargetId',$request->engine)->first();
-                    $cart_item = new CartItem();
-                    $cart_item->cart_id = $cart->id;
-                    $cart_item->reference_no = $article->articleNumber;
-                    $cart_item->engine_details = $linkage->description;
-                    $cart_item->product_id = $request->article;
-                    $cart_item->qty = $request->quantity;
-                    $cart_item->actual_price = $request->purchase_price;
-                    $cart_item->sell_price = $sale_price;
-                    $cart_item->manufacture_id = $linkage->mfrId;
-                    $cart_item->model_id = $linkage->vehicleModelSeriesId;
-                    $cart_item->eng_linkage_target_id = $request->engine;
-                    $cart_item->assembly_group_node_id = $request->sub_section;
-                    $cart_item->legacy_article_id = $request->article;
-                    $cart_item->status = 'ordered';
-                    $cart_item->supplier_id = null;
-                    $cart_item->linkage_target_type = $linkage->linkageTargetType;
-                    $cart_item->linkage_target_sub_type = $linkage->subLinkageTargetType;
-                    $cart_item->cash_type = $request->cash_type;
-                    $cart_item->brand_id = $request->brand;
-                    $cart_item->discount = $request->discount;
-                    $cart_item->additional_cost_without_vat = $request->additional_cost_without_vat;
-                    $cart_item->additional_cost_with_vat = $request->additional_cost_with_vat;
-                    $cart_item->vat = $request->vat;
-                    $cart_item->profit_margin = ($request->profit_margin);
-                    $cart_item->total_excluding_vat = $total_excluding_vat;
-                    $cart_item->actual_cost_per_product = $actual_cost_per_product;
-                    $date = date("Y-m-d");
-                    $cart_item->date = $date;
-                    $cart_item->save();
+                    if(!in_array($request->article,$article_id_check_array)){
+                        $total_excluding_vat = ($request->purchase_price  * $request->quantity ) + $request->additional_cost_without_vat ;
+                        $actual_cost_per_product =  ($total_excluding_vat / $request->quantity) + ($cart->additional_cost / $cart->total_qty);
+                        $sale_price = $actual_cost_per_product * (1 + ($request->profit_margin / 100));
+                        $article = Article::where('legacyArticleId',$request->article)->first();
+                        $linkage = LinkageTarget::where('linkageTargetId',$request->engine)->first();
+                        $cart_item = new CartItem();
+                        $cart_item->cart_id = $cart->id;
+                        $cart_item->reference_no = $article->articleNumber;
+                        $cart_item->engine_details = $linkage->description;
+                        $cart_item->product_id = $request->article;
+                        $cart_item->qty = $request->quantity;
+                        $cart_item->actual_price = $request->purchase_price;
+                        $cart_item->sell_price = $sale_price;
+                        $cart_item->manufacture_id = $linkage->mfrId;
+                        $cart_item->model_id = $linkage->vehicleModelSeriesId;
+                        $cart_item->eng_linkage_target_id = $request->engine;
+                        $cart_item->assembly_group_node_id = $request->sub_section;
+                        $cart_item->legacy_article_id = $request->article;
+                        $cart_item->status = 'ordered';
+                        $cart_item->supplier_id = null;
+                        $cart_item->linkage_target_type = $linkage->linkageTargetType;
+                        $cart_item->linkage_target_sub_type = $linkage->subLinkageTargetType;
+                        $cart_item->cash_type = $request->cash_type;
+                        $cart_item->brand_id = $request->brand;
+                        $cart_item->discount = $request->discount;
+                        $cart_item->additional_cost_without_vat = $request->additional_cost_without_vat;
+                        $cart_item->additional_cost_with_vat = $request->additional_cost_with_vat;
+                        $cart_item->vat = $request->vat;
+                        $cart_item->profit_margin = ($request->profit_margin);
+                        $cart_item->total_excluding_vat = $total_excluding_vat;
+                        $cart_item->actual_cost_per_product = $actual_cost_per_product;
+                        $date = date("Y-m-d");
+                        $cart_item->date = $date;
+                        $cart_item->save();
+
+                        array_push($article_id_check_array,$request->article);
+                    }
+                    
                     
                 }
             }
-            // if($request->cash_type == "white"){
-            //     $cart->total_cost = (float)$all_total_excluding_vat + $cart->total_vat + $cart->tax_stamp + $request->tax_stamp;
-            //     $cart->grand_total = (float)$all_total_excluding_vat + $cart->total_vat + $cart->tax_stamp + $request->tax_stamp;
-            // }else{
-            //     $cart->total_cost = (float)$all_total_excluding_vat;
-            //     $cart->grand_total = (float)$all_total_excluding_vat;
-            // }
+           
             $cart_items = CartItem::where('cart_id',$cart->id)->get();
             foreach($cart_items as $cart_item){
                 $all_total_excluding_vat += $cart_item->total_excluding_vat;
@@ -874,9 +875,11 @@ class HomeSearchController extends Controller
                     $sub_query->where('brandId', $request->brand_id)->where('lang','EN');
                 });
             });
-        })->with('subSection', function($query) use ($sub_section_count){
-            $query->limit((int)$sub_section_count + (int)10);
-        })->skip($section_count)->limit((int)$section_count + (int)10)->get();
+        })
+        // ->with('subSection', function($query) use ($sub_section_count){
+        //     $query->limit((int)$sub_section_count + (int)10);
+        // })
+        ->skip($section_count)->limit((int)$section_count + (int)10)->get();
         // dd($brand);
         session()->put('section_brand_id',$request->brand_id);
         session()->put('section_count', (int)$section_count);
