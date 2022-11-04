@@ -691,8 +691,12 @@ class HomeSearchController extends Controller
             $all_total_excluding_vat = 0;
             $cart->save();
             $article_id_check_array = [];
+            $cart_article_id_array = [];
             foreach ($cart_items as $cart_item) {
-                if($cart_item->product_id == $request->article){
+                array_push($cart_article_id_array,$cart_item->product_id);
+            }
+            // foreach ($cart_items as $cart_item) {
+                if(in_array($request->article,$cart_article_id_array)){
                     $total_excluding_vat = (($request->purchase_price + $cart_item->actual_price) * ($request->quantity + $cart_item->qty)) + ($request->additional_cost_without_vat + $cart_item->additional_cost_without_vat);
                     $actual_cost_per_product =  ($total_excluding_vat / ($request->quantity + $cart_item->qty)) + ($cart->additional_cost / $cart->total_qty);
                     $sale_price = $actual_cost_per_product * (1 + (($request->profit_margin / 100) + ($cart_item->profit_margin /100)));
@@ -712,7 +716,7 @@ class HomeSearchController extends Controller
                     $cart_item->save();
                 }else{
                     // cart Item save code
-                    if(!in_array($request->article,$article_id_check_array)){
+                    // if(!in_array($request->article,$article_id_check_array)){
                         $total_excluding_vat = ($request->purchase_price  * $request->quantity ) + $request->additional_cost_without_vat ;
                         $actual_cost_per_product =  ($total_excluding_vat / $request->quantity) + ($cart->additional_cost / $cart->total_qty);
                         $sale_price = $actual_cost_per_product * (1 + ($request->profit_margin / 100));
@@ -748,12 +752,12 @@ class HomeSearchController extends Controller
                         $cart_item->date = $date;
                         $cart_item->save();
 
-                        array_push($article_id_check_array,$request->article);
-                    }
+                        // array_push($article_id_check_array,$request->article);
+                    // }
                     
                     
                 }
-            }
+            // }
            
             $cart_items = CartItem::where('cart_id',$cart->id)->get();
             foreach($cart_items as $cart_item){
@@ -877,10 +881,20 @@ class HomeSearchController extends Controller
                 });
             });
         })
-        // ->with('subSection', function($query) use ($sub_section_count){
-        //     $query->limit((int)$sub_section_count + (int)10);
-        // })
+        
+        // // ->with('subSection', function($query) use ($sub_section_count){
+        // //     $query->limit((int)$sub_section_count + (int)10);
+        // // })
         ->skip($section_count)->limit((int)$section_count + (int)10)->get();
+        // $brand = DB::table('assemblygroupnodes')->select('assemblygroupnodes.*')
+        // ->join('articlesvehicletrees','articlesvehicletrees.assemblyGroupNodeId','=','assemblygroupnodes.assemblyGroupNodeId')
+        //                         ->join('articles','articles.legacyArticleId','=','articlesvehicletrees.legacyArticleId')
+        //                         ->join('ambrand','ambrand.brandId','=','articles.dataSupplierId')
+        //                         ->where('articles.dataSupplierId','=',$request->brand_id)
+        //                         ->where('ambrand.lang',"EN")
+        //                         ->where('assemblygroupnodes.lang',"EN")->distinct()->limit(50)->get();
+                                // ->skip($section_count)->take((int)$section_count + (int)10)->get();
+
         // dd($brand);
         session()->put('section_brand_id',$request->brand_id);
         session()->put('section_count', (int)$section_count);
