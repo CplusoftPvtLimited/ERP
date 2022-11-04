@@ -33,7 +33,7 @@
                                             $html .= '<li class="list-unstyled"> <a href="#getSubSection_'.$sub_section->assemblyGroupNodeId .'" class="" aria-expanded="false" data-toggle="collapse"><i class="fa fa-chevron-right"></i> ' . $sub_section->assemblyGroupName . '</a> </li>';
                                             return getSubSection($sub_section->allSubSection, $engine, $html,$ul);
                                         }else{
-                                            $html .= '<li class=""> <a href="/Retailer-ERP/ERP/articles_search_view/' . $engine->linkageTargetId . '/' .  $sub_section->assemblyGroupNodeId . '">' . $sub_section->assemblyGroupName . '</a> </li>';
+                                            $html .= '<li class=""> <a href="/Retailer-ERP/articles_search_view/' . $engine->linkageTargetId . '/' .  $sub_section->assemblyGroupNodeId . '">' . $sub_section->assemblyGroupName . '</a> </li>';
                                         }
                                     } else {
                                         $html .= $ul;
@@ -43,7 +43,7 @@
                                                 $html .=  '<li class="list-unstyled"> <a href="#getSubSection_'.$section->assemblyGroupNodeId .'" class="list-unstyled" aria-expanded="false" data-toggle="collapse"><i class="fa fa-chevron-right"></i> ' . $section->assemblyGroupName . '</a> </li>';
                                                 return getSubSection($section->allSubSection, $engine, $html, $ul);
                                             }else{
-                                                $html .=  '<li class=""> <a href="/Retailer-ERP/ERP/articles_search_view/' . $engine->linkageTargetId . '/' .  $section->assemblyGroupNodeId . '">' . $section->assemblyGroupName . '</a> </li>';
+                                                $html .=  '<li class=""> <a href="/Retailer-ERP/articles_search_view/' . $engine->linkageTargetId . '/' .  $section->assemblyGroupNodeId . '">' . $section->assemblyGroupName . '</a> </li>';
                                             }
                                         }
                                 
