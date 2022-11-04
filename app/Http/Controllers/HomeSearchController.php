@@ -417,46 +417,47 @@ class HomeSearchController extends Controller
         session()->put('engine_load_more',$engine_array);
         $engine = LinkageTarget::where('linkageTargetId',$request->engine_id)
                 ->first();
+        // dd($engine);
                 $type = ["V","L","B"];
                 $type2 = ["C","T","M","A","K"];
         if($request->type == "P" && $request->sub_type == "home"){
             $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
             ->whereHas('articleVehicleTree', function($query) use ($request,$engine,$type){
-                        $query->where('linkingTargetId', $request->engine_id)
-                        ->whereIn('linkingTargetType', $type);
+                        // $query->where('linkingTargetId', $request->engine_id)
+                        // ->whereIn('linkingTargetType', $type);
                         })
                         ->with('allSubSection', function($data){
-                            $data->limit(10);
+                            $data->limit(3);
                         })
                    ->groupBy('assemblyGroupNodeId')
-                   ->limit(30)
+                   ->limit(10)
                     ->get();
         }else if($request->type == "O" && $request->sub_type == "home"){
             // dd($request->all());
             $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
             ->whereHas('articleVehicleTree', function($query) use ($request,$engine,$type2){
-                        $query->where('linkingTargetId', $request->engine_id)
-                        ->whereIn('linkingTargetType', $type2);
+                        // $query->where('linkingTargetId', $request->engine_id)
+                        // ->whereIn('linkingTargetType', $type2);
                         })
                         ->with('allSubSection', function($data){
-                            $data->limit(10);
+                            $data->limit(3);
                         })
                    ->groupBy('assemblyGroupNodeId')
-                   ->limit(30)
+                   ->limit(10)
                     ->get();
         }else{
             $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
             ->whereHas('articleVehicleTree', function($query) use ($request,$engine,$type){
-                        $query->where('linkingTargetId', $request->engine_id)
-                        ->where('linkingTargetType', $request->engine_sub_type);
+                        // $query->where('linkingTargetId', $request->engine_id)
+                        // ->where('linkingTargetType', $request->engine_sub_type);
                         
 
                         })
                     ->with('allSubSection', function($data){
-                        $data->limit(10);
+                        $data->limit(3);
                     })
                    ->groupBy('assemblyGroupNodeId')
-                   ->limit(30)
+                   ->limit(10)
                     ->get();
         }
         
