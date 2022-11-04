@@ -292,15 +292,13 @@
 
     <script>
         $(document).ready(function() {
-            // $('#search_home').on('click', function(e) {
+           
 
-            //     e.preventDefault();
-
-            if ($(window).outerWidth() > 1199) {
-                $('nav.side-navbar').toggleClass('shrink');
-                $('.page').toggleClass('active');
-                // window.location.href = "/home_search";
-            }
+                if ($(window).outerWidth() > 1199) {
+                    $('nav.side-navbar').toggleClass('shrink');
+                    $('.page').toggleClass('active');
+                 
+                }
             // });
         })
 

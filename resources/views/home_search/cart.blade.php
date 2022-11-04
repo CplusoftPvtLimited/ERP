@@ -317,19 +317,19 @@
                                 </div>
                             @endif
                             <div class="row" id="submit-button">
-                                <div class="col-md-7"></div>
-                                <div class="col-md-2 form-group text-right">
+                                {{-- <div class="col-md-7"></div>
+                                <div class="col-md-2 form-group text-right"> --}}
                                     <a href="{{ route('home_search') }}" id="back_to_shopping"
-                                        class="btn btn-info">{{ trans('file.Back To Shopping') }}</a>
-                                </div>
-                                <div class="col-md-2 form-group text-right">
+                                        class="btn btn-info mr-3">{{ trans('file.Back To Shopping') }}</a>
+                                {{-- </div>
+                                <div class="col-md-2 form-group text-right"> --}}
                                     <button type="button" id="save_changes"
-                                        class="btn btn-success">{{ trans('file.Save Changes') }}</button>
-                                </div>
-                                <div class="col-md-1 form-group text-right">
+                                        class="btn btn-success mr-3">{{ trans('file.Save Changes') }}</button>
+                                {{-- </div>
+                                <div class="col-md-1 form-group text-right"> --}}
                                     <button type="button" id="submit_button"
                                         class="btn btn-primary">{{ trans('file.submit') }}</button>
-                                </div>
+                                {{-- </div> --}}
                             </div>
 
 

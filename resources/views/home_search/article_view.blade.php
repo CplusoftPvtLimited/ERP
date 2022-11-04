@@ -286,17 +286,20 @@
                     </div>
                     
                 </div>
+                @php
+                    $cart = App\Models\Cart::where('retailer_id',auth()->user()->id)->first();
+                @endphp
                 <div class="row" style="margin-top: 20px">
                     <div class="col-7 offset-0">
                         <div class="box d-flex justify-content-between mb-3 pb-2">
                             <label class="custom-radio-button__container">
-                                <input type="radio" name="cash_type" value="white">
+                                <input type="radio" name="cash_type" value="white" {{ isset($cart) && $cart->cash_type == "white" ? 'checked' : '' }}>
                                 <span class="custom-radio-button designer">
                                     <i class="fa fa-solid fa-sack-dollar"></i> Primary Cash
                                 </span>
                             </label>
                             <label class="custom-radio-button__container">
-                                <input type="radio" name="cash_type" value="black">
+                                <input type="radio" name="cash_type" value="black" {{ isset($cart) && $cart->cash_type == "black" ? 'checked' : ''}}>
                                 <span class="custom-radio-button designer">
                                     <i class="fa fa-solid fa-sack-dollar"></i> Secondry Cash
                                 </span>
@@ -349,8 +352,14 @@
         </form>
     </section>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 <script>
     $(document).ready(function() {
+        if ($(window).outerWidth() > 1199) {
+                    $('nav.side-navbar').toggleClass('shrink');
+                    $('.page').toggleClass('active');
+                 
+                }
         $('#minus').click(function() {
             var quantity = $('.cart_item').val();
             if (quantity > 1) {

@@ -573,7 +573,7 @@ class HomeSearchController extends Controller
                 if($cart->cash_type != $request->cash_type){
                     $cash_type = $cart->cash_type == "white" ? "primary" : "secondary";
                     // session()->put('old_quantity',$request->quantity);
-                    toastr()->info('You have already data against cash type "'.$cash_type.'"'." So Yo cannot change cash type");
+                    toastr()->info('You have already data against cash type "'.$cash_type.'"'." So You cannot change cash type");
                     return redirect()->back();
                 }
                 $cart_data = $this->cartFilledData($cart,$request);
