@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="{{ asset('css/load_more_dropdown.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <section>
-
+        <input type="hidden" id="app_url" value="{{ env('APP_URL') }}">
+        <input type="hidden" id="brand_count" value="{{ $brands_count }}">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
@@ -103,10 +104,21 @@
 
                                             <div class="dropdown">
                                                 <div class="dropdown-header manufacturer form-control">
-                                                    {{ __('Select Manufacturer') }}</div>
-                                                {{-- <input type="text" placeholder="Search.." id="myInput"
-                                                    onkeyup="filterFunction()"> --}}
+                                                    {{ __('Select Manufacturer') }}
+                                                    
+                                                </div>
+                                                
                                                 <div class="dropdown-content manufacturer_content form-control">
+                                                    {{-- <div class="input-main-class">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" id=""><i
+                                                                        class="fa fa-duotone fa-magnifying-glass"></i></span>
+                                                            </div> --}}
+                                                            <input type="text" placeholder="  Search Manufacturer"
+                                                                id="manufacturer_input_search" onkeyup="filterManufacturer()">
+                                                        {{-- </div> --}}
+                                                    {{-- </div> --}}
                                                     <div class="manufacturer_normal_option">
                                                         @foreach ($manufacturers as $manufacturer)
                                                             <div class="manufacturer_option"
@@ -289,461 +301,24 @@
 @endsection
 @push('scripts')
     <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
+    <script type="text/javascript" src="{{ asset('js/home_manufacturer.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/home_model.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/home_engine.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/home_brand_section.js') }}"></script>
 
     <script>
         $(document).ready(function() {
-           
 
-                if ($(window).outerWidth() > 1199) {
-                    $('nav.side-navbar').toggleClass('shrink');
-                    $('.page').toggleClass('active');
-                 
-                }
+
+            if ($(window).outerWidth() > 1199) {
+                $('nav.side-navbar').toggleClass('shrink');
+                $('.page').toggleClass('active');
+
+            }
             // });
         })
 
-        function filterFunction() {
-            var input, filter, ul, li, a, i;
-            input = document.getElementById("myInput");
-            filter = input.value.toUpperCase();
-            div = document.getElementsByClassName("manufacturer_normal_option");
-            a = document.getElementsByClassName("manufacturer_option");
-            for (i = 0; i < a.length; i++) {
-                txtValue = a[i].textContent || a[i].innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    a[i].style.display = "";
-                } else {
-                    a[i].style.display = "none";
-                }
-            }
-        }
-        // get manufacturers // load more script for get manufacturers
-        var manufacturer_id_check_array = [];
-        $('.dropdown-header.manufacturer').click(function(event) {
-            $('.dropdown-content.manufacturer_content').toggle();
-            event.stopPropagation();
-        })
+  
 
-        $(window).click(function() {
-            $('.dropdown-content').hide();
-        })
-
-        function selectEngineType() {
-            manufacturer_id_check_array = [];
-            $('.dropdown-header.manufacturer').html("Select Manufacturer");
-            $('.dropdown-header.model').html("Select Model");
-            $('.dropdown-header.engine').html("Select Engine");
-            $('.manufacturer_normal_option').empty();
-            $('.model_normal_option').empty();
-            $('.engine_normal_option').empty();
-            document.getElementById('model_more').style.display = "none";
-            document.getElementById('engine_more').style.display = "none";
-            var sub_type = $('input[name="sub_type"]:checked').val();
-            var main_type = $('input[name="type"]:checked').val();
-            if (sub_type == "V" || sub_type == "L" || sub_type == "B") {
-                $('#p_type').prop('checked', true);
-                $('#o_type').prop('checked', false);
-            } else if (sub_type == "C" || sub_type == "T" || sub_type == "M" || sub_type == "A" || sub_type == "K") {
-                $('#o_type').prop('checked', true);
-                $('#p_type').prop('checked', false);
-            } else {
-                if (main_type == "O" && sub_type == "home") {
-                    $('#p_type').prop('checked', false);
-                    $('#o_type').prop('checked', true);
-                } else if (main_type == "P" && sub_type == "home") {
-                    $('#p_type').prop('checked', true);
-                    $('#o_type').prop('checked', false);
-                }
-
-            }
-            var type = $('input[name="type"]:checked').val();
-            var url = "{{ url('get_home_manufacturers') }}";
-
-            $.get(url + '?type=' + type + '&sub_type=' + sub_type + '&main=1', function(data) {
-
-                let response = data.data;
-
-                if (data.manu_more_data['value'] > data.total_count) {
-                    document.getElementById('manufacturer_more').style.display = "none";
-                } else {
-                    document.getElementById('manufacturer_more').style.display = "block";
-                }
-                if (response.length > 0) {
-                    $.each(response, function(key, value) {
-                        manufacturer_id_check_array.push(value.manuId);
-                        $('.manufacturer_normal_option').append($(
-                            '<div class="manufacturer_option" id="manu_id" data-manufacturer_id="' +
-                            value.manuId + '">').html(value.manuName));
-                    });
-
-                } else {
-                    console.log(data)
-                    $('.manufacturer_normal_option').append(
-                        "<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>");
-                }
-
-
-
-
-            })
-        }
-        $('.more.manufacturer_more').click(function(event) {
-            document.getElementById('manufacturer_load_icon').style.display = "block";
-            var sub_type = $('input[name="sub_type"]:checked').val();
-            var main_type = $('input[name="type"]:checked').val();
-            if (sub_type == "V" || sub_type == "L" || sub_type == "B") {
-                $('#p_type').prop('checked', true);
-                $('#o_type').prop('checked', false);
-            } else if (sub_type == "C" || sub_type == "T" || sub_type == "M" || sub_type == "A" || sub_type ==
-                "K") {
-                $('#o_type').prop('checked', true);
-                $('#p_type').prop('checked', false);
-            } else {
-                if (main_type == "O" && sub_type == "home") {
-                    $('#p_type').prop('checked', false);
-                    $('#o_type').prop('checked', true);
-                } else if (main_type == "P" && sub_type == "home") {
-                    $('#p_type').prop('checked', true);
-                    $('#o_type').prop('checked', false);
-                }
-
-            }
-            var type = $('input[name="type"]:checked').val();
-            var url = "{{ url('get_home_manufacturers') }}";
-            $.get(url + '?type=' + type + '&sub_type=' + sub_type + '&load=1', function(data) {
-
-                let response = data.data;
-                console.log(data)
-                document.getElementById('manufacturer_load_icon').style.display = "none";
-                if (data.manu_more_data['value'] > data.total_count) {
-                    document.getElementById('manufacturer_more').style.display = "none";
-                } else {
-                    document.getElementById('manufacturer_more').style.display = "block";
-                }
-                $.each(response, function(key, value) {
-                    if (!manufacturer_id_check_array.includes(value.manuId)) {
-                        manufacturer_id_check_array.push(value.manuId);
-                        $('.manufacturer_normal_option').append($(
-                            '<div class="manufacturer_option" id="manu_id" data-manufacturer_id="' +
-                            value.manuId + '">').html(value.manuName));
-                    }
-
-                });
-            })
-            event.stopPropagation();
-
-
-        })
-        var model_id_check_array = [];
-        $('.dropdown-header.model').click(function(event) {
-            $('.dropdown-content.model_content').toggle();
-            event.stopPropagation();
-        })
-        var manufacturer_id_set = 0;
-        $(document.body).on('click', '.manufacturer_option:not(.manufacturer_more)', function(
-            event) { // click on brand to get sections
-            model_id_check_array = [];
-            $('.dropdown-header.model').html("Select Model");
-            $('.dropdown-header.engine').html("Select Engine");
-            $('.model_normal_option').empty();
-            $('.engine_normal_option').empty();
-            document.getElementById('engine_more').style.display = "none";
-
-            var manufacturer_id = $(this).data('manufacturer_id');
-            manufacturer_id_set = manufacturer_id;
-            let engine_sub_type = $('input[name="sub_type"]:checked').val();
-            let engine_type = $('input[name="type"]:checked').val();
-            let url = "{{ route('get_models_by_manufacturer_home_search') }}";
-            $('.dropdown-header.manufacturer').html($(this).html());
-            $.get(url + '?manufacturer_id=' + manufacturer_id + '&engine_sub_type=' + engine_sub_type +
-                '&engine_type=' + engine_type + '&main=1',
-                function(data) {
-
-                    let response = data.data;
-                    if (data.load_more_model['value'] > data.total_count) {
-                        document.getElementById('model_more').style.display = "none";
-                    } else {
-                        document.getElementById('model_more').style.display = "block";
-                    }
-
-                    if (response.length > 0) {
-                        $.each(response, function(key, value) {
-
-                            model_id_check_array.push(value.modelId);
-                            $('.model_normal_option').append($(
-                                '<div class="model_option" data-model_id="' +
-                                value.modelId + '">').html(value.modelname));
-                        });
-                    } else {
-                        $('.model_normal_option').append(
-                            "<span style='color:red;text-align:center;font-size:13px;'>No Record Found</span>"
-                            );
-                    }
-
-
-
-
-                })
-        })
-
-        $('.more.model_more').click(function(event) {
-            document.getElementById('model_load_icon').style.display = "block";
-            var manufacturer_id = manufacturer_id_set;
-            let engine_sub_type = $('input[name="sub_type"]:checked').val();
-            let engine_type = $('input[name="type"]:checked').val();
-            let url = "{{ route('get_models_by_manufacturer_home_search') }}";
-
-            $.get(url + '?manufacturer_id=' + manufacturer_id + '&engine_sub_type=' + engine_sub_type +
-                '&engine_type=' +
-                engine_type + '&load=1',
-                function(data) {
-
-                    let response = data.data;
-                    document.getElementById('model_load_icon').style.display = "none";
-                    if (data.load_more_model['value'] > data.total_count) {
-                        document.getElementById('model_more').style.display = "none";
-                    } else {
-                        document.getElementById('model_more').style.display = "block";
-                    }
-                    var error = [];
-                    $.each(response, function(key, value) {
-                        if (!model_id_check_array.includes(value.modelId)) {
-                            $('.model_normal_option').append($(
-                                '<div class="model_option" data-model_id="' +
-                                value.modelId + '">').html(value.modelname));
-                            error.push('data');
-                        }
-                    });
-                })
-            event.stopPropagation();
-        })
-
-        var engine_id_check_array = [];
-        var model_id_set = 0;
-        $('.dropdown-header.engine').click(function(event) {
-            $('.dropdown-content.engine_content').toggle();
-            event.stopPropagation();
-        })
-        $(document.body).on('click', '.model_option:not(.model_more)', function(
-            event) { // click on brand to get sections
-            $('.dropdown-header.model').html($(this).html());
-            var model_id = $(this).data('model_id');
-            model_id_set = model_id;
-            let url = "{{ route('get_engines_by_model_home_search') }}";
-            let engine_sub_type = $('input[name="sub_type"]:checked').val();
-            let engine_type = $('input[name="type"]:checked').val();
-            $('.engine_normal_option').empty();
-            $.get(url + '?model_id=' + model_id + '&engine_sub_type=' + engine_sub_type + '&engine_type=' +
-                engine_type + "&main=1",
-                function(data) {
-                    let response = data.data;
-                    console.log(response)
-
-                    document.getElementById('engine_load_icon').style.display = "none";
-                    if (data.load_more_engine['value'] > data.total_count) {
-                        document.getElementById('engine_more').style.display = "none";
-                    } else {
-                        document.getElementById('engine_more').style.display = "block";
-                    }
-                    if (response.length > 0) {
-                        $.each(response, function(key, value) {
-                            engine_id_check_array.push(value.linkageTargetId);
-                            $('.engine_normal_option').append($(
-                                '<div class="engine_option" data-engine_id="' +
-                                value.linkageTargetId + '">').html(value.description + "(" +
-                                value
-                                .beginYearMonth + " - " + value.endYearMonth));
-                        });
-                    } else {
-                        $('.engine_normal_option').append(
-                            "<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>"
-                            );
-                    }
-
-                })
-
-        })
-
-        $('.more.engine_more').click(function(event) {
-            document.getElementById('engine_load_icon').style.display = "block";
-            var model_id = model_id_set;
-            let url = "{{ route('get_engines_by_model_home_search') }}";
-            let engine_sub_type = $('input[name="sub_type"]:checked').val();
-            let engine_type = $('input[name="type"]:checked').val();
-            $.get(url + '?model_id=' + model_id + '&engine_sub_type=' + engine_sub_type + '&engine_type=' +
-                engine_type + "&load=1",
-                function(data) {
-                    let response = data.data;
-
-
-                    document.getElementById('engine_load_icon').style.display = "none";
-                    if (data.load_more_engine['value'] > data.total_count) {
-                        document.getElementById('engine_more').style.display = "none";
-                    } else {
-                        document.getElementById('engine_more').style.display = "block";
-                    }
-
-                    $.each(response, function(key, value) {
-                        if (!engine_id_check_array.includes(value.linkageTargetId)) {
-                            engine_id_check_array.push(value.linkageTargetId);
-                            $('.engine_normal_option').append($(
-                                '<div class="engine_option" data-engine_id="' +
-                                value.linkageTargetId + '">').html(value.description + "(" +
-                                value.beginYearMonth + " - " + value.endYearMonth));
-                        }
-
-                    });
-                })
-        })
-
-        $(document.body).on('click', '.engine_option:not(.engine_more)', function(
-            event) { // click on brand to get sections
-            $('.dropdown-header.engine').html($(this).html());
-            $('#engine_id').val($(this).data('engine_id'))
-            var url = "{{ route('get_data_of_engine_home_search') }}";
-            var engine_id = $(this).data('engine_id');
-            $.get(url + '?engine_id=' + engine_id, function(data) {
-
-                // $('#engine_id').html('<option value="">Select One</option>');
-                // $('#engine_id').selectpicker("refresh");
-
-                let response = data.data;
-
-                $('#model_year').val(response.beginYearMonth != null ? response.beginYearMonth : 'N/A');
-                $('#fuel').val(response.fuelType != null ? response.fuelType : 'N/A');
-                $('#cc').val(response.capacityCC != null ? response.capacityCC : 'N/A');
-            })
-        })
-        // get manufacturers // load more script for get manufacturers enddddddd
-
-
-
-
-
-        // load more script for brands
-
-        $('.dropdown-header.brands').click(function(event) {
-            $('.dropdown-content.brands_content').toggle();
-            event.stopPropagation();
-        })
-
-        $(window).click(function() {
-            $('.dropdown-content').hide();
-        })
-
-        $('.option.more').click(function(event) {
-            var count = "{{ $brands_count }}";
-            document.getElementById('brand_load_icon').style.display = "block";
-            $.ajax({
-                url: "{{ route('load_more_brand') }}",
-                method: "GET",
-                success: function(data) {
-                    let view_html = "";
-                    document.getElementById('brand_load_icon').style.display = "none";
-                    $.each(data.brands, function(key, value) {
-                        $('.normal-option').append($('<div class="option" data-brand_id="' +
-                            value.brandId + '">').html(value.brandName));
-                    });
-
-                    if (data.count >= count) {
-                        $('.option.more').hide();
-                    }
-
-
-                }
-            });
-            event.stopPropagation();
-
-
-        })
-        /// load more script for brands  end
-
-        // load more script for sub section by brands
-        var section_id_check_array = [];
-        $('.dropdown-header.product_group').click(function(event) {
-            $('.dropdown-content.product_group_content').toggle();
-            event.stopPropagation();
-        })
-        var brand_id_save = "";
-        $(document.body).on('click', '.option:not(.more)', function(event) { // click on brand to get sections
-            var brand_id = $(this).data('brand_id');
-            brand_id_save = $(this).data('brand_id');
-            $('.dropdown-header.brands').html($(this).html());
-
-            section_id_check_array = [];
-            var url = "{{ route('get_sub_sections_by_brand') }}";
-            $.get(url + '?brand_id=' + brand_id, function(data) {
-
-
-                let response = data;
-
-                if (response.length <= 0) {
-                    $('.product_group_normal_option').empty();
-                    $('.dropdown-header.product_group').html("Select Product Group");
-                    // $('.more.product_group_more').hide();
-                } else {
-                    // $('.more.product_group_more').hide();
-                }
-                let view_html = `<option value="">Select One</option>`;
-                $.each(response, function(key, value) {
-
-                    section_id_check_array.push(value.assemblyGroupNodeId);
-                    $('.product_group_normal_option').append($(
-                        '<div class="product_group_option" data-section_id="' +
-                        value.assemblyGroupNodeId + '">').html(value.assemblyGroupName));
-                    // $.each(value.sub_section, function(key_2, value_2) {
-
-
-                    //         $('.product_group_normal_option').append($('<div class="option" data-section_id="' +
-                    //         value_2.assemblyGroupNodeId + '">').html(value_2.assemblyGroupName));
-                    // });
-                });
-
-            })
-        })
-
-        $('.more.product_group_more').click(function(event) {
-            var brand_id = brand_id_save
-            // $('.dropdown-header.brands').html($(this).html());
-
-
-            var url = "{{ route('get_sub_sections_by_brand') }}";
-            $.get(url + '?brand_id=' + brand_id, function(data) {
-
-
-                let response = data;
-
-                let view_html = `<option value="">Select One</option>`;
-                $.each(response, function(key, value) {
-
-                    if (!section_id_check_array.includes(value.assemblyGroupNodeId)) {
-                        $('.product_group_normal_option').append($(
-                            '<div class="product_group_option" data-section_id="' +
-                            value.assemblyGroupNodeId + '">').html(value.assemblyGroupName));
-                        section_id_check_array.push(value.assemblyGroupNodeId);
-                    }
-
-                    // $.each(value.sub_section, function(key_2, value_2) {
-
-
-                    //         $('.product_group_normal_option').append($('<div class="option" data-section_id="' +
-                    //         value_2.assemblyGroupNodeId + '">').html(value_2.assemblyGroupName));
-                    // });
-                });
-
-            });
-            event.stopPropagation();
-        })
-
-        $(document.body).on('click', '.product_group_option:not(.product_group_more)', function(
-            event) { // click on brand to get sections
-            var section_id = $(this).data('section_id');
-            $('.dropdown-content.product_group_content').toggle();
-            $('#sub_section_id').val(section_id);
-            $('.dropdown-header.product_group').html($(this).html());
-            event.stopPropagation();
-        })
-
-        // load more script for sub section by brands end =========================
-    </script>
+            </script>
 @endpush

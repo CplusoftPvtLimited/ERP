@@ -292,13 +292,13 @@
                 <div class="row" style="margin-top: 20px">
                     <div class="col-7 offset-0">
                         <div class="box d-flex justify-content-between mb-3 pb-2">
-                            <label class="custom-radio-button__container">
+                            <label class="custom-radio-button__container {{ isset($cart) && $cart->cash_type == "white" ? 'blink_me' : '' }}">
                                 <input type="radio" name="cash_type" value="white" {{ isset($cart) && $cart->cash_type == "white" ? 'checked' : '' }}>
                                 <span class="custom-radio-button designer">
                                     <i class="fa fa-solid fa-sack-dollar"></i> Primary Cash
                                 </span>
                             </label>
-                            <label class="custom-radio-button__container">
+                            <label class="custom-radio-button__container {{ isset($cart) && $cart->cash_type == "black" ? 'blink_me' : '' }}">
                                 <input type="radio" name="cash_type" value="black" {{ isset($cart) && $cart->cash_type == "black" ? 'checked' : ''}}>
                                 <span class="custom-radio-button designer">
                                     <i class="fa fa-solid fa-sack-dollar"></i> Secondry Cash

@@ -64,6 +64,8 @@ class HomeSearchController extends Controller
             ];
             session()->put('manufacturer_load_more',$manfuacture_array);
         }
+        $manufacturer_load_more = session()->get('manufacturer_load_more');
+
         // dd($manufacturer_load_more);
         if($request->type == "P" && $request->sub_type == "home"){
             if($request->type == $manufacturer_load_more['type'] && $request->sub_type == $manufacturer_load_more['sub_type']){
@@ -109,7 +111,7 @@ class HomeSearchController extends Controller
                     'value' => 0,
                 ];
                 session()->put('manufacturer_load_more',$manfuacture_array);
-                $manufacturers = Manufacturer::whereIn('linkingTargetType', $type)
+                $manufacturers = Manufacturer::whereIn('linkingTargetType', $type2)
                 ->skip($manufacturer_load_more['value'])->take((int)10)->get();
                 $manfuacture_array = [
                     'type' => "O",
@@ -121,7 +123,7 @@ class HomeSearchController extends Controller
             $total_count = Manufacturer::whereIn('linkingTargetType', $type2)->count();
         }else {
             if($request->sub_type == $manufacturer_load_more['sub_type']){
-                $manufacturers = Manufacturer::whereIn('linkingTargetType', $type2)
+                $manufacturers = Manufacturer::where('linkingTargetType', $request->sub_type)
                 ->skip($manufacturer_load_more['value'])->take((int)10)->get();
                 $manfuacture_array = [
                     'type' => "",
@@ -136,7 +138,7 @@ class HomeSearchController extends Controller
                     'value' => 0,
                 ];
                 session()->put('manufacturer_load_more',$manfuacture_array);
-                $manufacturers = Manufacturer::whereIn('linkingTargetType', $type)
+                $manufacturers = Manufacturer::where('linkingTargetType', $request->sub_type)
                 ->skip($manufacturer_load_more['value'])->take((int)10)->get();
                 $manfuacture_array = [
                     'type' => "",
@@ -401,8 +403,7 @@ class HomeSearchController extends Controller
         }
     }
 
-    public function searchSectionByEngine(Request $request){
-        // dd($request->all());
+    public function getSearchSectionByEngine($engine_id,$type,$sub_type,$model_year,$fuel,$cc){
         $model_array = [
             'type' => "null",
             'sub_type' => "null",
@@ -415,14 +416,14 @@ class HomeSearchController extends Controller
             'value' => 0,
         ];
         session()->put('engine_load_more',$engine_array);
-        $engine = LinkageTarget::where('linkageTargetId',$request->engine_id)
+        $engine = LinkageTarget::where('linkageTargetId',$engine_id)
                 ->first();
         // dd($engine);
-                $type = ["V","L","B"];
-                $type2 = ["C","T","M","A","K"];
-        if($request->type == "P" && $request->sub_type == "home"){
+                $typee = ["V","L","B"];
+                $typee2 = ["C","T","M","A","K"];
+        if($type == "P" && $sub_type == "home"){
             $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
-            ->whereHas('articleVehicleTree', function($query) use ($request,$engine,$type){
+            ->whereHas('articleVehicleTree', function($query) use ($engine){
                         // $query->where('linkingTargetId', $request->engine_id)
                         // ->whereIn('linkingTargetType', $type);
                         })
@@ -432,10 +433,10 @@ class HomeSearchController extends Controller
                    ->groupBy('assemblyGroupNodeId')
                    ->limit(10)
                     ->get();
-        }else if($request->type == "O" && $request->sub_type == "home"){
+        }else if($type == "O" && $sub_type == "home"){
             // dd($request->all());
             $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
-            ->whereHas('articleVehicleTree', function($query) use ($request,$engine,$type2){
+            ->whereHas('articleVehicleTree', function($query) use ($engine){
                         // $query->where('linkingTargetId', $request->engine_id)
                         // ->whereIn('linkingTargetType', $type2);
                         })
@@ -447,7 +448,7 @@ class HomeSearchController extends Controller
                     ->get();
         }else{
             $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
-            ->whereHas('articleVehicleTree', function($query) use ($request,$engine,$type){
+            ->whereHas('articleVehicleTree', function($query) use ($engine){
                         // $query->where('linkingTargetId', $request->engine_id)
                         // ->where('linkingTargetType', $request->engine_sub_type);
                         
@@ -460,26 +461,24 @@ class HomeSearchController extends Controller
                    ->limit(10)
                     ->get();
         }
-        
-        // dd($sections);
-        // $sections = [];
-        // if(count($all_sections) > 0){
-        //     foreach ($all_sections as $sec) {
-        //         $sub_sections = AssemblyGroupNode::where('parentNodeId',$sec->assemblyGroupNodeId)->get();
-        //         $res = [
-        //             'section' => $sec,
-        //             'sub_sections' => $sub_sections
-        //         ];
-        //         array_push($sections,$res);
-        //     }
-        // }
-        $type = $request->type;
-        $sub_type = $request->sub_type;
-        $model_year = $request->model_year;
-        $fuel = $request->fuel;
-        $cc = $request->cc;
+       
+        $type = $type;
+        $sub_type = $sub_type;
+        $model_year = $model_year;
+        $fuel = $fuel;
+        $cc = $cc;
 
         return view('home_search.sections_search_view',compact('sections','engine','type','sub_type','model_year','fuel','cc'));
+    }
+    public function searchSectionByEngine(Request $request){
+        // $engine_id,$type,$sub_type,$model_year,$fuel,$cc
+        // dd($request->all());
+        $model_year = isset($request->model_year) ? $request->model_year : "NA";
+        $fuel = isset($request->fuel) ? $request->fuel : "NA";
+        $cc = isset($request->cc) ? $request->cc : "NA";
+
+        return redirect()->route('get_search_sections_by_engine',[$request->engine_id,$request->type,$request->sub_type,$model_year,$fuel,$cc]);
+        
     }
 
     public function articleSearchView($id,$section_id){
@@ -697,6 +696,8 @@ class HomeSearchController extends Controller
             }
             // foreach ($cart_items as $cart_item) {
                 if(in_array($request->article,$cart_article_id_array)){
+                    // dd('fff');
+                    // $cart_item = CartItem::where('cart_id',$cart->id)->where('reference_no',$request->article)->first();
                     $total_excluding_vat = (($request->purchase_price + $cart_item->actual_price) * ($request->quantity + $cart_item->qty)) + ($request->additional_cost_without_vat + $cart_item->additional_cost_without_vat);
                     $actual_cost_per_product =  ($total_excluding_vat / ($request->quantity + $cart_item->qty)) + ($cart->additional_cost / $cart->total_qty);
                     $sale_price = $actual_cost_per_product * (1 + (($request->profit_margin / 100) + ($cart_item->profit_margin /100)));
