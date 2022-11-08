@@ -78,7 +78,6 @@ class StockManagementController extends Controller
             if (!empty($stock)) {
                 $white_items = !empty($request->white_items) ? $request->white_items : $stock->white_items;
                 $black_items = !empty($request->black_items) ? $request->black_items : $stock->black_items;
-
                 $stock->update([
                     'white_items' => isset($request->white_items) ? $request->white_items : $stock->white_items,
                     'black_items' => isset($request->black_items) ? $request->black_items : $stock->black_items,
@@ -96,7 +95,6 @@ class StockManagementController extends Controller
                     ]);
                 }
             }
-
             DB::commit();
             toastr()->success('record updated successfully!');
             return redirect()->back();
@@ -281,7 +279,6 @@ class StockManagementController extends Controller
                     DB::beginTransaction();
                     /// incase some product (reference no is already exists in the table then we can ignore the record from the csv in storage procedure)
                     $find_stock_on_existing_reference = StockManagement::where('retailer_id', Auth::user()->id)->where('reference_no', $data['reference_no'])->with(['purchaseProduct'])->first();
-                    
                     $find_stock_on_existing_reference->update([
                         'purchase_product_id' => !empty($find_stock_on_existing_reference->purchaseProduct) ? $find_stock_on_existing_reference->purchaseProduct->id : null,
                         'white_items' => (int) ($find_stock_on_existing_reference->white_items) + (($white_items_qty > 0) ? ($white_items_qty) : 0),
