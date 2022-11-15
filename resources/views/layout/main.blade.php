@@ -106,6 +106,8 @@
     <div id="loader"></div>
     <!-- Side Navbar -->
     <nav class="side-navbar">
+        <a id="close-sidebar" href="#" class="btn pull-right text-danger"><i class="fa fa-minus"> </i></a>
+
         <span class="brand-big">
             @if ($general_setting->site_logo)
             <a href="{{ url('/') }}"><img src="{{ url('logo', $general_setting->site_logo) }}" width="115"></a>
