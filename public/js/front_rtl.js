@@ -1,6 +1,41 @@
 /*global $, document, Chart, LINECHART, data, options, window*/
 $(document).ready(function () {
 
+    if ($(window).outerWidth() < 1199) {
+        if (window.location.pathname == "/") {
+            $('nav.side-navbar').removeClass('shrink');
+            $('.page').removeClass('active');
+            $('#close-sidebar').show();
+        }
+        else {
+            $('nav.side-navbar').addClass('shrink');
+            $('.page').addClass('active');
+            $('#close-sidebar').show();
+        }
+    } else {
+        $('#close-sidebar').hide();
+    }
+
+    window.onresize = function (event) {
+        // alert($(window).outerWidth());
+        if ($(window).outerWidth() < 1199) {
+            if (window.location.pathname == "/") {
+                $('nav.side-navbar').removeClass('shrink');
+                $('.page').removeClass('active');
+                $('#close-sidebar').show();
+            }
+            else {
+                $('nav.side-navbar').addClass('shrink');
+                $('.page').addClass('active');
+                $('#close-sidebar').show();
+            }
+        } else {
+            $('nav.side-navbar').removeClass('shrink');
+            $('.page').removeClass('active');
+            $('#close-sidebar').hide();
+        }
+    };
+    
     'use strict';
 
     // ------------------------------------------------------- //
