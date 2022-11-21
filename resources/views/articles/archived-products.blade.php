@@ -68,7 +68,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="container">
+                            <!-- <div class="container"> -->
                                 <div class="d-flex flex-row-reverse mb-3 mr-4">
                                     {{-- <a href="{{ route('article.create') }}" class="btn btn-info mb-1"><i --}}
                                     {{-- class="dripicons-plus"></i> {{ trans('file.Add Product') }}</a> --}}
@@ -109,7 +109,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
+                            <!-- </div> -->
                         </div>
                     </div>
                 </div>

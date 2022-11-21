@@ -42,7 +42,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="container">
+                            <!-- <div class="container"> -->
                                 <div class="d-flex flex-row-reverse mb-3 mr-4">
                                     <button type="button" class="btn btn-info" data-toggle="modal"
                                         data-target="#exampleModalCenter">
@@ -92,7 +92,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
+                            <!-- </div> -->
                         </div>
                     </div>
                 </div>

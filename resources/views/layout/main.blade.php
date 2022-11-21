@@ -106,7 +106,7 @@
     <div id="loader"></div>
     <!-- Side Navbar -->
     <nav class="side-navbar">
-        <a id="close-sidebar" href="#" class="btn pull-right text-danger"><i class="fa fa-minus"> </i></a>
+        <a id="close-sidebar" href="#" class="btn pull-right text-danger"><i class="fa fa-times"> </i></a>
 
         <span class="brand-big">
             @if ($general_setting->site_logo)

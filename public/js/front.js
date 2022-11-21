@@ -1,5 +1,8 @@
 /*global $, document, Chart, LINECHART, data, options, window*/
 $(document).ready(function () {
+
+    'use strict';
+
     // alert($(window).outerWidth());
     if ($(window).outerWidth() < 1199) {
         if (window.location.pathname == "/") {
@@ -37,7 +40,6 @@ $(document).ready(function () {
     };
     var width = $(window).outerWidth();
     // alert(width);
-    'use strict';
 
     // ------------------------------------------------------- //
     // full screen button
