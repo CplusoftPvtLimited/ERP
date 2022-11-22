@@ -34,14 +34,14 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="container">
+                        <div class="">
                             <div class="d-flex flex-row-reverse mb-3 mr-4">
                                 {{-- <a href="{{route('bank_account.create')}}" class="btn btn-info mb-1"><i class="dripicons-plus"></i> {{trans('file.Add Bank Account')}}</a> --}}
                                 <div class="col pl-4 pt-1">
                                     <h2>{{trans('file.Bank Account')}}</h2>
                                 </div>
                             </div>
-                            <div class="table-responsive">
+                            <div class="    table-responsive">
                                 @if(session()->has('message'))
                                 <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('message') }}</div>
                                 @endif

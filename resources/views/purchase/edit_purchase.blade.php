@@ -69,6 +69,9 @@
                         <div class="card-header d-flex align-items-center article_view_tr_head">
                             <h4><b>{{ trans('file.Purchase Products') }}</b></h4>
                         </div>
+                        {{-- <div class="col-sm-12 table-responsive">
+                            
+                        </div> --}}
                         <table class="table table-responsive" id="purchase-table">
                             <thead class="article_view_tr_head">
                                 <tr>

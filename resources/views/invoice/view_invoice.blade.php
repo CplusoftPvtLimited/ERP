@@ -72,7 +72,7 @@
                                     <div class="col-md-12">
                                         <h5 id="order-table-header"></h5>
                                         <div class="table-responsive mt-3">
-                                            <table id="myTable" class="table table-hover order-list table-responsive">
+                                            <table id="myTable" class="table table-hover order-list">
                                                 <thead class="article_view_tr_head">
                                                     @if ($sale->cash_type == 'white')
                                                         <tr id="">
