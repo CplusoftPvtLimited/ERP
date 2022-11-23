@@ -1,16 +1,41 @@
 var main_url = document.getElementById('app_url').value;
+function filterModel() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("model_input_search");
+    filter = input.value.toUpperCase();
+    if (input.value) {
+        document.getElementById('model_more').style.display = "none";
+    } else {
+        document.getElementById('model_more').style.display = "block";
+    }
+    div = document.getElementsByClassName("model_normal_option");
+    a = document.getElementsByClassName("model_option");
+    for (i = 0; i < a.length; i++) {
+        txtValue = a[i].textContent || a[i].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            a[i].style.display = "";
+        } else {
+            a[i].style.display = "none";
+        }
+    }
 
+}
 var model_id_check_array = [];
         $('.dropdown-header.model').click(function(event) {
             $('.dropdown-content.model_content').toggle();
+            if(document.getElementById('model_caret').style.transform == "rotate(180deg)"){
+                document.getElementById('model_caret').style.transform = "rotate(0deg)";
+            }else{
+                document.getElementById('model_caret').style.transform = "rotate(180deg)";
+            }
             event.stopPropagation();
         })
         var manufacturer_id_set = 0;
         $(document.body).on('click', '.manufacturer_option:not(.manufacturer_more)', function(
             event) { // click on brand to get sections
             model_id_check_array = [];
-            $('.dropdown-header.model').html("Select Model");
-            $('.dropdown-header.engine').html("Select Engine");
+            $('.dropdown-header.model').html('Select Model <i id="model_caret" class="fa fa-solid fa-caret-down"></i>');
+            $('.dropdown-header.engine').html('Select Engine <i id="engine_caret" class="fa fa-solid fa-caret-down"></i>');
             $('.model_normal_option').empty();
             $('.engine_normal_option').empty();
             document.getElementById('engine_more').style.display = "none";
@@ -19,8 +44,8 @@ var model_id_check_array = [];
             manufacturer_id_set = manufacturer_id;
             let engine_sub_type = $('input[name="sub_type"]:checked').val();
             let engine_type = $('input[name="type"]:checked').val();
-            let url = new URL(main_url+'/get_models_by_manufacturer_home_search');
-            $('.dropdown-header.manufacturer').html($(this).html());
+            let url = main_url+'/get_models_by_manufacturer_home_search';
+            $('.dropdown-header.manufacturer').html($(this).html() + ' <i id="manufacturer_caret" class="fa fa-solid fa-caret-down"></i>');
             $.get(url + '?manufacturer_id=' + manufacturer_id + '&engine_sub_type=' + engine_sub_type +
                 '&engine_type=' + engine_type + '&main=1',
                 function(data) {
@@ -57,7 +82,7 @@ var model_id_check_array = [];
             var manufacturer_id = manufacturer_id_set;
             let engine_sub_type = $('input[name="sub_type"]:checked').val();
             let engine_type = $('input[name="type"]:checked').val();
-            let url = new URL(main_url+'/get_models_by_manufacturer_home_search');
+            let url = main_url+'/get_models_by_manufacturer_home_search';
 
             $.get(url + '?manufacturer_id=' + manufacturer_id + '&engine_sub_type=' + engine_sub_type +
                 '&engine_type=' +

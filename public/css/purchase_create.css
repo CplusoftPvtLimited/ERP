@@ -45,3 +45,243 @@ table {
 	background-color: #6244A6;
 	color: white;
   }
+
+
+
+  /* dropdown code*/
+
+  .dropdown{
+    display: table;
+    width: 100%;
+  }
+  
+  .dropdown-content{
+    display: none;
+    border: 1px solid gray;
+  }
+  
+  .dropdown-content .normal-option .option, .dropdown-content .option{
+    /* border-top: 1px solid gray; */
+    /* text-align: center; */
+    padding: 2px 10px;  
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .dropdown-content .normal-option .option:hover, .dropdown-content .option:hover{
+    background-color: lightgray;
+    color: white;
+  }
+
+  .dropdown-content .model_option{
+    /* border-top: 1px solid gray; */
+    /* text-align: center; */
+    padding: 2px 10px;  
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  .dropdown-content .model_option:hover{
+    background-color: lightgray;
+    color: white;
+  }
+
+
+  .dropdown-content .engine_option{
+    /* border-top: 1px solid gray; */
+    /* text-align: center; */
+    padding: 2px 10px;  
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  .dropdown-content .engine_option:hover{
+    background-color: lightgray;
+    color: white;
+  }
+
+
+  .dropdown-content .section_option{
+    /* border-top: 1px solid gray; */
+    /* text-align: center; */
+    padding: 2px 10px;  
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  .dropdown-content .section_option:hover{
+    background-color: lightgray;
+    color: white;
+  }
+
+  .brand_option:hover{
+    background-color: lightgray;
+    color: white;
+  }
+  .section_part_option:hover{
+    background-color: lightgray;
+    color: white;
+  }
+ 
+ 
+ 
+  .dropdown-header{
+    border: 1px solid gray;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+
+
+
+  /*------------------------ LOAD MOREeeeeeeeeeeeeeeeeee ---------------*/
+
+  .loader {
+	width:50px;
+	height:50px;
+	display:inline-block;
+	padding:0px;
+	opacity:0.5;
+	border:3px solid #09acfd;
+	-webkit-animation: loader 1s ease-in-out infinite alternate;
+	animation: loader 1s ease-in-out infinite alternate;
+ }
+ 
+ .loader:before {
+   content: " ";
+   position: absolute;
+   z-index: -1;
+   top: 5px;
+   left: 5px;
+   right: 5px;
+   bottom: 5px;
+   border: 3px solid #09acfd;
+ }
+ 
+ .loader:after {
+   content: " ";
+   position: absolute;
+   z-index: -1;
+   top: 15px;
+   left: 15px;
+   right: 15px;
+   bottom: 15px;
+   border: 3px solid #09acfd;
+ }
+ 
+ @keyframes loader {
+	from {transform: rotate(0deg) scale(1,1);border-radius:0px;}
+	to {transform: rotate(360deg) scale(0, 0);border-radius:50px;}
+ }
+ @-webkit-keyframes loader {
+	from {-webkit-transform: rotate(0deg) scale(1, 1);border-radius:0px;}
+	to {-webkit-transform: rotate(360deg) scale(0,0 );border-radius:50px;}
+ }
+ 
+ 
+ .loader4 {
+	width:16px;
+	height:16px;
+	display:inline-block;
+	padding:0px;
+	border-radius:100%;
+	border:5px solid;
+	/* border-top-color:rgba(246, 36, 89, 1); */
+	border-bottom-color:rgba(255,255,255, 0.3);
+	/* border-left-color:rgba(246, 36, 89, 1); */
+	border-right-color:rgba(255,255,255, 0.3);
+	-webkit-animation: loader4 1s ease-in-out infinite;
+	animation: loader4 1s ease-in-out infinite;
+ }
+ @keyframes loader4 {
+	from {transform: rotate(0deg);}
+	to {transform: rotate(360deg);}
+ }
+ @-webkit-keyframes loader4 {
+	from {-webkit-transform: rotate(0deg);}
+	to {-webkit-transform: rotate(360deg);}
+ }
+ 
+
+ .more.manufacturer_more {
+    text-align: center;
+    background: #6244a6;
+    color: white;
+    cursor: pointer;
+  }
+
+  .more.model_more {
+    text-align: center;
+    background: #6244a6;
+    color: white;
+    cursor: pointer;
+  }
+
+  .more.engine_more {
+    text-align: center;
+    background: #6244a6;
+    color: white;
+    cursor: pointer;
+  }
+
+  .more.section_more {
+    text-align: center;
+    background: #6244a6;
+    color: white;
+    cursor: pointer;
+  }
+
+  .more.section_part_more {
+    text-align: center;
+    background: #6244a6;
+    color: white;
+    cursor: pointer;
+  }
+
+  .more.brands_more {
+    text-align: center;
+    background: #6244a6;
+    color: white;
+    cursor: pointer;
+  }
+
+  .dropdown-content{
+    max-height: 250px !important;
+  overflow-y: scroll;
+  cursor: pointer;
+
+  }
+
+  /* .dropdown-content:hover{
+    background-color: lightgray;
+    color: white;
+  } */
+  input#section_part_input_search {
+    width: 100%;
+}
+
+input#brand_input_search {
+  width: 100%;
+}
+
+input#manufacturer_input_search {
+  width: 100%;
+}
+input#model_input_search {
+  width: 100%;
+}
+input#engine_input_search {
+  width: 100%;
+}
+input#section_input_search {
+  width: 100%;
+}
+.dropdown-content{
+  position: absolute;
+  z-index: 1000;
+  background-color: #fdfdff;
+  border-color: #e4e6fc;
+}
+
+.dropdown-header{
+  background-color: #fdfdff;
+  border-color: #e4e6fc;
+}

@@ -24,15 +24,22 @@ function filterManufacturer() {
         // get manufacturers // load more script for get manufacturers
         var manufacturer_id_check_array = [];
         $('.dropdown-header.manufacturer').click(function(event) {
+            // transform: rotate(180deg);
+            
             $('.dropdown-content.manufacturer_content').toggle();
-            event.stopPropagation();
+            if(document.getElementById('manufacturer_caret').style.transform == "rotate(180deg)"){
+                document.getElementById('manufacturer_caret').style.transform = "rotate(0deg)";
+            }else{
+                document.getElementById('manufacturer_caret').style.transform = "rotate(180deg)";
+            }
+            // event.stopPropagation();
         })
 
       
 
         function selectEngineType() {
             manufacturer_id_check_array = [];
-            $('.dropdown-header.manufacturer').html("Select Manufacturer");
+            $('.dropdown-header.manufacturer').html('Select Manufacturer <i id="manufacturer_caret" class="fa fa-solid fa-caret-down"></i>');
             $('.dropdown-header.model').html("Select Model");
             $('.dropdown-header.engine').html("Select Engine");
             $('.manufacturer_normal_option').empty();
@@ -60,7 +67,7 @@ function filterManufacturer() {
             }
             var type = $('input[name="type"]:checked').val();
             // var url = "{{ url('') }}";
-            var url = new URL(main_url +'/get_home_manufacturers');
+            var url = main_url +'/get_home_manufacturers';
             console.log(url);
             $.get(url + '?type=' + type + '&sub_type=' + sub_type + '&main=1', function(data) {
 
@@ -112,7 +119,7 @@ function filterManufacturer() {
 
             }
             var type = $('input[name="type"]:checked').val();
-            var url = new URL(main_url +'/get_home_manufacturers');
+            var url = main_url +'/get_home_manufacturers';
             $.get(url + '?type=' + type + '&sub_type=' + sub_type + '&load=1', function(data) {
 
                 let response = data.data;

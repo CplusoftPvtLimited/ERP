@@ -104,21 +104,13 @@
 
                                             <div class="dropdown">
                                                 <div class="dropdown-header manufacturer form-control">
-                                                    {{ __('Select Manufacturer') }}
-                                                    
+                                                     <span>{{ __('Select Manufacturer') }} <i id="manufacturer_caret" class="fa fa-solid fa-caret-down"></i></span>
+
                                                 </div>
-                                                
+
                                                 <div class="dropdown-content manufacturer_content form-control">
-                                                    {{-- <div class="input-main-class">
-                                                        <div class="input-group mb-3">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id=""><i
-                                                                        class="fa fa-duotone fa-magnifying-glass"></i></span>
-                                                            </div> --}}
-                                                            <input type="text" placeholder="  Search Manufacturer"
-                                                                id="manufacturer_input_search" onkeyup="filterManufacturer()">
-                                                        {{-- </div> --}}
-                                                    {{-- </div> --}}
+                                                    <input type="text" placeholder="" id="manufacturer_input_search"
+                                                        onkeyup="filterManufacturer()">
                                                     <div class="manufacturer_normal_option">
                                                         @foreach ($manufacturers as $manufacturer)
                                                             <div class="manufacturer_option"
@@ -146,8 +138,10 @@
                                             </select> --}}
                                             <div class="dropdown">
                                                 <div class="dropdown-header model form-control">
-                                                    {{ __('Select Model') }}</div>
+                                                    {{ __('Select Model') }} <i id="model_caret" class="fa fa-solid fa-caret-down"></i></div>
                                                 <div class="dropdown-content model_content form-control">
+                                                    <input type="text" placeholder="" id="model_input_search"
+                                                        onkeyup="filterModel()">
                                                     <div class="model_normal_option">
 
                                                     </div>
@@ -170,8 +164,10 @@
                                             <input type="hidden" id="engine_id" name="engine_id">
                                             <div class="dropdown">
                                                 <div class="dropdown-header engine form-control">
-                                                    {{ __('Select Engine') }}</div>
+                                                    {{ __('Select Engine') }} <i id="engine_caret" class="fa fa-solid fa-caret-down"></i></div>
                                                 <div class="dropdown-content engine_content form-control">
+                                                    <input type="text" placeholder="" id="engine_input_search"
+                                                        onkeyup="filterEngine()">
                                                     <div class="engine_normal_option">
 
                                                     </div>
@@ -248,6 +244,8 @@
                                                 <div class="dropdown-header brands form-control">{{ __('Select Brand') }}
                                                 </div>
                                                 <div class="dropdown-content brands_content form-control">
+                                                    <input type="text" placeholder="" id="brand_input_search"
+                                                        onkeyup="filterBrand()">
                                                     <div class="normal-option">
                                                         @foreach ($brands as $brand)
                                                             <div class="option" data-brand_id="{{ $brand->brandId }}">
@@ -256,7 +254,7 @@
                                                         @endforeach
                                                     </div>
                                                     @if ($brands_count > 10)
-                                                        <div class="option more"><span>Load More
+                                                        <div class="option more" id="barnd_more"><span>Load More
                                                                 &nbsp;&nbsp;<span> <span style="display:none;"
                                                                         id="brand_load_icon" class="loader4"></span></div>
                                                     @endif
@@ -276,10 +274,14 @@
                                                 <div class="dropdown-header product_group form-control">
                                                     {{ __('Select Product Group') }}</div>
                                                 <div class="dropdown-content product_group_content form-control">
+                                                    <input type="text" placeholder="" id="section_input_search"
+                                                        onkeyup="filterSection()">
                                                     <div class="product_group_normal_option">
 
                                                     </div>
-                                                    <div class="more product_group_more">Load More</div>
+                                                    <div class="more product_group_more" id="section_more"><span>Load More
+                                                        &nbsp;&nbsp;<span> <span style="display:none;"
+                                                                id="section_load_icon" class="loader4"></span></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -317,8 +319,5 @@
             }
             // });
         })
-
-  
-
-            </script>
+    </script>
 @endpush

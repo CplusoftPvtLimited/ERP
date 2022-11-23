@@ -1,5 +1,47 @@
 var main_url = document.getElementById('app_url').value;
+function filterBrand() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("brand_input_search");
+    filter = input.value.toUpperCase();
+    if (input.value) {
+        document.getElementById('barnd_more').style.display = "none";
+    } else {
+        document.getElementById('barnd_more').style.display = "block";
+    }
+    div = document.getElementsByClassName("normal_option");
+    a = document.getElementsByClassName("option");
+    for (i = 0; i < a.length; i++) {
+        txtValue = a[i].textContent || a[i].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            a[i].style.display = "";
+        } else {
+            a[i].style.display = "none";
+        }
+    }
 
+}
+
+function filterSection() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("section_input_search");
+    filter = input.value.toUpperCase();
+    if (input.value) {
+        document.getElementById('section_more').style.display = "none";
+    } else {
+        document.getElementById('section_more').style.display = "block";
+    }
+    div = document.getElementsByClassName("product_group_normal_option");
+    a = document.getElementsByClassName("product_group_option");
+    for (i = 0; i < a.length; i++) {
+        txtValue = a[i].textContent || a[i].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            a[i].style.display = "";
+        } else {
+            a[i].style.display = "none";
+        }
+    }
+
+}
 $('.dropdown-header.brands').click(function(event) {
     $('.dropdown-content.brands_content').toggle();
     event.stopPropagation();
@@ -47,12 +89,11 @@ $(document.body).on('click', '.option:not(.more)', function(event) { // click on
     $('.dropdown-header.brands').html($(this).html());
     $('.dropdown-content.brands_content').toggle();
     section_id_check_array = [];
-    var url = new URL(main_url+'/get_sub_sections_by_brand');
+    var url = main_url+'/get_sub_sections_by_brand';
     $.get(url + '?brand_id=' + brand_id, function(data) {
 
 
         let response = data;
-
         if (response.length <= 0) {
             $('.product_group_normal_option').empty();
             $('.dropdown-header.product_group').html("Select Product Group");
@@ -82,11 +123,11 @@ $('.more.product_group_more').click(function(event) {
     var brand_id = brand_id_save
     // $('.dropdown-header.brands').html($(this).html());
 
-
-    var url = new URL(main_url+'/get_sub_sections_by_brand');
+    document.getElementById('section_load_icon').style.display = "block";
+    var url = main_url+'/get_sub_sections_by_brand';
     $.get(url + '?brand_id=' + brand_id, function(data) {
 
-
+        document.getElementById('section_load_icon').style.display = "none";
         let response = data;
 
         let view_html = `<option value="">Select One</option>`;

@@ -98,6 +98,7 @@ class HomeSearchController extends Controller
             if($request->type == $manufacturer_load_more['type'] && $request->sub_type == $manufacturer_load_more['sub_type']){
                 $manufacturers = Manufacturer::whereIn('linkingTargetType', $type2)
                 ->skip($manufacturer_load_more['value'])->take((int)10)->get();
+                
                 $manfuacture_array = [
                     'type' => "O",
                     'sub_type' => "home",
@@ -121,6 +122,7 @@ class HomeSearchController extends Controller
                 session()->put('manufacturer_load_more',$manfuacture_array);
             }
             $total_count = Manufacturer::whereIn('linkingTargetType', $type2)->count();
+            
         }else {
             if($request->sub_type == $manufacturer_load_more['sub_type']){
                 $manufacturers = Manufacturer::where('linkingTargetType', $request->sub_type)
@@ -143,11 +145,12 @@ class HomeSearchController extends Controller
                 $manfuacture_array = [
                     'type' => "",
                     'sub_type' => $request->sub_type,
-                    'value' => 0,
+                    'value' => $manufacturer_load_more['value'] + (int)10,
                 ];
                 session()->put('manufacturer_load_more',$manfuacture_array);
             }
             $total_count = Manufacturer::where('linkingTargetType', $request->sub_type)->count();
+            
         }
         
         return response()->json([

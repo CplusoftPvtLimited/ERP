@@ -83,7 +83,7 @@ class PurchaseController extends Controller
                     }
                     return $purchase_status;
                 })->editColumn('grand_total', function ($row) {
-                    $grand_total = $row['grand_total']. " TND";
+                    $grand_total = $row['grand_total'] . " TND";
                     return $grand_total;
                 })
                 ->addColumn('action', function ($row) {
@@ -316,6 +316,12 @@ class PurchaseController extends Controller
 
     public function create()
     {
+        session()->put('manufacturer_count_value', 0);
+        session()->put('model_count_value', 0);
+        session()->put('engine_count_value', 0);
+        session()->put('section_count_value', 0);
+        session()->put('section_part_count_value', 0);
+        session()->put('purchase_brand_count_value', 0);
         $role = Role::find(Auth::user()->role_id);
         if ($role->hasPermissionTo('purchases-add')) {
             $lims_supplier_list = Supplier::where('is_active', true)->get();
@@ -331,7 +337,7 @@ class PurchaseController extends Controller
             //         array_push($article_array,$value->articleNumber);
             //     }
             // }
-            
+
             $suppliers = AfterMarkitSupplier::select('id', 'name')->where('retailer_id', auth()->user()->id)->get();
             return view('purchase.create', compact('lims_supplier_list', 'lims_warehouse_list', 'lims_tax_list', 'lims_product_list_without_variant', 'lims_product_list_with_variant', 'manufacturers', 'suppliers'));
         } else
@@ -419,7 +425,7 @@ class PurchaseController extends Controller
         // dd($request->all());
         Log::debug($request->all());
 
-        if($request->valueCheck == 1){
+        if ($request->valueCheck == 1) {
             $this->validate($request, [
                 'item_qty.*' => 'required',
                 'sale_price.*' => 'required',
@@ -440,7 +446,7 @@ class PurchaseController extends Controller
                 'total_excluding_vat.*' => 'required|min:0',
                 'actual_cost_per_product.*' => 'required|min:0',
             ]);
-    
+
             $purchase = $this->purchaseRepository->store($request);
             if ($purchase == "submit_purchase_not_allowed") {
                 toastr()->info('Please enter the item quantity');
@@ -454,31 +460,31 @@ class PurchaseController extends Controller
                 toastr()->error($purchase);
                 return redirect()->back()->withErrors($purchase);
             }
-        }else if($request->valueCheck == 2){
+        } else if ($request->valueCheck == 2) {
             $result = $this->updateCart($request);
-            if($result == "success"){
+            if ($result == "success") {
                 toastr()->success("Cart Updated Successfully");
                 return redirect()->route('cart');
-            }else{
+            } else {
                 toastr()->error($result);
                 return redirect()->route('cart');
             }
         }
-        
     }
 
-    public function updateCart($request){
+    public function updateCart($request)
+    {
         FacadesDB::beginTransaction();
         try {
             $cart = Cart::find($request->cart_id);
             $total_qty = 0;
-            foreach($request->item_qty as $qty){
+            foreach ($request->item_qty as $qty) {
                 $total_qty += $qty;
             }
-            $cart_items = CartItem::where('cart_id',$cart->id)->get();
+            $cart_items = CartItem::where('cart_id', $cart->id)->get();
             $counter = 0;
             $all_total_excluding_vat = 0;
-            foreach($cart_items as $cart_item){
+            foreach ($cart_items as $cart_item) {
                 $total_excluding_vat = ($request->purchase_price[$counter] * $request->item_qty[$counter]) + $request->additional_cost_without_vat[$counter];
                 $actual_cost_per_product =  ($total_excluding_vat / $request->item_qty[$counter]) + ($request->purchase_additional_cost / $total_qty);
                 $sale_price = $actual_cost_per_product * (1 + ($request->profit_margin[$counter] / 100));
@@ -491,21 +497,21 @@ class PurchaseController extends Controller
                 $cart_item->additional_cost_without_vat = $request->additional_cost_without_vat[$counter];
                 $cart_item->additional_cost_with_vat = isset($request->additional_cost_with_vat) ? $request->additional_cost_with_vat[$counter] : '';
                 $cart_item->vat = isset($request->vat) ?  ($request->vat[$counter]) : '';
-                $cart_item->profit_margin = ($request->profit_margin[$counter] );
+                $cart_item->profit_margin = ($request->profit_margin[$counter]);
                 $cart_item->total_excluding_vat = $total_excluding_vat;
                 $cart_item->actual_cost_per_product = $actual_cost_per_product;
-                
+
                 $cart_item->save();
                 $counter++;
             }
 
-            if($cart->cash_type == "white"){
+            if ($cart->cash_type == "white") {
                 $cart->total_cost = (float)$all_total_excluding_vat + $request->entire_vat + $request->tax_stamp;
                 $cart->grand_total = (float)$all_total_excluding_vat + $request->entire_vat + $request->tax_stamp;
                 $cart->total_vat = $request->entire_vat;
                 $cart->tax_stamp = $request->tax_stamp;
                 $cart->total_exculding_vat = (float)$all_total_excluding_vat;
-            }else{
+            } else {
                 $cart->total_cost = (float)$all_total_excluding_vat;
                 $cart->grand_total = (float)$all_total_excluding_vat;
                 $cart->total_exculding_vat = (float)$all_total_excluding_vat;
@@ -519,7 +525,6 @@ class PurchaseController extends Controller
             // dd($e);
             return $e->getMessage();
         }
-        
     }
 
     public function viewPurchase($id)
@@ -576,14 +581,14 @@ class PurchaseController extends Controller
             if ($update_purchase_product_quantity == "update") {
                 toastr()->success('Purchase Product Quantity Changed');
                 return response("true");
-            } else if($update_purchase_product_quantity == "purchase_no_found"){
+            } else if ($update_purchase_product_quantity == "purchase_no_found") {
                 toastr()->info('product not found');
                 return response('false');
             }
         } catch (\Exception $e) {
             Log::debug($e->getMessage());
             toastr()->error("Something went wrong");
-                return response("false");
+            return response("false");
         }
     }
 
@@ -1407,25 +1412,54 @@ class PurchaseController extends Controller
     public function getManufacturersByEngineType(Request $request)
     {
         try {
-            $manufacturers = Manufacturer::where('linkingTargetType', $request->engine_sub_type)->get();
+            $value = session()->get('manufacturer_count_value');
+            if (empty($value)) {
+                session()->put('manufacturer_count_value', 0);
+            }
+            if (isset($request->main)) {
+                session()->put('manufacturer_count_value', 0);
+            }
+            $value = session()->get('manufacturer_count_value');
+            $manufacturers = Manufacturer::where('linkingTargetType', $request->engine_sub_type)->skip($value)->take((int)10)->get();
+            $count = Manufacturer::where('linkingTargetType', $request->engine_sub_type)->count();
+            session()->put('manufacturer_count_value', $value + (int)10);
+
             // dd($manufacturers);
             return response()->json([
-                'data' => $manufacturers
+                'data' => $manufacturers,
+                'total_count' => $count,
+                'manu_more_value' => session()->get('manufacturer_count_value')
             ], 200);
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
-    
+
     public function getModelsByManufacturer(Request $request)
     {
         try {
+
+            $value = session()->get('model_count_value');
+            if (empty($value)) {
+                session()->put('model_count_value', 0);
+            }
+            if (isset($request->main)) {
+                session()->put('model_count_value', 0);
+            }
+            $value = session()->get('model_count_value');
             $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
-                ->where('linkingTargetType', $request->engine_sub_type)->get();
+                ->where('linkingTargetType', $request->engine_sub_type)->skip($value)->take((int)10)->get();
+
+            $count = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                ->where('linkingTargetType', $request->engine_sub_type)->count();
+            session()->put('model_count_value', $value + (int)10);
+
+            // dd($manufacturers);
             return response()->json([
-                'data' => $models
+                'data' => $models,
+                'total_count' => $count,
+                'load_more_model_value' => session()->get('model_count_value')
             ], 200);
-               
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -1434,11 +1468,30 @@ class PurchaseController extends Controller
     public function getEnginesByModel(Request $request)
     {
         try {
+
+
+            $value = session()->get('engine_count_value');
+            if (empty($value)) {
+                session()->put('engine_count_value', 0);
+            }
+            if (isset($request->main)) {
+                session()->put('engine_count_value', 0);
+            }
+            $value = session()->get('engine_count_value');
             $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
                 ->where('vehicleModelSeriesId', $request->model_id)
-                ->where('linkageTargetType', $request->engine_sub_type)->get();
+                ->where('linkageTargetType', $request->engine_sub_type)->skip($value)->take((int)10)->distinct()->get();
+
+            $count = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                ->where('vehicleModelSeriesId', $request->model_id)
+                ->where('linkageTargetType', $request->engine_sub_type)->distinct()->count();
+            session()->put('engine_count_value', $value + (int)10);
+
+            // dd($manufacturers);
             return response()->json([
-                'data' => $engines
+                'data' => $engines,
+                'total_count' => $count,
+                'load_more_engine_value' => session()->get('engine_count_value')
             ], 200);
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -1449,16 +1502,36 @@ class PurchaseController extends Controller
     {
         // dd($request->all());
         try {
-            $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function($query) use ($request){
-                    $query->where('linkingTargetId', $request->engine_id)
+
+
+            $value = session()->get('section_count_value');
+            if (empty($value)) {
+                session()->put('section_count_value', 0);
+            }
+            if (isset($request->main)) {
+                session()->put('section_count_value', 0);
+            }
+            $value = session()->get('section_count_value');
+            $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function ($query) use ($request) {
+                $query->where('linkingTargetId', $request->engine_id)
                     ->where('linkingTargetType', $request->engine_sub_type);
-                })
+            })
                 // ->whereNotNull('request__linkingTargetId')
-               ->groupBy('assemblyGroupNodeId')
-               ->limit(100)
-                ->get();
+                ->groupBy('assemblyGroupNodeId')->skip($value)->take((int)10)->distinct()->get();
+
+            $count = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function ($query) use ($request) {
+                $query->where('linkingTargetId', $request->engine_id)
+                    ->where('linkingTargetType', $request->engine_sub_type);
+            })
+                // ->whereNotNull('request__linkingTargetId')
+                ->groupBy('assemblyGroupNodeId')->distinct()->count();
+            session()->put('section_count_value', $value + (int)10);
+
+            // dd($manufacturers);
             return response()->json([
-                'data' => $sections
+                'data' => $sections,
+                'total_count' => $count,
+                'load_more_section_value' => session()->get('section_count_value')
             ], 200);
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -1467,18 +1540,42 @@ class PurchaseController extends Controller
 
     public function getSectionParts(Request $request)
     {
+        // $section_parts = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')
+        //         ->whereHas('section', function ($query) {
+        //             // $query->whereNotNull('request__linkingTargetId');
+        //         })
+        //         // ->whereHas('articleVehicleTree', function ($query) use ($request) {
+        //         //     $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
+        //         // })
+        //         ->limit(100)
+        //         ->get();
         try {
+            
+           
+
+            $value = session()->get('section_part_count_value');
+            if (empty($value)) {
+                session()->put('section_part_count_value', 0);
+            }
+            if (isset($request->main)) {
+                session()->put('section_part_count_value', 0);
+            }
+            $value = session()->get('section_part_count_value');
             $section_parts = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')
-            ->whereHas('section', function($query) {
+            ->whereHas('section', function ($query) {
                 // $query->whereNotNull('request__linkingTargetId');
-            })
-            // ->whereHas('articleVehicleTree', function ($query) use ($request) {
-            //     $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
-            // })
-            ->limit(100)
-            ->get();
+            })->skip($value)->take((int)10)->distinct()->get();
+
+            $count = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')
+            ->whereHas('section', function ($query) {
+                // $query->whereNotNull('request__linkingTargetId');
+            })->count();
+            session()->put('section_part_count_value', $value + (int)10);
+
             return response()->json([
-                'data' => $section_parts
+                'data' => $section_parts,
+                'total_count' => $count,
+                'load_more_section_part_value' => session()->get('section_part_count_value')
             ], 200);
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -1487,8 +1584,8 @@ class PurchaseController extends Controller
 
     public function articlesByReferenceNo(Request $request)
     {
-        try { 
-            $articles = Article::where('articleNumber','LIKE' , '%' . $request->name . '%')->paginate(10);
+        try {
+            $articles = Article::where('articleNumber', 'LIKE', '%' . $request->name . '%')->paginate(10);
             return response()->json([
                 'data' => $articles
             ], 200);
@@ -1501,29 +1598,43 @@ class PurchaseController extends Controller
     {
         try {
             $id = explode('-', $request->section_part_id);
-            $suppliers = Ambrand::select('brandId', 'brandName')
-                ->where('brandId', $id[0])->get();
-            return response()->json([
-                'data' => $suppliers
-            ], 200);
+           
+                $value = session()->get('purchase_brand_count_value');
+                if (empty($value)) {
+                    session()->put('purchase_brand_count_value', 0);
+                }
+                if (isset($request->main)) {
+                    session()->put('purchase_brand_count_value', 0);
+                }
+                $value = session()->get('purchase_brand_count_value');
+                $suppliers = Ambrand::select('brandId', 'brandName')
+                ->where('brandId', $id[0])->first();
+    
+    
+                return response()->json([
+                    'data' => $suppliers,
+                    // 'total_count' => $count,
+                    'load_more_purchase_brand_value' => session()->get('purchase_brand_count_value')
+                ], 200);
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
-    public function getChasisNumber(Request $request){
+    public function getChasisNumber(Request $request)
+    {
         try {
-            $plate_number = explode("-",$request->plate_number);
-            if(sizeof($plate_number) < 3) {
-              return response()->json([
-                'data' => 1
-              ]);
+            $plate_number = explode("-", $request->plate_number);
+            if (sizeof($plate_number) < 3) {
+                return response()->json([
+                    'data' => 1
+                ]);
             }
-            $chasis_number = ChassisNumber::Select('CHASSIS')->where('GAUCHE',$plate_number[0])->where('CD_SERIE',$plate_number[1])->where('DROIT_MIL',$plate_number[2])->first();
-            if(empty($chasis_number)){
+            $chasis_number = ChassisNumber::Select('CHASSIS')->where('GAUCHE', $plate_number[0])->where('CD_SERIE', $plate_number[1])->where('DROIT_MIL', $plate_number[2])->first();
+            if (empty($chasis_number)) {
                 return response()->json([
                     'data' => 2
-                  ]);
-            }else {
+                ]);
+            } else {
                 return response()->json([
                     'data' => $chasis_number
                 ]);
@@ -1558,16 +1669,16 @@ class PurchaseController extends Controller
     public function getArticleInfo(Request $request)
     {
         try {
-            $section_part = Article::select('mfrId', 'assemblyGroupNodeId','legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')
-            ->whereHas('articleVehicleTree', function ($query) use ($request) {
-                $query->where('articleNumber', 'LIKE' , '%' . $request->name . '%');
-            })
-            // ->with(['section' => function($query) {
-            //     // $query->whereNotNull('request__linkingTargetType');
-            //     $query->select(['assemblyGroupNodeId', 'assemblyGroupName', 'request__linkingTargetId', 'request__linkingTargetType']);
-            //     // $query->whereHas('linkageTarget');
-            // }])
-            ->first();
+            $section_part = Article::select('mfrId', 'assemblyGroupNodeId', 'legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')
+                ->whereHas('articleVehicleTree', function ($query) use ($request) {
+                    $query->where('articleNumber', 'LIKE', '%' . $request->name . '%');
+                })
+                // ->with(['section' => function($query) {
+                //     // $query->whereNotNull('request__linkingTargetType');
+                //     $query->select(['assemblyGroupNodeId', 'assemblyGroupName', 'request__linkingTargetId', 'request__linkingTargetType']);
+                //     // $query->whereHas('linkageTarget');
+                // }])
+                ->first();
             // dd($section_part);
             // if(empty($section_part->section)) {
             //     return response()->json([
@@ -1575,16 +1686,16 @@ class PurchaseController extends Controller
             //         "message" => "section not available for this product"
             //     ]);
             // }
-            $model = ModelSeries::where('manuId',$section_part->mfrId)->first();
-            $p_type = ['V','L','B'];
-            $o_type = ['M','A','K','C','T'];
+            $model = ModelSeries::where('manuId', $section_part->mfrId)->first();
+            $p_type = ['V', 'L', 'B'];
+            $o_type = ['M', 'A', 'K', 'C', 'T'];
             $type = "";
-            if(in_array($section_part->articleVehicleTree->linkingTargetType,$p_type)){
+            if (in_array($section_part->articleVehicleTree->linkingTargetType, $p_type)) {
                 $type = "P";
-            }else{
+            } else {
                 $type = "O";
             }
-            $stock = StockManagement::where('retailer_id',auth()->user()->id)->where('reference_no',$section_part->articleNumber)->first();
+            $stock = StockManagement::where('retailer_id', auth()->user()->id)->where('reference_no', $section_part->articleNumber)->first();
             return response()->json([
                 'data' => $section_part,
                 'stock' => $stock,
@@ -1592,7 +1703,7 @@ class PurchaseController extends Controller
                 'linkage_target_type' => $type, // engine_type
                 'linkage_target_sub_type' => $section_part->articleVehicleTree->linkingTargetType, //
                 'manufacturer_id' => $section_part->mfrId,
-                'model_id' => isset( $model->modelId) ? $model->modelId : 0,
+                'model_id' => isset($model->modelId) ? $model->modelId : 0,
                 'engine_id' => $section_part->articleVehicleTree->linkingTargetId,
                 'section_id' => $request->section_id,
                 'status' => $request->status,

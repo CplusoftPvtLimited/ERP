@@ -147,6 +147,17 @@ body {
 }
 
 
+.dropdown-content{
+  position: absolute;
+  z-index: 1000;
+  background-color: #fdfdff;
+  border-color: #e4e6fc;
+}
+
+.dropdown-header{
+  background-color: #fdfdff;
+  border-color: #e4e6fc;
+}
 /* ============ For manufacturer dropdown search----------------*/
 
 #manufacturer_input_search {
@@ -155,12 +166,12 @@ body {
   background-position: 1px 12px;
   background-repeat: no-repeat;
   /* font-size: 16px; */
-  padding: 12px 15px 9px 22px;
+  padding: 5px 15px 5px 22px;
   border-radius: 5px;
   /* border: none; */
   /* border-bottom: 1px solid #ddd; */
-  border: 1px solid #e9ecef;
-  width: 340px;
+  border: 1px solid gray;/*#e9ecef;*/
+  width: 100%;
   margin-bottom: 14px;
 
 }
@@ -169,3 +180,65 @@ span.input-group-text {
   color: white;
 }
 #manufacturer_input_search:focus {outline: none;}
+
+#model_input_search {
+  box-sizing: border-box;
+  /* background-image: url(searchicon.png); */
+  background-position: 1px 12px;
+  background-repeat: no-repeat;
+  /* font-size: 16px; */
+  padding: 5px 15px 5px 22px;
+  border-radius: 5px;
+  /* border: none; */
+  /* border-bottom: 1px solid #ddd; */
+  border: 1px solid gray;/*#e9ecef;*/
+  width: 100%;
+  margin-bottom: 14px;
+
+}
+
+#model_input_search:focus {outline: none;}
+
+#engine_input_search {
+  box-sizing: border-box;
+  background-position: 1px 12px;
+  background-repeat: no-repeat;
+  padding: 5px 15px 5px 22px;
+  border-radius: 5px;
+  border: 1px solid gray;/*#e9ecef;*/
+  width: 100%;
+  margin-bottom: 14px;
+
+}
+
+#engine_input_search:focus {outline: none;}
+
+
+#brand_input_search {
+  box-sizing: border-box;
+  background-position: 1px 12px;
+  background-repeat: no-repeat;
+  padding: 5px 15px 5px 22px;
+  border-radius: 5px;
+  border: 1px solid gray;/*#e9ecef;*/
+  width: 100%;
+  margin-bottom: 14px;
+
+}
+
+#brand_input_search:focus {outline: none;}
+
+
+#section_input_search {
+  box-sizing: border-box;
+  background-position: 1px 12px;
+  background-repeat: no-repeat;
+  padding: 5px 15px 5px 22px;
+  border-radius: 5px;
+  border: 1px solid gray;/*#e9ecef;*/
+  width: 100%;
+  margin-bottom: 14px;
+
+}
+
+#section_input_search:focus {outline: none;}
