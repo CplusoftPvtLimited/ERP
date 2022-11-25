@@ -33,7 +33,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="container">
+                        <div class="">
                             <div>
                                 <h4>Sales</h4>
                             </div>

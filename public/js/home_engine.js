@@ -36,7 +36,7 @@ var engine_id_check_array = [];
             $('.dropdown-header.model').html($(this).html() + ' <i id="model_caret" class="fa fa-solid fa-caret-down"></i>');
             var model_id = $(this).data('model_id');
             model_id_set = model_id;
-            let url = main_url+'/get_engines_by_model_home_search';
+            let url = '/get_engines_by_model_home_search';
             let engine_sub_type = $('input[name="sub_type"]:checked').val();
             let engine_type = $('input[name="type"]:checked').val();
             $('.dropdown-content.model_content').toggle();
@@ -75,7 +75,7 @@ var engine_id_check_array = [];
         $('.more.engine_more').click(function(event) {
             document.getElementById('engine_load_icon').style.display = "block";
             var model_id = model_id_set;
-            let url = main_url+'get_engines_by_model_home_search';
+            let url = '/get_engines_by_model_home_search';
             let engine_sub_type = $('input[name="sub_type"]:checked').val();
             let engine_type = $('input[name="type"]:checked').val();
             $.get(url + '?model_id=' + model_id + '&engine_sub_type=' + engine_sub_type + '&engine_type=' +
@@ -108,7 +108,7 @@ var engine_id_check_array = [];
             event) { // click on brand to get sections
             $('.dropdown-header.engine').html($(this).html() + ' <i id="engine_caret" class="fa fa-solid fa-caret-down"></i>');
             $('#engine_id').val($(this).data('engine_id'))
-            var url = main_url+'/get_data_of_engine_home_search';
+            var url ='/get_data_of_engine_home_search';
             var engine_id = $(this).data('engine_id');
             $('.dropdown-content.engine_content').toggle();
             $.get(url + '?engine_id=' + engine_id, function(data) {

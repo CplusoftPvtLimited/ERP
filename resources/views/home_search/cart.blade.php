@@ -100,8 +100,8 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="table">
-                                        <table class="table table-responsive">
+                                    <div class="table table-responsive">
+                                        <table class="table">
                                             <thead>
                                                 @if ($cart->cash_type == 'white')
                                                     <tr id="" class="article_view_tr_head">

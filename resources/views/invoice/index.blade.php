@@ -42,7 +42,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="container">
+                        <div class="">
                             <div>
                                 <h4>All Invoices</h4>
                             </div>
@@ -59,24 +59,28 @@
                                         <p>{{ $message }}</p>
                                     </div>
                                 @endif
-
-                                <table class="display" id="data-table">
-                                    <thead class="article_view_tr_head">
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Date</th>
-                                            <th>Customer</th>
-                                            <th>Cash Type</th>
-                                            <th>Total Quantity</th>
-                                            <th>Invoice Status</th>
-                                            {{-- <th>Paid</th>
-                                            <th>Due</th> --}}
-                                            <th width="100px">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                                <div class="row table-responsive">
+                                    <div class="col-md-12">
+                                        <table class="table display" id="data-table">
+                                            <thead class="article_view_tr_head">
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Date</th>
+                                                    <th>Customer</th>
+                                                    <th>Cash Type</th>
+                                                    <th>Total Quantity</th>
+                                                    <th>Invoice Status</th>
+                                                    {{-- <th>Paid</th>
+                                                    <th>Due</th> --}}
+                                                    <th width="100px">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
 
                             </div>
                         </div>
