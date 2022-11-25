@@ -37,10 +37,11 @@ class SaleRepository implements SaleInterface
             'tax_stamp' => isset($data['tax_stamp']) ? $data['tax_stamp'] : '',
             'sale_note' => isset($data['sale_note']) ? $data['sale_note'] : '',
             'staff_note' => isset($data['staff_note']) ? $data['staff_note'] : '',
+            // 'status' => 'estimate',
             'sale_entire_total_exculding_vat' => isset($data['sale_entire_total_exculding_vat']) ? $data['sale_entire_total_exculding_vat'] : '',
             'total_qty' => $total_qty,
             'total_bill' => isset($data['total_to_be_paid']) ? $data['total_to_be_paid'] : '',
-        ]);
+        ]); 
         $loop_iterations = count($data['item_qty']);
         for ($i = 0; $i < $loop_iterations; $i++) {
             $stock = StockManagement::where('retailer_id',auth()->user()->id)->where('reference_no',$data['article_number'][$i])->withTrashed()->first();

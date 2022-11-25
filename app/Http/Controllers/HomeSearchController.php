@@ -135,7 +135,7 @@ class HomeSearchController extends Controller
                 session()->put('manufacturer_load_more',$manfuacture_array);
             }else{
                 $manfuacture_array = [
-                    'type' => "",
+                    'type' => "", 
                     'sub_type' => $request->sub_type,
                     'value' => 0,
                 ];

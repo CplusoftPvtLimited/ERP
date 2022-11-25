@@ -34,7 +34,7 @@ class BankAccountRepository implements BankAccountInterface
             DB::commit();
             return $item;
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            // dd($e->getMessage());
             return $e;
         }
     }

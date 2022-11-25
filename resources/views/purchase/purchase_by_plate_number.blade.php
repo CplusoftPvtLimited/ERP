@@ -25,7 +25,8 @@
                 <div class="row">
                     <div class="col-md-4">
                         <button type="button" class="btn btn-info search-btn"
-                        id="search-btn">{{ trans('file.Search') }}</button>
+                        id="search-btn">{{ trans('file.Search') }} <span style="display:none;" id="plate_load_icon"
+                        class="loader4"></span></button>
                     </div>
                 </div>
                 
@@ -42,14 +43,17 @@
         console.log('sadsdasd');
         $(".search-btn").click(function() {
             var plate_number = $('#plate_number').val();
+            document.getElementById('plate_load_icon').style.display = "inline-block";
+            
             $.ajax({
                 method: "GET",
                 url: "{{ url('get_chasis_number') }}",
                 data:{
                     plate_number: plate_number,
-                },
+                }, 
                 success: function (data) {
                     console.log(data)
+                    document.getElementById('plate_load_icon').style.display = "none";
                     if (data.data == 1) {
                         console.log(data.data)
                         Swal.fire({
