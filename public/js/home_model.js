@@ -19,7 +19,7 @@ var model_id_check_array = [];
             manufacturer_id_set = manufacturer_id;
             let engine_sub_type = $('input[name="sub_type"]:checked').val();
             let engine_type = $('input[name="type"]:checked').val();
-            let url = new URL(main_url+'/get_models_by_manufacturer_home_search');
+            let url = '/get_models_by_manufacturer_home_search';
             $('.dropdown-header.manufacturer').html($(this).html());
             $.get(url + '?manufacturer_id=' + manufacturer_id + '&engine_sub_type=' + engine_sub_type +
                 '&engine_type=' + engine_type + '&main=1',
@@ -57,7 +57,7 @@ var model_id_check_array = [];
             var manufacturer_id = manufacturer_id_set;
             let engine_sub_type = $('input[name="sub_type"]:checked').val();
             let engine_type = $('input[name="type"]:checked').val();
-            let url = new URL(main_url+'/get_models_by_manufacturer_home_search');
+            let url = '/get_models_by_manufacturer_home_search';
 
             $.get(url + '?manufacturer_id=' + manufacturer_id + '&engine_sub_type=' + engine_sub_type +
                 '&engine_type=' +

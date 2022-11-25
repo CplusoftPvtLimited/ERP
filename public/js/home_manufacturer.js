@@ -59,8 +59,7 @@ function filterManufacturer() {
 
             }
             var type = $('input[name="type"]:checked').val();
-            // var url = "{{ url('') }}";
-            var url = new URL(main_url +'/get_home_manufacturers');
+            var url = '/get_home_manufacturers';
             console.log(url);
             $.get(url + '?type=' + type + '&sub_type=' + sub_type + '&main=1', function(data) {
 
@@ -112,7 +111,7 @@ function filterManufacturer() {
 
             }
             var type = $('input[name="type"]:checked').val();
-            var url = new URL(main_url +'/get_home_manufacturers');
+            var url = '/get_home_manufacturers';
             $.get(url + '?type=' + type + '&sub_type=' + sub_type + '&load=1', function(data) {
 
                 let response = data.data;

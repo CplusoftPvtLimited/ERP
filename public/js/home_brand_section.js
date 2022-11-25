@@ -47,7 +47,7 @@ $(document.body).on('click', '.option:not(.more)', function(event) { // click on
     $('.dropdown-header.brands').html($(this).html());
     $('.dropdown-content.brands_content').toggle();
     section_id_check_array = [];
-    var url = new URL(main_url+'/get_sub_sections_by_brand');
+    var url = '/get_sub_sections_by_brand';
     $.get(url + '?brand_id=' + brand_id, function(data) {
 
 
@@ -83,7 +83,7 @@ $('.more.product_group_more').click(function(event) {
     // $('.dropdown-header.brands').html($(this).html());
 
 
-    var url = new URL(main_url+'/get_sub_sections_by_brand');
+    var url = '/get_sub_sections_by_brand';
     $.get(url + '?brand_id=' + brand_id, function(data) {
 
 
