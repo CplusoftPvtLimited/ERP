@@ -24,10 +24,23 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label>Manufacturers</label>
-                    <select name="manufacture_id" id="manufacturer_id" class="selectpicker form-control"
-                        data-live-search="true" data-live-search-style="begins" title="Select Manufacturer..."
-                        data-href="{{ route('get_models_by_manufacturer') }}">
-                    </select>
+                    <input type="hidden" name="manufacturer_id" id="manufacturer_id">
+                    <div class="dropdown">
+                        <div class="dropdown-header manufacturer form-control">{{ __('Select Manufacturer') }}
+                        </div>
+                        <div class="dropdown-content manufacturer_content form-control">
+                            <input type="text" placeholder="" id="manufacturer_input_search"
+                                onkeyup="filterPurchaseManufacturer()">
+                            <div class="normal-option">
+
+                            </div>
+                            <div class="more manufacturer_more" style="display: none;" id="manufacturer_more"><span>Load
+                                    More
+                                    &nbsp;&nbsp;<span> <span style="display:none;" id="manufacturer_load_icon"
+                                            class="loader4"></span></div>
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -35,37 +48,88 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="model_id">Select Model</label>
-                    <select name="model_id" id="model_id" data-href="{{ route('get_engines_by_model') }}"
-                        class="form-control" required>
-                    </select>
+                    <input type="hidden" id="model_id" name="model_id">
+                    <div class="dropdown">
+                        <div class="dropdown-header model form-control">
+                            {{ __('Select Model') }}</div>
+                        <div class="dropdown-content model_content form-control">
+                            <input type="text" placeholder="" id="model_input_search" onkeyup="filterModel()">
+                            <div class="model_normal_option">
+
+                            </div>
+                            <div class="more model_more" id="model_more"> <span>Load More
+                                    &nbsp;&nbsp;<span> <span style="display:none;" id="model_load_icon"
+                                            class="loader4"></span></div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="engine_id">Select Engine</label>
-                    <select name="engine_id" id="engine_id" data-href="{{ route('get_sections_by_engine') }}"
-                        class="form-control" required>
-                    </select>
+                    <input type="hidden" id="engine_id" name="engine_id">
+                    <div class="dropdown">
+                        <div class="dropdown-header engine form-control">
+                            {{ __('Select Engine') }}</div>
+                        <div class="dropdown-content engine_content form-control">
+                            <input type="text" placeholder="" id="engine_input_search" onkeyup="filterEngine()">
+                            <div class="engine_normal_option">
+
+                            </div>
+                            <div class="more engine_more" id="engine_more"> <span>Load More
+                                    &nbsp;&nbsp;<span> <span style="display:none;" id="engine_load_icon"
+                                            class="loader4"></span></div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="section_id">Select Section</label>
-                    <select name="section_id" id="section_id" data-href="{{ route('get_section_parts_for_sale') }}"
+                    {{-- <select name="section_id" id="section_id" data-href="{{ route('get_section_parts_for_sale') }}"
                         class="form-control" required>
-                    </select>
+                    </select> --}}
+                    <input type="hidden" id="section_id" name="section_id">
+                    <div class="dropdown">
+                        <div class="dropdown-header section form-control">
+                            {{ __('Select Section') }}</div>
+                        <div class="dropdown-content section_content form-control">
+                            <input type="text" placeholder="" id="section_input_search" onkeyup="filterSection()">
+                            <div class="section_normal_option">
+
+                            </div>
+                            <div class="more section_more" id="section_more"> <span>Load More
+                                    &nbsp;&nbsp;<span> <span style="display:none;" id="section_load_icon"
+                                            class="loader4"></span></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="row">
 
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="form-group">
                     <label for="section_part_id">Select Section Part</label>
-                    <select name="section_part_id" id="section_part_id" data-href="{{ route('check_product_stock') }}"
+                    {{-- <select name="section_part_id" id="section_part_id" data-href="{{ route('check_product_stock') }}"
                         class="form-control" required>
-                    </select>
+                    </select> --}}
+                    <input type="hidden" id="section_part_id" name="section_part_id">
+                    <div class="dropdown">
+                        <div class="dropdown-header section_part form-control">
+                            {{ __('Select Section Part') }}</div>
+                        <div class="dropdown-content section_part form-control">
+                            <input type="text" placeholder="" id="section_part_input_search"
+                                onkeyup="filterSectionPart()">
+                            <div class="section_part_normal_option">
+
+                            </div>
+                            <div class="more section_part_more" id="section_part_more"> <span>Load More
+                                    &nbsp;&nbsp;<span> <span style="display:none;" id="section_part_load_icon"
+                                            class="loader4"></span></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -83,6 +147,117 @@
 <script src="https://code.jquery.com/jquery-3.6.1.min.js"
     integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 <script>
+    function filterPurchaseManufacturer() {
+        var input, filter, ul, li, a, i;
+        input = document.getElementById("manufacturer_input_search");
+        filter = input.value.toUpperCase();
+        if (input.value) {
+            document.getElementById('manufacturer_more').style.display = "none";
+        } else {
+            document.getElementById('manufacturer_more').style.display = "block";
+        }
+        div = document.getElementsByClassName("normal-option");
+        a = document.getElementsByClassName("option");
+        for (i = 0; i < a.length; i++) {
+            txtValue = a[i].textContent || a[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                a[i].style.display = "";
+            } else {
+                a[i].style.display = "none";
+            }
+        }
+
+    }
+
+    function filterModel() {
+        var input, filter, ul, li, a, i;
+        input = document.getElementById("model_input_search");
+        filter = input.value.toUpperCase();
+        if (input.value) {
+            document.getElementById('model_more').style.display = "none";
+        } else {
+            document.getElementById('model_more').style.display = "block";
+        }
+        div = document.getElementsByClassName("model_normal_option");
+        a = document.getElementsByClassName("model_option");
+        for (i = 0; i < a.length; i++) {
+            txtValue = a[i].textContent || a[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                a[i].style.display = "";
+            } else {
+                a[i].style.display = "none";
+            }
+        }
+
+    }
+
+    function filterEngine() {
+        var input, filter, ul, li, a, i;
+        input = document.getElementById("engine_input_search");
+        filter = input.value.toUpperCase();
+        if (input.value) {
+            document.getElementById('engine_more').style.display = "none";
+        } else {
+            document.getElementById('engine_more').style.display = "block";
+        }
+        div = document.getElementsByClassName("engine_normal_option");
+        a = document.getElementsByClassName("engine_option");
+        for (i = 0; i < a.length; i++) {
+            txtValue = a[i].textContent || a[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                a[i].style.display = "";
+            } else {
+                a[i].style.display = "none";
+            }
+        }
+
+    }
+
+    function filterSection() {
+        var input, filter, ul, li, a, i;
+        input = document.getElementById("section_input_search");
+        filter = input.value.toUpperCase();
+        if (input.value) {
+            document.getElementById('section_more').style.display = "none";
+        } else {
+            document.getElementById('section_more').style.display = "block";
+        }
+        div = document.getElementsByClassName("section_normal_option");
+        a = document.getElementsByClassName("section_option");
+        for (i = 0; i < a.length; i++) {
+            txtValue = a[i].textContent || a[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                a[i].style.display = "";
+            } else {
+                a[i].style.display = "none";
+            }
+        }
+
+    }
+
+    function filterSectionPart() {
+        var input, filter, ul, li, a, i;
+        input = document.getElementById("section_part_input_search");
+        filter = input.value.toUpperCase();
+        if (input.value) {
+            document.getElementById('section_part_more').style.display = "none";
+        } else {
+            document.getElementById('section_part_more').style.display = "block";
+        }
+        div = document.getElementsByClassName("section_part_normal_option");
+        a = document.getElementsByClassName("section_part_option");
+        for (i = 0; i < a.length; i++) {
+            txtValue = a[i].textContent || a[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                a[i].style.display = "";
+            } else {
+                a[i].style.display = "none";
+            }
+        }
+
+    }
+
+    // ALL Filter fucntion end =================== 
     $('#linkageTarget').on('change', function() {
         var val = this.value;
 
@@ -126,190 +301,446 @@
 
     });
 
-    // get manufacturers
+    // new code for dropdowns of sales
+
+    // get manufacturers dropdown code
+    var manufacturer_id_check_array = [];
+    $('.dropdown-header.manufacturer').click(function(event) {
+        $('.dropdown-content.manufacturer_content').toggle();
+        event.stopPropagation();
+    })
     $(document).on('change', '#subLinkageTarget', function() {
-
         let engine_sub_type = $(this).val();
-        //alert(engine_sub_type)
-        let url = '{{ route("get_manufacturers_by_engine_type")}}';
-        // alert(url)
-        getManufacturer(url, engine_sub_type);
-    });
-
-    function getManufacturer(url, engine_sub_type) {
-
+        let url = $(this).attr('data-href');
         $.get(url + '?engine_sub_type=' + engine_sub_type, function(data) {
-            // $('#model_id').html(`<option value="">Select Model</option>`);
-            $('#section_id').html('<option value="">Select One</option>');
-            $('#section_id').selectpicker("refresh");
-            $('#section_part_id').html('<option value="">Select One</option>');
-            $('#section_part_id').selectpicker("refresh");
-            $('#engine_id').html('<option value="">Select One</option>');
-            $('#engine_id').selectpicker("refresh");
-            // $('#manufacturer_id').html('<option value="">Select One</option>');
-            // $('#manufacturer_id').selectpicker("refresh");
+
             let response = data.data;
-            let view_html = `<option value="">Select One</option>`;
-            $.each(response, function(key, value) {
-                view_html += `<option value="${value.manuId}">${value.manuName}</option>`;
-            });
-            // console.log(data, view_html);
-            $('#manufacturer_id').html(view_html);
-            // $("#model_id").val(4);
-            $("#manufacturer_id").selectpicker("refresh");
+            if (data.manu_more_value > data.total_count) {
+                document.getElementById('manufacturer_more').style.display = "none";
+            } else {
+                document.getElementById('manufacturer_more').style.display = "block";
+            }
+            console.log(data.total_count, data.manu_more_value);
+            if (response.length > 0) {
+                $.each(response, function(key, value) {
+                    manufacturer_id_check_array.push(value.manuId);
+                    $('.normal-option').append($(
+                        '<div class="option" id="manu_id" data-manufacturer_id="' +
+                        value.manuId + '">').html(value.manuName));
+                });
+            } else {
+                console.log(data)
+                $('.normal-option').append(
+                    "<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>"
+                );
+            }
+
+
         })
-    }
-
-    //get models==================
-    $(document).on('change', '#manufacturer_id', function() {
-        let manufacturer_id = $(this).val();
-        // alert(manufacture_id)
+    });
+    $('.more.manufacturer_more').click(function(event) {
         let engine_sub_type = $('#subLinkageTarget :selected').val();
-        // let url = '/get_models_by_manufacturer';
-        let url = $(this).attr('data-href');
+        let url = "{{ route('get_manufacturers_by_engine_type') }}";
+        document.getElementById('manufacturer_load_icon').style.display = "block";
+        $.get(url + '?engine_sub_type=' + engine_sub_type, function(data) {
 
-        getModels(url, manufacturer_id, engine_sub_type);
+            let response = data.data;
+            document.getElementById('manufacturer_load_icon').style.display = "none";
+
+            if (data.manu_more_value > data.total_count) {
+                document.getElementById('manufacturer_more').style.display = "none";
+            } else {
+                document.getElementById('manufacturer_more').style.display = "block";
+            }
+            console.log(data.total_count, data.manu_more_value);
+            if (response.length > 0) {
+                $.each(response, function(key, value) {
+                    manufacturer_id_check_array.push(value.manuId);
+                    $('.normal-option').append($(
+                        '<div class="option" id="manu_id" data-manufacturer_id="' +
+                        value.manuId + '">').html(value.manuName));
+                });
+            } else {
+                console.log(data)
+                $('.normal-option').append(
+                    "<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>"
+                );
+            }
+
+
+        })
     });
 
-    function getModels(url, manufacturer_id, engine_sub_type) {
-        $.get(url + '?manufacturer_id=' + manufacturer_id + '&engine_sub_type=' + engine_sub_type, function(data) {
-            // $('#model_id').html(`<option value="">Select Model</option>`);
-            $('#section_id').html('<option value="">Select One</option>');
-            $('#section_id').selectpicker("refresh");
-            $('#section_part_id').html('<option value="">Select One</option>');
-            $('#section_part_id').selectpicker("refresh");
-            $('#engine_id').html('<option value="">Select One</option>');
-            $('#engine_id').selectpicker("refresh");
 
+    //get models==================     --------------------------------
+    var manufacturer_id_set = 0;
+    $(document.body).on('click', '.option:not(.manufacturer_more)', function(
+        event) { // click on brand to get sections
+        model_id_check_array = [];
+        $('.dropdown-header.model').html("Select Model");
+        $('.dropdown-header.engine').html("Select Engine");
+        $('.model_normal_option').empty();
+        $('.engine_normal_option').empty();
+        // document.getElementById('engine_more').style.display = "none";
+        $('.dropdown-content.manufacturer_content').toggle();
+        var manufacturer_id = $(this).data('manufacturer_id');
+        document.getElementById('manufacturer_id').value = manufacturer_id;
+        manufacturer_id_set = manufacturer_id;
 
-            let response = data.data;
-            let view_html = `<option value="">Select One</option>`;
-            $.each(response, function(key, value) {
-                view_html += `<option value="${value.modelId}">${value.modelname}</option>`;
-            });
-            // console.log(data, view_html);
-            $('#model_id').html(view_html);
-            // $("#model_id").val(4);
-            $("#model_id").selectpicker("refresh");
+        let engine_sub_type = $('#subLinkageTarget :selected').val();
+        let url = "{{ route('get_models_by_manufacturer') }}";
+        $('.dropdown-header.manufacturer').html($(this).html());
+        $.get(url + '?manufacturer_id=' + manufacturer_id + '&engine_sub_type=' + engine_sub_type + "&main=1",
+            function(
+                data) {
 
+                let response = data.data;
+                if (data.load_more_model_value > data.total_count) {
+                    document.getElementById('model_more').style.display = "none";
+                } else {
+                    document.getElementById('model_more').style.display = "block";
+                }
 
-        })
-    }
+                if (response.length > 0) {
+                    $.each(response, function(key, value) {
 
+                        model_id_check_array.push(value.modelId);
+                        $('.model_normal_option').append($(
+                            '<div class="model_option" data-model_id="' +
+                            value.modelId + '">').html(value.modelname));
+                    });
+                } else {
+                    $('.model_normal_option').append(
+                        "<span style='color:red;text-align:center;font-size:13px;'>No Record Found</span>"
+                    );
+                }
+
+            })
+    })
+
+    $('.dropdown-header.model').click(function(event) {
+        $('.dropdown-content.model_content').toggle();
+        event.stopPropagation();
+    })
+
+    $('.more.model_more').click(function(event) {
+        document.getElementById('model_load_icon').style.display = "block";
+        var manufacturer_id = manufacturer_id_set;
+        let engine_sub_type = $('#subLinkageTarget :selected').val();
+        let url = "{{ route('get_models_by_manufacturer') }}";
+
+        $.get(url + '?manufacturer_id=' + manufacturer_id + '&engine_sub_type=' + engine_sub_type + '&load=1',
+            function(data) {
+                document.getElementById('model_load_icon').style.display = "none";
+                let response = data.data;
+                if (data.load_more_model_value > data.total_count) {
+                    document.getElementById('model_more').style.display = "none";
+                } else {
+                    document.getElementById('model_more').style.display = "block";
+                }
+
+                if (response.length > 0) {
+                    $.each(response, function(key, value) {
+
+                        model_id_check_array.push(value.modelId);
+                        $('.model_normal_option').append($(
+                            '<div class="model_option" data-model_id="' +
+                            value.modelId + '">').html(value.modelname));
+                    });
+                } else {
+                    $('.model_normal_option').append(
+                        "<span style='color:red;text-align:center;font-size:13px;'>No Record Found</span>"
+                    );
+                }
+            })
+        event.stopPropagation();
+    })
     ////// get engines==================
-    $(document).on('change', '#model_id', function() {
-        let model_id = $(this).val();
-        // let url = '/get_engines_by_model';
-        let url = $(this).attr('data-href');
+    var engine_id_check_array = [];
+    $('.dropdown-header.engine').click(function(event) {
+        $('.dropdown-content.engine_content').toggle();
+        event.stopPropagation();
+    })
+    $(document.body).on('click', '.model_option:not(.model_more)', function(
+        event) { // click on brand to get sections
+        $('.dropdown-header.model').html($(this).html());
+
+        var model_id = $(this).data('model_id');
+        document.getElementById('model_id').value = model_id;
+        model_id_set = model_id;
+        let url = "{{ route('get_engines_by_model') }}";
         let engine_sub_type = $('#subLinkageTarget :selected').val();
-        getEngines(url, model_id, engine_sub_type);
+        $('.dropdown-content.model_content').toggle();
+        $('.engine_normal_option').empty();
+        $.get(url + '?model_id=' + model_id + '&engine_sub_type=' + engine_sub_type + "&main=1",
+            function(data) {
+                let response = data.data;
+
+                document.getElementById('engine_load_icon').style.display = "none";
+                if (data.load_more_engine_value > data.total_count) {
+                    document.getElementById('engine_more').style.display = "none";
+                } else {
+                    document.getElementById('engine_more').style.display = "block";
+                }
+                if (response.length > 0) {
+                    $.each(response, function(key, value) {
+                        engine_id_check_array.push(value.linkageTargetId);
+                        $('.engine_normal_option').append($(
+                            '<div class="engine_option" data-engine_id="' +
+                            value.linkageTargetId + '">').html(value.description + "(" +
+                            value
+                            .beginYearMonth + " - " + value.endYearMonth));
+                    });
+                } else {
+                    $('.engine_normal_option').append(
+                        "<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>"
+                    );
+                }
+
+            })
+
+    })
+    $('.more.engine_more').click(function(event) {
+        document.getElementById('engine_load_icon').style.display = "block";
+        var model_id = model_id_set;
+        let url = "{{ route('get_engines_by_model') }}";
+        let engine_sub_type = $('#subLinkageTarget :selected').val();
+
+        $.get(url + '?model_id=' + model_id + '&engine_sub_type=' + engine_sub_type + "&load=1",
+            function(data) {
+                let response = data.data;
+
+                document.getElementById('engine_load_icon').style.display = "none";
+                if (data.load_more_engine_value > data.total_count) {
+                    document.getElementById('engine_more').style.display = "none";
+                } else {
+                    document.getElementById('engine_more').style.display = "block";
+                }
+                $.each(response, function(key, value) {
+                    if (!engine_id_check_array.includes(value.linkageTargetId)) {
+                        engine_id_check_array.push(value.linkageTargetId)
+                        $('.engine_normal_option').append($(
+                            '<div class="engine_option" data-engine_id="' +
+                            value.linkageTargetId + '">').html(value.description + "(" +
+                            value
+                            .beginYearMonth + " - " + value.endYearMonth));
+                    }
+
+                });
+
+
+            })
     });
 
-    function getEngines(url, model_id, engine_sub_type) {
-        $.get(url + '?model_id=' + model_id + '&engine_sub_type=' + engine_sub_type, function(data) {
-            $('#section_id').html('<option value="">Select One</option>');
-            $('#section_id').selectpicker("refresh");
-            $('#section_part_id').html('<option value="">Select One</option>');
-            $('#section_part_id').selectpicker("refresh");
-            $('#engine_id').html('<option value="">Select One</option>');
-            $('#engine_id').selectpicker("refresh");
-
-            let response = data.data;
-            let view_html = `<option value="">Select One</option>`;
-            $.each(response, function(key, value) {
-                view_html +=
-                    `<option value="${value.linkageTargetId}">${value.description + "(" + value.beginYearMonth+ " - "+ value.endYearMonth}</option>`;
-            });
-            // console.log(data, view_html);
-            $('#engine_id').html(view_html);
-            $("#engine_id").val(4);
-            $("#engine_id").selectpicker("refresh");
-        })
-    }
 
     ///// get sections==================
-    $(document).on('change', '#engine_id', function() {
-        let engine_id = $(this).val();
-        // let url = '/get_sections_by_engine';
-        let url = $(this).attr('data-href');
+    var engine_id_set = 0;
+    $('.dropdown-header.section').click(function(event) {
+        $('.dropdown-content.section_content').toggle();
+        event.stopPropagation();
+    })
+    $(document.body).on('click', '.engine_option:not(.engine_more)', function(
+        event) { // click on brand to get sections
+        $('.dropdown-header.engine').html($(this).html());
 
+        var engine_id = $(this).data('engine_id');
+        document.getElementById('engine_id').value = engine_id;
+        engine_id_set = engine_id;
+        let url = "{{ route('get_sections_by_engine') }}";
         let engine_sub_type = $('#subLinkageTarget :selected').val();
-        getSections(url, engine_id, engine_sub_type);
-    });
+        $('.dropdown-content.engine_content').toggle();
+        $('.section_normal_option').empty();
+        $.get(url + '?engine_id=' + engine_id + '&engine_sub_type=' + engine_sub_type + "&main=1",
+            function(data) {
+                let response = data.data;
 
-    function getSections(url, engine_id, engine_sub_type) {
-        $.get(url + '?engine_id=' + engine_id + '&engine_sub_type=' + engine_sub_type, function(data) {
+                document.getElementById('section_load_icon').style.display = "none";
+                if (data.load_more_section_value > data.total_count) {
+                    document.getElementById('section_more').style.display = "none";
+                } else {
+                    document.getElementById('section_more').style.display = "block";
+                }
+                if (response.length > 0) {
+                    $.each(response, function(key, value) {
+                        // engine_id_check_array.push(value.linkageTargetId);
+                        $('.section_normal_option').append($(
+                            '<div class="section_option" data-section_id="' +
+                            value.assemblyGroupNodeId + '">').html(value.assemblyGroupName));
+                    });
+                } else {
+                    $('.section_normal_option').append(
+                        "<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>"
+                    );
+                }
 
-            $('#section_part_id').html('<option value="">Select One</option>');
-            $('#section_part_id').selectpicker("refresh");
-            let response = data.data;
-            let view_html = `<option value="">Select One</option>`;
-            $.each(response, function(key, value) {
-                view_html +=
-                    `<option value="${value.assemblyGroupNodeId}">${value.assemblyGroupName}</option>`;
-            });
-            // console.log(data, view_html);
-            $('#section_id').html(view_html);
-            $("#section_id").val(4);
-            $("#section_id").selectpicker("refresh");
-        })
-    }
+            })
+
+    })
+
+    $('.more.section_more').click(function(event) { // click on brand to get sections
+
+        var engine_id = engine_id_set;
+        document.getElementById('section_load_icon').style.display = "block";
+        let url = "{{ route('get_sections_by_engine') }}";
+        let engine_sub_type = $('#subLinkageTarget :selected').val();
+        $('.dropdown-content.engine_content').toggle();
+        $.get(url + '?engine_id=' + engine_id + '&engine_sub_type=' + engine_sub_type + "&load=1",
+            function(data) {
+                let response = data.data;
+
+                document.getElementById('section_load_icon').style.display = "none";
+                if (data.load_more_section_value > data.total_count) {
+                    document.getElementById('section_more').style.display = "none";
+                } else {
+                    document.getElementById('section_more').style.display = "block";
+                }
+                $.each(response, function(key, value) {
+                    // engine_id_check_array.push(value.linkageTargetId);
+                    $('.section_normal_option').append($(
+                        '<div class="section_option" data-section_id="' +
+                        value.assemblyGroupNodeId + '">').html(value.assemblyGroupName));
+                });
+
+
+            })
+
+    })
 
     ///// get section parts============
-    $(document).on('change', '#section_id', function() {
-        let section_id = $(this).val();
-        // let url = '/get_section_parts_for_sale';
-        let url = $(this).attr('data-href');
 
+    var section_id_set = 0;
+    $('.dropdown-header.section_part').click(function(event) {
+        $('.dropdown-content.section_part').toggle();
+        event.stopPropagation();
+    })
+
+    $(document.body).on('click', '.section_option:not(.section_more)', function(
+        event) { // click on brand to get sections
+        $('.dropdown-header.section').html($(this).html());
+
+        var section_id = $(this).data('section_id');
+        document.getElementById('section_id').value = section_id;
+        section_id_set = section_id;
+        let url = "{{ route('get_section_parts_for_sale') }}";
         let engine_sub_type = $('#subLinkageTarget :selected').val();
-        getSectionParts(url, section_id, engine_sub_type);
-    });
 
-    function getSectionParts(url, section_id, engine_sub_type) {
-        $.get(url + '?section_id=' + section_id + '&engine_sub_type=' + engine_sub_type, function(data) {
-            if (data.message == 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Your Stock is empty',
+        $('.dropdown-content.section_content').toggle();
+        // $('.engine_normal_option').empty();
+        $.get(url + '?section_id=' + section_id + '&engine_sub_type=' + engine_sub_type + "&main=1",
+            function(data) {
+                let response = data.data;
+                // new 
+                document.getElementById('section_part_load_icon').style.display = "none";
+                if (data.load_more_section_part_value > data.total_count) {
+                    document.getElementById('section_part_more').style.display = "none";
+                } else {
+                    document.getElementById('section_part_more').style.display = "block";
+                }
+                if (data.message == 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Your Stock is empty',
 
-                });
-                exit();
-            } else if (data.message == 1 && data.data.length <= 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'You dont have any product against this section in your stock',
+                    });
+                    document.getElementById('section_part_more').style.display = "none";
+                    exit();
+                } else if (data.message == 1 && data.data.length <= 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'You dont have any product against this section in your stock',
 
-                });
-                exit();
-            }
-            let response = data.data;
-            let view_html = `<option value="" selected>Select One</option>`;
-            $.each(response, function(key, value) {
-                view_html +=
-                    `<option value="${value.dataSupplierId+"-"+value.legacyArticleId}">${value.genericArticleDescription +"-"+value.articleNumber}</option>`;
-            });
-            // console.log(data, view_html);
-            $('#section_part_id').html(view_html);
-            $("#section_part_id").val(4);
-            $("#section_part_id").selectpicker("refresh");
-        })
-    }
+                    });
+                    document.getElementById('section_part_more').style.display = "none";
+                    exit();
+                }
+
+                //end
+                
+                $('.section_part_normal_option').empty();
+                if (response.length > 0) {
+
+                    $.each(response, function(key, value) {
+                        // engine_id_check_array.push(value.linkageTargetId);
+                        $('.section_part_normal_option').append($(
+                            '<div class="section_part_option" data-section_part_id="' +
+                            value.dataSupplierId + "-" + value.legacyArticleId + '">').html(
+                            value.genericArticleDescription + "-" + value.articleNumber));
+                    });
+                } else {
+                    $('.section_part_normal_option').append(
+                        "<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>"
+                    );
+                }
+
+            })
+
+    })
+
+    $('.more.section_part_more').click(function(event) { 
+
+        var section_id = section_id_set;
+        document.getElementById('section_part_load_icon').style.display = "block";
+        let url = "{{ route('get_section_parts') }}";
+        let engine_sub_type = $('#subLinkageTarget :selected').val();
+        $.get(url + '?section_id=' + section_id + '&engine_sub_type=' + engine_sub_type + "&load=1",
+            function(data) {
+                let response = data.data;
+                // new 
+                document.getElementById('section_part_load_icon').style.display = "none";
+                if (data.load_more_section_part_value > data.total_count) {
+                    document.getElementById('section_part_more').style.display = "none";
+                } else {
+                    document.getElementById('section_part_more').style.display = "block";
+                }
+                if (data.message == 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Your Stock is empty',
+
+                    });
+                    document.getElementById('section_part_more').style.display = "none";
+                    exit();
+                } else if (data.message == 1 && data.data.length <= 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'You dont have any product against this section in your stock',
+
+                    });
+                    document.getElementById('section_part_more').style.display = "none";
+                    exit();
+                }
+
+                //end
+                
+
+                    $.each(response, function(key, value) {
+                        // engine_id_check_array.push(value.linkageTargetId);
+                        $('.section_part_normal_option').append($(
+                            '<div class="section_part_option" data-section_part_id="' +
+                            value.dataSupplierId + "-" + value.legacyArticleId + '">').html(
+                            value.genericArticleDescription + "-" + value.articleNumber));
+                    });
+            })
+
+    })
+
 
     // check product stock
-    $(document).on('change', '#section_part_id', function() {
-        let section_part_id = $(this).val();
-        // let url = '/get_section_parts_for_sale';
-        let url = $(this).attr('data-href');
-
-        let engine_sub_type = $('#subLinkageTarget :selected').val();
-        var cashType = $('#cash_type').find(":selected").val();
-        checkProductStock(url, section_part_id, engine_sub_type, cashType);
-    });
-
-    function checkProductStock(url, section_part_id, engine_sub_type, cashType) {
-        $.get(url + '?section_part_id=' + section_part_id + '&engine_sub_type=' + engine_sub_type + '&cash_type=' +
+   
+    $(document.body).on('click', '.section_part_option:not(.section_part_more)', function(
+        event) { // click on brand to get sections
+            var section_part_id = $(this).data('section_part_id');
+            document.getElementById('section_part_id').value = section_part_id;
+            let engine_sub_type = $('#subLinkageTarget :selected').val();
+            var cashType = $('#cash_type').find(":selected").val();
+            var url = "{{ route('check_product_stock') }}";
+            $('.dropdown-header.section_part').html($(this).html());
+            $('.dropdown-content.section_part').toggle();
+            $.get(url + '?section_part_id=' + section_part_id + '&engine_sub_type=' + engine_sub_type + '&cash_type=' +
             cashType,
             function(data) {
                 if (data.message == "no_white_items") {
@@ -321,8 +752,6 @@
                     });
                     exit();
                     // $('#section_part_id').html('<option value="">Select One</option>');
-                    $('#section_part_id').selectpicker("refresh");
-                    exit();
                 } else if (data.message == "no_black_items") {
                     Swal.fire({
                         icon: 'error',
@@ -332,12 +761,12 @@
                     });
                     exit();
                     // $('#section_part_id').html('<option value="">Select One</option>');
-                    $('#section_part_id').selectpicker("refresh");
-                    exit();
                 }
 
             })
-    }
+
+    })
+    
 
 
 
@@ -374,14 +803,17 @@
         var id = $('#section_part_id').val();
         var engine_type = $('#linkageTarget').find(":selected").val();
         var engine_sub_type = $('#subLinkageTarget').find(":selected").val();
-        var manufacturer_id = $('#manufacturer_id').find(":selected").val();
-        var model_id = $('#model_id').find(":selected").val();
-        var engine_id = $('#engine_id').find(":selected").val();
-        var section_id = $('#section_id').find(":selected").val();
-        var section_part_id = $('#section_part_id').find(":selected").val();
+        var manufacturer_id = $('#manufacturer_id').val();
+        var model_id = $('#model_id').val();
+        var engine_id = $('#engine_id').val();
+        var section_id = $('#section_id').val();
+        var section_part_id = $('#section_part_id').val();
         // var status = $('#status').find(":selected").val();
         var date = $('#product_sale_date').val();
         var cashType = $('#cash_type').find(":selected").val();
+
+        // new code
+        
 
         checkIfExists(date, engine_type, engine_sub_type, manufacturer_id, model_id, engine_id, section_id,
             section_part_id, cashType);

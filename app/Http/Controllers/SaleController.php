@@ -80,50 +80,23 @@ class SaleController extends Controller
     public function __construct(SaleInterface $saleInterface)
     {
         $this->saleRepository = $saleInterface;
+        ;
         // $this->auth_user = auth()->guard('api')->user();
     }
     public function show()
     {
     }
 
-    // public function index(Request $request)
-    // {
-    //     // dd($request->all());
-    //     $sales = Sale::where('user_id', auth()->user()->id)->orderBy('id', 'desc')->get();
-    //     // dd($sales);
-    //     $role = Role::find(Auth::user()->role_id);
-    //     if ($role->hasPermissionTo('sales-index')) {
-    //         $permissions = Role::findByName($role->name)->permissions;
-    //         foreach ($permissions as $permission)
-    //             $all_permission[] = $permission->name;
-    //         if (empty($all_permission))
-    //             $all_permission[] = 'dummy text';
-
-    //         if ($request->input('warehouse_id'))
-    //             $warehouse_id = $request->input('warehouse_id');
-    //         else
-    //             $warehouse_id = 0;
-
-    //         if ($request->input('starting_date')) {
-    //             $starting_date = $request->input('starting_date');
-    //             $ending_date = $request->input('ending_date');
-    //         } else {
-    //             $starting_date = date("Y-m-d", strtotime(date('Y-m-d', strtotime('-1 year', strtotime(date('Y-m-d'))))));
-    //             $ending_date = date("Y-m-d");
-    //         }
-
-    //         $lims_gift_card_list = GiftCard::where("is_active", true)->get();
-    //         $lims_pos_setting_data = PosSetting::latest()->first();
-    //         $lims_reward_point_setting_data = RewardPointSetting::latest()->first();
-    //         $lims_warehouse_list = Warehouse::where('is_active', true)->get();
-    //         $lims_account_list = Account::where('is_active', true)->get();
-
-    //         return view('sale.index', compact('starting_date', 'ending_date', 'warehouse_id', 'lims_gift_card_list', 'lims_pos_setting_data', 'lims_reward_point_setting_data', 'lims_account_list', 'lims_warehouse_list', 'all_permission', 'sales'));
-    //     } else
-    //         return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
-    // }
+   
     public function index(Request $request)
     {
+        session()->put('manufacturer_count_value', 0);
+        session()->put('model_count_value', 0);
+        session()->put('engine_count_value', 0);
+        session()->put('section_count_value', 0);
+        session()->put('section_part_count_value', 0);
+        session()->put('purchase_brand_count_value', 0);
+        session()->put('section_part_count_value_for_sale', 0);
         if ($request->ajax()) {
             return DataTables::of(NewSale::where('retailer_id', Auth::user()->id)->orderBy('created_at', 'DESC'))
                 ->addIndexColumn('id')
@@ -430,6 +403,13 @@ class SaleController extends Controller
 
     public function create()
     {
+        session()->put('manufacturer_count_value', 0);
+        session()->put('model_count_value', 0);
+        session()->put('engine_count_value', 0);
+        session()->put('section_count_value', 0);
+        session()->put('section_part_count_value', 0);
+        session()->put('purchase_brand_count_value', 0);
+        session()->put('section_part_count_value_for_sale', 0);
         $role = Role::find(FacadesAuth::user()->role_id);
         if ($role->hasPermissionTo('purchases-add')) {
             $lims_supplier_list = Supplier::where('is_active', true)->get();
@@ -565,21 +545,46 @@ class SaleController extends Controller
 
     public function getSectionPartsForSale(Request $request)
     {
+       
+        // new code ===========================
+        $value = session()->get('section_part_count_value_for_sale');
+        if (empty($value)) {
+            session()->put('section_part_count_value_for_sale', 0);
+        }
+        if (isset($request->main)) {
+            session()->put('section_part_count_value_for_sale', 0);
+        }
+        $value = session()->get('section_part_count_value_for_sale');
         $articles = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')
         ->whereHas('stock', function($query) {
             $query->whereNull('deleted_at');
         })->whereHas('articleVehicleTree', function ($query) use ($request) {
             $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
-        })->get();
-        if(!empty($articles)) {
+        })->skip($value)->take((int)10)->distinct()->get();
+
+        $count = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')
+        ->whereHas('stock', function($query) {
+            $query->whereNull('deleted_at');
+        })->whereHas('articleVehicleTree', function ($query) use ($request) {
+            $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
+        })->count();
+        session()->put('section_part_count_value_for_sale', $value + (int)10);
+
+        
+        // end----------------------------------
+        if(count($articles) > 0) {
             return response()->json([
                 'data' => $articles,
-                'message' => 1
+                'message' => 1,
+                'total_count' => $count,
+                'load_more_section_part_value' => session()->get('section_part_count_value_for_sale')
             ]);
         } else {
             return response()->json([
 
-                'message' => 0
+                'message' => 0,
+                'total_count' => $count,
+                'load_more_section_part_value' => session()->get('section_part_count_value_for_sale')
             ], 200);
         }
     }

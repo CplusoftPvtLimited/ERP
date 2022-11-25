@@ -54,10 +54,18 @@ class PurchaseController extends Controller
     public function __construct(PurchaseInterface $purchaseInterface)
     {
         $this->purchaseRepository = $purchaseInterface;
+        
     }
 
     public function index(Request $request)
     {
+        session()->put('manufacturer_count_value', 0);
+        session()->put('model_count_value', 0);
+        session()->put('engine_count_value', 0);
+        session()->put('section_count_value', 0);
+        session()->put('section_part_count_value', 0);
+        session()->put('purchase_brand_count_value', 0);
+        session()->put('section_part_count_value_for_sale', 0);
         if ($request->ajax()) {
             return Datatables::of(Purchase::where('user_id', Auth::user()->id)->orderBy('id', 'DESC'))
                 ->addIndexColumn('id')
@@ -322,6 +330,7 @@ class PurchaseController extends Controller
         session()->put('section_count_value', 0);
         session()->put('section_part_count_value', 0);
         session()->put('purchase_brand_count_value', 0);
+        session()->put('section_part_count_value_for_sale', 0);
         $role = Role::find(Auth::user()->role_id);
         if ($role->hasPermissionTo('purchases-add')) {
             $lims_supplier_list = Supplier::where('is_active', true)->get();
