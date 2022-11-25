@@ -156,11 +156,6 @@
                                         <div class="form-group">
                                             <label for="engine_id">{{ __('Select Engine') }} <span
                                                     style="color: red;">*</span></label>
-                                            {{-- <select name="engine_id" id="engine_id"
-                                                data-href="{{ route('get_data_of_engine_home_search') }}"
-                                                class="selectpicker form-control" data-live-search="true"
-                                                data-live-search-style="begins" required>
-                                            </select> --}}
                                             <input type="hidden" id="engine_id" name="engine_id">
                                             <div class="dropdown">
                                                 <div class="dropdown-header engine form-control">
@@ -183,11 +178,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="model_year">{{ __('Model Year') }}</label>
-                                            {{-- <select name="model_year" id="model_year" data-href="#"
-                                                class="selectpicker form-control" data-live-search="true"
-                                                data-live-search-style="begins" required>
-
-                                            </select> --}}
+                                            
                                             <input type="text" id="model_year" name="model_year" class="form-control"
                                                 readonly>
                                         </div>
@@ -195,10 +186,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="fuel">{{ __('Fuel') }}</label>
-                                            {{-- <select name="fuel" id="fuel" data-href="#"
-                                                class="selectpicker form-control" data-live-search="true"
-                                                data-live-search-style="begins" required>
-                                            </select> --}}
+                                            
                                             <input type="text" id="fuel" name="fuel" class="form-control"
                                                 readonly>
                                         </div>
@@ -206,10 +194,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="cc">{{ __('CC') }}</label>
-                                            {{-- <select name="cc" id="cc" data-href="#"
-                                                class="selectpicker form-control" data-live-search="true"
-                                                data-live-search-style="begins" required>
-                                            </select> --}}
+                                            
                                             <input type="text" id="cc" name="cc" class="form-control"
                                                 readonly>
                                         </div>
@@ -266,10 +251,7 @@
                                         <div class="form-group">
                                             <label for="sub_section_id">{{ __('Select Product Group') }} <span
                                                     style="color: red;">*</span></label>
-                                            {{-- <select name="sub_section_id" id="sub_section_id" data-href="#"
-                                                class="selectpicker form-control" data-live-search="true"
-                                                data-live-search-style="begins" required>
-                                            </select> --}}
+                                            
                                             <div class="dropdown">
                                                 <div class="dropdown-header product_group form-control">
                                                     {{ __('Select Product Group') }}</div>
