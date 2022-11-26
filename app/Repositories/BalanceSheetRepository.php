@@ -147,7 +147,7 @@ class BalanceSheetRepository implements BalanceSheetInterface
             }
             DB::commit();
             return $item;
-        } catch (\Exception $e) {
+        } catch (\Exception $e) { 
             DB::rollBack();
             // dd($e->getMessage());
             return $e->getMessage();

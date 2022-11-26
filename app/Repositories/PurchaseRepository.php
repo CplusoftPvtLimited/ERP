@@ -277,7 +277,7 @@ class PurchaseRepository implements PurchaseInterface
                 DB::commit();
                 return true;
             }
-            return false;
+            // return false;
         } catch (\Exception $th) {
             DB::rollBack();
             return $th->getMessage();

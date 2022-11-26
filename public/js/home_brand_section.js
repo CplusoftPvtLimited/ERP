@@ -162,4 +162,3 @@ $(document.body).on('click', '.product_group_option:not(.product_group_more)', f
     event.stopPropagation();
 })
 
-// load more script for sub section by brands end =========================

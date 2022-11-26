@@ -3,7 +3,7 @@
         <div class="alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert"
                 aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('not_permitted') }}</div>
     @endif
-    <link rel="stylesheet" href="{{ asset('css/purchase_create.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/purchase_create.css') }}"> 
     <link rel="stylesheet" href="{{ asset('css/home_search.css') }}">
     <link rel="stylesheet" href="{{ asset('css/load_more_dropdown.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
