@@ -17,7 +17,7 @@
                     <div class="card p-0">
                         <div class="row m-0">
                             @if(isset($dual) && $dual == "dual")
-                            <div class="col-10" style="margin: 0px; padding:0px;">
+                            <div class="col-12" style="margin: 0px; padding:0px;">
                                 <div class="card pr-3 pl-3 pt-0" style="box-shadow: none !important; border-left: 1px solid rgb(240, 240, 240); border-right: 1px solid rgb(240, 240, 240)">
                                     {{-- <div class="row bg-secondary pt-2 mt-0 text-white">
                                         <div class="col-6">
@@ -56,7 +56,7 @@
                                                                 <b>{{$section_part->articleNumber}}</b>
                                                             </td>
                                                             <td>
-                                                                <img src="{{ asset('images/part_small.jpg')}}" alt="">
+                                                                <img src="{{ asset('images/part_small.webp')}}" alt="">
                                                             </td>
                                                             <td style="width: 50%" class="text-center">
                                                                 {{$section_part->genericArticleDescription}}
@@ -86,7 +86,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-7" style="margin: 0px; padding:0px;">
+                            <div class="col-9" style="margin: 0px; padding:0px;">
                                 <div class="card pr-3 pl-3 pt-0" style="box-shadow: none !important; border-left: 1px solid rgb(240, 240, 240); border-right: 1px solid rgb(240, 240, 240)">
                                     {{-- <div class="row bg-secondary pt-2 mt-0 text-white">
                                         <div class="col-6">
@@ -125,7 +125,7 @@
                                                                 <b>{{$section_part->articleNumber}}</b>
                                                             </td>
                                                             <td>
-                                                                <img src="{{ asset('/images/part_small.jpg')}}" alt="">
+                                                                <img src="{{ asset('/images/part_small.webp')}}" alt="">
                                                             </td>
                                                             <td style="width: 50%" class="text-center">
                                                                 {{$section_part->genericArticleDescription}}
@@ -148,13 +148,13 @@
                                 </div>
                             </div>
                             @endif
-                            <div class="col-2" style="margin: 0px; padding:0px;">
+                            <!-- <div class="col-2" style="margin: 0px; padding:0px;">
                                 <div class="card" style="margin: 0px; padding:0px; box-shadow: none; ">
                                     <div class="card-body" style="margin: 0px; padding:0px;">
                                         @include('home_search.criteria_search')
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>

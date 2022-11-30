@@ -33,7 +33,7 @@
                                             $html .= '<li class="list-unstyled"> <a href="#getSubSection_'.$sub_section->assemblyGroupNodeId .'" class="" aria-expanded="false" data-toggle="collapse"><i class="fa fa-chevron-right"></i> ' . $sub_section->assemblyGroupName . '</a> </li>';
                                             return getSubSection($sub_section->allSubSection, $engine, $html,$ul);
                                         }else{
-                                            $html .= '<li class=""> <a href="/articles_search_view/' . $engine->linkageTargetId . '/' .  $sub_section->assemblyGroupNodeId . '">' . $sub_section->assemblyGroupName . '</a> </li>';
+                                            $html .= '<li class=""> <a href="/articles_search_view/' . $engine->linkageTargetId . '/' .  $sub_section->assemblyGroupNodeId .  '/' .  $engine->linkageTargetType .  '">' . $sub_section->assemblyGroupName . '</a> </li>';
                                         }
                                     } else {
                                         $html .= $ul;
@@ -43,7 +43,7 @@
                                                 $html .=  '<li class="list-unstyled"> <a href="#getSubSection_'.$section->assemblyGroupNodeId .'" class="list-unstyled" aria-expanded="false" data-toggle="collapse"><i class="fa fa-chevron-right"></i> ' . $section->assemblyGroupName . '</a> </li>';
                                                 return getSubSection($section->allSubSection, $engine, $html, $ul);
                                             }else{
-                                                $html .=  '<li class=""> <a href="/articles_search_view/' . $engine->linkageTargetId . '/' .  $section->assemblyGroupNodeId . '">' . $section->assemblyGroupName . '</a> </li>';
+                                                $html .=  '<li class=""> <a href="/articles_search_view/' . $engine->linkageTargetId . '/' .  $sub_section->assemblyGroupNodeId .  '/' .  $engine->linkageTargetType . '">' . $section->assemblyGroupName . '</a> </li>';
                                             }
                                         }
                                 
@@ -54,6 +54,7 @@
                                     return $data;                    
                                 }
                             @endphp
+                            
                             <div class="col-9" style="margin: 0px; padding:0px;">
                                 <div class="card p-3" style="margin: 0px; height:100%;box-shadow: none !important;border-left:1px solid  rgb(240, 240, 240)">
                                     <div class="row">
@@ -68,18 +69,10 @@
                                                 <div class="card-body">
                                                     
                                                     <ul class="">
-                                                        @if(count($section->allSubSection) > 0)
-                                                        @foreach ($section->allSubSection as $sub_section)
-                                                        {{-- <li class="">
-                                                            <a href="{{route('articles_search_view',[$engine->linkageTargetId,$sub_section->assemblyGroupNodeId])}}">{{ $sub_section->assemblyGroupName }}</a>
-                                                        </li> --}}
-                                                            {!! getSubSection($sub_section, $engine, "", "<ul class='side-menu' id='getSubSection_".$sub_section->assemblyGroupNodeId."'>" ) !!}
-                                                        @endforeach
                                                         
-                                                        @else
                                                        
-                                                        <a class="btn btn-info" href="{{route('articles_search_view', [$engine->linkageTargetId, $section->assemblyGroupNodeId])}}">Show Products</a>
-                                                        @endif
+                                                        <a class="btn btn-info" href="{{route('articles_search_view', [$engine->linkageTargetId, $section->assemblyGroupNodeId,$engine->linkageTargetType])}}">Show Products</a>
+                                                        
                                                     </ul>
                                                     
                                                 </div>

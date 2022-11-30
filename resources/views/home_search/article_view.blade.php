@@ -47,7 +47,7 @@
                     <div class="col-6">
                         <div class="table">
                             <div class="m-3">
-                                <img src="{{ asset('images/part.jpg') }}" alt=""  height="75px">
+                                <img src="{{ asset('images/part.webp') }}" alt=""  height="75px">
                             </div>
                             <table class="table">
                                 <thead>
@@ -90,7 +90,7 @@
                         </div>
                     </div>
                     <div class="col-6 text-center pt-3">
-                        <img id="image_view" src="{{ asset('images/part_medium.jpg') }}" alt=""
+                        <img id="image_view" src="{{ asset('images/part_medium.webp') }}" alt=""
                             data-toggle="modal" data-target="#staticBackdrop" style="cursor: pointer;">
 
                     </div>
@@ -343,7 +343,7 @@
                             </button>
                         </div>
                         <div class="modal-body text-center">
-                            <img id="image_view" src="{{ asset('images/part.jpg') }}" alt=""
+                            <img id="image_view" src="{{ asset('images/part_large.webp') }}" alt=""
                                 style="width: auto; height: 300px">
                         </div>
                     </div>

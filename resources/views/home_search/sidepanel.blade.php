@@ -14,10 +14,7 @@
     </div>
     <div class="card-body text-center">
         <img src="{{ asset('images/car.jpg') }}" alt="">
-        <p>
-           dolore similique itaque dolorem ullam eligendi
-            suscipit, debitis repellendus voluptate.
-        </p>
+       
     </div>
 </div>
 <div class="card p-0 m-0" style=" box-shadow:none !important;">
