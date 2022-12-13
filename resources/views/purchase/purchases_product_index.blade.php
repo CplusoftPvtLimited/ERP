@@ -52,8 +52,8 @@
                                     Pdf</button></a>
                             <a class="p-1" href="{{ route('exportPurchases') }}"><button
                                     class="btn btn-warning">Export</button></a>
-                            <a class="p-1" href="{{ route('purchases.create') }}"><button class="btn btn-success"><i
-                                        class="fa fa-plus"></i> Add</button></a>
+                            {{-- <a class="p-1" href="{{ route('purchases.create') }}"><button class="btn btn-success"><i
+                                        class="fa fa-plus"></i> Add</button></a> --}}
                         </div>
 
                         <div class="product-table">

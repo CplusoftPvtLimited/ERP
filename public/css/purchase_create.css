@@ -235,6 +235,7 @@ table {
     color: white;
     cursor: pointer;
   }
+  
 
   .more.brands_more {
     text-align: center;
@@ -250,10 +251,10 @@ table {
 
   }
 
-  /* .dropdown-content:hover{
-    background-color: lightgray;
-    color: white;
-  } */
+
+  
+
+ 
   input#section_part_input_search {
     width: 100%;
 }
@@ -285,3 +286,62 @@ input#section_input_search {
   background-color: #fdfdff;
   border-color: #e4e6fc;
 }
+
+
+
+
+/*plate number CSS start*/
+
+.more.plate_engine_more {
+  text-align: center;
+  background: #6244a6;
+  color: white;
+  cursor: pointer;
+}
+
+#plate_engine_input_search{
+  width:100%;
+}
+
+.plate_engine_option:hover{
+  cursor: pointer;
+  color: white;
+  background-color: gray;
+}
+
+.more.plate_section_more {
+  text-align: center;
+  background: #6244a6;
+  color: white;
+  cursor: pointer;
+}
+
+#plate_section_input_search{
+  width:100%;
+}
+
+.plate_section_option:hover{
+  cursor: pointer;
+  color: white;
+  background-color: gray;
+}
+
+
+.more.plate_section_part_more {
+  text-align: center;
+  background: #6244a6;
+  color: white;
+  cursor: pointer;
+}
+
+#plate_section_part_input_search{
+  width:100%;
+}
+
+.plate_section_part_option:hover{
+  cursor: pointer;
+  color: white;
+  background-color: gray;
+}
+
+/*      plate number CSS END    */

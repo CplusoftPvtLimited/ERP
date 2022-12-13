@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\DB;
 class HomeSearchController extends Controller
 {
     public function homeSearchView(){ 
+
+        // dd(Ambrand::skip(1)->take(1)->orderBy('id','desc')->get());
         $type = ["V","L","B"];
         $manufacturers = Manufacturer::whereIn('linkingTargetType', $type)->limit(10)->get();
         $manfuacture_array = [
@@ -46,6 +48,16 @@ class HomeSearchController extends Controller
         session()->put('sub_section_count',[]);
         session()->put('section_brand_id',[]);
 
+        session()->put('manufacturer_count_value', 0);
+        session()->put('model_count_value', 0);
+        session()->put('engine_count_value', 0);
+        session()->put('section_count_value', 0);
+        session()->put('section_part_count_value', 0);
+        session()->put('purchase_brand_count_value', 0);
+        session()->put('section_part_count_value_for_sale', 0);
+        session()->put('plate_engine_count_value', 0);
+        session()->put('plate_section_count_value', 0);
+        session()->put('plate_section_part_count_value', 0);
         return view('home_search.home_search',compact('manufacturers','brands','brands_count'));
     }   
 
@@ -280,7 +292,7 @@ class HomeSearchController extends Controller
     public function getEnginesByModel(Request $request)
     {
         try {
-            $type = ["V","L","B", "O", "C"];
+            $type = ["V","L","B", "O"];
             $type2 = ["C","T","M","A","K", "P"];
             $engine_load_more = session()->get('engine_load_more');
             // dd($model_load_more);
@@ -412,6 +424,13 @@ class HomeSearchController extends Controller
         }
     }
 
+    public function getHomeBrandAutoComplete(Request $request){
+        $brands = Ambrand::where('brandName','like','%' . $request->name)->limit(100)->get();
+
+        return response()->json([
+            'data' => $brands
+        ]);
+    }
     
     public function searchSectionByEngine(Request $request){
         // $engine_id,$type,$sub_type,$model_year,$fuel,$cc
@@ -455,10 +474,8 @@ class HomeSearchController extends Controller
         if(empty($engine)) {
             return redirect()->route('home_search');
         }
-                // dd($engine, $engine_id,$type,$sub_type,$model_year,$fuel,$cc);
                    
         if($type == "P" && $sub_type == "home"){
-            // dd('lll');
             $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
             ->whereHas('articleVehicleTree', function($query) use ($typee , $engine){
                 $query->where('linkingTargetId', $engine->linkageTargetId)
@@ -470,7 +487,6 @@ class HomeSearchController extends Controller
             ->groupBy('assemblyGroupNodeId')
             ->limit(5)
             ->get();
-            // dd($sections);
         } else if ($type == "O" && $sub_type == "home") {
             // dd($request->all());
             $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
@@ -496,8 +512,6 @@ class HomeSearchController extends Controller
                    ->limit(10)
                     ->get();
         }
-        // dd($engine);
-            // dd($sections);
 
         $type = $type;
         $sub_type = $sub_type;

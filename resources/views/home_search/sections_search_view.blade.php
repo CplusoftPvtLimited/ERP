@@ -16,13 +16,13 @@
                 <div class="col-12">
                     <div class="card p-0">
                         <div class="row m-0">
-                            <div class="col-3" style="margin: 0px; padding:0px; ">
+                            {{-- <div class="col-3" style="margin: 0px; padding:0px; ">
                                 <div class="card" style="margin: 0px; padding:0px; height: 100%; box-shadow: none !important;">
                                     <div class="card-body" style="margin: 0px; padding:0px;">
                                         @include('home_search.sidepanel')
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                             
                             @php
                                 function getSubSection($sub_section, $engine, $html = "",$ul, $end_ul = "</ul>") {
@@ -54,8 +54,7 @@
                                     return $data;                    
                                 }
                             @endphp
-                            
-                            <div class="col-9" style="margin: 0px; padding:0px;">
+                            <div class="col-12" style="margin: 0px; padding:0px;">
                                 <div class="card p-3" style="margin: 0px; height:100%;box-shadow: none !important;border-left:1px solid  rgb(240, 240, 240)">
                                     <div class="row">
                                         {{-- {{dd($sections) }} --}}

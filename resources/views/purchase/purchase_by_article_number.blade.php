@@ -39,7 +39,6 @@
 <script>
     $(function() {
         var name = $('#automplete-1').val();
-        console.log("jjjjjjjjjjjjj")
         $.ajax({
             method: "GET",
             url: "{{ url('articlesByReferenceNo') }}",
@@ -71,51 +70,9 @@
                 console.log(error);
             }
         });
-        // var availableTutorials  =  [
-        //    "ActionScript",
-        //    "Bootstrap",
-        //    "C",
-        //    "C++",
-        // ];
-        // $( "#automplete-1" ).autocomplete({
-        //    source: availableTutorials
-        // });
+       
     });
-    // $(function() {
-    //     let name = $('#automplete-1').val();
-    //     console.log(name)
-    //     $.ajax({
-    //         method: "GET",
-    //         url: "{{ url('articlesByReferenceNo') }}",
-    //         data: {
-    //             name: name
-    //         },
-
-    //         success: function(data) {
-
-    //             let response = data.data;
-
-    //             var html = "";
-    //             var articleNumbers = [];
-    //             $.each(response, function(key, value) {
-    //                 if(value != null){
-    //                     articleNumbers.push(value.articleNumber)
-    //                 }
-
-    //             });
-
-    //             $("#automplete-1").autocomplete({
-    //                 source: articleNumbers
-    //             });
-
-
-
-    //         },
-    //         error: function(error) {
-    //             console.log(error);
-    //         }
-    //     });
-    // });
+   
     var product_name = "";
     $(document).ready(function() {
         $('#automplete-1').on('autocompletechange change', function() {

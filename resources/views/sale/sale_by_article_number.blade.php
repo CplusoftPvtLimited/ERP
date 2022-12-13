@@ -115,12 +115,23 @@
     //         }
     //     });
     // });
-    var product_name = "";
+    var product_name = 0;
     $(document).ready(function() {
         $('#automplete-1').on('autocompletechange change', function() {
             product_name = this.value;
+            $.ajax({
+                url: "/test2",
+                method: "GET",
+                data: {
+                    product_name : product_name
+                },
+                success: function(data){
+
+                }
+            });
         }).change();
     });
+    
 
     var supplier_ids_array = [],
         article_ids_array = [],
@@ -131,6 +142,7 @@
     var total_amount = $('#total-amount');
 
     $("#save-button").click(function() {
+        console.log(product_name);
         var supplier_id = $('#supplier_id').find(":selected").val();
         var status = $('#status').find(":selected").val();
         var date = $('#product_sale_date').val();

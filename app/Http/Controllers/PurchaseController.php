@@ -8,6 +8,7 @@ use App\Supplier;
 use App\Product;
 use App\Unit;
 use App\Tax;
+use Illuminate\Support\Facades\Http;
 use App\Account;
 use App\Models\Manufacturer;
 use App\Models\ModelSeries;
@@ -66,6 +67,8 @@ class PurchaseController extends Controller
         session()->put('section_part_count_value', 0);
         session()->put('purchase_brand_count_value', 0);
         session()->put('section_part_count_value_for_sale', 0);
+        session()->put('plate_engine_count_value', 0);
+        session()->put('plate_section_count_value', 0);
         if ($request->ajax()) {
             return Datatables::of(Purchase::where('user_id', Auth::user()->id)->orderBy('id', 'DESC'))
                 ->addIndexColumn('id')
@@ -324,6 +327,7 @@ class PurchaseController extends Controller
 
     public function create()
     {
+        
         session()->put('manufacturer_count_value', 0);
         session()->put('model_count_value', 0);
         session()->put('engine_count_value', 0);
@@ -331,6 +335,11 @@ class PurchaseController extends Controller
         session()->put('section_part_count_value', 0);
         session()->put('purchase_brand_count_value', 0);
         session()->put('section_part_count_value_for_sale', 0);
+        session()->put('plate_engine_count_value', 0);
+        session()->put('plate_section_count_value', 0);
+        session()->put('plate_section_part_count_value', 0);
+        toastr()->info('You are not allowed to access purchase creation page');
+        return redirect()->route('purchases.index');
         $role = Role::find(Auth::user()->role_id);
         if ($role->hasPermissionTo('purchases-add')) {
             $lims_supplier_list = Supplier::where('is_active', true)->get();
@@ -1593,8 +1602,9 @@ class PurchaseController extends Controller
 
     public function articlesByReferenceNo(Request $request)
     {
+        // dd($request->all());
         try {
-            $articles = Article::where('articleNumber', 'LIKE', '%' . $request->name . '%')->paginate(10);
+            $articles = Article::where('articleNumber', 'LIKE', '%' . $request->name . '%')->limit(100)->get();
             return response()->json([
                 'data' => $articles
             ], 200);
@@ -1639,22 +1649,172 @@ class PurchaseController extends Controller
                 ]);
             }
             $chasis_number = ChassisNumber::Select('CHASSIS')->where('GAUCHE', $plate_number[0])->where('CD_SERIE', $plate_number[1])->where('DROIT_MIL', $plate_number[2])->first();
+            
             if (empty($chasis_number)) {
                 return response()->json([
                     'data' => 2
                 ]);
             } else {
-                return response()->json([
-                    'data' => $chasis_number
-                ]);
+                $response = Http::get('https://partsapi.ru/api.php?method=VINdecode&key=1f1af8ee7f280a19d3bec7b44a8c64310&vin='.$chasis_number->CHASSIS.'&lang=en');
+                if(!empty($response->body())){
+                    $data = json_decode($response->body());
+                    if(isset($data->result)){
+                        $d = (array)$data->result;
+                        $model = ModelSeries::where('modelname',$d[0]->modelName)->first();
+                        return response()->json([
+                            'data' => $model,
+                            'type' => $d[0]->linkageTargetType,
+                            'sub_type' => $d[0]->subLinkageTargetType,
+                        ]);
+                    }else{
+                        $d = (array)$data;
+                        return response()->json([
+                            'data' => 'exceed',
+                            'message' => $d['message']                            
+                        ]);
+                    }
+                    
+                }
             }
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
 
+    // get engines by plate models
+    public function getPurchasePlateEngineByModel(Request $request)
+    {
+        try {
+
+            if($request->model_id == -1){
+                return response()->json([
+                    'data' => "no"
+                ], 200);
+            }
+            $value = session()->get('plate_engine_count_value');
+            if (empty($value)) {
+                session()->put('plate_engine_count_value', 0);
+            }
+            if (isset($request->main)) {
+                session()->put('plate_engine_count_value', 0);
+            }
+            $value = session()->get('plate_engine_count_value');
+            $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                ->where('vehicleModelSeriesId', $request->model_id)
+                ->skip($value)->take((int)10)->get();
+
+            $count = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                ->where('vehicleModelSeriesId', $request->model_id)
+                ->count();
+            session()->put('plate_engine_count_value', $value + (int)10);
+
+            // dd($manufacturers);
+            return response()->json([
+                'data' => $engines,
+                'total_count' => $count,
+                'load_more_plate_engine_value' => session()->get('plate_engine_count_value')
+            ], 200);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    // get sections by plate engines
+    public function getPurchasePlateSectionByEngine(Request $request)
+    {
+        try {
+
+            if($request->engine_id == -1){
+                return response()->json([
+                    'data' => "no"
+                ], 200);
+            }
+            $value = session()->get('plate_section_count_value');
+            if (empty($value)) {
+                session()->put('plate_section_count_value', 0);
+            }
+            if (isset($request->main)) {
+                session()->put('plate_section_count_value', 0);
+            }
+            $value = session()->get('plate_section_count_value');
+            $engine = LinkageTarget::where('linkageTargetId',$request->engine_id)->first();
+            $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function ($query) use ($request) {
+                $query->where('linkingTargetId', $request->engine_id);
+            })->groupBy('assemblyGroupNodeId')->skip($value)->take((int)10)->get();
+
+            $count = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function ($query) use ($request) {
+                $query->where('linkingTargetId', $request->engine_id);
+            })->groupBy('assemblyGroupNodeId')->count();
+
+            session()->put('plate_section_count_value', $value + (int)10);
+
+            // dd($manufacturers);
+            return response()->json([
+                'data' => $sections,
+                'total_count' => $count,
+                'engine' => $engine,
+                'load_more_plate_section_value' => session()->get('plate_section_count_value')
+            ], 200);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    // get engines by plate models
+    public function getPurchasePlateSectionPartBySection(Request $request)
+    {
+        try {
+
+            if($request->section_id == -1){
+                return response()->json([
+                    'data' => "no"
+                ], 200);
+            }
+            $value = session()->get('plate_section_part_count_value');
+            if (empty($value)) {
+                session()->put('plate_section_part_count_value', 0);
+            }
+            if (isset($request->main)) {
+                session()->put('plate_section_part_count_value', 0);
+            }
+            $value = session()->get('plate_section_part_count_value');
+            $section_parts = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')
+                ->whereHas('articleVehicleTree', function ($query) use ($request) {
+                    $query->where('assemblyGroupNodeId', $request->section_id);
+                })
+                ->skip($value)->take((int)10)->get();
+
+            $count = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')
+                ->whereHas('articleVehicleTree', function ($query) use ($request) {
+                    $query->where('assemblyGroupNodeId', $request->section_id);
+                })->count();
+
+            session()->put('plate_section_part_count_value', $value + (int)10);
+
+            // dd($manufacturers);
+            return response()->json([
+                'data' => $section_parts,
+                'total_count' => $count,
+                'load_more_plate_section_part_value' => session()->get('plate_section_part_count_value')
+            ], 200);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function getPurchasePlateBrandBySectionPart(Request $request){
+        $id = explode('-', $request->section_part_id);
+
+        $brand = Ambrand::where('brandId',$id[0])->first();
+
+        return response()->json([
+            'brand' => $brand
+        ]);
+    }
+
     public function showSectionParts(Request $request)
     {
+        // dd($request->all());
         $id = explode('-', $request->id);
         $section_part_id = explode('-', $request->section_part_id);
         $product = Article::where('dataSupplierId', $id[0])->where('legacyArticleId', $id[1])->first();
@@ -1689,12 +1849,13 @@ class PurchaseController extends Controller
                 // }])
                 ->first();
             // dd($section_part);
-            // if(empty($section_part->section)) {
-            //     return response()->json([
-            //         'data' => 0,
-            //         "message" => "section not available for this product"
-            //     ]);
-            // }
+            if(empty($section_part->section)) {
+                return response()->json([
+                    'data' => 0,
+                    "message" => "section not available for this product"
+                ]);
+            }
+            
             $model = ModelSeries::where('manuId', $section_part->mfrId)->first();
             $p_type = ['V', 'L', 'B'];
             $o_type = ['M', 'A', 'K', 'C', 'T'];
@@ -1705,6 +1866,7 @@ class PurchaseController extends Controller
                 $type = "O";
             }
             $stock = StockManagement::where('retailer_id', auth()->user()->id)->where('reference_no', $section_part->articleNumber)->first();
+            // dd($stock);
             return response()->json([
                 'data' => $section_part,
                 'stock' => $stock,

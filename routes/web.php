@@ -26,6 +26,9 @@ use Illuminate\Support\Facades\Response;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/test2',function(Request $request){
+	dd($request->all());
+});
 
 Route::post('checkFile', 'StockManagementController@getRejectedItemCSV')->name('checkFile');
 
@@ -292,7 +295,13 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 	Route::get('getArticleInfo', 'PurchaseController@getArticleInfo')->name('article.info.get');
 	Route::get('articlesByReferenceNo', 'PurchaseController@articlesByReferenceNo')->name('article.reference');
 	Route::get('sale_products_by_product_number', 'SaleController@productByArticleNumber')->name('sale_products_by_product_number');
+
 	Route::get('get_chasis_number', 'PurchaseController@getChasisNumber')->name('chasis_number.get');
+	Route::get('get_purchase_plate_engine_by_model', 'PurchaseController@getPurchasePlateEngineByModel')->name('get_purchase_plate_engine_by_model');
+	Route::get('get_purchase_plate_section_by_engine', 'PurchaseController@getPurchasePlateSectionByEngine')->name('get_purchase_plate_section_by_engine');
+	Route::get('get_purchase_plate_section_part_by_section', 'PurchaseController@getPurchasePlateSectionPartBySection')->name('get_purchase_plate_section_part_by_section');
+	Route::get('get_purchase_plate_brand_by_section_part', 'PurchaseController@getPurchasePlateBrandBySectionPart')->name('get_purchase_plate_brand_by_section_part');
+	Route::get('get_home_brand_auto_complete', 'HomeSearchController@getHomeBrandAutoComplete')->name('get_home_brand_auto_complete');
 
 	///////////////////  end //////////////////////
 

@@ -410,6 +410,9 @@ class SaleController extends Controller
         session()->put('section_part_count_value', 0);
         session()->put('purchase_brand_count_value', 0);
         session()->put('section_part_count_value_for_sale', 0);
+        session()->put('plate_engine_count_value', 0);
+        session()->put('plate_section_count_value', 0);
+        session()->put('plate_section_part_count_value', 0);
         $role = Role::find(FacadesAuth::user()->role_id);
         if ($role->hasPermissionTo('purchases-add')) {
             $lims_supplier_list = Supplier::where('is_active', true)->get();
@@ -2799,6 +2802,7 @@ class SaleController extends Controller
     }
 
     public function productByArticleNumber(Request $request){
+        
         $stocks = StockManagement::where('retailer_id',auth()->user()->id)
                                 ->where('reference_no','like', '%'. $request->name . '%')->get();
         // dd($stocks);

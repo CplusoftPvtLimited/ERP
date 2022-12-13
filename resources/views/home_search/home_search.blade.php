@@ -215,6 +215,9 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card p-0">
+                        <div class="card-header article_view_tr_head">
+                            <h3>Search By Brand</h3>
+                        </div>
                         <div class="card-body">
                             <form action="{{ route('get_article_by_sub_sections') }}" method="POST"
                                 enctype="multipart/form-data">
@@ -245,6 +248,9 @@
                                                     @endif
                                                 </div>
                                             </div>
+                                            {{-- <div class="ui-widget">
+                                                <input id="automplete-1" class="form-control">
+                                            </div> --}}
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -280,6 +286,113 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                
+                <div class="col-md-12">
+                    <div class="card p-0">
+                        <div class="card-header article_view_tr_head">
+                            <h3>VIN Search</h3>
+                        </div>
+                        <div class="card-body">
+                            
+                            <form action="{{ route('search_sections_by_engine') }}" method="POST"
+                                enctype="multipart/form-data">
+                                @csrf
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-4 mt-3">
+                                            <label for="">Plate Number</label>
+                                            <input id="plate_number" class="form-control" placeholder="156-TU-2999">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <button type="button" class="btn btn-info search-btn"
+                                                id="search-btn">{{ trans('file.Search') }} <span style="display:none;"
+                                                    id="plate_load_icon" class="loader4"></span></button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" class="form-control" name="type" id="plate_engine_type" readonly>
+                                    <input type="hidden" class="form-control" name="sub_type" id="plate_engine_sub_type" readonly>
+                
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="">Model</label>
+                                            <div class="input-group mb-3">
+                                                <input type="text" class="form-control" name="model_name" id="model_name" readonly
+                                                    aria-describedby="basic-addon2">
+                                                {{-- <span class="input-group-text" id="basic-addon2"
+                                                    style="    background-color: #6244A6;
+                                                color: white;"><button
+                                                        type="button" id="get_engines"
+                                                        style="border: none;background:transparent;color:white">Get
+                                                        Engines</button></span> --}}
+                                            </div>
+                                            <input type="hidden" class="form-control" name="model_id" id="model_id" readonly>
+                                            <input type="hidden" class="form-control" name="manufacturer_id" id="manufacturer_id"
+                                                readonly>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="engine_id">{{ __('Select Engine') }}</label>
+                                                <input type="hidden" id="engine_id" name="engine_id">
+                                                <div class="dropdown">
+                                                    <div class="dropdown-header plate_engine form-control">
+                                                        {{ __('Select Engine') }}</div>
+                                                    <div class="dropdown-content plate_engine_content form-control">
+                                                        <input type="text" placeholder="" id="plate_engine_input_search"
+                                                            onkeyup="filterPlateEngine()">
+                                                        <div class="plate_engine_normal_option">
+                
+                                                        </div>
+                                                        <div class="more plate_engine_more" id="plate_engine_more"> <span>Load More
+                                                                &nbsp;&nbsp;<span> <span style="display:none;"
+                                                                        id="plate_engine_load_icon" class="loader4"></span></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="model_year">{{ __('Model Year') }}</label>
+                                                
+                                                <input type="text" id="plate_model_year" name="model_year" class="form-control"
+                                                    readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="fuel">{{ __('Fuel') }}</label>
+                                                
+                                                <input type="text" id="plate_fuel" name="fuel" class="form-control"
+                                                    readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="cc">{{ __('CC') }}</label>
+                                                
+                                                <input type="text" id="plate_cc" name="cc" class="form-control"
+                                                    readonly>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 text-right">
+                                            <div class="form-group">
+                                                <button class="btn btn-primary" type="submit"><i
+                                                    class="fa fa-solid fa-magnifying-glass"></i> Search</button>
+                                            </div>
+                                        </div>
+                            
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 @endsection
@@ -289,6 +402,7 @@
     <script type="text/javascript" src="{{ asset('js/home_model.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/home_engine.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/home_brand_section.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/home_vin.js') }}"></script>
 
     <script>
         $(document).ready(function() {
@@ -301,5 +415,41 @@
             }
             // });
         })
+
+        $(function() {
+    var name = $('#automplete-1').val();
+    $.ajax({
+        method: "GET",
+        url: "/get_home_brand_auto_complete",
+        data: {
+            name: name
+        },
+
+        success: function(data) {
+
+            let response = data.data;
+
+            var html = "";
+            var brands = [];
+            $.each(response, function(key, value) {
+                if (value != null) {
+                    brands.push(value.brandName)
+                }
+
+            });
+
+            $("#automplete-1").autocomplete({
+                source: brands
+            });
+
+
+
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+    
+});
     </script>
 @endpush

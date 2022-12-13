@@ -149,8 +149,7 @@
                                             </div>
 
                                             <div id="Tokyo" class="tabcontent">
-                                                <h3>Chesis Number</h3>
-                                                <p>Coming Soon.</p>
+                                                @include('sale.sale_by_plate_number')
                                             </div>
                                         </div>
                                     </div>
