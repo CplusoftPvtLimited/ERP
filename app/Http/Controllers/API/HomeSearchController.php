@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Article;
+use App\Models\AssemblyGroupNode;
 use App\Models\LinkageTarget;
 use App\Models\Manufacturer;
 use App\Models\ModelSeries;
@@ -206,5 +208,158 @@ class HomeSearchController extends Controller
             ];
             return response()->json($response);
         }
+    }
+
+    public function getSearchSectionByEngine(Request $request){
+        $type = ["V","L","B","P"];
+        if($request->sub_type == "P"){
+            $sections = [];
+            $count = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
+            ->whereHas('articleVehicleTree', function($query) use ($type , $request){
+                $query->where('linkingTargetId', $request->engine_id)
+                ->whereIn('linkingTargetType', $type);
+                })
+                ->with('allSubSection', function($data){
+                    $data->limit(3);
+                })
+            ->groupBy('assemblyGroupNodeId')
+            ->count();
+            $sectionss = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
+            ->whereHas('articleVehicleTree', function($query) use ($type , $request){
+                $query->where('linkingTargetId', $request->engine_id)
+                ->whereIn('linkingTargetType', $type);
+                })
+                ->with('allSubSection', function($data){
+                    $data->limit(3);
+                })
+            ->groupBy('assemblyGroupNodeId')->get();
+            foreach ($sectionss as $key => $section) {
+                array_push($sections,$section);
+            }
+            $page = $request->page;
+            $sections_per_page = 10;
+            $page_count = (int)ceil($count / $sections_per_page);
+            $section_visit = $page * $sections_per_page;
+            $sections = array_slice($sections, $section_visit - (int)10, $sections_per_page);
+            
+            $response = [
+                
+                'success' => true,
+                'message' => "good",
+                'sections' => $sections,
+                "pagination" =>  [
+                    "total_pages" => $page_count,
+                    "current_page" => $page,
+                    "previous_page" => $page - (int)1,
+                    "next_page" => $page + (int)1,
+                    "has_next" => ($count > $section_visit) ? true : false,
+                    "has_previous" => false
+                ],
+            ];
+            return response()->json($response);
+        }else{
+            $sections = [];
+            $count = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
+            ->whereHas('articleVehicleTree', function($query) use ($request){
+                $query->where('linkingTargetId', $request->engine_id)
+                ->where('linkingTargetType', $request->sub_type);
+                })
+                ->with('allSubSection', function($data){
+                    $data->limit(3);
+                })
+            ->groupBy('assemblyGroupNodeId')
+            ->count();
+            $sectionss = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
+            ->whereHas('articleVehicleTree', function($query) use ($request){
+                $query->where('linkingTargetId', $request->engine_id)
+                ->where('linkingTargetType', $request->sub_type);
+                })
+                ->with('allSubSection', function($data){
+                    $data->limit(3);
+                })
+            ->groupBy('assemblyGroupNodeId')->get();
+            foreach ($sectionss as $key => $section) {
+                array_push($sections,$section);
+            }
+            $page = $request->page;
+            $sections_per_page = 10;
+            $page_count = (int)ceil($count / $sections_per_page);
+            $section_visit = $page * $sections_per_page;
+            $sections = array_slice($sections, $section_visit - (int)10, $sections_per_page);
+            
+            $response = [
+                
+                'success' => true,
+                'message' => "good",
+                'sections' => $sections,
+                "pagination" =>  [
+                    "total_pages" => $page_count,
+                    "current_page" => $page,
+                    "previous_page" => $page - (int)1,
+                    "next_page" => $page + (int)1,
+                    "has_next" => ($count > $section_visit) ? true : false,
+                    "has_previous" => false
+                ],
+            ];
+            return response()->json($response);
+        }
+    } 
+
+    public function articleSearchView(Request $request){
+        $section_parts = [];
+            $engine = LinkageTarget::where('linkageTargetId', $request->engine_id)->where('lang', 'en')->whereIn('linkageTargetType',$request->sub_type)
+            ->first();
+            $section_partss = Article::whereHas('articleVehicleTree', function ($query) use ($request,$engine) {
+                    $query->where('linkingTargetType', $engine->linkageTargetType)->where('assemblyGroupNodeId', $request->section_id);
+                })->get();
+            $count = Article::whereHas('articleVehicleTree', function ($query) use ($request,$engine) {
+                    $query->where('linkingTargetType', $engine->linkageTargetType)->where('assemblyGroupNodeId', $request->section_id);
+                })->count();
+            foreach ($section_partss as $key => $part) {
+                array_push($section_parts,$part);
+            }
+            $page = $request->page;
+            $section_parts_per_page = 10;
+            $page_count = (int)ceil($count / $section_parts_per_page);
+            $section_part_visit = $page * $section_parts_per_page;
+            $section_parts = array_slice($section_parts, $section_part_visit - (int)10, $section_parts_per_page);
+
+          
+            $response = [
+                
+                'success' => true,
+                'message' => "good",
+                'section_parts' => $section_parts,
+                "pagination" =>  [
+                    "total_pages" => $page_count,
+                    "current_page" => $page,
+                    "previous_page" => $page - (int)1,
+                    "next_page" => $page + (int)1,
+                    "has_next" => ($count > $section_part_visit) ? true : false,
+                    "has_previous" => false
+                ],
+            ];
+            return response()->json($response);
+        
+            
+    }
+
+    public function articleView(Request $request){
+        $article = Article::where('legacyArticleId',$request->article_id)->first();
+        $section = $article->section;
+        $sub_section = AssemblyGroupNode::where('assemblyGroupNodeId',$request->sub_section_id)->first();
+        $brand = $article->brand;
+        // $engine = LinkageTarget::where('linkageTargetId',$)->first();
+        $response = [
+            
+            'success' => true,
+            'message' => "good",
+            'article' => $article,
+            'section' => $section,
+            'sub_section' => $sub_section,
+            'brand' => $brand,
+            
+        ];
+        return response()->json($response);
     }
 }
