@@ -212,12 +212,12 @@ class HomeSearchController extends Controller
 
     public function getSearchSectionByEngine(Request $request){
         $type = ["V","L","B","P"];
-        if($request->sub_type == "P"){
+        $engine = LinkageTarget::where('linkageTargetId', $request->engine_id)->where('sublinkageTargetType', $request->sub_type)->where('lang', 'en')->first();
             $sections = [];
             $count = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
-            ->whereHas('articleVehicleTree', function($query) use ($type , $request){
-                $query->where('linkingTargetId', $request->engine_id)
-                ->whereIn('linkingTargetType', $type);
+            ->whereHas('articleVehicleTree', function($query) use ($engine){
+                $query->where('linkingTargetId', $engine->linkageTargetId)
+                ->where('linkingTargetType', $engine->linkageTargetType);
                 })
                 ->with('allSubSection', function($data){
                     $data->limit(3);
@@ -225,9 +225,9 @@ class HomeSearchController extends Controller
             ->groupBy('assemblyGroupNodeId')
             ->count();
             $sectionss = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
-            ->whereHas('articleVehicleTree', function($query) use ($type , $request){
-                $query->where('linkingTargetId', $request->engine_id)
-                ->whereIn('linkingTargetType', $type);
+            ->whereHas('articleVehicleTree', function($query) use ($engine){
+                $query->where('linkingTargetId', $engine->linkageTargetId)
+                ->where('linkingTargetType', $engine->linkageTargetType);
                 })
                 ->with('allSubSection', function($data){
                     $data->limit(3);
@@ -257,52 +257,7 @@ class HomeSearchController extends Controller
                 ],
             ];
             return response()->json($response);
-        }else{
-            $sections = [];
-            $count = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
-            ->whereHas('articleVehicleTree', function($query) use ($request){
-                $query->where('linkingTargetId', $request->engine_id)
-                ->where('linkingTargetType', $request->sub_type);
-                })
-                ->with('allSubSection', function($data){
-                    $data->limit(3);
-                })
-            ->groupBy('assemblyGroupNodeId')
-            ->count();
-            $sectionss = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
-            ->whereHas('articleVehicleTree', function($query) use ($request){
-                $query->where('linkingTargetId', $request->engine_id)
-                ->where('linkingTargetType', $request->sub_type);
-                })
-                ->with('allSubSection', function($data){
-                    $data->limit(3);
-                })
-            ->groupBy('assemblyGroupNodeId')->get();
-            foreach ($sectionss as $key => $section) {
-                array_push($sections,$section);
-            }
-            $page = $request->page;
-            $sections_per_page = 10;
-            $page_count = (int)ceil($count / $sections_per_page);
-            $section_visit = $page * $sections_per_page;
-            $sections = array_slice($sections, $section_visit - (int)10, $sections_per_page);
-            
-            $response = [
-                
-                'success' => true,
-                'message' => "good",
-                'sections' => $sections,
-                "pagination" =>  [
-                    "total_pages" => $page_count,
-                    "current_page" => $page,
-                    "previous_page" => $page - (int)1,
-                    "next_page" => $page + (int)1,
-                    "has_next" => ($count > $section_visit) ? true : false,
-                    "has_previous" => false
-                ],
-            ];
-            return response()->json($response);
-        }
+        
     } 
 
     public function articleSearchView(Request $request){
