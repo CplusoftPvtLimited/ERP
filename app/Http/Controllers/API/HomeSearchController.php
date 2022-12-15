@@ -271,9 +271,10 @@ class HomeSearchController extends Controller
             //         $query->where('linkingTargetType', $engine['linkageTargetType'])->where('assemblyGroupNodeId', $request->section_id);
             //     })->count();
             $section_partss = Article::join('articlesvehicletrees','articlesvehicletrees.legacyArticleId','articles.legacyArticleId')
-                                        ->where('articlesvehicletrees.linkingTargetType', $engine['linkageTargetType'])->where('articlesvehicletrees.assemblyGroupNodeId', $request->section_id)->get();
+                                        ->where('articlesvehicletrees.linkingTargetType', $engine['linkageTargetType'])->where('articlesvehicletrees.assemblyGroupNodeId', $request->section_id)->limit(250000)->get();
             $count = count($section_partss);
             foreach ($section_partss as $key => $part) {
+                $part['section_id'] = $request->section_id;
                 array_push($section_parts,$part);
             }
             $page = $request->page;
@@ -287,7 +288,6 @@ class HomeSearchController extends Controller
                 
                 'success' => true,
                 'message' => "good",
-                'section_id' => $request->section_id,
                 'section_parts' => $section_parts,
                 "pagination" =>  [
                     "total_pages" => $page_count,
