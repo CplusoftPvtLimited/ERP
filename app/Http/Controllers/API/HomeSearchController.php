@@ -357,12 +357,13 @@ class HomeSearchController extends Controller
     }
 
     public function getSubSectionsByBrand(Request $request){
+        ini_set('memory_limit', '666666666666666666666666666666664M');
         $sections = [];
         $sectionss = DB::table('assemblygroupnodes')->select('assemblygroupnodes.*')
         ->join('articlesvehicletrees','articlesvehicletrees.assemblyGroupNodeId','=','assemblygroupnodes.assemblyGroupNodeId')
                                 ->join('articles','articles.legacyArticleId','=','articlesvehicletrees.legacyArticleId')
                                 ->where('articles.dataSupplierId','=',$request->brand_id)
-                                ->where('assemblygroupnodes.lang',"EN")->distinct()->get();
+                                ->where('assemblygroupnodes.lang',"EN")->distinct()->limit(100)->get();
         $count = count($sectionss);
         foreach ($sectionss as $key => $section) {
             array_push($sections,$section);
