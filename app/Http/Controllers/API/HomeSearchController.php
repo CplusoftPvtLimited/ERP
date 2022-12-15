@@ -261,14 +261,18 @@ class HomeSearchController extends Controller
 
     public function articleSearchView(Request $request){
         // dd($request->all());
+        ini_set('memory_limit', '666666666666666666666666666666664M');
         $section_parts = [];
             $engine = $request->engine;
-            $section_partss = Article::whereHas('articleVehicleTree', function ($query) use ($request,$engine) {
-                    $query->where('linkingTargetType', $engine['linkageTargetType'])->where('assemblyGroupNodeId', $request->section_id);
-                })->get();
-            $count = Article::whereHas('articleVehicleTree', function ($query) use ($request,$engine) {
-                    $query->where('linkingTargetType', $engine['linkageTargetType'])->where('assemblyGroupNodeId', $request->section_id);
-                })->count();
+            // $section_partss = Article::whereHas('articleVehicleTree', function ($query) use ($request,$engine) {
+            //         $query->where('linkingTargetType', $engine['linkageTargetType'])->where('assemblyGroupNodeId', $request->section_id);
+            //     })->get();
+            // $count = Article::whereHas('articleVehicleTree', function ($query) use ($request,$engine) {
+            //         $query->where('linkingTargetType', $engine['linkageTargetType'])->where('assemblyGroupNodeId', $request->section_id);
+            //     })->count();
+            $section_partss = Article::join('articlesvehicletrees','articlesvehicletrees.legacyArticleId','articles.legacyArticleId')
+                                        ->where('articlesvehicletrees.linkingTargetType', $engine['linkageTargetType'])->where('articlesvehicletrees.assemblyGroupNodeId', $request->section_id)->get();
+            $count = count($section_partss);
             foreach ($section_partss as $key => $part) {
                 array_push($section_parts,$part);
             }
@@ -346,5 +350,9 @@ class HomeSearchController extends Controller
                 ],
             ];
             return response()->json($response);
+    }
+
+    public function getSubSectionsByBrand(Request $request){
+
     }
 }
