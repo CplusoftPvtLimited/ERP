@@ -24,7 +24,7 @@ Route::get('get_all_home_manufacturers', [HomeSearchController::class,"getAllMan
 	Route::get('get_models_by_manufacturer_home_search', [HomeSearchController::class,"getModelsByManufacturer"])->name('get_models_by_manufacturer_home_search'); 
 	Route::get('get_engines_by_model_home_search', [HomeSearchController::class,"getEnginesByModel"])->name('get_engines_by_model_home_search');
 	Route::get('get_search_sections_by_engine', [HomeSearchController::class,"getSearchSectionByEngine"])->name('get_search_sections_by_engine');
-	Route::get('articles_search_view', [HomeSearchController::class,'articleSearchView'])->name('articles_search_view');
+	Route::post('articles_search_view', [HomeSearchController::class,'articleSearchView'])->name('articles_search_view');
 	Route::get('articles_view', [HomeSearchController::class,'articleView'])->name('articles_view');
 
 

@@ -10,6 +10,7 @@ use App\Models\LinkageTarget;
 use App\Models\Manufacturer;
 use App\Models\ModelSeries;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HomeSearchController extends Controller
 {
@@ -143,6 +144,7 @@ class HomeSearchController extends Controller
 
 
     public function getEnginesByModel(Request $request){
+        ini_set('memory_limit', '666666666666666666666666666666664M');
         $type = ["V","L","B","P"];
         if($request->sub_type == "P"){
             $engines = [];
@@ -212,6 +214,7 @@ class HomeSearchController extends Controller
     }
 
     public function getSearchSectionByEngine(Request $request){
+        ini_set('memory_limit', '666666666666666666666666666666664M');
         $type = ["V","L","B","P"];
         $engine = LinkageTarget::where('linkageTargetId', $request->engine_id)->where('sublinkageTargetType', $request->sub_type)->where('lang', 'en')->first();
         if(!empty($engine)){
@@ -322,13 +325,14 @@ class HomeSearchController extends Controller
 
 
     public function getBrands(Request $request){
+        ini_set('memory_limit', '666666666666666666666666666666664M');
         $count = Ambrand::count();
         $ambrandss = Ambrand::all();
         $ambrands= [];
         foreach ($ambrandss as $key => $ambrand) {
             array_push($ambrands,$ambrand);
         }
-        $page = $request->page;
+            $page = $request->page;
             $ambrands_per_page = 10;
             $page_count = (int)ceil($count / $ambrands_per_page);
             $ambrand_visit = $page * $ambrands_per_page;
@@ -353,6 +357,38 @@ class HomeSearchController extends Controller
     }
 
     public function getSubSectionsByBrand(Request $request){
+        $sections = [];
+        $sectionss = DB::table('assemblygroupnodes')->select('assemblygroupnodes.*')
+        ->join('articlesvehicletrees','articlesvehicletrees.assemblyGroupNodeId','=','assemblygroupnodes.assemblyGroupNodeId')
+                                ->join('articles','articles.legacyArticleId','=','articlesvehicletrees.legacyArticleId')
+                                ->where('articles.dataSupplierId','=',$request->brand_id)
+                                ->where('assemblygroupnodes.lang',"EN")->distinct()->get();
+        $count = count($sectionss);
+        foreach ($sectionss as $key => $section) {
+            array_push($sections,$section);
+        }
+            $page = $request->page;
+            $sections_per_page = 10;
+            $page_count = (int)ceil($count / $sections_per_page);
+            $section_visit = $page * $sections_per_page;
+            $sections = array_slice($sections, $section_visit - (int)10, $sections_per_page);
 
-    }
+          
+            $response = [
+                
+                'success' => true,
+                'message' => "good",
+                'section' => $sections,
+                "pagination" =>  [
+                    "total_pages" => $page_count,
+                    "current_page" => $page,
+                    "previous_page" => $page - (int)1,
+                    "next_page" => $page + (int)1,
+                    "has_next" => ($count > $section_visit) ? true : false,
+                    "has_previous" => false
+                ],
+            ];
+            return response()->json($response);
+
+    }   
 }
