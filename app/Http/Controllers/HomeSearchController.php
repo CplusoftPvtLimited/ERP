@@ -552,6 +552,7 @@ class HomeSearchController extends Controller
 
     public function articleView($id,$engine_id,$sub_section_id){
         $article = Article::where('legacyArticleId',$id)->first();
+        
         $section = $article->section;
         $sub_section = AssemblyGroupNode::where('assemblyGroupNodeId',$sub_section_id)->first();
         $brand = $article->brand;

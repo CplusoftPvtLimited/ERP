@@ -11,6 +11,7 @@ use App\Models\Manufacturer;
 use App\Models\ModelSeries;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class HomeSearchController extends Controller
 {
@@ -226,7 +227,7 @@ class HomeSearchController extends Controller
                 $query->where('linkingTargetId', $engine->linkageTargetId)
                 ->where('linkingTargetType', $engine->linkageTargetType);
                 })->get();
-
+            
             $count = count($sectionss);
             foreach ($sectionss as $key => $section) {
                 array_push($sections,$section);
@@ -237,6 +238,11 @@ class HomeSearchController extends Controller
             $section_visit = $page * $sections_per_page;
             $sections = array_slice($sections, $section_visit - (int)10, $sections_per_page);
             
+            // $all_sections = [];
+            // foreach ($sections as $key => $sectionn) {
+            //     $sec = $sectionn->allSubSection->limit(3);              
+            //     array_push($all_sections,$sec);
+            // }
             $response = [
                 
                 'success' => true,
@@ -267,12 +273,6 @@ class HomeSearchController extends Controller
         ini_set('memory_limit', '666666666666666666666666666666664M');
         $section_parts = [];
             $engine = $request->engine;
-            // $section_partss = Article::whereHas('articleVehicleTree', function ($query) use ($request,$engine) {
-            //         $query->where('linkingTargetType', $engine['linkageTargetType'])->where('assemblyGroupNodeId', $request->section_id);
-            //     })->get();
-            // $count = Article::whereHas('articleVehicleTree', function ($query) use ($request,$engine) {
-            //         $query->where('linkingTargetType', $engine['linkageTargetType'])->where('assemblyGroupNodeId', $request->section_id);
-            //     })->count();
             $section_partss = Article::join('articlesvehicletrees','articlesvehicletrees.legacyArticleId','articles.legacyArticleId')
                                         ->where('articlesvehicletrees.linkingTargetType', $engine['linkageTargetType'])->where('articlesvehicletrees.assemblyGroupNodeId', $request->section_id)->limit(250000)->get();
             $count = count($section_partss);
@@ -292,6 +292,7 @@ class HomeSearchController extends Controller
                 'success' => true,
                 'message' => "good",
                 'section_parts' => $section_parts,
+                'engine' => $engine,
                 "pagination" =>  [
                     "total_pages" => $page_count,
                     "current_page" => $page,
@@ -308,7 +309,7 @@ class HomeSearchController extends Controller
 
     public function articleView(Request $request){
         $article = Article::where('legacyArticleId',$request->article_id)->first();
-        
+        $engine = $request->engine;
         $sub_section = AssemblyGroupNode::where('assemblyGroupNodeId',$request->section_id)->first();
         $brand = $article->brand;
         // $engine = LinkageTarget::where('linkageTargetId',$)->first();
@@ -318,6 +319,7 @@ class HomeSearchController extends Controller
             'article' => $article,
             'section' => $sub_section,
             'brand' => $brand,
+            'engine' => $engine,
             
         ];
         return response()->json($response);
@@ -358,16 +360,25 @@ class HomeSearchController extends Controller
 
     public function getSubSectionsByBrand(Request $request){
         ini_set('memory_limit', '666666666666666666666666666666664M');
+        ini_set('max_execution_time', '66666666666666666666666666666666666666666666666666666');
+        
         $sections = [];
-        $sectionss = DB::table('assemblygroupnodes')->select('assemblygroupnodes.*')
+        $sectionss = DB::table('assemblygroupnodes')
         ->join('articlesvehicletrees','articlesvehicletrees.assemblyGroupNodeId','=','assemblygroupnodes.assemblyGroupNodeId')
-                                ->join('articles','articles.legacyArticleId','=','articlesvehicletrees.legacyArticleId')
-                                ->where('articles.dataSupplierId','=',$request->brand_id)
-                                ->where('assemblygroupnodes.lang',"EN")->distinct()->limit(100)->get();
-        $count = count($sectionss);
+                                
+                                ->distinct()->limit(10000)->get();
+        
+        
         foreach ($sectionss as $key => $section) {
-            array_push($sections,$section);
+            $article = Article::where('legacyArticleId',$section->legacyArticleId)->whereHas('articleVehicleTree')->first();
+            
+            if($article && $section->lang == "EN" && $article->dataSupplierId == $request->brand_id){
+                array_push($sections,$section);
+            }
+            
         }
+            $count = count($sections);
+           
             $page = $request->page;
             $sections_per_page = 10;
             $page_count = (int)ceil($count / $sections_per_page);
@@ -379,7 +390,7 @@ class HomeSearchController extends Controller
                 
                 'success' => true,
                 'message' => "good",
-                'section' => $sections,
+                'sections' => $sections,
                 "pagination" =>  [
                     "total_pages" => $page_count,
                     "current_page" => $page,
@@ -391,5 +402,61 @@ class HomeSearchController extends Controller
             ];
             return response()->json($response);
 
-    }   
+    } 
+    
+    
+    public function articleSearchViewBySection(Request $request){
+        $section_parts = [];
+        $section_partss = Article::whereHas('articleVehicleTree', function ($query) use ($request) {
+                $query->where('assemblyGroupNodeId', $request->section_id);
+            })
+            ->limit(10000)
+            ->get();
+        
+            $count = count($section_partss);
+            foreach ($section_partss as $key => $part) {
+                $part['section_id'] = $request->section_id;
+                array_push($section_parts,$part);
+            }
+            $page = $request->page;
+            $section_parts_per_page = 10;
+            $page_count = (int)ceil($count / $section_parts_per_page);
+            $section_part_visit = $page * $section_parts_per_page;
+            $section_parts = array_slice($section_parts, $section_part_visit - (int)10, $section_parts_per_page);
+
+          
+            $response = [
+                
+                'success' => true,
+                'message' => "good",
+                'section_parts' => $section_parts,
+                "pagination" =>  [
+                    "total_pages" => $page_count,
+                    "current_page" => $page,
+                    "previous_page" => $page - (int)1,
+                    "next_page" => $page + (int)1,
+                    "has_next" => ($count > $section_part_visit) ? true : false,
+                    "has_previous" => false
+                ],
+            ];
+            return response()->json($response);
+            
+    }
+
+
+    public function sendEmail(Request $request){
+        $user_data = $request->data;
+        $products_data = $request->cart;
+        $data = [
+            'name'=> $request->name,
+            'email'=> $request->email,
+            'address'=> $request->address,
+            'city'=> $request->city,
+            'postcode'=> $request->postcode,
+            'country'=> $request->country,
+            'telephone'=> $request->telephone,
+        ];
+
+        Mail::to($request->email);
+    }
 }
