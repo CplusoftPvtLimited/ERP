@@ -27,3 +27,6 @@ Route::get('get_all_home_manufacturers', [HomeSearchController::class,"getAllMan
 	Route::get('articles_search_view', [HomeSearchController::class,'articleSearchView'])->name('articles_search_view');
 	Route::get('articles_view', [HomeSearchController::class,'articleView'])->name('articles_view');
 
+
+	Route::get('get_brands', [HomeSearchController::class,'getBrands'])->name('get_brands');
+

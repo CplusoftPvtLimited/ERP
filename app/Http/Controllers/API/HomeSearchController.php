@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ambrand;
 use App\Models\Article;
 use App\Models\AssemblyGroupNode;
 use App\Models\LinkageTarget;
@@ -213,26 +214,17 @@ class HomeSearchController extends Controller
     public function getSearchSectionByEngine(Request $request){
         $type = ["V","L","B","P"];
         $engine = LinkageTarget::where('linkageTargetId', $request->engine_id)->where('sublinkageTargetType', $request->sub_type)->where('lang', 'en')->first();
+        if(!empty($engine)){
             $sections = [];
-            $count = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
-            ->whereHas('articleVehicleTree', function($query) use ($engine){
-                $query->where('linkingTargetId', $engine->linkageTargetId)
-                ->where('linkingTargetType', $engine->linkageTargetType);
-                })
-                ->with('allSubSection', function($data){
-                    $data->limit(3);
-                })
-            ->groupBy('assemblyGroupNodeId')
-            ->count();
+            
+
             $sectionss = AssemblyGroupNode::groupBy('assemblyGroupNodeId')
             ->whereHas('articleVehicleTree', function($query) use ($engine){
                 $query->where('linkingTargetId', $engine->linkageTargetId)
                 ->where('linkingTargetType', $engine->linkageTargetType);
-                })
-                ->with('allSubSection', function($data){
-                    $data->limit(3);
-                })
-            ->groupBy('assemblyGroupNodeId')->get();
+                })->get();
+
+            $count = count($sectionss);
             foreach ($sectionss as $key => $section) {
                 array_push($sections,$section);
             }
@@ -246,6 +238,7 @@ class HomeSearchController extends Controller
                 
                 'success' => true,
                 'message' => "good",
+                'engine' =>$engine,
                 'sections' => $sections,
                 "pagination" =>  [
                     "total_pages" => $page_count,
@@ -257,18 +250,24 @@ class HomeSearchController extends Controller
                 ],
             ];
             return response()->json($response);
+        }else{
+            return response()->json([
+                'error' => true,
+                'message' => 'something went wrong'
+            ],500);
+        }
         
     } 
 
     public function articleSearchView(Request $request){
+        // dd($request->all());
         $section_parts = [];
-            $engine = LinkageTarget::where('linkageTargetId', $request->engine_id)->where('lang', 'en')->whereIn('linkageTargetType',$request->sub_type)
-            ->first();
+            $engine = $request->engine;
             $section_partss = Article::whereHas('articleVehicleTree', function ($query) use ($request,$engine) {
-                    $query->where('linkingTargetType', $engine->linkageTargetType)->where('assemblyGroupNodeId', $request->section_id);
+                    $query->where('linkingTargetType', $engine['linkageTargetType'])->where('assemblyGroupNodeId', $request->section_id);
                 })->get();
             $count = Article::whereHas('articleVehicleTree', function ($query) use ($request,$engine) {
-                    $query->where('linkingTargetType', $engine->linkageTargetType)->where('assemblyGroupNodeId', $request->section_id);
+                    $query->where('linkingTargetType', $engine['linkageTargetType'])->where('assemblyGroupNodeId', $request->section_id);
                 })->count();
             foreach ($section_partss as $key => $part) {
                 array_push($section_parts,$part);
@@ -284,6 +283,7 @@ class HomeSearchController extends Controller
                 
                 'success' => true,
                 'message' => "good",
+                'section_id' => $request->section_id,
                 'section_parts' => $section_parts,
                 "pagination" =>  [
                     "total_pages" => $page_count,
@@ -301,20 +301,50 @@ class HomeSearchController extends Controller
 
     public function articleView(Request $request){
         $article = Article::where('legacyArticleId',$request->article_id)->first();
-        $section = $article->section;
-        $sub_section = AssemblyGroupNode::where('assemblyGroupNodeId',$request->sub_section_id)->first();
+        
+        $sub_section = AssemblyGroupNode::where('assemblyGroupNodeId',$request->section_id)->first();
         $brand = $article->brand;
         // $engine = LinkageTarget::where('linkageTargetId',$)->first();
         $response = [
-            
             'success' => true,
             'message' => "good",
             'article' => $article,
-            'section' => $section,
-            'sub_section' => $sub_section,
+            'section' => $sub_section,
             'brand' => $brand,
             
         ];
         return response()->json($response);
+    }
+
+
+    public function getBrands(Request $request){
+        $count = Ambrand::count();
+        $ambrandss = Ambrand::all();
+        $ambrands= [];
+        foreach ($ambrandss as $key => $ambrand) {
+            array_push($ambrands,$ambrand);
+        }
+        $page = $request->page;
+            $ambrands_per_page = 10;
+            $page_count = (int)ceil($count / $ambrands_per_page);
+            $ambrand_visit = $page * $ambrands_per_page;
+            $ambrands = array_slice($ambrands, $ambrand_visit - (int)10, $ambrands_per_page);
+
+          
+            $response = [
+                
+                'success' => true,
+                'message' => "good",
+                'brands' => $ambrands,
+                "pagination" =>  [
+                    "total_pages" => $page_count,
+                    "current_page" => $page,
+                    "previous_page" => $page - (int)1,
+                    "next_page" => $page + (int)1,
+                    "has_next" => ($count > $ambrand_visit) ? true : false,
+                    "has_previous" => false
+                ],
+            ];
+            return response()->json($response);
     }
 }
