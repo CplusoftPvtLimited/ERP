@@ -395,6 +395,12 @@
             </div>
         </div>
     </section>
+    <section>
+        <form action="{{ route('exportData') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <button type="submit">Export</button>
+        </form>
+    </section>
 @endsection
 @push('scripts')
     <script type="text/javascript" src="https://js.stripe.com/v3/"></script>

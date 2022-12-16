@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\MakeController;
 use App\Http\Controllers\StockManagementController;
+use App\Models\ChassisNumber;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Response;
 
 /*
@@ -26,9 +28,44 @@ use Illuminate\Support\Facades\Response;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/test2',function(Request $request){
-	dd($request->all());
-});
+Route::post('/exportData',function(Request $request){
+	ini_set('memory_limit', '666666666666666666666666666666664M');
+        ini_set('max_execution_time', '66666666666666666666666666666666666666666666666666666');
+
+	$headers = [
+		'Cache-Control'        => 'must-revalidate, post-check=0, pre-check=0'
+		,'Content-type'        => 'text/csv'
+		,'Content-Disposition' => 'attachment; filename=plate_no_data.csv'
+		,'Expires'             => '0'
+		,'Pragma'              => 'public',
+	];
+
+		$new_list = [];
+		$chassis_numbers = ChassisNumber::all();
+		foreach ($chassis_numbers as $chassis_number) {
+			$response_data = [];
+			$response = Http::get('https://partsapi.ru/api.php?method=VINdecode&key=f1af8ee7f280a19d3bec7b44a8c64310&vin='.$chassis_number->CHASSIS.'&lang=en');
+			$response_data['VIN_Number'] = $chassis_number->CHASSIS;
+			$response_data['Data'] = !empty($response->body()) ? json_decode($response->body()) : NULL;
+			array_push($new_list, $response_data);
+		}
+
+		
+			array_unshift($new_list, array_keys($new_list[0]));
+		
+
+
+		$callback = function () use ($new_list) {
+			$FH = fopen('php://output', 'w');
+			foreach ($new_list as $row) {
+				//dd($row);
+				fputcsv($FH, $row);
+			}
+			fclose($FH);
+		};
+
+		return response()->stream($callback, 200, $headers);
+})->name('exportData');
 
 Route::post('checkFile', 'StockManagementController@getRejectedItemCSV')->name('checkFile');
 
