@@ -31,6 +31,8 @@
                         <div class="dropdown-content manufacturer_content form-control">
                             <input type="text" placeholder="" id="manufacturer_input_search"
                                 onkeyup="filterPurchaseManufacturer()">
+                            <span style="display: none;" id="manufacturer_searching">Searching <span
+                                    class="loading"></span></span>
                             <div class="normal-option">
 
                             </div>
@@ -54,6 +56,8 @@
                             {{ __('Select Model') }}</div>
                         <div class="dropdown-content model_content form-control">
                             <input type="text" placeholder="" id="model_input_search" onkeyup="filterModel()">
+                            <span style="display: none;" id="model_searching">Searching <span
+                                    class="loading"></span></span>
                             <div class="model_normal_option">
 
                             </div>
@@ -73,6 +77,8 @@
                             {{ __('Select Engine') }}</div>
                         <div class="dropdown-content engine_content form-control">
                             <input type="text" placeholder="" id="engine_input_search" onkeyup="filterEngine()">
+                            <span style="display: none;" id="engine_searching">Searching <span
+                                    class="loading"></span></span>
                             <div class="engine_normal_option">
 
                             </div>
@@ -95,6 +101,8 @@
                             {{ __('Select Section') }}</div>
                         <div class="dropdown-content section_content form-control">
                             <input type="text" placeholder="" id="section_input_search" onkeyup="filterSection()">
+                            <span style="display: none;" id="section_searching">Searching <span
+                                    class="loading"></span></span>
                             <div class="section_normal_option">
 
                             </div>
@@ -122,6 +130,8 @@
                         <div class="dropdown-content section_part form-control">
                             <input type="text" placeholder="" id="section_part_input_search"
                                 onkeyup="filterSectionPart()">
+                            <span style="display: none;" id="section_part_searching">Searching <span
+                                    class="loading"></span></span>
                             <div class="section_part_normal_option">
 
                             </div>
@@ -147,115 +157,67 @@
 <script src="https://code.jquery.com/jquery-3.6.1.min.js"
     integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 <script>
+    var currentRequest = null;
+
     function filterPurchaseManufacturer() {
         var input, filter, ul, li, a, i;
-        input = document.getElementById("manufacturer_input_search");
-        filter = input.value.toUpperCase();
-        if (input.value) {
-            document.getElementById('manufacturer_more').style.display = "none";
-        } else {
-            document.getElementById('manufacturer_more').style.display = "block";
+        input = document.getElementById("manufacturer_input_search").value;
+        document.getElementById('manufacturer_searching').style.display = "block";
+        document.getElementById('manufacturer_more').style.display = "none";
+        $('.normal-option').empty();
+
+        var engine_sub_type = $('#subLinkageTarget :selected').val();
+
+
+        if (currentRequest != null) {
+            currentRequest.abort();
         }
-        div = document.getElementsByClassName("normal-option");
-        a = document.getElementsByClassName("option");
-        for (i = 0; i < a.length; i++) {
-            txtValue = a[i].textContent || a[i].innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                a[i].style.display = "";
-            } else {
-                a[i].style.display = "none";
+
+        currentRequest = $.ajax({
+            url: '/get_all_manufacturers_by_autocomplete_sale',
+            method: "GET",
+            data: {
+                name: input,
+                engine_sub_type: engine_sub_type
+            },
+            success: function(data) {
+
+                if (data.autocomplete == 1) {
+                    $('.normal-option').empty();
+                    document.getElementById('manufacturer_searching').style.display = "none";
+                    if (data.manufacturers.length > 0) {
+                        $.each(data.manufacturers, function(key, value) {
+                            $('.normal-option').append($(
+                                '<div class="option" id="manu_id" data-manufacturer_id="' +
+                                value.manuId + '">').html(value.manuName));
+                        });
+                    } else {
+                        $('.normal-option').append(
+                            "<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>"
+                        );
+                    }
+
+                } else if (data.autocomplete == 0) {
+                    $('.normal-option').empty();
+                    document.getElementById('manufacturer_searching').style.display = "none";
+                    $.each(data.manufacturers, function(key, value) {
+                        $('.normal-option').append($(
+                            '<div class="option" id="manu_id" data-manufacturer_id="' +
+                            value.manuId + '">').html(value.manuName));
+                    });
+                    document.getElementById('manufacturer_more').style.display = "block";
+                }
+
+
+
+
+
             }
-        }
+        });
 
     }
 
-    function filterModel() {
-        var input, filter, ul, li, a, i;
-        input = document.getElementById("model_input_search");
-        filter = input.value.toUpperCase();
-        if (input.value) {
-            document.getElementById('model_more').style.display = "none";
-        } else {
-            document.getElementById('model_more').style.display = "block";
-        }
-        div = document.getElementsByClassName("model_normal_option");
-        a = document.getElementsByClassName("model_option");
-        for (i = 0; i < a.length; i++) {
-            txtValue = a[i].textContent || a[i].innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                a[i].style.display = "";
-            } else {
-                a[i].style.display = "none";
-            }
-        }
 
-    }
-
-    function filterEngine() {
-        var input, filter, ul, li, a, i;
-        input = document.getElementById("engine_input_search");
-        filter = input.value.toUpperCase();
-        if (input.value) {
-            document.getElementById('engine_more').style.display = "none";
-        } else {
-            document.getElementById('engine_more').style.display = "block";
-        }
-        div = document.getElementsByClassName("engine_normal_option");
-        a = document.getElementsByClassName("engine_option");
-        for (i = 0; i < a.length; i++) {
-            txtValue = a[i].textContent || a[i].innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                a[i].style.display = "";
-            } else {
-                a[i].style.display = "none";
-            }
-        }
-
-    }
-
-    function filterSection() {
-        var input, filter, ul, li, a, i;
-        input = document.getElementById("section_input_search");
-        filter = input.value.toUpperCase();
-        if (input.value) {
-            document.getElementById('section_more').style.display = "none";
-        } else {
-            document.getElementById('section_more').style.display = "block";
-        }
-        div = document.getElementsByClassName("section_normal_option");
-        a = document.getElementsByClassName("section_option");
-        for (i = 0; i < a.length; i++) {
-            txtValue = a[i].textContent || a[i].innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                a[i].style.display = "";
-            } else {
-                a[i].style.display = "none";
-            }
-        }
-
-    }
-
-    function filterSectionPart() {
-        var input, filter, ul, li, a, i;
-        input = document.getElementById("section_part_input_search");
-        filter = input.value.toUpperCase();
-        if (input.value) {
-            document.getElementById('section_part_more').style.display = "none";
-        } else {
-            document.getElementById('section_part_more').style.display = "block";
-        }
-        div = document.getElementsByClassName("section_part_normal_option");
-        a = document.getElementsByClassName("section_part_option");
-        for (i = 0; i < a.length; i++) {
-            txtValue = a[i].textContent || a[i].innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                a[i].style.display = "";
-            } else {
-                a[i].style.display = "none";
-            }
-        }
-
-    }
 
     // ALL Filter fucntion end =================== 
     $('#linkageTarget').on('change', function() {
@@ -583,7 +545,6 @@
         document.getElementById('section_load_icon').style.display = "block";
         let url = "{{ route('get_sections_by_engine') }}";
         let engine_sub_type = $('#subLinkageTarget :selected').val();
-        $('.dropdown-content.engine_content').toggle();
         $.get(url + '?engine_id=' + engine_id + '&engine_sub_type=' + engine_sub_type + "&load=1",
             function(data) {
                 let response = data.data;
@@ -657,7 +618,7 @@
                 }
 
                 //end
-                
+
                 $('.section_part_normal_option').empty();
                 if (response.length > 0) {
 
@@ -678,7 +639,7 @@
 
     })
 
-    $('.more.section_part_more').click(function(event) { 
+    $('.more.section_part_more').click(function(event) {
 
         var section_id = section_id_set;
         document.getElementById('section_part_load_icon').style.display = "block";
@@ -715,32 +676,33 @@
                 }
 
                 //end
-                
 
-                    $.each(response, function(key, value) {
-                        // engine_id_check_array.push(value.linkageTargetId);
-                        $('.section_part_normal_option').append($(
-                            '<div class="section_part_option" data-section_part_id="' +
-                            value.dataSupplierId + "-" + value.legacyArticleId + '">').html(
-                            value.genericArticleDescription + "-" + value.articleNumber));
-                    });
+
+                $.each(response, function(key, value) {
+                    // engine_id_check_array.push(value.linkageTargetId);
+                    $('.section_part_normal_option').append($(
+                        '<div class="section_part_option" data-section_part_id="' +
+                        value.dataSupplierId + "-" + value.legacyArticleId + '">').html(
+                        value.genericArticleDescription + "-" + value.articleNumber));
+                });
             })
 
     })
 
 
     // check product stock
-   
+
     $(document.body).on('click', '.section_part_option:not(.section_part_more)', function(
         event) { // click on brand to get sections
-            var section_part_id = $(this).data('section_part_id');
-            document.getElementById('section_part_id').value = section_part_id;
-            let engine_sub_type = $('#subLinkageTarget :selected').val();
-            var cashType = $('#cash_type').find(":selected").val();
-            var url = "{{ route('check_product_stock') }}";
-            $('.dropdown-header.section_part').html($(this).html());
-            $('.dropdown-content.section_part').toggle();
-            $.get(url + '?section_part_id=' + section_part_id + '&engine_sub_type=' + engine_sub_type + '&cash_type=' +
+        var section_part_id = $(this).data('section_part_id');
+        document.getElementById('section_part_id').value = section_part_id;
+        let engine_sub_type = $('#subLinkageTarget :selected').val();
+        var cashType = $('#cash_type').find(":selected").val();
+        var url = "{{ route('check_product_stock') }}";
+        $('.dropdown-header.section_part').html($(this).html());
+        $('.dropdown-content.section_part').toggle();
+        $.get(url + '?section_part_id=' + section_part_id + '&engine_sub_type=' + engine_sub_type +
+            '&cash_type=' +
             cashType,
             function(data) {
                 if (data.message == "no_white_items") {
@@ -766,7 +728,7 @@
             })
 
     })
-    
+
 
 
 
@@ -813,7 +775,7 @@
         var cashType = $('#cash_type').find(":selected").val();
 
         // new code
-        
+
 
         checkIfExists(date, engine_type, engine_sub_type, manufacturer_id, model_id, engine_id, section_id,
             section_part_id, cashType);
@@ -1414,5 +1376,257 @@
 
     function onlyUnique(value, index, self) {
         return self.indexOf(value) === index;
+    }
+
+
+
+    ///////////   Filter search /////////////////////////////////
+
+    function filterModel() {
+        var input, filter, ul, li, a, i;
+        input = document.getElementById("model_input_search").value;
+        document.getElementById('model_searching').style.display = "block";
+        document.getElementById('model_more').style.display = "none";
+        $('.model_normal_option').empty();
+
+        var engine_sub_type = $('#subLinkageTarget :selected').val();
+
+
+        if (currentRequest != null) {
+            currentRequest.abort();
+        }
+
+        currentRequest = $.ajax({
+            url: '/get_all_models_by_autocomplete_sale',
+            method: "GET",
+            data: {
+                name: input,
+                engine_sub_type: engine_sub_type,
+                manufacturer_id: manufacturer_id_set
+            },
+            success: function(data) {
+
+                if (data.autocomplete == 1) {
+                    $('.model_normal_option').empty();
+                    document.getElementById('model_searching').style.display = "none";
+                    if (data.models.length > 0) {
+                        $.each(data.models, function(key, value) {
+                            $('.model_normal_option').append($(
+                                '<div class="model_option" id="model_id" data-model_id="' +
+                                value.modelId + '">').html(value.modelname));
+                        });
+                    } else {
+                        $('.model_normal_option').append(
+                            "<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>"
+                        );
+                    }
+
+                } else if (data.autocomplete == 0) {
+                    $('.model_normal_option').empty();
+                    document.getElementById('model_searching').style.display = "none";
+                    $.each(data.models, function(key, value) {
+                        $('.model_normal_option').append($(
+                            '<div class="model_option" id="model_id" data-model_id="' +
+                            value.modelId + '">').html(value.modelname));
+                    });
+                    document.getElementById('model_more').style.display = "block";
+                }
+
+
+
+
+
+            }
+        });
+
+    }
+
+    function filterEngine() {
+        var input, filter, ul, li, a, i;
+        input = document.getElementById("engine_input_search").value;
+        document.getElementById('engine_searching').style.display = "block";
+        document.getElementById('engine_more').style.display = "none";
+        $('.engine_normal_option').empty();
+
+        var engine_sub_type = $('#subLinkageTarget :selected').val();
+
+
+        if (currentRequest != null) {
+            currentRequest.abort();
+        }
+
+        currentRequest = $.ajax({
+            url: '/get_all_engines_by_autocomplete_sale',
+            method: "GET",
+            data: {
+                name: input,
+                engine_sub_type: engine_sub_type,
+                model_id: model_id_set
+            },
+            success: function(data) {
+
+                if (data.autocomplete == 1) {
+                    $('.engine_normal_option').empty();
+                    document.getElementById('engine_searching').style.display = "none";
+                    if (data.engines.length > 0) {
+                        $.each(data.engines, function(key, value) {
+                            $('.engine_normal_option').append($(
+                                '<div class="engine_option" data-engine_id="' +
+                                value.linkageTargetId + '">').html(value.description + "(" +
+                                value
+                                .beginYearMonth + " - " + value.endYearMonth));
+                        });
+                    } else {
+                        $('.engine_normal_option').append(
+                            "<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>"
+                        );
+                    }
+
+                } else if (data.autocomplete == 0) {
+                    $('.engine_normal_option').empty();
+                    document.getElementById('engine_searching').style.display = "none";
+                    $.each(data.engines, function(key, value) {
+                        $('.engine_normal_option').append($(
+                            '<div class="engine_option" data-engine_id="' +
+                            value.linkageTargetId + '">').html(value.description + "(" +
+                            value
+                            .beginYearMonth + " - " + value.endYearMonth));
+                    });
+                    document.getElementById('engine_more').style.display = "block";
+                }
+
+
+
+
+
+            }
+        });
+
+    }
+
+    function filterSection() {
+        var input, filter, ul, li, a, i;
+        input = document.getElementById("section_input_search").value;
+        document.getElementById('section_searching').style.display = "block";
+        document.getElementById('section_more').style.display = "none";
+        $('.section_normal_option').empty();
+
+        var engine_sub_type = $('#subLinkageTarget :selected').val();
+
+
+        if (currentRequest != null) {
+            currentRequest.abort();
+        }
+
+        currentRequest = $.ajax({
+            url: '/get_all_sections_by_autocomplete_sale',
+            method: "GET",
+            data: {
+                name: input,
+                engine_sub_type: engine_sub_type,
+                engine_id: engine_id_set
+            },
+            success: function(data) {
+
+                if (data.autocomplete == 1) {
+                    $('.section_normal_option').empty();
+                    document.getElementById('section_searching').style.display = "none";
+                    if (data.sections.length > 0) {
+                        $.each(data.sections, function(key, value) {
+                            $('.section_normal_option').append($(
+                                '<div class="section_option" data-section_id="' +
+                                value.assemblyGroupNodeId + '">').html(value
+                                .assemblyGroupName));
+                        });
+                    } else {
+                        $('.section_normal_option').append(
+                            "<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>"
+                        );
+                    }
+
+                } else if (data.autocomplete == 0) {
+                    $('.section_normal_option').empty();
+                    document.getElementById('section_searching').style.display = "none";
+                    $.each(data.sections, function(key, value) {
+                        $('.section_normal_option').append($(
+                            '<div class="section_option" data-section_id="' +
+                            value.assemblyGroupNodeId + '">').html(value.assemblyGroupName));
+                    });
+                    document.getElementById('section_more').style.display = "block";
+                }
+
+
+
+
+
+            }
+        });
+
+    }
+
+    function filterSectionPart() {
+        var input, filter, ul, li, a, i;
+        input = document.getElementById("section_part_input_search").value;
+        document.getElementById('section_part_searching').style.display = "block";
+        document.getElementById('section_part_more').style.display = "none";
+        $('.section_part_normal_option').empty();
+
+        var engine_sub_type = $('#subLinkageTarget :selected').val();
+
+
+        if (currentRequest != null) {
+            currentRequest.abort();
+        }
+
+        currentRequest = $.ajax({
+            url: '/get_all_section_parts_by_autocomplete_sale',
+            method: "GET",
+            data: {
+                name: input,
+                engine_sub_type: engine_sub_type,
+                section_id: section_id_set
+            },
+            success: function(data) {
+
+                if (data.autocomplete == 1) {
+                    $('.section_part_normal_option').empty();
+                    document.getElementById('section_part_searching').style.display = "none";
+                    if (data.section_parts.length > 0) {
+                        $.each(data.section_parts, function(key, value) {
+                            $('.section_part_normal_option').append($(
+                                    '<div class="section_part_option" data-section_part_id="' +
+                                    value.dataSupplierId + "-" + value.legacyArticleId + '">')
+                                .html(
+                                    value.genericArticleDescription + "-" + value.articleNumber)
+                                );
+                        });
+                    } else {
+                        $('.section_part_normal_option').append(
+                            "<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>"
+                        );
+                    }
+
+                } else if (data.autocomplete == 0) {
+                    $('.section_part_normal_option').empty();
+                    document.getElementById('section_part_searching').style.display = "none";
+                    $.each(data.section_parts, function(key, value) {
+                        $('.section_part_normal_option').append($(
+                            '<div class="section_part_option" data-section_part_id="' +
+                            value.dataSupplierId + "-" + value.legacyArticleId + '">').html(
+                            value.genericArticleDescription + "-" + value.articleNumber));
+                    });
+                    if(data.section_parts.length > 0){
+                        document.getElementById('section_part_more').style.display = "block";
+                    }
+                    
+                }
+
+
+
+
+
+            }
+        });
+
     }
 </script>

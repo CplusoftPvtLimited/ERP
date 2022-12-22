@@ -309,19 +309,30 @@ class HomeSearchController extends Controller
 
     public function articleView(Request $request){
         $article = Article::where('legacyArticleId',$request->article_id)->first();
-        $engine = $request->engine;
-        $sub_section = AssemblyGroupNode::where('assemblyGroupNodeId',$request->section_id)->first();
-        $brand = $article->brand;
-        // $engine = LinkageTarget::where('linkageTargetId',$)->first();
-        $response = [
-            'success' => true,
-            'message' => "good",
-            'article' => $article,
-            'section' => $sub_section,
-            'brand' => $brand,
-            'engine' => $engine,
-            
-        ];
+        $response = [];
+        if(!empty($article)){
+            $engine = $request->engine;
+            $sub_section = AssemblyGroupNode::where('assemblyGroupNodeId',$request->section_id)->first();
+            $brand = $article->brand;
+            // $engine = LinkageTarget::where('linkageTargetId',$)->first();
+            $response = [
+                'success' => true,
+                'message' => "good",
+                'article' => $article,
+                'section' => $sub_section,
+                'brand' => $brand,
+                'engine' => $engine,
+                
+            ];
+        }else{
+            $response = [
+                'error' => true,
+                'message' => "bad",
+                'article' => $article,
+                
+            ];
+        }
+        
         return response()->json($response);
     }
 

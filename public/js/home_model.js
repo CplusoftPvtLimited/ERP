@@ -1,25 +1,5 @@
 var main_url = document.getElementById('app_url').value;
-function filterModel() {
-    var input, filter, ul, li, a, i;
-    input = document.getElementById("model_input_search");
-    filter = input.value.toUpperCase();
-    if (input.value) {
-        document.getElementById('model_more').style.display = "none";
-    } else {
-        document.getElementById('model_more').style.display = "block";
-    }
-    div = document.getElementsByClassName("model_normal_option");
-    a = document.getElementsByClassName("model_option");
-    for (i = 0; i < a.length; i++) {
-        txtValue = a[i].textContent || a[i].innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            a[i].style.display = "";
-        } else {
-            a[i].style.display = "none";
-        }
-    }
 
-}
 var model_id_check_array = [];
         $('.dropdown-header.model').click(function(event) {
             $('.dropdown-content.model_content').toggle();
@@ -108,3 +88,66 @@ var model_id_check_array = [];
                 })
             event.stopPropagation();
         })
+
+
+
+        function filterModel() {
+            var input, filter, ul, li, a, i;
+            input = document.getElementById("model_input_search").value;
+            document.getElementById('model_searching').style.display = "block";
+            document.getElementById('model_more').style.display = "none";
+            $('.model_normal_option').empty();
+        
+            var sub_type = $('input[name="sub_type"]:checked').val();
+            var type = $('input[name="type"]:checked').val();
+        
+        
+            if(currentRequest != null){
+                currentRequest.abort();
+            }
+        
+            currentRequest = $.ajax({
+                url: '/get_all_models_by_autocomplete',
+                method: "GET",
+                data: {
+                    name: input,
+                    engine_type:type,
+                    engine_sub_type:sub_type,
+                    manufacturer_id: manufacturer_id_set
+                },
+                success: function(data) {
+        
+                    if(data.autocomplete == 1){
+                        $('.model_normal_option').empty();
+                        document.getElementById('model_searching').style.display = "none";
+                        if(data.models.length > 0){
+                            $.each(data.models, function(key, value) {
+                                $('.model_normal_option').append($(
+                                    '<div class="model_option" data-model_id="' +
+                                    value.modelId + '">').html(value.modelname));
+                            });
+                        }else{
+                            $('.model_normal_option').append(
+                                "<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>"
+                            );
+                        }
+                        
+                    }else if(data.autocomplete == 0){
+                        $('.model_normal_option').empty();
+                        document.getElementById('model_searching').style.display = "none";
+                        $.each(data.models, function(key, value) {
+                            $('.model_normal_option').append($(
+                                '<div class="model_option" data-model_id="' +
+                                value.modelId + '">').html(value.modelname));
+                        });
+                        document.getElementById('model_more').style.display = "block";
+                    }
+                    
+        
+                    
+        
+        
+                }
+            });
+        
+        }

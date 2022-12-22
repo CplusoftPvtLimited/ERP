@@ -30,7 +30,8 @@ Route::get('get_all_home_manufacturers', [HomeSearchController::class,"getAllMan
 
 	Route::get('get_brands', [HomeSearchController::class,'getBrands'])->name('get_brands');
 	Route::get('get_sub_sections_by_brand', [HomeSearchController::class,'getSubSectionsByBrand'])->name('get_sub_sections_by_brand');
-	Route::get('get_article_by_sub_section', 'HomeSearchController@articleSearchViewBySection')->name('get_article_by_sub_section'); 
+	Route::get('get_article_by_sub_section', [HomeSearchController::class,'articleSearchViewBySection'])->name('get_article_by_sub_section'); 
+
 
 
 

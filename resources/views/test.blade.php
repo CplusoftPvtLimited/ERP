@@ -111,7 +111,6 @@
                                                 <div class="dropdown-content manufacturer_content form-control">
                                                     <input type="text" placeholder="" id="manufacturer_input_search"
                                                         onkeyup="filterManufacturer()">
-                                                        <span style="display: none;" id="manufacturer_searching">Searching <span class="loading"></span></span>
                                                     <div class="manufacturer_normal_option">
                                                         @foreach ($manufacturers as $manufacturer)
                                                             <div class="manufacturer_option"
@@ -143,7 +142,6 @@
                                                 <div class="dropdown-content model_content form-control">
                                                     <input type="text" placeholder="" id="model_input_search"
                                                         onkeyup="filterModel()">
-                                                        <span style="display: none;" id="model_searching">Searching <span class="loading"></span></span>
                                                     <div class="model_normal_option">
 
                                                     </div>
@@ -163,9 +161,8 @@
                                                 <div class="dropdown-header engine form-control">
                                                     {{ __('Select Engine') }} <i id="engine_caret" class="fa fa-solid fa-caret-down"></i></div>
                                                 <div class="dropdown-content engine_content form-control">
-                                                    <input type="text" placeholder="search by description" id="engine_input_search"
+                                                    <input type="text" placeholder="" id="engine_input_search"
                                                         onkeyup="filterEngine()">
-                                                        <span style="display: none;" id="engine_searching">Searching <span class="loading"></span></span>
                                                     <div class="engine_normal_option">
 
                                                     </div>
@@ -237,7 +234,7 @@
                                                 <div class="dropdown-content brands_content form-control">
                                                     <input type="text" placeholder="" id="brand_input_search"
                                                         onkeyup="filterBrand()">
-                                                    <span style="display: none;" id="brand_searching">Searching <span class="loading"></span></span>
+                                                    <span style="display: none;" id="brand_searching">Searching...</span>
                                                     <div class="normal-option">
                                                         @foreach ($brands as $brand)
                                                             <div class="option" data-brand_id="{{ $brand->brandId }}">
@@ -268,7 +265,6 @@
                                                 <div class="dropdown-content product_group_content form-control">
                                                     <input type="text" placeholder="" id="section_input_search"
                                                         onkeyup="filterSection()">
-                                                        <span style="display: none;" id="section_searching">Searching <span class="loading"></span></span>
                                                     <div class="product_group_normal_option">
 
                                                     </div>

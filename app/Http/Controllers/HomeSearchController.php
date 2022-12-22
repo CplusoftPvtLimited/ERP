@@ -954,4 +954,274 @@ class HomeSearchController extends Controller
             'count' => $value2
         ]);
     }
+
+
+
+    //// AUTO COMPLETE Data for all things
+
+    public function sessionData(){
+        $manfuacture_array = [
+            'type' => "P",
+            'sub_type' => "home",
+            'value' => 10,
+        ];
+        session()->put('manufacturer_load_more',$manfuacture_array);
+        $model_array = [
+            'type' => "null",
+            'sub_type' => "null",
+            'value' => 0,
+        ];
+        session()->put('model_load_more',$model_array);
+        $engine_array = [
+            'engine_type' => "null",
+            'engine_sub_type' => "null",
+            'value' => 0,
+        ];
+        session()->put('engine_load_more',$engine_array);
+        
+        session()->put("record",10);
+        session()->put('section_count',[]);
+        session()->put('sub_section_count',[]);
+        session()->put('section_brand_id',[]);
+
+        session()->put('manufacturer_count_value', 0);
+        session()->put('model_count_value', 0);
+        session()->put('engine_count_value', 0);
+        session()->put('section_count_value', 0);
+        session()->put('section_part_count_value', 0);
+        session()->put('purchase_brand_count_value', 0);
+        session()->put('section_part_count_value_for_sale', 0);
+        session()->put('plate_engine_count_value', 0);
+        session()->put('plate_section_count_value', 0);
+        session()->put('plate_section_part_count_value', 0);
+    }
+    public function getAutoCompleteBrands(Request $request){
+        // $this->sessionData();
+        if(!empty($request->name)){
+            $brands = [];
+            $brands = Ambrand::where('brandName','like', '%'. $request->name . '%')->where('lang','EN')->get();
+            $response = [
+                'brands' => $brands,
+                'autocomplete' => 1
+            ];
+            return response()->json($response);
+        }else{
+            $brands = Ambrand::where('lang','EN')->limit(10)->get();
+
+            $response = [
+                'brands' => $brands,
+                'autocomplete' => 0
+            ];
+            return response()->json($response);
+        }
+        
+    }
+
+
+    public function getAutoCompleteSections(Request $request){
+        // $this->sessionData();
+        if(!empty($request->name)){
+            $sections = [];
+            $sections = DB::table('assemblygroupnodes')->select('assemblygroupnodes.*')
+                                ->join('articlesvehicletrees','articlesvehicletrees.assemblyGroupNodeId','=','assemblygroupnodes.assemblyGroupNodeId')
+                                ->join('articles','articles.legacyArticleId','=','articlesvehicletrees.legacyArticleId')
+                                ->where('articles.dataSupplierId','=',$request->brand_id)
+                                ->where('assemblygroupnodes.assemblyGroupName','like',"%". $request->name . "%")
+                                ->where('assemblygroupnodes.lang',"EN")->distinct()->get();
+            $response = [
+                'sections' => $sections,
+                'autocomplete' => 1
+            ];
+            return response()->json($response);
+        }else{
+            $sections = DB::table('assemblygroupnodes')->select('assemblygroupnodes.*')
+                                ->join('articlesvehicletrees','articlesvehicletrees.assemblyGroupNodeId','=','assemblygroupnodes.assemblyGroupNodeId')
+                                ->join('articles','articles.legacyArticleId','=','articlesvehicletrees.legacyArticleId')
+                                ->where('articles.dataSupplierId','=',$request->brand_id)
+                                ->where('assemblygroupnodes.lang',"EN")->distinct()->limit(10)->get();
+
+            $response = [
+                'sections' => $sections,
+                'autocomplete' => 0
+            ];
+            return response()->json($response);
+        }
+        
+    }
+
+    public function getAutoCompleteManufacturers(Request $request){
+        // $this->sessionData();
+        $type = ["V","L","B"];
+        $type2 = ["C","T","M","A","K"];
+        $manufacturers = [];
+        if(!empty($request->name)){
+            if($request->type == "P" && $request->sub_type == "home"){
+                $manufacturers = Manufacturer::whereIn('linkingTargetType', $type)
+                ->where('manuName','like', '%'. $request->name . '%')
+                ->get();
+            $total_count = Manufacturer::whereIn('linkingTargetType', $type)->count();
+            }else if($request->type == "O" && $request->sub_type == "home"){  
+                    $manufacturers = Manufacturer::whereIn('linkingTargetType', $type2)
+                    ->where('manuName','like', '%'. $request->name . '%')
+                    ->get();
+                
+                $total_count = Manufacturer::whereIn('linkingTargetType', $type2)->count();
+                
+            }else {
+                    $manufacturers = Manufacturer::where('linkingTargetType', $request->sub_type)
+                    ->where('manuName','like', '%'. $request->name . '%')
+                    ->get();
+                
+            }
+            
+            return response()->json([
+                'manufacturers' => $manufacturers,
+                'autocomplete' => 1
+            ]);
+        }else{
+            if($request->type == "P" && $request->sub_type == "home"){
+                $manufacturers = Manufacturer::whereIn('linkingTargetType', $type)
+                ->limit(10)->get();
+            $total_count = Manufacturer::whereIn('linkingTargetType', $type)->count();
+            }else if($request->type == "O" && $request->sub_type == "home"){  
+                    $manufacturers = Manufacturer::whereIn('linkingTargetType', $type2)
+                    ->limit(10)->get();
+                
+                $total_count = Manufacturer::whereIn('linkingTargetType', $type2)->count();
+                
+            }else {
+                    $manufacturers = Manufacturer::where('linkingTargetType', $request->sub_type)
+                    ->limit(10)->get();
+                
+            }
+            
+            return response()->json([
+                'manufacturers' => $manufacturers,
+                'autocomplete' => 0
+            ]);
+        }
+
+        
+    }
+
+    public function getAutoCompleteModels(Request $request){
+            $type = ["V","L","B", "P"];
+            $type2 = ["C","T","M","A","K", "O"];
+            $models = [];
+
+            if(!empty($request->name)){
+                if($request->engine_type == "P" && $request->engine_sub_type == "home"){
+                
+                    $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                    ->whereIn('linkingTargetType', $type)
+                    ->where('modelname','like','%'. $request->name . '%')->distinct()->get();
+                    
+                
+            }else if($request->engine_type == "O" && $request->engine_sub_type == "home"){
+
+                    $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                    ->whereIn('linkingTargetType', $type2)
+                    ->where('modelname','like','%'. $request->name . '%')->distinct()->get();
+                   
+                
+
+            }else{
+                    $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                    ->where('linkingTargetType', $request->engine_sub_type)
+                    ->where('modelname','like','%'. $request->name . '%')->distinct()->get();
+            }
+            
+            return response()->json([
+                'models' => $models,
+                'autocomplete' => 1
+            ], 200);
+            }else{
+                if($request->engine_type == "P" && $request->engine_sub_type == "home"){
+                
+                    $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                    ->whereIn('linkingTargetType', $type)
+                    ->limit(10)->get();
+                    
+                
+            }else if($request->engine_type == "O" && $request->engine_sub_type == "home"){
+
+                    $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                    ->whereIn('linkingTargetType', $type2)
+                    ->limit(10)->get();
+                   
+                
+
+            }else{
+                    $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                    ->where('linkingTargetType', $request->engine_sub_type)
+                    ->limit(10)->get();
+            }
+            
+            return response()->json([
+                'models' => $models,
+                'autocomplete' => 0
+            ], 200);
+            }
+            
+    }
+
+
+    public function getAutoCompleteEngine(Request $request){
+            $type = ["V","L","B", "O"];
+            $type2 = ["C","T","M","A","K", "P"];
+            if(!empty($request->name)){
+                if($request->engine_type == "P" && $request->engine_sub_type == "home"){
+                    $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                    ->where('vehicleModelSeriesId', $request->model_id)
+                    ->where('description','like','%'. $request->name . '%')
+                    ->whereIn('subLinkageTargetType',$type)
+                    ->where('linkageTargetType', "P")
+                    ->get();
+                }else if($request->engine_type == "O" && $request->engine_sub_type == "home"){
+                        $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                        ->where('vehicleModelSeriesId', $request->model_id)
+                        ->where('description','like','%'. $request->name . '%')
+                        ->whereIn('subLinkageTargetType',$type2)
+                        ->where('linkageTargetType', "O")
+                        ->get();
+                }else{
+                        $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                        ->where('vehicleModelSeriesId', $request->model_id)
+                        ->where('description','like','%'. $request->name . '%')
+                        // ->whereIn('subLinkageTargetType',$type)
+                        ->where('subLinkageTargetType', $request->engine_sub_type)->get();
+                }
+                
+                
+                return response()->json([
+                    'engines' => $engines,
+                    'autocomplete' => 1
+                ], 200);
+            }else{
+                if($request->engine_type == "P" && $request->engine_sub_type == "home"){
+                    $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                    ->where('vehicleModelSeriesId', $request->model_id)
+                    ->whereIn('subLinkageTargetType',$type)
+                    ->where('linkageTargetType', "P")
+                    ->limit(10)->get();
+                }else if($request->engine_type == "O" && $request->engine_sub_type == "home"){
+                        $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                        ->where('vehicleModelSeriesId', $request->model_id)
+                        ->whereIn('subLinkageTargetType',$type2)
+                        ->where('linkageTargetType', "O")
+                        ->limit(10)->get();
+                }else{
+                        $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                        ->where('vehicleModelSeriesId', $request->model_id)
+                        // ->whereIn('subLinkageTargetType',$type)
+                        ->where('subLinkageTargetType', $request->engine_sub_type)->limit(10)->get();
+                }
+                
+                
+                return response()->json([
+                    'engines' => $engines,
+                    'autocomplete' => 0
+                ], 200);
+            }
+    }
 }

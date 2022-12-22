@@ -1906,4 +1906,142 @@ class PurchaseController extends Controller
 
         return $pdf->download('purchase.pdf');
     }
+
+
+
+    /// Autocomplete work
+
+    public function getAutoCompleteManufacturers(Request $request){
+        if(!empty($request->name)){
+            $manufacturers = Manufacturer::where('linkingTargetType', $request->engine_sub_type)
+            ->where('manuName','like','%'.$request->name. '%')->get();
+
+            return response()->json([
+                'manufacturers' => $manufacturers,
+                'autocomplete' => 1,
+            ], 200);
+        }else{
+            $manufacturers = Manufacturer::where('linkingTargetType', $request->engine_sub_type)->limit(10)->get();
+
+            return response()->json([
+                'manufacturers' => $manufacturers,
+                'autocomplete' => 0,
+            ], 200);
+        }
+           
+    }
+
+
+    public function getAutoCompleteModels(Request $request){
+        if(!empty($request->name)){
+            $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                ->where('linkingTargetType', $request->engine_sub_type)->
+                where('modelname','like','%'. $request->name. '%')->get();
+
+            return response()->json([
+                'models' => $models,
+                'autocomplete' => 1,
+            ], 200);
+        }else{
+            $models = ModelSeries::select('modelId', 'modelname')->where('manuId', $request->manufacturer_id)
+                ->where('linkingTargetType', $request->engine_sub_type)->
+                limit(10)->get();
+
+            return response()->json([
+                'models' => $models,
+                'autocomplete' => 0,
+            ], 200);
+        }
+           
+    }
+
+
+    public function getAutoCompleteEngines(Request $request){
+        if(!empty($request->name)){
+            $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                ->where('vehicleModelSeriesId', $request->model_id)
+                ->where('linkageTargetType', $request->engine_sub_type)
+                ->where('lang', 'en')
+                ->where('description','like','%'. $request->name. '%')->get();
+
+            return response()->json([
+                'engines' => $engines,
+                'autocomplete' => 1,
+            ], 200);
+        }else{
+            $engines = LinkageTarget::select('linkageTargetId', 'description', 'beginYearMonth', 'endYearMonth')
+                ->where('vehicleModelSeriesId', $request->model_id)
+                ->where('linkageTargetType', $request->engine_sub_type)->
+                limit(10)->where('lang', 'en')->get();
+
+            return response()->json([
+                'engines' => $engines,
+                'autocomplete' => 0,
+            ], 200);
+        }
+           
+    }
+
+
+    public function getAutoCompleteSections(Request $request){
+        if(!empty($request->name)){
+            $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function ($query) use ($request) {
+                $query->where('linkingTargetId', $request->engine_id)
+                    ->where('linkingTargetType', $request->engine_sub_type);
+            })
+                // ->whereNotNull('request__linkingTargetId')
+                ->groupBy('assemblyGroupNodeId')->where('assemblyGroupName', 'like', '%'. $request->name. '%')->where('lang', 'en')->get();
+
+            return response()->json([
+                'sections' => $sections,
+                'autocomplete' => 1,
+            ], 200);
+        }else{
+            $sections = AssemblyGroupNode::groupBy('assemblyGroupNodeId')->whereHas('articleVehicleTree', function ($query) use ($request) {
+                $query->where('linkingTargetId', $request->engine_id)
+                    ->where('linkingTargetType', $request->engine_sub_type);
+            })
+                // ->whereNotNull('request__linkingTargetId')
+                ->groupBy('assemblyGroupNodeId')->where('assemblyGroupName', 'like', '%'. $request->name. '%')->where('lang', 'en')->limit(10)->get();
+
+
+            return response()->json([
+                'sections' => $sections,
+                'autocomplete' => 0,
+            ], 200);
+        }
+           
+    }
+
+
+    public function getAutoCompleteSectionParts(Request $request){
+        if(!empty($request->name)){
+            $section_parts = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')
+            ->whereHas('stock', function($query) {
+                $query->whereNull('deleted_at');
+            })->whereHas('articleVehicleTree', function ($query) use ($request) {
+                $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
+            })->where('articleNumber', 'like', '%'. $request->name. '%')->get();
+
+            return response()->json([
+                'section_parts' => $section_parts,
+                'autocomplete' => 1,
+            ], 200);
+        }else{
+            $section_parts = Article::select('legacyArticleId', 'dataSupplierId', 'genericArticleDescription', 'articleNumber')
+            ->whereHas('stock', function($query) {
+                $query->whereNull('deleted_at');
+            })->whereHas('articleVehicleTree', function ($query) use ($request) {
+                $query->where('linkingTargetType', $request->engine_sub_type)->where('assemblyGroupNodeId', $request->section_id);
+            })->limit(10)->get();
+
+
+            return response()->json([
+                'section_parts' => $section_parts,
+                'autocomplete' => 0,
+            ], 200);
+        }
+    }
+
+    
 }

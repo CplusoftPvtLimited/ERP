@@ -112,7 +112,7 @@
     
     $FormUser = DB::table('form_user')
         ->where('status', 1)
-        ->where('user_id', auth::user()->id)
+        ->where('user_id', auth()->user()->id)
         ->first();
     // dd($FormUser);
     ?>

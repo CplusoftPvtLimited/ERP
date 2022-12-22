@@ -1,25 +1,5 @@
 var main_url = document.getElementById('app_url').value;
-function filterEngine() {
-    var input, filter, ul, li, a, i; 
-    input = document.getElementById("engine_input_search");
-    filter = input.value.toUpperCase();
-    if (input.value) {
-        document.getElementById('engine_more').style.display = "none";
-    } else {
-        document.getElementById('engine_more').style.display = "block";
-    }
-    div = document.getElementsByClassName("engine_normal_option");
-    a = document.getElementsByClassName("engine_option");
-    for (i = 0; i < a.length; i++) {
-        txtValue = a[i].textContent || a[i].innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            a[i].style.display = "";
-        } else {
-            a[i].style.display = "none";
-        }
-    }
 
-}
 var engine_id_check_array = [];
         var model_id_set = 0;
         $('.dropdown-header.engine').click(function(event) {
@@ -123,3 +103,68 @@ var engine_id_check_array = [];
                 $('#cc').val(response.capacityCC != null ? response.capacityCC : 'N/A');
             })
         })
+
+
+
+        function filterEngine() {
+            var input, filter, ul, li, a, i;
+            input = document.getElementById("engine_input_search").value;
+            document.getElementById('engine_searching').style.display = "block";
+            document.getElementById('engine_more').style.display = "none";
+            $('.engine_normal_option').empty();
+        
+            var sub_type = $('input[name="sub_type"]:checked').val();
+            var type = $('input[name="type"]:checked').val();
+        
+        
+            if(currentRequest != null){
+                currentRequest.abort();
+            }
+        
+            currentRequest = $.ajax({
+                url: '/get_all_engines_by_autocomplete',
+                method: "GET",
+                data: {
+                    name: input,
+                    engine_type:type,
+                    engine_sub_type:sub_type,
+                    model_id: model_id_set
+                },
+                success: function(data) {
+        
+                    if(data.autocomplete == 1){
+                        $('.engine_normal_option').empty();
+                        document.getElementById('engine_searching').style.display = "none";
+                        if(data.engines.length > 0){
+                            $.each(data.engines, function(key, value) {
+                                $('.engine_normal_option').append($(
+                                    '<div class="engine_option" data-engine_id="' +
+                                    value.linkageTargetId + '">').html(value.description + "(" +
+                                    value.beginYearMonth + " - " + value.endYearMonth));
+                            });
+                        }else{
+                            $('.engine_normal_option').append(
+                                "<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>"
+                            );
+                        }
+                        
+                    }else if(data.autocomplete == 0){
+                        $('.engine_normal_option').empty();
+                        document.getElementById('engine_searching').style.display = "none";
+                        $.each(data.engines, function(key, value) {
+                            $('.engine_normal_option').append($(
+                                '<div class="engine_option" data-engine_id="' +
+                                value.linkageTargetId + '">').html(value.description + "(" +
+                                value.beginYearMonth + " - " + value.endYearMonth));
+                        });
+                        document.getElementById('engine_more').style.display = "block";
+                    }
+                    
+        
+                    
+        
+        
+                }
+            });
+        
+        }

@@ -1,47 +1,63 @@
 var main_url = document.getElementById('app_url').value;
+
+var currentRequest = null;
 function filterBrand() {
     var input, filter, ul, li, a, i;
-    input = document.getElementById("brand_input_search");
-    filter = input.value.toUpperCase();
-    if (input.value) {
-        document.getElementById('barnd_more').style.display = "none";
-    } else {
-        document.getElementById('barnd_more').style.display = "block";
+    input = document.getElementById("brand_input_search").value;
+    document.getElementById('brand_searching').style.display = "block";
+    document.getElementById('barnd_more').style.display = "none";
+    $('.normal-option').empty();
+
+    console.log("--- input -----------",input);
+
+
+    if(currentRequest != null){
+        currentRequest.abort();
     }
-    div = document.getElementsByClassName("normal_option");
-    a = document.getElementsByClassName("option");
-    for (i = 0; i < a.length; i++) {
-        txtValue = a[i].textContent || a[i].innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            a[i].style.display = "";
-        } else {
-            a[i].style.display = "none";
+
+    currentRequest = $.ajax({
+        url: '/get_all_brands_by_autocomplete',
+        method: "GET",
+        data: {
+            name: input
+        },
+        success: function(data) {
+
+            if(data.autocomplete == 1){
+                $('.normal-option').empty();
+                document.getElementById('brand_searching').style.display = "none";
+                if(data.brands.length > 0){
+                    $.each(data.brands, function(key, value) {
+                        $('.normal-option').append($('<div class="option" data-brand_id="' +
+                            value.brandId + '">').html(value.brandName));
+                    });
+                }else{
+                    $('.normal-option').append(
+                        "<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>"
+                    );
+                }
+                
+            }else if(data.autocomplete == 0){
+                $('.normal-option').empty();
+                document.getElementById('brand_searching').style.display = "none";
+                $.each(data.brands, function(key, value) {
+                    $('.normal-option').append($('<div class="option" data-brand_id="' +
+                        value.brandId + '">').html(value.brandName));
+                });
+                document.getElementById('barnd_more').style.display = "block";
+            }
+            
+
+            
+
+
         }
-    }
+    });
+    
 
 }
 
-function filterSection() {
-    var input, filter, ul, li, a, i;
-    input = document.getElementById("section_input_search");
-    filter = input.value.toUpperCase();
-    if (input.value) {
-        document.getElementById('section_more').style.display = "none";
-    } else {
-        document.getElementById('section_more').style.display = "block";
-    }
-    div = document.getElementsByClassName("product_group_normal_option");
-    a = document.getElementsByClassName("product_group_option");
-    for (i = 0; i < a.length; i++) {
-        txtValue = a[i].textContent || a[i].innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            a[i].style.display = "";
-        } else {
-            a[i].style.display = "none";
-        }
-    }
 
-}
 $('.dropdown-header.brands').click(function(event) {
     $('.dropdown-content.brands_content').toggle();
     event.stopPropagation();
@@ -162,3 +178,60 @@ $(document.body).on('click', '.product_group_option:not(.product_group_more)', f
     event.stopPropagation();
 })
 
+
+
+function filterSection() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("section_input_search").value;
+    document.getElementById('section_searching').style.display = "block";
+    document.getElementById('section_more').style.display = "none";
+    $('.product_group_normal_option').empty();
+
+    console.log("--- input -----------",input);
+
+
+    if(currentRequest != null){
+        currentRequest.abort();
+    }
+
+    currentRequest = $.ajax({
+        url: '/get_all_sections_by_autocomplete',
+        method: "GET",
+        data: {
+            name: input,
+            brand_id:brand_id_save
+        },
+        success: function(data) {
+
+            if(data.autocomplete == 1){
+                $('.product_group_normal_option').empty();
+                document.getElementById('section_searching').style.display = "none";
+                if(data.sections.length > 0){
+                    $.each(data.sections, function(key, value) {
+                        $('.product_group_normal_option').append($('<div class="product_group_option" data-section_id="' +
+                            value.assemblyGroupNodeId + '">').html(value.assemblyGroupName));
+                    });
+                }else{
+                    $('.product_group_normal_option').append(
+                        "<span style='color:red;text-align:center;font-size:13px'>No Record Found</span>"
+                    );
+                }
+                
+            }else if(data.autocomplete == 0){
+                $('.product_group_normal_option').empty();
+                document.getElementById('section_searching').style.display = "none";
+                $.each(data.sections, function(key, value) {
+                    $('.product_group_normal_option').append($('<div class="product_group_option" data-section_id="' +
+                        value.assemblyGroupNodeId + '">').html(value.assemblyGroupName));
+                });
+                document.getElementById('section_more').style.display = "block";
+            }
+            
+
+            
+
+
+        }
+    });
+
+}

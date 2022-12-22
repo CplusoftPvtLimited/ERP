@@ -1,5 +1,6 @@
 <?php
 
+use App\Brand;
 use App\Http\Controllers\AssemblyGroupNodeController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\RetailerRegisterController;
@@ -13,7 +14,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\MakeController;
 use App\Http\Controllers\StockManagementController;
+use App\Models\Ambrand;
 use App\Models\ChassisNumber;
+use App\Models\Manufacturer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Response;
@@ -28,6 +31,47 @@ use Illuminate\Support\Facades\Response;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/testview', function(){
+	$type = ["V","L","B"];
+        $manufacturers = Manufacturer::whereIn('linkingTargetType', $type)->limit(10)->get();
+        $manfuacture_array = [
+            'type' => "P",
+            'sub_type' => "home",
+            'value' => 10,
+        ];
+        session()->put('manufacturer_load_more',$manfuacture_array);
+        $model_array = [
+            'type' => "null",
+            'sub_type' => "null",
+            'value' => 0,
+        ];
+        session()->put('model_load_more',$model_array);
+        $engine_array = [
+            'engine_type' => "null",
+            'engine_sub_type' => "null",
+            'value' => 0,
+        ];
+        session()->put('engine_load_more',$engine_array);
+        $brands = Ambrand::where('lang','EN')->limit(10)->get();
+        $brands_count = Ambrand::count();
+        session()->put("record",10);
+        session()->put('section_count',[]);
+        session()->put('sub_section_count',[]);
+        session()->put('section_brand_id',[]);
+
+        session()->put('manufacturer_count_value', 0);
+        session()->put('model_count_value', 0);
+        session()->put('engine_count_value', 0);
+        session()->put('section_count_value', 0);
+        session()->put('section_part_count_value', 0);
+        session()->put('purchase_brand_count_value', 0);
+        session()->put('section_part_count_value_for_sale', 0);
+        session()->put('plate_engine_count_value', 0);
+        session()->put('plate_section_count_value', 0);
+        session()->put('plate_section_part_count_value', 0);
+        return view('test',compact('manufacturers','brands','brands_count'));
+});
+
 Route::post('/exportData',function(Request $request){
 	ini_set('memory_limit', '666666666666666666666666666666664M');
         ini_set('max_execution_time', '66666666666666666666666666666666666666666666666666666');
@@ -41,7 +85,7 @@ Route::post('/exportData',function(Request $request){
 	];
 
 		$new_list = [];
-		$chassis_numbers = ChassisNumber::all();
+		$chassis_numbers = ChassisNumber::limit(10000)->get();
 		foreach ($chassis_numbers as $chassis_number) {
 			$response_data = [];
 			$response = Http::get('https://partsapi.ru/api.php?method=VINdecode&key=f1af8ee7f280a19d3bec7b44a8c64310&vin='.$chassis_number->CHASSIS.'&lang=en');
@@ -377,10 +421,24 @@ Route::group(['middleware' => ['auth', 'active']], function () {
 
 	Route::get('load_more_brand', 'HomeSearchController@loadMoreBrands')->name('load_more_brand'); 
 
-
-
-
 	Route::get('get_article_by_sub_section/{id}/{section_id}/{type}', 'HomeSearchController@articleSearchViewBySection')->name('get_article_by_sub_section'); 
+	
+	// For Home Search==========auto complete routes
+	Route::get('get_all_brands_by_autocomplete', 'HomeSearchController@getAutoCompleteBrands')->name('get_all_brands_by_autocomplete'); 
+	Route::get('get_all_sections_by_autocomplete', 'HomeSearchController@getAutoCompleteSections')->name('get_all_sections_by_autocomplete'); 
+	Route::get('get_all_manufacturers_by_autocomplete', 'HomeSearchController@getAutoCompleteManufacturers')->name('get_all_manufacturers_by_autocomplete'); 
+	Route::get('get_all_models_by_autocomplete', 'HomeSearchController@getAutoCompleteModels')->name('get_all_models_by_autocomplete'); 
+	Route::get('get_all_engines_by_autocomplete', 'HomeSearchController@getAutoCompleteEngine')->name('get_all_engines_by_autocomplete'); 
+
+
+	// For Purchase/Sale Search==========auto complete routes
+	Route::get('get_all_manufacturers_by_autocomplete_sale', 'PurchaseController@getAutoCompleteManufacturers')->name('get_all_manufacturers_by_autocomplete_sale'); 
+	Route::get('get_all_models_by_autocomplete_sale', 'PurchaseController@getAutoCompleteModels')->name('get_all_models_by_autocomplete_sale'); 
+	Route::get('get_all_engines_by_autocomplete_sale', 'PurchaseController@getAutoCompleteEngines')->name('get_all_engines_by_autocomplete_sale'); 
+	Route::get('get_all_sections_by_autocomplete_sale', 'PurchaseController@getAutoCompleteSections')->name('get_all_sections_by_autocomplete_sale'); 
+	Route::get('get_all_section_parts_by_autocomplete_sale', 'PurchaseController@getAutoCompleteSectionParts')->name('get_all_section_parts_by_autocomplete_sale'); 
+
+
 
 	Route::get('transfers/product_transfer/{id}', 'TransferController@productTransferData');
 	Route::get('transfers/transfer_by_csv', 'TransferController@transferByCsv');
