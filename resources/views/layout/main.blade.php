@@ -133,8 +133,8 @@
                 @endif
             </span>
             <ul id="side-main-menu" class="side-menu list-unstyled">
-                <li><a href="{{ url('/') }}"> <i
-                            class="dripicons-meter"></i><span>{{ __('file.dashboard') }}</span></a></li>
+                {{-- <li><a href="{{ url('/') }}"> <i
+                            class="dripicons-meter"></i><span>{{ __('file.dashboard') }}</span></a></li> --}}
                 <li id="search_home"><a href="{{ url('/home_search') }}"> <i
                             class="dripicons-home"></i><span>{{ __('file.Home') }}</span></a></li>
                 <?php
@@ -1076,9 +1076,9 @@
                                 href="{{ route('sale.pos') }}"><i class="dripicons-shopping-bag"></i><span>
                                     POS</span></a></li> --}}
                         @endif
-                        {{-- <li class="nav-item"><a id="switch-theme" data-toggle="tooltip"
+                        <li class="nav-item"><a id="switch-theme" data-toggle="tooltip"
                             title="{{ trans('file.Switch Theme') }}"><i class="dripicons-brightness-max"></i></a>
-                    </li> --}}
+                    </li>
                         <li class="nav-item"><a id="btnFullscreen" data-toggle="tooltip"
                                 title="{{ trans('file.Full Screen') }}"><i class="dripicons-expand"></i></a></li>
                         @if (\Auth::user()->role_id <= 2)

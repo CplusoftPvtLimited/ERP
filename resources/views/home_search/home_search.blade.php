@@ -309,14 +309,14 @@
                                             <label for="">Plate Number</label>
                                             <input id="plate_number" class="form-control" placeholder="156-TU-2999">
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <button type="button" class="btn btn-info search-btn"
-                                                id="search-btn">{{ trans('file.Search') }} <span style="display:none;"
+                                        <div class="col-md-4 mt-3" style="margin-top: 48px !important;">
+                                            <button type="button" class="btn btn-primary search-btn"
+                                                id="search-btn"><i
+                                                class="fa fa-solid fa-magnifying-glass"></i> <span style="display:none;"
                                                     id="plate_load_icon" class="loader4"></span></button>
                                         </div>
                                     </div>
+                                    
                                     <input type="hidden" class="form-control" name="type" id="plate_engine_type" readonly>
                                     <input type="hidden" class="form-control" name="sub_type" id="plate_engine_sub_type" readonly>
                 
@@ -400,12 +400,7 @@
             </div>
         </div>
     </section>
-    <section>
-        <form action="{{ route('exportData') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        <button type="submit">Export</button>
-        </form>
-    </section>
+    
 @endsection
 @push('scripts')
     <script type="text/javascript" src="https://js.stripe.com/v3/"></script>

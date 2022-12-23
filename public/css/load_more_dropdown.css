@@ -41,27 +41,27 @@
 
   .option.more {
     text-align: center;
-    background: #6244a6;
+    background: #293FCC;
     color: white;
     cursor: pointer;
 } 
 .more.product_group_more {
     text-align: center;
-    background: #6244a6;
+    background: #293FCC;
     color: white;
     cursor: pointer;
 }
 
 .more.manufacturer_more {
   text-align: center;
-  background: #6244a6;
+  background: #293FCC;
   color: white;
   cursor: pointer;
 }
 
 .dropdown-content{
    background: white;
-   color: #6244a6;
+   color: #293FCC;
 }
 
 .manufacturer_option{
@@ -91,7 +91,7 @@
 
   .more.model_more {
     text-align: center;
-    background: #6244a6;
+    background: #293fcc;
     color: white;
     cursor: pointer;
   }
@@ -111,7 +111,7 @@
 
   .more.engine_more {
     text-align: center;
-    background: #6244a6;
+    background: #293FCC;
     color: white;
     cursor: pointer;
   }
@@ -125,7 +125,7 @@ p {font-family: 'Montserrat Alternates', sans-serif;font-size:18px; font-weight:
    display:inline-block;
    padding:0px;
    opacity:0.5;
-   border:3px solid #09acfd;
+   border:3px solid #293FCC;
    -webkit-animation: loader 1s ease-in-out infinite alternate;
    animation: loader 1s ease-in-out infinite alternate;
 }
@@ -138,7 +138,7 @@ p {font-family: 'Montserrat Alternates', sans-serif;font-size:18px; font-weight:
   left: 5px;
   right: 5px;
   bottom: 5px;
-  border: 3px solid #09acfd;
+  border: 3px solid #293FCC;
 }
 
 .loader:after {
@@ -149,7 +149,7 @@ p {font-family: 'Montserrat Alternates', sans-serif;font-size:18px; font-weight:
   left: 15px;
   right: 15px;
   bottom: 15px;
-  border: 3px solid #09acfd;
+  border: 3px solid #293FCC;
 }
 
 @keyframes loader {
@@ -189,7 +189,7 @@ p {font-family: 'Montserrat Alternates', sans-serif;font-size:18px; font-weight:
 
 .product_group_more{
    text-align: center;
-   background: #6244a6;
+   background: #293FCC;
    color: white;
    cursor: pointer;
 }

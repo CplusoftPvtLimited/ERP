@@ -91,7 +91,7 @@ class LoginController extends Controller
                     $id = $form->id;
                     return redirect('fillform/$id');
                 }else{
-                    return redirect('/');
+                    return redirect('/home_search');
                 }
                
           

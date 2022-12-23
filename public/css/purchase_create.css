@@ -42,7 +42,7 @@ table {
   }
   
   .article-tabs button.active {
-	background-color: #6244A6;
+	background-color: #293FCC;
 	color: white;
   }
 
@@ -140,7 +140,7 @@ table {
 	display:inline-block;
 	padding:0px;
 	opacity:0.5;
-	border:3px solid #09acfd;
+	border:3px solid #293FCC;
 	-webkit-animation: loader 1s ease-in-out infinite alternate;
 	animation: loader 1s ease-in-out infinite alternate;
  }
@@ -153,7 +153,7 @@ table {
    left: 5px;
    right: 5px;
    bottom: 5px;
-   border: 3px solid #09acfd;
+   border: 3px solid #293FCC;
  }
  
  .loader:after {
@@ -164,7 +164,7 @@ table {
    left: 15px;
    right: 15px;
    bottom: 15px;
-   border: 3px solid #09acfd;
+   border: 3px solid #293FCC;
  }
  
  @keyframes loader {
@@ -203,35 +203,35 @@ table {
 
  .more.manufacturer_more {
     text-align: center;
-    background: #6244a6;
+    background: #293FCC;
     color: white;
     cursor: pointer;
   }
 
   .more.model_more {
     text-align: center;
-    background: #6244a6;
+    background: #293FCC;
     color: white;
     cursor: pointer;
   }
 
   .more.engine_more {
     text-align: center;
-    background: #6244a6;
+    background: #293FCC;
     color: white;
     cursor: pointer;
   }
 
   .more.section_more {
     text-align: center;
-    background: #6244a6;
+    background: #293FCC;
     color: white;
     cursor: pointer;
   }
 
   .more.section_part_more {
     text-align: center;
-    background: #6244a6;
+    background: #293FCC;
     color: white;
     cursor: pointer;
   }
@@ -239,7 +239,7 @@ table {
 
   .more.brands_more {
     text-align: center;
-    background: #6244a6;
+    background: #293FCC;
     color: white;
     cursor: pointer;
   }
@@ -294,7 +294,7 @@ input#section_input_search {
 
 .more.plate_engine_more {
   text-align: center;
-  background: #6244a6;
+  background: #293FCC;
   color: white;
   cursor: pointer;
 }
@@ -311,7 +311,7 @@ input#section_input_search {
 
 .more.plate_section_more {
   text-align: center;
-  background: #6244a6;
+  background: #293FCC;
   color: white;
   cursor: pointer;
 }
@@ -329,7 +329,7 @@ input#section_input_search {
 
 .more.plate_section_part_more {
   text-align: center;
-  background: #6244a6;
+  background: #293FCC;
   color: white;
   cursor: pointer;
 }
