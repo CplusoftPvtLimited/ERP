@@ -94,7 +94,7 @@
                                         </div>
                                     @endif
                                     <table id="model-data-table" class="table" style="width: 100% !important">
-                                        <thead>
+                                        <thead class="site-color">
                                             <tr>
                                                 <th>#</th>
                                                 <th>Product ID</th>

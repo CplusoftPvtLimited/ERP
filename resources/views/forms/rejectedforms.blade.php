@@ -28,6 +28,7 @@
     <!-- <div class="col-lg-3"></div> -->
     @if(count($userforms) > 0)
     <table class="table table-bordered">
+        <thead class="site-color">
   <tr>
      <th>No</th>
      <th>User Name</th>
@@ -35,6 +36,7 @@
      <th>Role</th>
      <th width="280px">Action</th>
   </tr>
+        </thead>
     @php $i=0; @endphp
     @foreach ($userforms as $key => $form)
     @foreach ($data as $key => $datas)

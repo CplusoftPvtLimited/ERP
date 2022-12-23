@@ -65,7 +65,7 @@
                   </div>
                 @endif
                   <table id="forms-table" class="table" style="width: 100% !important">
-                    <thead>
+                    <thead class="site-color">
                       <tr>
                         <th>No</th>
                         <th>Date / Time</th>

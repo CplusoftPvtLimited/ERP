@@ -55,7 +55,7 @@
                                 </div>
                                 @endif
                                 <table id="data-table" class="table" style="width: 100% !important">
-                                    <thead>
+                                    <thead class="site-color">
                                         <tr>
                                             <th>#</th>
                                             <th>User Name</th>
