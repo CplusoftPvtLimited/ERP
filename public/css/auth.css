@@ -14,7 +14,7 @@
 .login-page,
 .register-page {
     background: #f5f5f5;
-    background-image: url('../images/auth/auth-light.jpg');
+    background-image: url('../images/auth/auto.jpg');
     background-size:cover;
 	width: 100%;
 	min-height: auto;
@@ -303,4 +303,10 @@ input.form-control-custom:checked+label::before {
 .btn-dark:focus {
 	-webkit-box-shadow: 0 0 0 .2rem rgba(52, 58, 64, .5);
 	box-shadow: 0 0 0 .2rem rgba(52, 58, 64, .5)
+}
+
+
+.site-color{
+    background-color: #293FCC !important;
+    color: white;
 }

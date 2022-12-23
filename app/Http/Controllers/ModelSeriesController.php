@@ -87,7 +87,7 @@ class ModelSeriesController extends Controller
      */
     public function create()
     {
-        $manufacturers = Manufacturer::all();
+        $manufacturers = Manufacturer::limit(10)->get();
         $earliest_year = 1900;
         $latest_year = date('Y');
         return view('model_series.create', compact('manufacturers', 'latest_year', 'earliest_year'));
@@ -132,12 +132,14 @@ class ModelSeriesController extends Controller
                 }
             }else if(!empty($request->tags) && !str_contains($request->tags,",")){
                 $data['modelname'] = $request->tags;
+                
                 $max_model_id = ModelSeries::max('modelId');
-                if (!empty($max_model_id)) {
+                 if (!empty($max_model_id)) {
                     $data['modelId'] = $max_model_id + 1;
                 } else {
                     $data['modelId'] = 1;
                 }
+                // dump('no loop');dd($data);
                 ModelSeries::create($data);
                 DB::commit();
                 return redirect()->route('modelseries.index')->with('create_message', 'Model created successfully');
@@ -263,4 +265,27 @@ class ModelSeriesController extends Controller
              return redirect()->route('modelseries.archive');
          }
      }
+
+
+
+     // Autocomplete
+
+     public function getAutoCompleteManufacturers(Request $request){
+        if(!empty($request->name)){
+            $manufacturers = Manufacturer::where('manuName','like','%'.$request->name. '%')->get();
+
+            return response()->json([
+                'manufacturers' => $manufacturers,
+                'autocomplete' => 1,
+            ], 200);
+        }else{
+            $manufacturers = Manufacturer::limit(10)->get();
+
+            return response()->json([
+                'manufacturers' => $manufacturers,
+                'autocomplete' => 0,
+            ], 200);
+        }
+           
+    }
 }

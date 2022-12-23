@@ -418,6 +418,13 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 
 	Route::get('/home', 'HomeController@index')->name('home');
 	Route::get('my-transactions/{year}/{month}', 'HomeController@myTransaction');
+
+
+
+	// Routes for autocomplete
+	Route::get('get_all_manufacturers_by_autocomplete', 'ModelSeriesController@getAutoCompleteManufacturers')->name('get_all_manufacturers_by_autocomplete'); 
+	Route::get('get_all_models_by_autocomplete', 'LinkageTargetsController@getAutoCompleteModels')->name('get_all_models_by_autocomplete'); 
+
 });
 Route::get('/logout', 'HomeController@logOut');
 Route::get('/verify/mail', 'MailController@index');

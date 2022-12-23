@@ -52,3 +52,9 @@ div.has-error> .form-text {
     font-size: 1.2rem;
 }
 
+
+
+.site-color{
+    background-color: #293FCC !important;
+    color: white;
+}

@@ -86,7 +86,7 @@ class LoginController extends Controller
             // dd("hello");
             // if(auth::user()->is_active == 1)
             // if(role()->projectmanager)
-            return redirect('/');
+            return redirect('/manufacturer');
             // else
             // return redirect('logout');
         }

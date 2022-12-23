@@ -126,8 +126,8 @@ class LinkageTargetsController extends Controller
      */
     public function create()
     {
-        $manufacturers = Manufacturer::all();
-        $models =  ModelSeries::all();
+        $manufacturers = Manufacturer::limit(10)->get();
+        $models =  ModelSeries::limit(10)->get();
         return view('linkage_targets.create', compact('manufacturers', 'models'));
     }
 
@@ -251,4 +251,26 @@ class LinkageTargetsController extends Controller
             return redirect()->route('engine.archive');
         }
     }
+
+
+    public function getAutoCompleteModels(Request $request){
+        if(!empty($request->name)){
+            $models = ModelSeries::select('modelId', 'modelname')->where('modelname','like','%'. $request->name. '%')->get();
+
+            return response()->json([
+                'models' => $models,
+                'autocomplete' => 1,
+            ], 200);
+        }else{
+            $models = ModelSeries::select('modelId', 'modelname')->limit(10)->get();
+
+            return response()->json([
+                'models' => $models,
+                'autocomplete' => 0,
+            ], 200);
+        }
+           
+    }
+
+
 }

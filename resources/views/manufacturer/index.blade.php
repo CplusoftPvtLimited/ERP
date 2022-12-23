@@ -56,7 +56,7 @@
                                 </div>
                                 @endif
                                 <table id="manufacturer-data-table" class="table" style="width: 100% !important">
-                                    <thead>
+                                    <thead class="site-color">
                                         <tr>
                                             <th>#</th>
                                             <th>Manufacturer Id</th>

@@ -347,7 +347,7 @@ nav.navbar a.menu-btn i[class*=icon-] {
 }
 
 .side-navbar li a i {
-	color: #7c5cc4;
+	color: #293FCC;
 	font-size: 15px;
 	line-height: 10px;
 	margin-right: 10px;
@@ -355,7 +355,7 @@ nav.navbar a.menu-btn i[class*=icon-] {
 }
 
 .dark-mode .side-navbar li a i {
-    color: #7c70f4;
+    color: #293FCC;
 }
 
 .side-navbar li a i.icon {
@@ -388,7 +388,8 @@ nav.navbar a.menu-btn i[class*=icon-] {
 
 .dark-mode .side-navbar li ul {
 	background: #283046;
-    border: 1px solid #7c5cc4;
+    border: 1px solid #293FCC;
+;
 }
 
 .side-navbar li ul li a {
@@ -1514,7 +1515,8 @@ button {
 .btn-default {
 	color: color-yiq(#ced4da);
 	background-color: #ced4da;
-	border-color: #7c5cc4
+	border-color: #293FCC;
+
 }
 
 .btn-default:hover {

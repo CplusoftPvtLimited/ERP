@@ -19,7 +19,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header site-color">
                             <div class="row">
                                 <div class="col-md-6">
                                     <h4>{{ trans('file.Add Section') }}</h4>
