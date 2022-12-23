@@ -57,7 +57,7 @@ class RetailerLoginController extends Controller
                     $log->causer_id = 'ERP-'.$id;
                     $log->save();
                     // dd('jhsdjahjadsnew');
-                    return redirect('/');
+                    return redirect('/home_search');
                 }
                 elseif($FormUser == NULL || $FormUser->status == 2 || $FormUser->status == 3){
                    
