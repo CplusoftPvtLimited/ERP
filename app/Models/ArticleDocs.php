@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ArticleDocs extends Model
 {
     use HasFactory;
-    protected $table = "articledocs";
+    // protected $table = "articledocs";
 
+    protected $table = "ArticleDocs";
 }

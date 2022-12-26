@@ -10,34 +10,43 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Article extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $table = "articles";
+    // protected $table = "articles";
 
-    public function articleCriteria(){
-        return $this->hasOne(ArticleCriteria::class,'legacyArticleId','legacyArticleId');
+    protected $table = "Articles";
+
+
+    public function articleCriteria()
+    {
+        return $this->hasOne(ArticleCriteria::class, 'legacyArticleId', 'legacyArticleId');
     }
 
-    public function articleDocs(){
+    public function articleDocs()
+    {
         return $this->hasOne(ArticleDocs::class);
     }
 
-    public function articleCrosses(){
+    public function articleCrosses()
+    {
         return $this->hasOne(ArticleDCross::class);
     }
 
-    public function articleEAN(){
-        return $this->hasOne(ArticleEAN::class,'legacyArticleId','legacyArticleId');
+    public function articleEAN()
+    {
+        return $this->hasOne(ArticleEAN::class, 'legacyArticleId', 'legacyArticleId');
     }
 
-    public function articleMain(){
+    public function articleMain()
+    {
         return $this->hasOne(ArticleMain::class);
     }
 
-    public function articleVehicleTree():HasOne
+    public function articleVehicleTree(): HasOne
     {
-        return $this->hasOne(ArticleVehicleTree::class,'legacyArticleId','legacyArticleId');
+        return $this->hasOne(ArticleVehicleTree::class, 'legacyArticleId', 'legacyArticleId');
     }
 
-    public function articleText(){
+    public function articleText()
+    {
         return $this->hasOne(ArticleText::class);
     }
 
@@ -46,21 +55,23 @@ class Article extends Model
         return $this->hasMany(GenericArticle::class);
     }
 
-    public function brand() {   // usefull
-        return $this->belongsTo(Ambrand::class,'dataSupplierId', 'brandId');
+    public function brand()
+    {   // usefull
+        return $this->belongsTo(Ambrand::class, 'dataSupplierId', 'brandId');
     }
 
     public function brands()
     {
-        return $this->hasMany(Ambrand::class,'brandId','dataSupplierId');
+        return $this->hasMany(Ambrand::class, 'brandId', 'dataSupplierId');
     }
 
-    public function section() { 
-        return $this->belongsTo(AssemblyGroupNode::class,'assemblyGroupNodeId', 'assemblyGroupNodeId');
+    public function section()
+    {
+        return $this->belongsTo(AssemblyGroupNode::class, 'assemblyGroupNodeId', 'assemblyGroupNodeId');
     }
 
-    public function stock() { 
-        return $this->belongsTo(StockManagement::class,'legacyArticleId', 'product_id');
+    public function stock()
+    {
+        return $this->belongsTo(StockManagement::class, 'legacyArticleId', 'product_id');
     }
-
 }

@@ -9,10 +9,12 @@ class VehicleTree extends Model
 {
     use HasFactory;
 
-    protected $table = "vehicletrees";
+    // protected $table = "vehicletrees";
 
-    public function articleVehicleTree(){
+    protected $table = "VehicleTrees";
+
+    public function articleVehicleTree()
+    {
         return $this->belongsTo(ArticleVehicleTree::class);
     }
-
 }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ArticleCriteria extends Model
 {
     use HasFactory;
-    protected $table = "articlecriteria";
+    // protected $table = "articlecriteria";
 
+    protected $table = 'ArticleCriteria';
 }

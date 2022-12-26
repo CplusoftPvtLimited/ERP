@@ -9,21 +9,27 @@ class ArticleVehicleTree extends Model
 {
     use HasFactory;
 
-    protected $table = "articlesvehicletrees";
+    // protected $table = "articlesvehicletrees";
 
-    public function article() {
+    protected $table = "articleVehicleTrees2";
+
+    public function article()
+    {
         return $this->belongsTo(Article::class, 'legacyArticleId', 'legacyArticleId');
     }
 
-    public function articleText() {
+    public function articleText()
+    {
         return $this->belongsTo(ArticleText::class, 'legacyArticleId', 'legacyArticleId');
     }
 
-    public function linkageTarget() {
+    public function linkageTarget()
+    {
         return $this->belongsTo(LinkageTarget::class, 'linkingTargetId', 'linkageTargetId');
     }
 
-    public function assemblyGroupNodes() {
+    public function assemblyGroupNodes()
+    {
         return $this->belongsTo(AssemblyGroupNode::class, 'assemblyGroupNodeId', 'assemblyGroupNodeId');
     }
 }
