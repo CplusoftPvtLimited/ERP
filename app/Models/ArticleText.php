@@ -9,6 +9,7 @@ class ArticleText extends Model
 {
     use HasFactory;
 
-    protected $table = "articletext";
+    // protected $table = "articletext";
 
+    protected $table = "ArticleText";
 }

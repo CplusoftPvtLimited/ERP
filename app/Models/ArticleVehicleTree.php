@@ -11,7 +11,7 @@ class ArticleVehicleTree extends Model
 
     // protected $table = "articlesvehicletrees";
 
-    protected $table = "articleVehicleTrees2";
+    protected $table = "articlesVehicleTrees2";
 
     public function article()
     {
